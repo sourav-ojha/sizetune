@@ -87,7 +87,7 @@ test('no CSP violations on the signature tool (crop overlay, canvas trim, previe
 
 test('file picked BEFORE hydration is not lost (image tool and signature tool)', async ({ page }) => {
   for (const [url, extra] of [['/', 'preview'], ['/resize-signature/', 'crop-box']] as const) {
-    // Hold back the island JS so the SSR'd input is interactive but React is not.
+    // Hold back the island JS so the SSR'd input is interactive but the UI framework is not.
     let release!: () => void;
     const gate = new Promise<void>((r) => (release = r));
     await page.route('**/_astro/*.js', async (route) => { await gate; await route.continue(); });
