@@ -24,8 +24,10 @@ function app1Exif(u) {
 export async function fixture(name) {
   const r = await fetch('/fixtures/' + name);
   if (!r.ok) throw new Error('fixture missing ' + name);
-  const b = await r.blob();
-  return new File([b], name, { type: r.headers.get('content-type') || '' });
+  // Copy into an in-memory buffer: WebKit keeps a fetched Blob lazily backed by the (routed) response, and reading it
+  // inside a Worker then fails with NotReadableError. Real files from <input type=file> are disk-backed and unaffected.
+  const bytes = await r.arrayBuffer();
+  return new File([bytes], name, { type: r.headers.get('content-type') || '' });
 }
 
 /** Deterministic photo-ish image generated on the fly (not committed): gradient + translucent discs + grain. */
@@ -68,6 +70,7 @@ export async function summarize(r) {
     attempts: r.attempts, window: r.window, source: r.source, notes: r.notes, message: r.message, mode: r.mode, elapsedMs: r.elapsedMs,
     originalFits: r.originalFits, magic: hex(u.slice(0, 12)), decoded,
     hasTestCam: txt.includes('TestCam'), hasModel9: txt.includes('Model9'), hasExifApp1: app1Exif(u), hasIcc: txt.includes('ICC_PROFILE'),
+    outHasGps: await E.inspectFile(r.blob).then((i) => i.hasGps, () => null),
   };
 }
 

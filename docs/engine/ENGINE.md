@@ -34,6 +34,8 @@ const r = await processImage(file, {
 
 `EngineError.code`: `unsupported_type`, `corrupt`, `too_large_bytes`, `too_many_pixels`, `timeout`, `cancelled`, `out_of_memory`, `encode_unsupported`, `invalid_options`, `worker_failed`, `encode_failed`. Messages are user-safe English sentences and never echo raw browser text.
 
+**Unreadable files.** If reading the file fails (e.g. it was moved or changed on disk after it was picked: `NotReadableError`), every entry point (`readHeader`, `inspectFile`, `processImage`, the completeness check) reports `corrupt` with "This file could not be read. It may have been moved or changed after you chose it; please choose it again."
+
 **Browser-error mapping (`errors.ts`, UI review M6).** `out_of_memory` only for genuine allocation failures: `RangeError`, `QuotaExceededError`, or a message matching "out of memory / allocation failed / failed to allocate / cannot allocate / insufficient memory"; or a canvas of ≥ 4 MP that cannot be created/encoded (Safari signals that with a null context/`toBlob(null)`). Everything else is typed by stage: decode → `corrupt`; canvas/encoder → `encode_failed` ("The browser could not save the image this time. Please try again." — transient, retry is safe). A canvas whose 2D context is null, lost (`isContextLost()`) or did not take the requested size is rebuilt **once** on a fresh canvas before failing (a targeted recovery of one primitive, not a pipeline retry).
 
 ### Contract extensions made by this work package (additive, `types.ts`)

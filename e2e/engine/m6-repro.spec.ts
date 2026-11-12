@@ -107,7 +107,7 @@ const INJECT = `
   let nulled = false;
   OffscreenCanvas.prototype.getContext = function (...a) { if (this.width === 143 && !nulled) { nulled = true; return null; } return gc.apply(this, a); };
 `;
-test('narrow mapping in real Chrome: encoder failure -> encode_failed, allocation -> out_of_memory, lost context rebuilt; next job unaffected', async ({ page, context }) => {
+test('narrow mapping in a real browser: encoder failure -> encode_failed, allocation -> out_of_memory, lost context rebuilt; next job unaffected', async ({ page, context }) => {
   await openHarness(page, context, { workerPrelude: INJECT });
   const r = await page.evaluate(async () => {
     const w = window as unknown as { E: { processImage: (f: File, o: unknown) => Promise<{ status: string; width: number }> }; makeLarge: (w: number, h: number, q?: number) => Promise<File> };

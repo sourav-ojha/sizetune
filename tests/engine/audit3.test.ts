@@ -85,3 +85,19 @@ describe('N1: FF 00 is junk, exactly like libjpeg', () => {
     void rejected; void tiffHasGps;
   });
 });
+
+describe('cross-browser follow-up: a file that can no longer be read', () => {
+  /** A Blob whose reads fail like a File that was moved/changed on disk after it was picked (NotReadableError). */
+  const unreadable = (size = 5000) => {
+    const b = new Blob([new Uint8Array(size)]);
+    const fail = () => Promise.reject(new DOMException('The I/O read operation failed.', 'NotReadableError'));
+    const slice = () => ({ arrayBuffer: fail, size }) as unknown as Blob;
+    return Object.assign(b, { slice, arrayBuffer: fail }) as Blob;
+  };
+  const MSG = 'This file could not be read. It may have been moved or changed after you chose it; please choose it again.';
+  it('readHeader, inspectFile and processImage report a typed, friendly error (not worker_failed)', async () => {
+    await expect(readHeader(unreadable())).rejects.toMatchObject({ code: 'corrupt', message: MSG });
+    await expect(inspectFile(unreadable())).rejects.toMatchObject({ code: 'corrupt', message: MSG });
+    await expect(runPipeline(unreadable(), base, fakeEnv().env)).rejects.toMatchObject({ code: 'corrupt', message: MSG });
+  });
+});

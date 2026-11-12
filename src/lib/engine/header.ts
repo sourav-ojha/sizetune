@@ -203,8 +203,19 @@ function parseWebp(b: Uint8Array, truncated: Trunc): HeaderParse {
 const FIRST_READ = 64 * 1024;
 const MAX_HEADER_READ = 8 * 1024 * 1024;
 
+export const UNREADABLE_MESSAGE = 'This file could not be read. It may have been moved or changed after you chose it; please choose it again.';
+
+/** Read failures (NotReadableError: file moved/changed on disk after picking) become a typed, friendly error. */
+export async function readBytes(blob: Blob, start: number, end: number): Promise<Uint8Array> {
+  try {
+    return new Uint8Array(await blob.slice(start, end).arrayBuffer());
+  } catch {
+    throw new EngineError('corrupt', UNREADABLE_MESSAGE);
+  }
+}
+
 async function readSlice(blob: Blob, end: number): Promise<Uint8Array> {
-  return new Uint8Array(await blob.slice(0, end).arrayBuffer());
+  return readBytes(blob, 0, end);
 }
 
 /** Read and parse the header from a Blob/File, reading more of the file only when needed (at most `maxRead`). Throws EngineError. */

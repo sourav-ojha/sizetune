@@ -24,7 +24,9 @@ export async function openHarness(page: Page, context: BrowserContext, o: Harnes
   await (bundled ??= globalSetup());
   const requests: Array<{ method: string; url: string }> = [];
   context.on('request', (r) => requests.push({ method: r.method(), url: r.url() }));
-  await context.route('**/*', async (route) => {
+  // Only http(s) is routed: WebKit reads Blobs inside Workers through internal blob: URL loads, which must pass untouched
+  // (routing them answered 404 and the engine saw NotReadableError).
+  await context.route((u) => u.protocol === 'http:' || u.protocol === 'https:', async (route) => {
     const url = new URL(route.request().url());
     if (url.origin !== ORIGIN) return route.abort(); // nothing may leave the page
     const p = url.pathname;
@@ -73,7 +75,7 @@ export type RunResult = {
   status: string; bytes: number; blobSize: number; mime: string; width: number; height: number; quality: number | null; attempts: number;
   window: { minBytes: number | null; maxBytes: number | null }; source: { width: number; height: number; hasAlpha: boolean; orientationApplied: boolean; bytes: number; mime: string };
   notes: string[]; mode: string; elapsedMs: number; magic: string; decoded: { w?: number; h?: number; error?: string };
-  hasTestCam: boolean; hasModel9: boolean; hasExifApp1: boolean; hasIcc: boolean; originalFits?: boolean;
+  hasTestCam: boolean; hasModel9: boolean; hasExifApp1: boolean; hasIcc: boolean; outHasGps: boolean | null; originalFits?: boolean;
 };
 
 /** Run processImage in the page. `input` is a fixture name or { large: [w, h] } (generated in the page, not committed). */

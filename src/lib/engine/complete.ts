@@ -9,7 +9,7 @@
  * Never throws anything but EngineError('corrupt').
  */
 import { EngineError } from './types';
-import { JPEG_EXTRANEOUS_MAX, type HeaderInfo } from './header';
+import { JPEG_EXTRANEOUS_MAX, UNREADABLE_MESSAGE, type HeaderInfo } from './header';
 
 const TAIL = 64 * 1024;
 const WINDOW = 1024 * 1024;
@@ -104,7 +104,7 @@ export async function assertComplete(blob: Blob, info: Pick<HeaderInfo, 'mime'>)
   try {
     ok = info.mime === 'image/jpeg' ? await jpegComplete(blob) : info.mime === 'image/png' ? await pngComplete(blob) : await webpComplete(blob);
   } catch {
-    ok = false;
+    throw new EngineError('corrupt', UNREADABLE_MESSAGE); // the read itself failed (file moved/changed), not a truncation
   }
   if (!ok) throw incomplete();
 }

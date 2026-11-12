@@ -5,11 +5,14 @@ import { openHarness, run, BASE, browserRssMb, ORIGIN } from './harness';
 
 /** Measurements are appended here and summarised in docs/engine/ENGINE.md (not committed: .tmp is ignored). */
 const MEASURE = path.resolve(import.meta.dirname, '../../.tmp/engine-e2e-measurements.jsonl');
-const record = (name: string, data: unknown) => fs.appendFileSync(MEASURE, JSON.stringify({ name, ...((data as object) ?? {}) }) + '\n');
+/** Every measurement is tagged with the Playwright project (chrome / firefox / webkit). */
+const record = (name: string, data: unknown) => fs.appendFileSync(MEASURE, JSON.stringify({ name, browser: test.info().project.name, ...((data as object) ?? {}) }) + '\n');
+/** The browser's own answer (encode probe), so expectations follow real capability instead of a browser name. */
+const canEncode = (page: Page, f: 'webp' | 'jpeg' | 'png') => page.evaluate((x) => (window as unknown as { E: { canEncode: (f: string) => Promise<boolean> } }).E.canEncode(x), f);
 const pixels = (page: Page, pts: number[][]) => page.evaluate((p) => (window as unknown as { pixels: (p: number[][]) => Promise<number[][]> }).pixels(p), pts);
 const close = (a: number[], b: number[], tol = 6) => a.slice(0, 3).every((v, i) => Math.abs(v - b[i]) <= tol);
 
-test.describe('engine in real Chrome (worker path)', () => {
+test.describe('engine in real browsers (worker path)', () => {
   test.beforeEach(async ({ page, context }) => { await openHarness(page, context); });
 
   test('JPEG in, max 50 KB: ok, real bytes <= 50,000, JPEG magic, decodes, worker mode, no network', async ({ page, context }) => {
@@ -25,7 +28,10 @@ test.describe('engine in real Chrome (worker path)', () => {
     expect(r.decoded).toEqual({ w: r.width, h: r.height });
     expect(r.mode).toBe('worker');
     expect(r.attempts).toBeLessThanOrEqual(20);
-    expect(reqs.every((x) => x.startsWith('GET ' + ORIGIN))).toBe(true);
+    // Every NETWORK request is a GET to the harness origin. WebKit additionally performs internal blob: loads when a
+    // Worker reads a Blob; those are local (no network) and are excluded by protocol, not by browser name.
+    expect(reqs.every((x) => x.startsWith('GET '))).toBe(true);
+    expect(reqs.filter((x) => / https?:/.test(x)).every((x) => x.startsWith('GET ' + ORIGIN))).toBe(true);
     record('jpeg-max50', { bytes: r.bytes, q: r.quality, w: r.width, h: r.height, attempts: r.attempts, ms: r.elapsedMs });
   });
 
@@ -43,16 +49,24 @@ test.describe('engine in real Chrome (worker path)', () => {
     expect(j.bytes).toBeLessThanOrEqual(20_000);
   });
 
-  test('WebP in: auto keeps WebP (Chrome can encode it), verified by RIFF/WEBP magic', async ({ page }) => {
+  test('WebP in: auto keeps WebP where the browser can encode it, else a disclosed JPEG fallback (magic-verified)', async ({ page }) => {
+    const webp = await canEncode(page, 'webp'); // Chrome/Firefox: true; WebKit: false (encoder returns PNG)
     const r = await run(page, 'photo-800x600.webp', { ...BASE, format: 'auto', maxKb: 30 });
     expect(r.ok, r.message).toBe(true);
-    expect(r.mime).toBe('image/webp');
-    expect(r.magic.slice(0, 8)).toBe('52494646');
-    expect(r.magic.slice(16, 24)).toBe('57454250');
     expect(r.bytes).toBeLessThanOrEqual(30_000);
+    if (webp) {
+      expect(r.mime).toBe('image/webp');
+      expect(r.magic.slice(0, 8)).toBe('52494646');
+      expect(r.magic.slice(16, 24)).toBe('57454250');
+    } else {
+      expect(r.mime).toBe('image/jpeg');
+      expect(r.magic.startsWith('ffd8ff')).toBe(true);
+      expect(r.notes).toContain("WebP can't be saved in this browser, so the result is JPEG.");
+    }
     const w = await run(page, 'photo-1200x800.jpg', { ...BASE, format: 'webp', maxKb: 40 });
-    expect(w.mime).toBe('image/webp');
-    expect(w.status).toBe('ok');
+    if (webp) expect(w).toMatchObject({ ok: true, mime: 'image/webp', status: 'ok' });
+    else expect(w).toMatchObject({ ok: false, code: 'encode_unsupported' });
+    record('webp', { canEncodeWebp: webp, autoMime: r.mime, autoBytes: r.bytes });
   });
 
   test('transparent PNG: auto keeps alpha; JPEG fills white/black/#hex with disclosure', async ({ page }) => {
@@ -75,9 +89,11 @@ test.describe('engine in real Chrome (worker path)', () => {
     expect(bad).toMatchObject({ ok: false, code: 'invalid_options' });
   });
 
-  test('alpha WebP in, auto: keeps WebP with alpha', async ({ page }) => {
+  test('alpha WebP in, auto: keeps alpha (WebP, or PNG with disclosure where WebP cannot be encoded)', async ({ page }) => {
+    const webp = await canEncode(page, 'webp');
     const r = await run(page, 'alpha-400x300.webp', { ...BASE, format: 'auto', background: 'keep' });
-    expect(r.mime).toBe('image/webp');
+    expect(r.mime).toBe(webp ? 'image/webp' : 'image/png');
+    if (!webp) expect(r.notes).toContain("WebP can't be saved in this browser, so the result is PNG.");
     expect(r.source.hasAlpha).toBe(true);
     const [c] = await pixels(page, [[5, 5]]);
     expect(c[3]).toBe(0);
@@ -121,13 +137,19 @@ test.describe('engine in real Chrome (worker path)', () => {
     expect([s.width, s.height]).toEqual([150, 200]);
   });
 
-  test('GPS/Make/Model are not copied into the output', async ({ page }) => {
-    for (const format of ['jpeg', 'webp', 'png']) {
+  test('GPS/Make/Model are not copied into the output', async ({ page, browserName }) => {
+    const webp = await canEncode(page, 'webp');
+    for (const format of webp ? ['jpeg', 'webp', 'png'] : ['jpeg', 'png']) {
       const r = await run(page, 'exif6-gps.jpg', { ...BASE, format, maxKb: 50 });
       expect(r.ok, r.message).toBe(true);
+      // Invariants in every browser: no camera make/model strings and no EXIF GPS block in the output.
       expect(r.hasTestCam, format).toBe(false);
       expect(r.hasModel9, format).toBe(false);
-      if (format === 'jpeg') expect(r.hasExifApp1).toBe(false);
+      expect(r.outHasGps, format).toBe(false);
+      // Chromium/Firefox write no EXIF APP1 at all; WebKit's encoder writes a small Exif stub (orientation/resolution
+      // only — verified above: no GPS, no make/model). Documented in docs/engine/CROSS_BROWSER.md.
+      if (format === 'jpeg' && browserName !== 'webkit') expect(r.hasExifApp1).toBe(false);
+      if (format === 'jpeg') record('exif-out', { hasExifApp1: r.hasExifApp1 });
     }
   });
 
@@ -161,13 +183,23 @@ test.describe('engine in real Chrome (worker path)', () => {
     record('raise-200x230', { q95, minKb, bytes: r.bytes, q: r.quality, attempts: r.attempts });
   });
 
-  test('below_min on a tiny 140×60 signature: honest message, no padding', async ({ page }) => {
+  test('tiny 140×60 signature with a 10 KB minimum: honest status for THIS encoder, message matches, no padding', async ({ page }) => {
+    // Encoders differ: Chrome's q100 gives ~8.7 KB (below_min); Firefox/WebKit q100 files are larger and can reach 10 KB
+    // (raised). The invariants hold in every browser: status matches the real bytes, the message matches the status.
     const r = await run(page, 'signature-140x60.png', { ...BASE, width: 140, height: 60, minKb: 10, maxKb: 20 });
     expect(r.ok, r.message).toBe(true);
-    expect(r.status).toBe('below_min');
-    expect(r.bytes).toBeLessThan(10 * 1024);
-    expect(r.quality).toBe(100);
-    expect(r.message).toMatch(/^At 140×60 px this image is at most [\d.]+ KB \([\d,]+ bytes\) even at maximum quality, so the 10 KB minimum \(10,240 bytes\) cannot be met/);
+    expect(['below_min', 'raised']).toContain(r.status);
+    expect([r.width, r.height]).toEqual([140, 60]);
+    if (r.status === 'below_min') {
+      expect(r.bytes).toBeLessThan(10 * 1024);
+      expect(r.quality).toBe(100); // only after the maximum quality was tried
+      expect(r.message).toMatch(/^At 140×60 px this image is at most [\d.]+ KB \([\d,]+ bytes\) even at maximum quality, so the 10 KB minimum \(10,240 bytes\) cannot be met/);
+    } else {
+      expect(r.bytes).toBeGreaterThanOrEqual(10 * 1024);
+      expect(r.bytes).toBeLessThanOrEqual(20_000);
+      expect(r.quality!).toBeGreaterThan(95);
+      expect(r.message).toMatch(/^Your minimum is 10 KB\. We raised JPEG quality to \d+% to reach/);
+    }
     // the file is a plain JPEG: no COM/APP padding segments
     const segs = await page.evaluate(async () => {
       const u = new Uint8Array(await (window as unknown as { last: Blob }).last.arrayBuffer());
@@ -176,7 +208,7 @@ test.describe('engine in real Chrome (worker path)', () => {
       return out;
     });
     expect(segs.includes('fe')).toBe(false);
-    record('signature-below-min', { bytes: r.bytes, message: r.message });
+    record('signature-140x60-min10', { status: r.status, bytes: r.bytes, q: r.quality });
     const p = await run(page, 'signature-140x60.png', { ...BASE, width: 140, height: 60, minKb: 10, allowPadding: true });
     expect(p).toMatchObject({ ok: false, code: 'invalid_options' });
   });
@@ -228,7 +260,19 @@ test.describe('engine in real Chrome (worker path)', () => {
     expect(pb).toEqual(pa);
   });
 
-  test('large 36 MP image (generated on the fly): reduced decode, max 50 KB, time and memory recorded', async ({ page, browser }) => {
+  test('large 36 MP image (generated on the fly): reduced decode, max 50 KB, time recorded', async ({ page }) => {
+    const r = await run(page, { large: [6000, 6000] }, { ...BASE, maxKb: 50 });
+    expect(r.ok, r.message).toBe(true);
+    expect(r.status).toBe('ok');
+    expect(r.bytes).toBeLessThanOrEqual(50_000);
+    expect(r.source).toMatchObject({ width: 6000, height: 6000 });
+    expect(r.wallMs).toBeLessThan(5000);
+    record('36mp-max50', { bytes: r.bytes, q: r.quality, w: r.width, h: r.height, attempts: r.attempts, ms: r.elapsedMs, wallMs: r.wallMs });
+  });
+
+  // @chromium-only: process RSS comes from CDP SystemInfo.getProcessInfo (Chromium-only API). Firefox/WebKit have no
+  // equivalent in Playwright; the functional 36 MP test above runs in every browser.
+  test('36 MP peak memory stays bounded (browser RSS via CDP) @chromium-only', async ({ page, browser }) => {
     const gen = await page.evaluate(async () => { const f = await (window as unknown as { makeLarge: (w: number, h: number) => Promise<File> }).makeLarge(6000, 6000); (window as unknown as { big: File }).big = f; return f.size; });
     const base = await browserRssMb(browser);
     let peak = base;
@@ -238,12 +282,8 @@ test.describe('engine in real Chrome (worker path)', () => {
     sampling = false;
     await sampler;
     expect(r.ok, r.message).toBe(true);
-    expect(r.status).toBe('ok');
-    expect(r.bytes).toBeLessThanOrEqual(50_000);
-    expect(r.source).toMatchObject({ width: 6000, height: 6000 });
-    expect(r.wallMs).toBeLessThan(5000);
     expect(peak - base).toBeLessThan(600);
-    record('36mp-max50', { inputBytes: gen, bytes: r.bytes, q: r.quality, w: r.width, h: r.height, attempts: r.attempts, ms: r.elapsedMs, wallMs: r.wallMs, rssBaseMb: Math.round(base), rssPeakDeltaMb: Math.round(peak - base) });
+    record('36mp-max50-memory', { inputBytes: gen, ms: r.elapsedMs, rssBaseMb: Math.round(base), rssPeakDeltaMb: Math.round(peak - base) });
   });
 
   test('output limits on the resolved geometry (review F1): derived side / lockAspect:false rejected, not out_of_memory', async ({ page }) => {
@@ -318,9 +358,20 @@ test.describe('second audit: A4 inspect completeness, A5 extraneous bytes, A2 al
     });
     expect(r).toEqual({ chrome: [200, 230], inspect: [200, 230], run: [true, 200, 200, 230] });
   });
-  test('A5: JPEG with 4 stray zero bytes between segments decodes in Chrome and is accepted', async ({ page }) => {
+  test('A5: JPEG with 4 stray zero bytes between segments: accepted exactly when this browser can decode it', async ({ page }) => {
+    // The header parser tolerates libjpeg-style stray bytes. Chromium (libjpeg-turbo) and Firefox decode the file; WebKit's
+    // decoder rejects it. Invariant: the engine never claims more than the browser can do — ok when the browser decodes
+    // it, a typed `corrupt` (never a crash or a wrong size) when it does not.
+    const native = await page.evaluate(async () => {
+      const f = await (window as unknown as { fixture: (n: string) => Promise<File> }).fixture('jpeg-extraneous-bytes.jpg');
+      try { const b = await createImageBitmap(f); const d = [b.width, b.height]; b.close(); return d; } catch { return null; }
+    });
     const r = await run(page, 'jpeg-extraneous-bytes.jpg', { ...BASE, maxKb: 30 });
-    expect(r).toMatchObject({ ok: true, status: 'ok', width: 200, height: 230 });
+    if (native) {
+      expect(native).toEqual([200, 230]);
+      expect(r).toMatchObject({ ok: true, status: 'ok', width: 200, height: 230 });
+    } else expect(r).toMatchObject({ ok: false, code: 'corrupt' });
+    record('jpeg-extraneous', { nativeDecodes: !!native, engine: r.ok ? r.status : r.code });
   });
   test('A4: inspectFile refuses truncated files at pick, incl. a 16 MP JPEG cut at 90% (time recorded)', async ({ page }) => {
     const r = await page.evaluate(async () => {
@@ -354,23 +405,33 @@ test.describe('second audit: A4 inspect completeness, A5 extraneous bytes, A2 al
 test.describe('lifecycle: repeated runs, cancellation, stale protection, timeout', () => {
   test.beforeEach(async ({ page, context }) => { await openHarness(page, context); });
 
-  test('10 repeated 12 MP runs: no unbounded memory growth', async ({ page, browser }) => {
-    const rss: number[] = [];
-    const heap: number[] = [];
+  test('10 repeated 12 MP runs: every run ok, no slowdown trend', async ({ page }) => {
     const times: number[] = [];
     for (let i = 0; i < 10; i++) {
       const r = await run(page, '.generated/photo-12mp.jpg', { ...BASE, maxKb: 100 }, { keep: false });
       expect(r.status).toBe('ok');
       times.push(r.elapsedMs);
+    }
+    record('repeat-12mp-x10', { ms: times });
+    expect(Math.max(...times.slice(1))).toBeLessThan(Math.max(1500, 3 * Math.min(...times)));
+  });
+
+  // @chromium-only: RSS via CDP SystemInfo and performance.memory exist only in Chromium. Leak-freedom elsewhere is covered
+  // by the unit tests (every bitmap closed, worker terminated) and the functional repeat test above.
+  test('10 repeated 12 MP runs: no unbounded memory growth (RSS + JS heap) @chromium-only', async ({ page, browser }) => {
+    const rss: number[] = [];
+    const heap: number[] = [];
+    for (let i = 0; i < 10; i++) {
+      const r = await run(page, '.generated/photo-12mp.jpg', { ...BASE, maxKb: 100 }, { keep: false });
+      expect(r.status).toBe('ok');
       await page.waitForTimeout(300);
       rss.push(Math.round(await browserRssMb(browser)));
       heap.push(await page.evaluate(() => Math.round(((performance as unknown as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize ?? 0) / 1048576)));
     }
-    record('repeat-12mp-x10', { rssMb: rss, pageHeapMb: heap, ms: times });
+    record('repeat-12mp-x10-memory', { rssMb: rss, pageHeapMb: heap });
     // growth between the 2nd and the 10th run must be bounded (a leak of one 12 MP bitmap per run would be ~48 MB/run)
     expect(rss[9] - rss[1]).toBeLessThan(150);
     expect(heap[9] - heap[1]).toBeLessThan(20);
-    expect(Math.max(...times.slice(1))).toBeLessThan(Math.max(1500, 3 * Math.min(...times)));
   });
 
   test('cancellation mid-search: rejects cancelled quickly and terminates the worker', async ({ page }) => {
