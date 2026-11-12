@@ -4,7 +4,7 @@ Branch `experiment/preact`. Local only; nothing pushed or deployed. Baseline = c
 
 ## Recommendation: KEEP (conditional on the owner accepting the points under "Risks")
 
-Decision rule: (1) saving meaningful: yes, first-load UI JS per tool page falls 63 % (-60 KB gzip). (2) ALL checks pass without weakening any rule: yes (counts below); the privacy/HTML allow-list got narrower, not wider. (3) No material compatibility or maintainability regression found: source change is 8 one-line edits (`e.target` -> `e.currentTarget`) plus config; no behaviour difference was found by 6 new framework-neutral e2e tests (they also pass on React). Residual risks are ecosystem/docs related and listed below.
+Decision rule: (1) saving meaningful: yes, first-load UI JS per tool page falls 63 % (-60 KB gzip). (2) ALL checks pass without weakening any rule: yes (counts below); the privacy/HTML allow-list got narrower, not wider. (3) No material compatibility or maintainability regression found: source change is 11 one-line edits (`e.target` -> `e.currentTarget`) plus config; no behaviour difference was found by 6 new framework-neutral e2e tests (they also pass on React). Residual risks are ecosystem/docs related and listed below.
 
 ## What changed
 - `package.json`: removed `@astrojs/react`, `react`, `react-dom`, `@types/react`, `@types/react-dom`; added `@astrojs/preact@^6.1.5`, `preact@^11.2.0` (npm `latest`). Nothing else needs React.
