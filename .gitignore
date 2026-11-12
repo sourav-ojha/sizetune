@@ -1,0 +1,7 @@
+node_modules
+dist
+.astro
+.wrangler
+test-results
+playwright-report
+docs/evidence-cloudflare-docs-2026-11-12/

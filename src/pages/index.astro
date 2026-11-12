@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import ImageCompressor from '../components/ImageCompressor.tsx';
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'SizeTune image resizer',
+  url: 'https://sizetune.com/',
+  applicationCategory: 'MultimediaApplication',
+  operatingSystem: 'Any (web browser)',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
+---
+<Base pageType="home" title="Resize Image to KB Online – Free | SizeTune"
+      description="Reduce a photo to your size limit in KB, right in your browser. SizeTune's code does not upload your image to any server."
+      path="/" jsonLd={jsonLd}>
+  <h1 class="text-3xl font-bold mb-3">Resize an image to a target size in KB</h1>
+  <p class="mb-6">Pick a photo, type the size limit your form asks for (for example 50 KB), and download the result. It all runs inside your browser, so SizeTune never uploads your photo.</p>
+  <ImageCompressor client:load defaultTargetKb={50} />
+  <noscript>
+    <p class="mt-4 rounded border border-amber-400 bg-amber-50 p-3">This tool needs JavaScript to process images in your browser. Please turn JavaScript on and reload.</p>
+  </noscript>
+  <section class="mt-10 space-y-3">
+    <h2 class="text-2xl font-semibold">How it works</h2>
+    <p>SizeTune re-encodes your image as a JPEG and searches for the highest quality that still fits your size limit. If quality alone is not enough, it also scales the image down in small steps.</p>
+    <p>Need to know what size a form expects? Read the <a class="underline" href="/guides/photo-size-for-online-forms/">photo size guide for online forms</a>.</p>
+  </section>
+</Base>

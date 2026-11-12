@@ -1,0 +1,23 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+export async function getStaticPaths() {
+  const guides = await getCollection('guides');
+  return guides.map((g) => ({ params: { slug: g.id }, props: { g } }));
+}
+const { g } = Astro.props;
+const { Content } = await render(g);
+const path = `/guides/${g.id}/`;
+const jsonLd = {
+  '@context': 'https://schema.org', '@type': 'Article',
+  headline: g.data.title, description: g.data.description,
+  dateModified: g.data.updated.toISOString().slice(0, 10),
+  mainEntityOfPage: new URL(path, Astro.site).href,
+};
+---
+<Base pageType="guide" title={`${g.data.title} | SizeTune`} description={g.data.description} path={path} jsonLd={jsonLd}>
+  <article class="prose-sm space-y-3 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:mt-6 [&_a]:underline [&_ol]:list-decimal [&_ol]:pl-6">
+    <h1 class="text-3xl font-bold">{g.data.title}</h1>
+    <Content />
+  </article>
+</Base>

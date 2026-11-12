@@ -1,0 +1,48 @@
+---
+import '../styles/global.css';
+interface Props {
+  title: string;
+  description: string;
+  /** Path starting with "/" and ending with "/" – canonical is built from astro.config `site`. */
+  path: string;
+  jsonLd?: Record<string, unknown>;
+  noindex?: boolean;
+  /** Drives build gates (scripts/verify-html.mjs): home | tool | guide | policy | error */
+  pageType: 'home' | 'tool' | 'guide' | 'policy' | 'error';
+}
+const { title, description, path, jsonLd, noindex = false, pageType } = Astro.props;
+const canonical = new URL(path, Astro.site).href;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="SizeTune" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
+  </head>
+  <body data-page-type={pageType} class="mx-auto max-w-3xl px-4 py-6 text-slate-900">
+    <header class="mb-8 flex items-center justify-between">
+      <a href="/" class="text-xl font-bold">SizeTune</a>
+      <nav aria-label="Main" class="space-x-4 text-sm">
+        <a href="/">Resize to KB</a>
+        <a href="/guides/photo-size-for-online-forms/">Guides</a>
+        <a href="/privacy/">Privacy</a>
+      </nav>
+    </header>
+    <main><slot /></main>
+    <footer class="mt-12 border-t pt-4 text-sm text-slate-600">
+      <a href="/privacy/">Privacy</a> · <a href="/guides/photo-size-for-online-forms/">Photo size guide</a>
+    </footer>
+  </body>
+</html>

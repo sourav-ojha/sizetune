@@ -1,0 +1,16 @@
+{
+  // Static-only Worker: no "main", no bindings. Cloudflare serves ./dist as static assets (free, unlimited requests).
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "sizetune",
+  "compatibility_date": "2026-11-12",
+  // HUMAN-GATED: nothing is deployed or attached until a person connects the repo / runs a deploy.
+  // Custom domain (apex). With `routes` present, workers.dev defaults to off; stated explicitly for clarity.
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "sizetune.com", "custom_domain": true }],
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}

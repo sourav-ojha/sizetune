@@ -1,0 +1,26 @@
+# Quality gate. Inactive until the repo is pushed to GitHub (human step).
+# Pair with a branch ruleset on `main` requiring PR + this check ("verify"), no bypass, BEFORE connecting Cloudflare Workers Builds
+# (Workers Builds deploys every push to the production branch regardless of this workflow).
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-24.04   # Chrome preinstalled (Playwright channel: 'chrome'); pinned so image migration is deliberate
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: npm }
+      - run: npm ci
+      - run: CI=1 npm run verify
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with: { name: playwright-results, path: test-results/ }
