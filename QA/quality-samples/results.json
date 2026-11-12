@@ -1,0 +1,1579 @@
+{
+ "date": "2026-11-12T09:26:34.734Z",
+ "chrome": "157.0.8103.52",
+ "outsideRequestsBlocked": [],
+ "inputs": {
+  "photo-landscape": "Real photo: macOS \"Sonoma Horizon\" wallpaper (vineyard + conifers + fog), 3840x2160",
+  "photo-detailed": "Real photo crop of the same wallpaper: dense conifer foliage, 1600x1200 (high-frequency detail)",
+  "smooth-gradient": "macOS \"Sonoma\" wallpaper (smooth vector gradients, banding stress), 3000x3000",
+  "synthetic-doc-scan": "SYNTHETIC document scan, 1240x1754: bar-shaped printed text, blue handwriting-like strokes, paper grain, slight skew",
+  "synthetic-passport": "SYNTHETIC passport-style portrait stand-in (cartoon face on gradient + noise), 630x810. NOT a real face.",
+  "signature-1200x400": "Fixture: pen strokes on paper, 1200x400 PNG",
+  "signature-140x60": "Fixture: pen strokes on paper, 140x60 PNG",
+  "transparent": "Fixture: 800x600 RGBA (transparent quadrant, 50% white disc, 24% blue strip)",
+  "noise-256": "Fixture: 256x256 incompressible noise PNG"
+ },
+ "cases": [
+  {
+   "n": 1,
+   "id": "max20kb-land",
+   "input": "photo-landscape",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 20
+   },
+   "what": "max 20 KB, JPEG, quality-first",
+   "input_label": "Real photo: macOS \"Sonoma Horizon\" wallpaper (vineyard + conifers + fog), 3840x2160",
+   "ok": true,
+   "wall": 348,
+   "status": "ok",
+   "bytes": 19451,
+   "mime": "image/jpeg",
+   "width": 586,
+   "height": 329,
+   "quality": 60,
+   "attempts": 5,
+   "elapsedMs": 339,
+   "mode": "worker",
+   "notes": [],
+   "message": "19.0 KB – under the 20 KB limit. Quality 60%, 586×329 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 20000
+   },
+   "source": {
+    "bytes": 2149340,
+    "width": 3840,
+    "height": 2160,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.9209795485670532,
+   "view": [
+    640,
+    360
+   ],
+   "file": "01-max20kb-land.jpg"
+  },
+  {
+   "n": 2,
+   "id": "max50kb-land",
+   "input": "photo-landscape",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 50
+   },
+   "what": "max 50 KB, JPEG, quality-first",
+   "input_label": "Real photo: macOS \"Sonoma Horizon\" wallpaper (vineyard + conifers + fog), 3840x2160",
+   "ok": true,
+   "wall": 314,
+   "status": "ok",
+   "bytes": 49274,
+   "mime": "image/jpeg",
+   "width": 980,
+   "height": 551,
+   "quality": 60,
+   "attempts": 4,
+   "elapsedMs": 306,
+   "mode": "worker",
+   "notes": [],
+   "message": "48.1 KB – under the 50 KB limit. Quality 60%, 980×551 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 50000
+   },
+   "source": {
+    "bytes": 2149340,
+    "width": 3840,
+    "height": 2160,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.966573974472355,
+   "view": [
+    640,
+    360
+   ],
+   "file": "02-max50kb-land.jpg"
+  },
+  {
+   "n": 3,
+   "id": "max100kb-land",
+   "input": "photo-landscape",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 100
+   },
+   "what": "max 100 KB, JPEG, quality-first",
+   "input_label": "Real photo: macOS \"Sonoma Horizon\" wallpaper (vineyard + conifers + fog), 3840x2160",
+   "ok": true,
+   "wall": 309,
+   "status": "ok",
+   "bytes": 96695,
+   "mime": "image/jpeg",
+   "width": 1387,
+   "height": 780,
+   "quality": 60,
+   "attempts": 5,
+   "elapsedMs": 300,
+   "mode": "worker",
+   "notes": [],
+   "message": "94.4 KB – under the 100 KB limit. Quality 60%, 1387×780 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 100000
+   },
+   "source": {
+    "bytes": 2149340,
+    "width": 3840,
+    "height": 2160,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.9789836378027957,
+   "view": [
+    640,
+    360
+   ],
+   "file": "03-max100kb-land.jpg"
+  },
+  {
+   "n": 4,
+   "id": "max200kb-land",
+   "input": "photo-landscape",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 200
+   },
+   "what": "max 200 KB, JPEG, quality-first",
+   "input_label": "Real photo: macOS \"Sonoma Horizon\" wallpaper (vineyard + conifers + fog), 3840x2160",
+   "ok": true,
+   "wall": 323,
+   "status": "ok",
+   "bytes": 197876,
+   "mime": "image/jpeg",
+   "width": 2033,
+   "height": 1143,
+   "quality": 60,
+   "attempts": 4,
+   "elapsedMs": 314,
+   "mode": "worker",
+   "notes": [],
+   "message": "193.2 KB – under the 200 KB limit. Quality 60%, 2033×1143 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 200000
+   },
+   "source": {
+    "bytes": 2149340,
+    "width": 3840,
+    "height": 2160,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.9844631433629905,
+   "view": [
+    640,
+    360
+   ],
+   "file": "04-max200kb-land.jpg"
+  },
+  {
+   "n": 5,
+   "id": "max20kb-land-dimsfirst",
+   "input": "photo-landscape",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "dimensions-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 20
+   },
+   "what": "max 20 KB, JPEG, dimensions-first",
+   "input_label": "Real photo: macOS \"Sonoma Horizon\" wallpaper (vineyard + conifers + fog), 3840x2160",
+   "ok": true,
+   "wall": 165,
+   "status": "ok",
+   "bytes": 19652,
+   "mime": "image/jpeg",
+   "width": 414,
+   "height": 233,
+   "quality": 85,
+   "attempts": 3,
+   "elapsedMs": 157,
+   "mode": "worker",
+   "notes": [],
+   "message": "19.2 KB – under the 20 KB limit. Quality 85%, 414×233 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 20000
+   },
+   "source": {
+    "bytes": 2149340,
+    "width": 3840,
+    "height": 2160,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.9025395643101647,
+   "view": [
+    640,
+    360
+   ],
+   "file": "05-max20kb-land-dimsfirst.jpg"
+  },
+  {
+   "n": 6,
+   "id": "range20-50kb-land",
+   "input": "photo-landscape",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "minKb": 20,
+    "maxKb": 50
+   },
+   "what": "range 20-50 KB, JPEG",
+   "input_label": "Real photo: macOS \"Sonoma Horizon\" wallpaper (vineyard + conifers + fog), 3840x2160",
+   "ok": true,
+   "wall": 307,
+   "status": "ok",
+   "bytes": 49274,
+   "mime": "image/jpeg",
+   "width": 980,
+   "height": 551,
+   "quality": 60,
+   "attempts": 4,
+   "elapsedMs": 299,
+   "mode": "worker",
+   "notes": [],
+   "message": "48.1 KB – within 20–50 KB. Quality 60%, 980×551 px.",
+   "window": {
+    "minBytes": 20480,
+    "maxBytes": 50000
+   },
+   "source": {
+    "bytes": 2149340,
+    "width": 3840,
+    "height": 2160,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.966573974472355,
+   "view": [
+    640,
+    360
+   ],
+   "file": "06-range20-50kb-land.jpg"
+  },
+  {
+   "n": 7,
+   "id": "max20kb-detail",
+   "input": "photo-detailed",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 20
+   },
+   "what": "max 20 KB, JPEG, quality-first",
+   "input_label": "Real photo crop of the same wallpaper: dense conifer foliage, 1600x1200 (high-frequency detail)",
+   "ok": true,
+   "wall": 313,
+   "status": "ok",
+   "bytes": 19398,
+   "mime": "image/jpeg",
+   "width": 587,
+   "height": 330,
+   "quality": 60,
+   "attempts": 5,
+   "elapsedMs": 303,
+   "mode": "worker",
+   "notes": [],
+   "message": "18.9 KB – under the 20 KB limit. Quality 60%, 587×330 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 20000
+   },
+   "source": {
+    "bytes": 2047835,
+    "width": 3840,
+    "height": 2160,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.9225021867796473,
+   "view": [
+    640,
+    360
+   ],
+   "file": "07-max20kb-detail.jpg"
+  },
+  {
+   "n": 8,
+   "id": "max50kb-detail",
+   "input": "photo-detailed",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 50
+   },
+   "what": "max 50 KB, JPEG, quality-first",
+   "input_label": "Real photo crop of the same wallpaper: dense conifer foliage, 1600x1200 (high-frequency detail)",
+   "ok": true,
+   "wall": 298,
+   "status": "ok",
+   "bytes": 49591,
+   "mime": "image/jpeg",
+   "width": 983,
+   "height": 553,
+   "quality": 60,
+   "attempts": 4,
+   "elapsedMs": 288,
+   "mode": "worker",
+   "notes": [],
+   "message": "48.4 KB – under the 50 KB limit. Quality 60%, 983×553 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 50000
+   },
+   "source": {
+    "bytes": 2047835,
+    "width": 3840,
+    "height": 2160,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.9666628460186943,
+   "view": [
+    640,
+    360
+   ],
+   "file": "08-max50kb-detail.jpg"
+  },
+  {
+   "n": 9,
+   "id": "max100kb-detail",
+   "input": "photo-detailed",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 100
+   },
+   "what": "max 100 KB, JPEG, quality-first",
+   "input_label": "Real photo crop of the same wallpaper: dense conifer foliage, 1600x1200 (high-frequency detail)",
+   "ok": true,
+   "wall": 332,
+   "status": "ok",
+   "bytes": 96857,
+   "mime": "image/jpeg",
+   "width": 1390,
+   "height": 782,
+   "quality": 60,
+   "attempts": 5,
+   "elapsedMs": 323,
+   "mode": "worker",
+   "notes": [],
+   "message": "94.6 KB – under the 100 KB limit. Quality 60%, 1390×782 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 100000
+   },
+   "source": {
+    "bytes": 2047835,
+    "width": 3840,
+    "height": 2160,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.9792343844324207,
+   "view": [
+    640,
+    360
+   ],
+   "file": "09-max100kb-detail.jpg"
+  },
+  {
+   "n": 10,
+   "id": "max200kb-detail",
+   "input": "photo-detailed",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 200
+   },
+   "what": "max 200 KB, JPEG, quality-first",
+   "input_label": "Real photo crop of the same wallpaper: dense conifer foliage, 1600x1200 (high-frequency detail)",
+   "ok": true,
+   "wall": 309,
+   "status": "ok",
+   "bytes": 198507,
+   "mime": "image/jpeg",
+   "width": 2038,
+   "height": 1147,
+   "quality": 60,
+   "attempts": 4,
+   "elapsedMs": 299,
+   "mode": "worker",
+   "notes": [],
+   "message": "193.9 KB – under the 200 KB limit. Quality 60%, 2038×1147 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 200000
+   },
+   "source": {
+    "bytes": 2047835,
+    "width": 3840,
+    "height": 2160,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.9848483259977128,
+   "view": [
+    640,
+    360
+   ],
+   "file": "10-max200kb-detail.jpg"
+  },
+  {
+   "n": 11,
+   "id": "max20kb-detail-dimsfirst",
+   "input": "photo-detailed",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "dimensions-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 20
+   },
+   "what": "max 20 KB, JPEG, dimensions-first",
+   "input_label": "Real photo crop of the same wallpaper: dense conifer foliage, 1600x1200 (high-frequency detail)",
+   "ok": true,
+   "wall": 157,
+   "status": "ok",
+   "bytes": 19384,
+   "mime": "image/jpeg",
+   "width": 413,
+   "height": 232,
+   "quality": 85,
+   "attempts": 3,
+   "elapsedMs": 148,
+   "mode": "worker",
+   "notes": [],
+   "message": "18.9 KB – under the 20 KB limit. Quality 85%, 413×232 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 20000
+   },
+   "source": {
+    "bytes": 2047835,
+    "width": 3840,
+    "height": 2160,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.9022787398246382,
+   "view": [
+    640,
+    360
+   ],
+   "file": "11-max20kb-detail-dimsfirst.jpg"
+  },
+  {
+   "n": 12,
+   "id": "range20-50kb-detail",
+   "input": "photo-detailed",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "minKb": 20,
+    "maxKb": 50
+   },
+   "what": "range 20-50 KB, JPEG",
+   "input_label": "Real photo crop of the same wallpaper: dense conifer foliage, 1600x1200 (high-frequency detail)",
+   "ok": true,
+   "wall": 294,
+   "status": "ok",
+   "bytes": 49591,
+   "mime": "image/jpeg",
+   "width": 983,
+   "height": 553,
+   "quality": 60,
+   "attempts": 4,
+   "elapsedMs": 286,
+   "mode": "worker",
+   "notes": [],
+   "message": "48.4 KB – within 20–50 KB. Quality 60%, 983×553 px.",
+   "window": {
+    "minBytes": 20480,
+    "maxBytes": 50000
+   },
+   "source": {
+    "bytes": 2047835,
+    "width": 3840,
+    "height": 2160,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.9666628460186943,
+   "view": [
+    640,
+    360
+   ],
+   "file": "12-range20-50kb-detail.jpg"
+  },
+  {
+   "n": 13,
+   "id": "fmt-jpeg-50kb-land",
+   "input": "photo-landscape",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 50
+   },
+   "what": "max 50 KB, JPEG (WebP comparison)",
+   "input_label": "Real photo: macOS \"Sonoma Horizon\" wallpaper (vineyard + conifers + fog), 3840x2160",
+   "ok": true,
+   "wall": 297,
+   "status": "ok",
+   "bytes": 49274,
+   "mime": "image/jpeg",
+   "width": 980,
+   "height": 551,
+   "quality": 60,
+   "attempts": 4,
+   "elapsedMs": 288,
+   "mode": "worker",
+   "notes": [],
+   "message": "48.1 KB – under the 50 KB limit. Quality 60%, 980×551 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 50000
+   },
+   "source": {
+    "bytes": 2149340,
+    "width": 3840,
+    "height": 2160,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.966573974472355,
+   "view": [
+    640,
+    360
+   ],
+   "file": "13-fmt-jpeg-50kb-land.jpg"
+  },
+  {
+   "n": 14,
+   "id": "fmt-webp-50kb-land",
+   "input": "photo-landscape",
+   "opts": {
+    "format": "webp",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 50
+   },
+   "what": "max 50 KB, WebP (WebP comparison)",
+   "input_label": "Real photo: macOS \"Sonoma Horizon\" wallpaper (vineyard + conifers + fog), 3840x2160",
+   "ok": true,
+   "wall": 2602,
+   "status": "ok",
+   "bytes": 48458,
+   "mime": "image/webp",
+   "width": 1140,
+   "height": 641,
+   "quality": 60,
+   "attempts": 5,
+   "elapsedMs": 2593,
+   "mode": "worker",
+   "notes": [],
+   "message": "47.3 KB – under the 50 KB limit. Quality 60%, 1140×641 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 50000
+   },
+   "source": {
+    "bytes": 2149340,
+    "width": 3840,
+    "height": 2160,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.9565493240772361,
+   "view": [
+    640,
+    360
+   ],
+   "file": "14-fmt-webp-50kb-land.webp"
+  },
+  {
+   "n": 15,
+   "id": "fmt-jpeg-50kb-detail",
+   "input": "photo-detailed",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 50
+   },
+   "what": "max 50 KB, JPEG (WebP comparison)",
+   "input_label": "Real photo crop of the same wallpaper: dense conifer foliage, 1600x1200 (high-frequency detail)",
+   "ok": true,
+   "wall": 309,
+   "status": "ok",
+   "bytes": 49591,
+   "mime": "image/jpeg",
+   "width": 983,
+   "height": 553,
+   "quality": 60,
+   "attempts": 4,
+   "elapsedMs": 299,
+   "mode": "worker",
+   "notes": [],
+   "message": "48.4 KB – under the 50 KB limit. Quality 60%, 983×553 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 50000
+   },
+   "source": {
+    "bytes": 2047835,
+    "width": 3840,
+    "height": 2160,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.9666628460186943,
+   "view": [
+    640,
+    360
+   ],
+   "file": "15-fmt-jpeg-50kb-detail.jpg"
+  },
+  {
+   "n": 16,
+   "id": "fmt-webp-50kb-detail",
+   "input": "photo-detailed",
+   "opts": {
+    "format": "webp",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 50
+   },
+   "what": "max 50 KB, WebP (WebP comparison)",
+   "input_label": "Real photo crop of the same wallpaper: dense conifer foliage, 1600x1200 (high-frequency detail)",
+   "ok": true,
+   "wall": 2598,
+   "status": "ok",
+   "bytes": 47938,
+   "mime": "image/webp",
+   "width": 1138,
+   "height": 640,
+   "quality": 60,
+   "attempts": 5,
+   "elapsedMs": 2589,
+   "mode": "worker",
+   "notes": [],
+   "message": "46.8 KB – under the 50 KB limit. Quality 60%, 1138×640 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 50000
+   },
+   "source": {
+    "bytes": 2047835,
+    "width": 3840,
+    "height": 2160,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.9572501799262071,
+   "view": [
+    640,
+    360
+   ],
+   "file": "16-fmt-webp-50kb-detail.webp"
+  },
+  {
+   "n": 17,
+   "id": "max50kb-smooth-banding",
+   "input": "smooth-gradient",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 50
+   },
+   "what": "max 50 KB, JPEG, smooth gradient (banding check)",
+   "input_label": "macOS \"Sonoma\" wallpaper (smooth vector gradients, banding stress), 3000x3000",
+   "ok": true,
+   "wall": 388,
+   "status": "ok",
+   "bytes": 49582,
+   "mime": "image/jpeg",
+   "width": 1632,
+   "height": 1632,
+   "quality": 60,
+   "attempts": 6,
+   "elapsedMs": 379,
+   "mode": "worker",
+   "notes": [],
+   "message": "48.4 KB – under the 50 KB limit. Quality 60%, 1632×1632 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 50000
+   },
+   "source": {
+    "bytes": 758518,
+    "width": 3000,
+    "height": 3000,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.99265310731339,
+   "view": [
+    640,
+    640
+   ],
+   "file": "17-max50kb-smooth-banding.jpg"
+  },
+  {
+   "n": 18,
+   "id": "max20kb-smooth-banding",
+   "input": "smooth-gradient",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 20
+   },
+   "what": "max 20 KB, JPEG, smooth gradient (banding check)",
+   "input_label": "macOS \"Sonoma\" wallpaper (smooth vector gradients, banding stress), 3000x3000",
+   "ok": true,
+   "wall": 314,
+   "status": "ok",
+   "bytes": 19980,
+   "mime": "image/jpeg",
+   "width": 779,
+   "height": 779,
+   "quality": 60,
+   "attempts": 7,
+   "elapsedMs": 305,
+   "mode": "worker",
+   "notes": [],
+   "message": "19.5 KB – under the 20 KB limit. Quality 60%, 779×779 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 20000
+   },
+   "source": {
+    "bytes": 758518,
+    "width": 3000,
+    "height": 3000,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.9900319372115899,
+   "view": [
+    640,
+    640
+   ],
+   "file": "18-max20kb-smooth-banding.jpg"
+  },
+  {
+   "n": 19,
+   "id": "png-alpha-keep-png-30kb",
+   "input": "transparent",
+   "opts": {
+    "format": "png",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "keep",
+    "maxKb": 30
+   },
+   "what": "PNG with transparency, keep alpha (PNG out), max 30 KB",
+   "input_label": "Fixture: 800x600 RGBA (transparent quadrant, 50% white disc, 24% blue strip)",
+   "ok": true,
+   "wall": 24,
+   "status": "ok",
+   "bytes": 16244,
+   "mime": "image/png",
+   "width": 800,
+   "height": 600,
+   "quality": null,
+   "attempts": 1,
+   "elapsedMs": 16,
+   "mode": "worker",
+   "notes": [],
+   "message": "15.9 KB – under the 30 KB limit. PNG (lossless), 800×600 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 30000
+   },
+   "source": {
+    "bytes": 27626,
+    "width": 800,
+    "height": 600,
+    "mime": "image/png",
+    "hasAlpha": true,
+    "orientationApplied": true
+   },
+   "originalFits": true,
+   "ssim": 1,
+   "view": [
+    640,
+    480
+   ],
+   "file": "19-png-alpha-keep-png-30kb.png"
+  },
+  {
+   "n": 20,
+   "id": "png-alpha-keep-webp-30kb",
+   "input": "transparent",
+   "opts": {
+    "format": "webp",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "keep",
+    "maxKb": 30
+   },
+   "what": "PNG with transparency, keep alpha (WebP out), max 30 KB",
+   "input_label": "Fixture: 800x600 RGBA (transparent quadrant, 50% white disc, 24% blue strip)",
+   "ok": true,
+   "wall": 45,
+   "status": "ok",
+   "bytes": 12118,
+   "mime": "image/webp",
+   "width": 800,
+   "height": 600,
+   "quality": 95,
+   "attempts": 1,
+   "elapsedMs": 44,
+   "mode": "worker",
+   "notes": [],
+   "message": "11.8 KB – under the 30 KB limit. Quality 95%, 800×600 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 30000
+   },
+   "source": {
+    "bytes": 27626,
+    "width": 800,
+    "height": 600,
+    "mime": "image/png",
+    "hasAlpha": true,
+    "orientationApplied": true
+   },
+   "originalFits": true,
+   "ssim": 0.998599365211223,
+   "view": [
+    640,
+    480
+   ],
+   "file": "20-png-alpha-keep-webp-30kb.webp"
+  },
+  {
+   "n": 21,
+   "id": "png-alpha-jpeg-white-30kb",
+   "input": "transparent",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 30
+   },
+   "what": "PNG with transparency, JPEG, fill white, max 30 KB",
+   "input_label": "Fixture: 800x600 RGBA (transparent quadrant, 50% white disc, 24% blue strip)",
+   "ok": true,
+   "wall": 13,
+   "status": "ok",
+   "bytes": 28840,
+   "mime": "image/jpeg",
+   "width": 800,
+   "height": 600,
+   "quality": 95,
+   "attempts": 1,
+   "elapsedMs": 13,
+   "mode": "worker",
+   "notes": [
+    "Transparent areas were filled with white."
+   ],
+   "message": "28.2 KB – under the 30 KB limit. Quality 95%, 800×600 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 30000
+   },
+   "source": {
+    "bytes": 27626,
+    "width": 800,
+    "height": 600,
+    "mime": "image/png",
+    "hasAlpha": true,
+    "orientationApplied": true
+   },
+   "originalFits": true,
+   "ssim": 0.9987607414294873,
+   "view": [
+    640,
+    480
+   ],
+   "file": "21-png-alpha-jpeg-white-30kb.jpg"
+  },
+  {
+   "n": 22,
+   "id": "signature-1200x400-max20kb",
+   "input": "signature-1200x400",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 20
+   },
+   "what": "signature scan, max 20 KB, JPEG",
+   "input_label": "Fixture: pen strokes on paper, 1200x400 PNG",
+   "ok": true,
+   "wall": 31,
+   "status": "ok",
+   "bytes": 18971,
+   "mime": "image/jpeg",
+   "width": 1044,
+   "height": 348,
+   "quality": 60,
+   "attempts": 4,
+   "elapsedMs": 31,
+   "mode": "worker",
+   "notes": [],
+   "message": "18.5 KB – under the 20 KB limit. Quality 60%, 1044×348 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 20000
+   },
+   "source": {
+    "bytes": 9813,
+    "width": 1200,
+    "height": 400,
+    "mime": "image/png",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": true,
+   "ssim": 0.9932780628218513,
+   "view": [
+    640,
+    213
+   ],
+   "file": "22-signature-1200x400-max20kb.jpg"
+  },
+  {
+   "n": 23,
+   "id": "signature-1200x400-max20kb-png",
+   "input": "signature-1200x400",
+   "opts": {
+    "format": "png",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 20
+   },
+   "what": "signature scan, max 20 KB, PNG",
+   "input_label": "Fixture: pen strokes on paper, 1200x400 PNG",
+   "ok": true,
+   "wall": 24,
+   "status": "ok",
+   "bytes": 19881,
+   "mime": "image/png",
+   "width": 489,
+   "height": 163,
+   "quality": null,
+   "attempts": 5,
+   "elapsedMs": 24,
+   "mode": "worker",
+   "notes": [],
+   "message": "19.4 KB – under the 20 KB limit. PNG (lossless), 489×163 px. PNG is lossless, so the size was reached by reducing the pixel dimensions only.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 20000
+   },
+   "source": {
+    "bytes": 9813,
+    "width": 1200,
+    "height": 400,
+    "mime": "image/png",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": true,
+   "ssim": 0.9854156858596235,
+   "view": [
+    640,
+    213
+   ],
+   "file": "23-signature-1200x400-max20kb-png.png"
+  },
+  {
+   "n": 24,
+   "id": "signature-1200x400-10to20kb",
+   "input": "signature-1200x400",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "minKb": 10,
+    "maxKb": 20
+   },
+   "what": "signature scan, range 10-20 KB, JPEG",
+   "input_label": "Fixture: pen strokes on paper, 1200x400 PNG",
+   "ok": true,
+   "wall": 21,
+   "status": "ok",
+   "bytes": 18971,
+   "mime": "image/jpeg",
+   "width": 1044,
+   "height": 348,
+   "quality": 60,
+   "attempts": 4,
+   "elapsedMs": 21,
+   "mode": "worker",
+   "notes": [],
+   "message": "18.5 KB – within 10–20 KB. Quality 60%, 1044×348 px.",
+   "window": {
+    "minBytes": 10240,
+    "maxBytes": 20000
+   },
+   "source": {
+    "bytes": 9813,
+    "width": 1200,
+    "height": 400,
+    "mime": "image/png",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.9932780628218513,
+   "view": [
+    640,
+    213
+   ],
+   "file": "24-signature-1200x400-10to20kb.jpg"
+  },
+  {
+   "n": 25,
+   "id": "signature-140x60-min10kb",
+   "input": "signature-140x60",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "minKb": 10,
+    "maxKb": 20
+   },
+   "what": "tiny signature 140x60, min 10 KB (max 20 KB), JPEG",
+   "input_label": "Fixture: pen strokes on paper, 140x60 PNG",
+   "ok": true,
+   "wall": 9,
+   "status": "below_min",
+   "bytes": 8862,
+   "mime": "image/jpeg",
+   "width": 140,
+   "height": 60,
+   "quality": 100,
+   "attempts": 2,
+   "elapsedMs": 9,
+   "mode": "worker",
+   "notes": [],
+   "message": "At 140×60 px this image is at most 8.7 KB (8,862 bytes) even at maximum quality, so the 10 KB minimum (10,240 bytes) cannot be met at these dimensions. Use a larger original image, or allow enlarging the image.",
+   "window": {
+    "minBytes": 10240,
+    "maxBytes": 20000
+   },
+   "source": {
+    "bytes": 679,
+    "width": 140,
+    "height": 60,
+    "mime": "image/png",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.9997569031333412,
+   "view": [
+    640,
+    274
+   ],
+   "file": "25-signature-140x60-min10kb.jpg"
+  },
+  {
+   "n": 26,
+   "id": "signature-140x60-min10kb-enlarge",
+   "input": "signature-140x60",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "minKb": 10,
+    "maxKb": 20,
+    "allowEnlarge": true
+   },
+   "what": "tiny signature 140x60, min 10 KB (max 20 KB), JPEG, allowEnlarge",
+   "input_label": "Fixture: pen strokes on paper, 140x60 PNG",
+   "ok": true,
+   "wall": 23,
+   "status": "raised",
+   "bytes": 10721,
+   "mime": "image/jpeg",
+   "width": 170,
+   "height": 73,
+   "quality": 100,
+   "attempts": 4,
+   "elapsedMs": 23,
+   "mode": "worker",
+   "notes": [],
+   "message": "Your minimum is 10 KB. We enlarged the image to 170×73 px to reach 10.5 KB. Enlarging adds pixels, not detail.",
+   "window": {
+    "minBytes": 10240,
+    "maxBytes": 20000
+   },
+   "source": {
+    "bytes": 679,
+    "width": 140,
+    "height": 60,
+    "mime": "image/png",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.9801498651799435,
+   "view": [
+    640,
+    274
+   ],
+   "file": "26-signature-140x60-min10kb-enlarge.jpg"
+  },
+  {
+   "n": 27,
+   "id": "doc-scan-max100kb",
+   "input": "synthetic-doc-scan",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 100
+   },
+   "what": "synthetic document scan, max 100 KB, JPEG",
+   "input_label": "SYNTHETIC document scan, 1240x1754: bar-shaped printed text, blue handwriting-like strokes, paper grain, slight skew",
+   "ok": true,
+   "wall": 114,
+   "status": "ok",
+   "bytes": 97250,
+   "mime": "image/jpeg",
+   "width": 756,
+   "height": 1069,
+   "quality": 60,
+   "attempts": 4,
+   "elapsedMs": 113,
+   "mode": "worker",
+   "notes": [],
+   "message": "95.0 KB – under the 100 KB limit. Quality 60%, 756×1069 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 100000
+   },
+   "source": {
+    "bytes": 694909,
+    "width": 1240,
+    "height": 1754,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.9751488434854053,
+   "view": [
+    452,
+    640
+   ],
+   "file": "27-doc-scan-max100kb.jpg"
+  },
+  {
+   "n": 28,
+   "id": "doc-scan-max50kb",
+   "input": "synthetic-doc-scan",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 50
+   },
+   "what": "synthetic document scan, max 50 KB, JPEG",
+   "input_label": "SYNTHETIC document scan, 1240x1754: bar-shaped printed text, blue handwriting-like strokes, paper grain, slight skew",
+   "ok": true,
+   "wall": 110,
+   "status": "ok",
+   "bytes": 49971,
+   "mime": "image/jpeg",
+   "width": 490,
+   "height": 693,
+   "quality": 60,
+   "attempts": 5,
+   "elapsedMs": 109,
+   "mode": "worker",
+   "notes": [],
+   "message": "48.8 KB – under the 50 KB limit. Quality 60%, 490×693 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 50000
+   },
+   "source": {
+    "bytes": 694909,
+    "width": 1240,
+    "height": 1754,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.965514089652342,
+   "view": [
+    452,
+    640
+   ],
+   "file": "28-doc-scan-max50kb.jpg"
+  },
+  {
+   "n": 29,
+   "id": "doc-scan-max20kb",
+   "input": "synthetic-doc-scan",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 20
+   },
+   "what": "synthetic document scan, max 20 KB, JPEG",
+   "input_label": "SYNTHETIC document scan, 1240x1754: bar-shaped printed text, blue handwriting-like strokes, paper grain, slight skew",
+   "ok": true,
+   "wall": 109,
+   "status": "ok",
+   "bytes": 19644,
+   "mime": "image/jpeg",
+   "width": 268,
+   "height": 379,
+   "quality": 60,
+   "attempts": 6,
+   "elapsedMs": 109,
+   "mode": "worker",
+   "notes": [],
+   "message": "19.2 KB – under the 20 KB limit. Quality 60%, 268×379 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 20000
+   },
+   "source": {
+    "bytes": 694909,
+    "width": 1240,
+    "height": 1754,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.9176293207572637,
+   "view": [
+    452,
+    640
+   ],
+   "file": "29-doc-scan-max20kb.jpg"
+  },
+  {
+   "n": 30,
+   "id": "passport-max50kb",
+   "input": "synthetic-passport",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 50
+   },
+   "what": "synthetic passport-style portrait, max 50 KB, JPEG",
+   "input_label": "SYNTHETIC passport-style portrait stand-in (cartoon face on gradient + noise), 630x810. NOT a real face.",
+   "ok": true,
+   "wall": 60,
+   "status": "ok",
+   "bytes": 49596,
+   "mime": "image/jpeg",
+   "width": 630,
+   "height": 810,
+   "quality": 75,
+   "attempts": 8,
+   "elapsedMs": 60,
+   "mode": "worker",
+   "notes": [],
+   "message": "48.4 KB – under the 50 KB limit. Quality 75%, 630×810 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 50000
+   },
+   "source": {
+    "bytes": 139644,
+    "width": 630,
+    "height": 810,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.9102258697677982,
+   "view": [
+    498,
+    640
+   ],
+   "file": "30-passport-max50kb.jpg"
+  },
+  {
+   "n": 31,
+   "id": "passport-max20kb",
+   "input": "synthetic-passport",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 20
+   },
+   "what": "synthetic passport-style portrait, max 20 KB, JPEG",
+   "input_label": "SYNTHETIC passport-style portrait stand-in (cartoon face on gradient + noise), 630x810. NOT a real face.",
+   "ok": true,
+   "wall": 51,
+   "status": "ok",
+   "bytes": 19071,
+   "mime": "image/jpeg",
+   "width": 630,
+   "height": 810,
+   "quality": 43,
+   "attempts": 7,
+   "elapsedMs": 50,
+   "mode": "worker",
+   "notes": [],
+   "message": "18.6 KB – under the 20 KB limit. Quality 43%, 630×810 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 20000
+   },
+   "source": {
+    "bytes": 139644,
+    "width": 630,
+    "height": 810,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.8644043797144958,
+   "view": [
+    498,
+    640
+   ],
+   "file": "31-passport-max20kb.jpg"
+  },
+  {
+   "n": 32,
+   "id": "impossible-1kb-photo",
+   "input": "photo-landscape",
+   "opts": {
+    "format": "jpeg",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 1
+   },
+   "what": "impossible: max 1 KB, JPEG",
+   "input_label": "Real photo: macOS \"Sonoma Horizon\" wallpaper (vineyard + conifers + fog), 3840x2160",
+   "ok": true,
+   "wall": 365,
+   "status": "ok",
+   "bytes": 977,
+   "mime": "image/jpeg",
+   "width": 114,
+   "height": 64,
+   "quality": 9,
+   "attempts": 12,
+   "elapsedMs": 363,
+   "mode": "worker",
+   "notes": [
+    "Quality had to go down to 9% to fit, so the image may look blocky."
+   ],
+   "message": "977 bytes – under the 1 KB limit. Quality 9%, 114×64 px.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 1000
+   },
+   "source": {
+    "bytes": 2149340,
+    "width": 3840,
+    "height": 2160,
+    "mime": "image/jpeg",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.6234962042707239,
+   "view": [
+    640,
+    360
+   ],
+   "file": "32-impossible-1kb-photo.jpg"
+  },
+  {
+   "n": 33,
+   "id": "impossible-1kb-noise",
+   "input": "noise-256",
+   "opts": {
+    "format": "png",
+    "strategy": "quality-first",
+    "lockAspect": true,
+    "fit": "contain",
+    "background": "white",
+    "maxKb": 1
+   },
+   "what": "impossible: max 1 KB on incompressible noise, PNG",
+   "input_label": "Fixture: 256x256 incompressible noise PNG",
+   "ok": true,
+   "wall": 26,
+   "status": "above_max",
+   "bytes": 12561,
+   "mime": "image/png",
+   "width": 64,
+   "height": 64,
+   "quality": null,
+   "attempts": 2,
+   "elapsedMs": 17,
+   "mode": "worker",
+   "notes": [],
+   "message": "Cannot go below 12.3 KB (12,561 bytes) for this image (smallest result: 64×64 px), which is above your 1 KB limit (1,000 bytes). Increase the limit or use a simpler image.",
+   "window": {
+    "minBytes": null,
+    "maxBytes": 1000
+   },
+   "source": {
+    "bytes": 197301,
+    "width": 256,
+    "height": 256,
+    "mime": "image/png",
+    "hasAlpha": false,
+    "orientationApplied": true
+   },
+   "originalFits": false,
+   "ssim": 0.10267204079340424,
+   "view": [
+    640,
+    640
+   ],
+   "file": "33-impossible-1kb-noise.png"
+  }
+ ]
+}
