@@ -1,5 +1,5 @@
 # SizeTune (foundation — not published)
-Astro 7 static + React island + Tailwind + MDX. Read `ARCHITECTURE_DECISION_RECORD.md` first.
+Astro 7 static + Preact (compat) island + Tailwind + MDX. Read `ARCHITECTURE_DECISION_RECORD.md` first.
 ```
 nvm use            # 24.12.0
 npm ci

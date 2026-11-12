@@ -178,14 +178,14 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
                   className={`${inputCls} mt-1`}
                   value={draft[f] ?? (crop ? String(crop[f]) : '')}
                   disabled={!crop}
-                  onChange={(e) => editField(f, e.target.value)}
+                  onChange={(e) => editField(f, e.currentTarget.value)}
                   onBlur={() => setDraft((d) => { const { [f]: _gone, ...rest } = d; return rest; })}
                 />
               </div>
             ))}
           </div>
           <label className="flex min-h-11 items-center gap-2 text-sm text-slate-900">
-            <input type="checkbox" data-testid="lock-crop" className="size-5 accent-indigo-800" checked={lockCrop} onChange={(e) => setLockCrop(e.target.checked)} />
+            <input type="checkbox" data-testid="lock-crop" className="size-5 accent-indigo-800" checked={lockCrop} onChange={(e) => setLockCrop(e.currentTarget.checked)} />
             <span>Keep the crop box’s shape when resizing it</span>
           </label>
           <div className="flex flex-col gap-2 sm:flex-row">

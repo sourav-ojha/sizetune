@@ -1,6 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import react from '@astrojs/react';
+import preact from '@astrojs/preact';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
@@ -12,7 +12,7 @@ export default defineConfig({
   trailingSlash: 'always',
   build: { format: 'directory' },
   markdown: { syntaxHighlight: false }, // Shiki emits inline styles that break CSP; no code samples needed yet
-  integrations: [react(), mdx(), sitemap()],
+  integrations: [preact({ compat: true }), mdx(), sitemap()],
   // Built-in CSP (static output => <meta http-equiv> per page with computed script/style hashes). Tool pages load NO third-party origins.
   // frame-ancestors can't be set via meta: see public/_headers. Ads policy: docs/reviews/security-privacy-review.md (ad-free tool routes).
   security: {
