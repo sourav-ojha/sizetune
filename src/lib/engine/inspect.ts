@@ -61,6 +61,8 @@ function jpegGps(b: Uint8Array): boolean {
     if (b[i] !== 0xff) { if (++extraneous > JPEG_EXTRANEOUS_MAX) return false; i++; continue; }
     const m = b[i + 1];
     if (m === 0xff) { i++; continue; }
+    if (m === 0x00) { extraneous += 2; if (extraneous > JPEG_EXTRANEOUS_MAX) return false; i += 2; continue; } // libjpeg: FF00 is junk
+    if (m >= 0x02 && m <= 0xbf) return false;
     if (m === 0xda || m === 0xd9) return false;
     const len = (b[i + 2] << 8) | b[i + 3];
     if (len < 2) return false;

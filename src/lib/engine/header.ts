@@ -79,6 +79,9 @@ function parseJpeg(b: Uint8Array, truncated: Trunc): HeaderParse {
     }
     const m = b[i + 1];
     if (m === 0xff) { i++; continue; } // fill byte
+    // libjpeg next_marker(): "FF 00" is not a marker but 2 junk bytes; keep looking (same stray budget).
+    if (m === 0x00) { extraneous += 2; if (extraneous > JPEG_EXTRANEOUS_MAX) return corrupt('too many extraneous bytes'); i += 2; continue; }
+    if (m >= 0x02 && m <= 0xbf) return corrupt('unknown marker'); // reserved: libjpeg stops with JERR_UNKNOWN_MARKER
     if (m === 0x01 || (m >= 0xd0 && m <= 0xd7)) { i += 2; continue; } // standalone markers
     if (m === 0xd8) return corrupt('nested SOI');
     if (m === 0xd9) return corrupt('EOI before frame header');

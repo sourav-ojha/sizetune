@@ -46,6 +46,8 @@ async function jpegFirstSos(r: Reader): Promise<number> {
     if (r.at(i) !== 0xff) { if (++extraneous > JPEG_EXTRANEOUS_MAX) return -1; i++; continue; } // libjpeg-style stray bytes
     const m = r.at(i + 1);
     if (m === 0xff) { i++; continue; }
+    if (m === 0x00) { extraneous += 2; if (extraneous > JPEG_EXTRANEOUS_MAX) return -1; i += 2; continue; } // libjpeg: FF00 is junk
+    if (m >= 0x02 && m <= 0xbf) return -1; // reserved marker: not a JPEG we accept
     if (m === 0x01 || (m >= 0xd0 && m <= 0xd7)) { i += 2; continue; }
     if (m === 0xda) return i;
     if (m === 0xd8 || m === 0xd9) return -1;

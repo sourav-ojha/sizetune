@@ -304,6 +304,20 @@ test.describe('robustness: browser ignores createImageBitmap resize options (rev
 
 test.describe('second audit: A4 inspect completeness, A5 extraneous bytes, A2 alpha', () => {
   test.beforeEach(async ({ page, context }) => { await openHarness(page, context); });
+  test('N1: FF00 + COM hiding a fake 1×1 frame header: we report the real frame (as Chrome decodes it)', async ({ page }) => {
+    const r = await page.evaluate(async () => {
+      const w = window as unknown as { E: { inspectFile: (f: Blob) => Promise<{ width: number; height: number }> }; fixture: (n: string) => Promise<File>; run: (f: File, o: unknown) => Promise<{ ok: boolean; width: number; height: number; source: { width: number } }> };
+      const real = new Uint8Array(await (await w.fixture('photo-200x230.jpg')).arrayBuffer());
+      const fakeSof = [0xff, 0xc0, 0, 17, 8, 0, 1, 0, 1, 3, 1, 0x11, 0, 2, 0x11, 0, 3, 0x11, 0];
+      const com = [0xff, 0xfe, 0, 4 + fakeSof.length, 0x20, 0x20, ...fakeSof];
+      const f = new File([new Uint8Array([0xff, 0xd8, 0xff, 0x00, 0x00, 0x08, ...com, ...real.slice(2)])], 'crafted.jpg');
+      const bm = await createImageBitmap(f); const chrome = [bm.width, bm.height]; bm.close();
+      const ins = await w.E.inspectFile(f);
+      const out = await w.run(f, { format: 'jpeg', strategy: 'quality-first', lockAspect: true, fit: 'contain', background: 'white' });
+      return { chrome, inspect: [ins.width, ins.height], run: [out.ok, out.source.width, out.width, out.height] };
+    });
+    expect(r).toEqual({ chrome: [200, 230], inspect: [200, 230], run: [true, 200, 200, 230] });
+  });
   test('A5: JPEG with 4 stray zero bytes between segments decodes in Chrome and is accepted', async ({ page }) => {
     const r = await run(page, 'jpeg-extraneous-bytes.jpg', { ...BASE, maxKb: 30 });
     expect(r).toMatchObject({ ok: true, status: 'ok', width: 200, height: 230 });
