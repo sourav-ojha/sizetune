@@ -1,7 +1,72 @@
 ---
 import Base from '../layouts/Base.astro';
+import { proseClass } from './_seo';
 ---
-<Base pageType="policy" title="Privacy | SizeTune" description="SizeTune processes images inside your browser; its code does not upload your photos to any server. Read what the site does and does not collect." path="/privacy/">
-  <h1 class="text-3xl font-bold mb-3">Privacy</h1>
-  <p>Images you select are processed locally in your browser; SizeTune's code does not upload them to our servers (this page and the tool load no ads, analytics or third-party scripts; a full policy will be published before any change to that). <a class="underline" href="/">Back to the resizer</a>.</p>
+<Base pageType="policy" title="Privacy policy | SizeTune" description="What SizeTune does and does not collect: images stay in your browser, there are no accounts, ads or analytics, and the host handles ordinary request data." path="/privacy/">
+  <h1 class="mb-3 text-3xl font-bold">Privacy policy</h1>
+  <div class={proseClass}>
+    <p>Last updated 12 November 2026. [[HUMAN: legal review pending. Have a lawyer review this policy before launch, then replace this marker with the review date or remove it.]]</p>
+
+    <h2>The short version</h2>
+    <p>
+      You choose an image, your browser resizes it, and you download the result. SizeTune has no accounts, no ads and no
+      analytics scripts at the time of writing. The code of this site does not upload your images.
+    </p>
+
+    <h2>Who is responsible</h2>
+    <p>
+      The site is run by [[HUMAN: owner name or pseudonym that should be shown as the person or business responsible for this site]].
+      Questions about privacy can be sent to [[HUMAN: contact email address for privacy questions and requests]]. More about the
+      site is on the <a href="/about/">about page</a>.
+    </p>
+
+    <h2>Your images</h2>
+    <p>
+      When you pick or drop a file, it is read by code running inside your own browser. The resizing, cropping and
+      re-encoding happen on your device. SizeTune's code does not send the image, or any part of it, to a server, and we
+      keep no copy. When you close the tab, the working data is released by your browser.
+    </p>
+    <p>
+      Some things sit outside the site's control. A browser extension may be able to read pages you open, your device may
+      back up files you download, and the file you save goes wherever your browser's download settings put it. Re-saving
+      a picture generally drops its camera metadata such as location, but you should check the result if that matters to
+      you.
+    </p>
+
+    <h2>What the host receives</h2>
+    <p>
+      The website is delivered by Cloudflare. Like any web host, it receives the ordinary details of each request:
+      your IP address, the page address, your browser's user agent, the time and the approximate country. Cloudflare may
+      keep such records under its own policies. Our code adds nothing to that, and the requests do not include your
+      images.
+    </p>
+
+    <h2>Cookies and storage</h2>
+    <p>
+      The code of this site sets no cookies and does not write to your browser's local storage. Your browser may keep
+      ordinary cached copies of the site's files so that pages load faster, which is normal behaviour and not tracking.
+    </p>
+
+    <h2>Analytics, advertising and search statistics</h2>
+    <p>
+      SizeTune currently runs no analytics and shows no advertising. The owner uses Google Search Console to see how the
+      site appears in Google Search. That service works from Google's own data and does not need any script on these
+      pages. If analytics or advertising are ever added, this page will be updated before they go live, with the
+      vendors, cookies and your choices described.
+    </p>
+
+    <h2>Your rights and contact</h2>
+    <p>
+      Because we hold no images, accounts or profiles, there is very little personal data for us to access, correct or
+      delete. If you believe we hold something about you, or you have a concern about this policy, write to the
+      contact address above. Where the law gives you rights over your data, you can also contact your local data
+      protection authority.
+    </p>
+
+    <h2>Changes</h2>
+    <p>
+      We will change this page when the site's behaviour changes and update the date at the top. The terms of use are
+      on the <a href="/terms/">terms page</a>, and you can try the tool on the <a href="/">home page</a>.
+    </p>
+  </div>
 </Base>

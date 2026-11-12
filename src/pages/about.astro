@@ -1,0 +1,41 @@
+---
+import Base from '../layouts/Base.astro';
+import { proseClass } from './_seo';
+---
+<Base pageType="policy" title="About the SizeTune image resizer | SizeTune" description="SizeTune is a free browser tool that resizes photos and signatures to a size in KB. Read why it exists, how it works, its limits, and who runs it." path="/about/">
+  <h1 class="mb-3 text-3xl font-bold">About SizeTune</h1>
+  <div class={proseClass}>
+    <h2>What it is</h2>
+    <p>
+      SizeTune is a small, free website that reduces an image to fit a file size limit. It was made for the common
+      moment when a form rejects a photo or signature because it is a few KB too large. It is independent and is not
+      connected to any government body, exam board, employer or application portal.
+    </p>
+
+    <h2>How it works</h2>
+    <p>
+      The tool runs in your browser. It searches for the best balance of picture quality and pixel dimensions that
+      keeps the file under your limit, and it reports honestly when a limit cannot be met. The
+      <a href="/privacy/">privacy page</a> explains what that means for your images, and the
+      <a href="/guides/photo-size-for-online-forms/">photo size guide</a> explains the ideas behind it.
+    </p>
+
+    <h2>What we try to do, and what we do not claim</h2>
+    <p>
+      We write guidance from how the tool actually behaves and say so when a statement depends on your device or
+      browser. We do not promise a particular result, we do not publish rules for specific forms because those change,
+      and we ask you to follow the instructions on your own form. Pages show the date they were last updated.
+    </p>
+
+    <h2>Who runs it</h2>
+    <p>
+      SizeTune is run by [[HUMAN: owner name or pseudonym to show publicly, plus one sentence on who they are]].
+      You can contact us at [[HUMAN: public contact email address]]. Please include the page address and your browser
+      and device if you are reporting a problem. We read corrections to the guides and fix what we can verify.
+    </p>
+    <p>
+      The terms for using the site are on the <a href="/terms/">terms page</a>. To try the tool, go to the
+      <a href="/">home page</a>.
+    </p>
+  </div>
+</Base>

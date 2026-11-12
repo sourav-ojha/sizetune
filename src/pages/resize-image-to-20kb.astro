@@ -1,0 +1,159 @@
+---
+import Base from '../layouts/Base.astro';
+import ImageTool from '../components/ImageTool.tsx';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Resize Image to 20 KB Online | SizeTune';
+const description =
+  'Get a photo under 20 KB in your browser with the least quality loss. Learn how KB is counted, what to do if the image is too complex, and how to check the file.';
+const jsonLd = webApplicationLd('SizeTune: resize image to 20 KB', '/resize-image-to-20kb/', description);
+---
+<Base pageType="tool" title={title} description={description} path="/resize-image-to-20kb/" jsonLd={jsonLd}>
+  <h1 class="mb-3 text-3xl font-bold">Resize an image to 20 KB</h1>
+  <p class="mb-6">
+    The tool below starts with a 20 KB maximum already selected. Add your picture, check the result and download it.
+    You can change the limit, or add a minimum, if your form says something different.
+  </p>
+
+  <ImageTool client:load defaultMaxKb={20} />
+  <noscript>
+    <p class="mt-4 rounded border border-amber-400 bg-amber-50 p-3">
+      This tool shrinks images inside your browser, so it will not run while JavaScript is turned off. Enable JavaScript
+      and reload to use it. The advice on this page about reaching 20 KB still applies if you prefer to use another
+      editor.
+    </p>
+  </noscript>
+
+  <div class={`mt-10 ${proseClass}`}>
+    <h2>When a form asks for 20 KB or less</h2>
+    <p>
+      A limit of 20 KB turns up in application portals, document upload boxes and older web systems that store files
+      cheaply. It is a very small number. A typical phone photo is around 3 MB, which is about 3,000 KB, so a 20 KB
+      limit asks for a file less than one percent of that size. Reaching it always costs something in pixels or detail,
+      and the goal is to spend that cost where the eye notices it least.
+    </p>
+    <p>
+      We do not list which organisations ask for 20 KB, because those rules change and differ between forms. Read the
+      instructions on your own form for the exact limit, the accepted file types and any pixel size it mentions.
+    </p>
+
+    <h2>How the size is counted</h2>
+    <p>
+      The word kilobyte has two meanings in daily use. In the decimal system 20 KB is 20,000 bytes. In the binary
+      system it is 20,480 bytes. Windows file properties follow the binary habit, while macOS Finder shows the decimal
+      one, so the same file can look slightly different on two computers. A portal may use either.
+    </p>
+    <p>
+      To be safe under both, SizeTune aims for a file below 20,000 bytes. That is why you may see a result such as 19.4
+      KB and not 19.99 KB: the small gap is the safety margin and not a mistake. If you set a minimum as well, the
+      tool aims above the larger reading of that number.
+    </p>
+
+    <h2>Reaching 20 KB with the least visible loss</h2>
+    <ol>
+      <li>
+        <strong>Use the original picture.</strong> A copy that was forwarded through a chat app or taken as a
+        screenshot has already been compressed once, and compressing it again compounds the damage.
+      </li>
+      <li>
+        <strong>Remove what you do not need.</strong> If only your face and shoulders matter, crop the picture in your
+        phone's editor before you bring it here. Fewer pixels means fewer bytes to spend.
+      </li>
+      <li>
+        <strong>Pick the mode that matches your form.</strong> If the form fixes a pixel width and height, use
+        quality-first and type those numbers. If it only sets a size in KB, try dimensions-first and let the picture
+        become smaller.
+      </li>
+      <li>
+        <strong>Keep JPEG for photographs.</strong> PNG stores every pixel exactly, which is wasteful for a camera
+        photo at this limit. Use PNG only if your form insists on it.
+      </li>
+      <li>
+        <strong>Look at the preview at full size.</strong> Check the eyes, the text on any badge and the edges of the
+        face. If they look blotchy, try a plainer crop or a slightly smaller picture with higher quality.
+      </li>
+    </ol>
+    <p>
+      As a rough idea, a 20 KB photograph usually ends up a few hundred pixels across. In our own testing with one
+      landscape sample, a width of about 600 pixels at medium quality landed close to 20 KB. Your picture will behave
+      differently, so treat that as a feel for the scale and not as a promise.
+    </p>
+
+    <h2>If the image is too complex or too simple</h2>
+    <p>
+      Busy backgrounds, foliage, patterned clothing and the grain of a dim indoor shot all cost bytes. When a picture
+      like that refuses to fit, the most effective change is not a lower quality setting but a plainer scene: a
+      wall or sheet behind you, daylight from a window and a steady phone. The compression has far less to describe.
+    </p>
+    <p>
+      A very simple image has the opposite problem. A flat logo or a scan on white paper may already be only a few KB.
+      That is fine when you have only a maximum. It becomes a problem if the form also has a minimum.
+    </p>
+
+    <h2>When there is a minimum size as well</h2>
+    <p>
+      Some portals ask for a file between two numbers, for instance 10 to 20 KB. Enter both in the range fields. When a
+      result is too small, the tool can raise the JPEG quality, which stores more detail and therefore more bytes. That
+      works until the quality is at its top setting, and for a small, plain image the file may still be under your
+      minimum.
+    </p>
+    <p>
+      When that happens the tool reports it. SizeTune does not pad a file with meaningless filler to fake size, because
+      such padding disappears the moment a portal saves the image again. Better options are a sharper or larger original,
+      more pixels if your form allows them, or confirming whether the portal really enforces the minimum. The
+      <a href="/resize-signature/">signature page</a> goes deeper into why small images fall short.
+    </p>
+
+    <h2>Check the file before you upload</h2>
+    <ul>
+      <li>Read the output size shown in the tool, and look at its width and height.</li>
+      <li>After downloading, open the file's properties on your phone or computer to confirm the size yourself.</li>
+      <li>Make sure the file name ends in the extension your form accepts, such as .jpg.</li>
+      <li>Do not send it through a messaging app or edit it again before uploading, because that can change the size.</li>
+      <li>After the upload, look at the preview the portal shows. If it is blurry there, go back and try another setting.</li>
+    </ul>
+    <p>
+      A fuller walk-through of pixels, kilobytes and formats is in the
+      <a href="/guides/photo-size-for-online-forms/">photo size guide</a>.
+    </p>
+
+    <h2>Common mistakes at this size</h2>
+    <ul>
+      <li>Renaming a PNG to .jpg. The extension changes, but the contents and size do not.</li>
+      <li>Running the same picture through several tools. Each lossy pass removes detail you cannot get back.</li>
+      <li>Mixing up KB and MB. A form that says 20 KB is not asking for 20 MB.</li>
+      <li>Confusing file size with picture size. A picture can be 4 cm wide and 3 MB, or 40 cm wide and 15 KB.</li>
+      <li>Expecting exactly 20.00 KB. The goal is a file that fits, not one that matches the number to the byte.</li>
+    </ul>
+
+    <h2>Frequently asked questions about 20 KB images</h2>
+    <h3>Why is my result smaller than 20 KB?</h3>
+    <p>
+      The tool leaves a margin so the file passes under both ways of counting a kilobyte. It also stops at the highest
+      quality that fits, and the sizes between two quality steps are not always evenly spaced.
+    </p>
+    <h3>Can I avoid a blurry result?</h3>
+    <p>
+      Not completely, because 20 KB is a hard budget. You can reduce the damage with a plain background, a tight crop
+      and the dimensions-first option, which trades pixels for cleaner detail.
+    </p>
+    <h3>My form wants 20 KB to 50 KB. What do I enter?</h3>
+    <p>
+      Set 20 as the minimum and 50 as the maximum. The tool will look for a result inside that window and say so if it
+      cannot find one.
+    </p>
+    <h3>Which pixel size should I type?</h3>
+    <p>
+      Only the one your form states. If it states none, leave the dimensions alone and let the tool decide, then check
+      the output size shown.
+    </p>
+    <h3>Is "kB" different from "KB"?</h3>
+    <p>
+      For forms, no. Both are used loosely for a thousand or so bytes, and the safest course is to land below 20,000
+      bytes, as described above.
+    </p>
+    <p>
+      For how this tool treats your files, see the <a href="/privacy/">privacy page</a>. For the general version of this
+      tool with other presets, go back to the <a href="/">SizeTune home page</a>.
+    </p>
+  </div>
+</Base>

@@ -1,19 +1,84 @@
 ---
-title: "Photo size for online forms: what KB limits mean"
-description: "Why application forms limit photos to KB sizes, how to hit the limit without ruining quality, and what to check before uploading."
+title: "Photo Size for Online Forms: KB, Pixels, Formats"
+description: "What a photo size limit in KB means, how pixels and file formats affect it, how to check size on any device, and how to shrink a photo with less quality loss."
 updated: 2026-11-12
 ---
 
-Many online forms limit uploaded photos to a size in kilobytes (KB). This guide explains what that number means and how to meet it.
+Upload forms often say something short such as "photo, JPEG, maximum 50 KB". That one line hides three separate ideas: how many pixels the picture has, how many bytes the file takes up, and which format stores it. People who mix these up end up with rejected uploads and blurry pictures. This guide separates them, explains why phone photos and screenshots are so large, and shows how to meet a limit with as little loss as possible.
 
-## What "KB" means for a photo
+*Published and last updated 12 November 2026 by SizeTune.*
 
-File size depends on pixel dimensions and on compression. A phone photo is often 2,000–5,000 KB; a form may ask for 20–200 KB.
+## Three different "sizes"
 
-## How to reach the limit
+When someone says a photo is "too big", they might mean any of the following.
 
-1. Start from the original image, not a screenshot of it.
-2. Lower the JPEG quality first; reduce dimensions only if needed.
-3. Check the final size before uploading.
+- **Dimensions** are the width and height in pixels, such as 1200 by 1600. They describe how much detail the picture can hold.
+- **File size** is how many bytes the file occupies on disk, such as 48 KB or 3.2 MB. This is what a "KB limit" measures.
+- **Print size** is a physical measure such as 3.5 by 4.5 cm. It is the pixel count divided by a resolution value (dots per inch) that is stored as a label inside the file. Changing that label does not change the pixels or the file size.
 
-You can do this in the [SizeTune image resizer](/), which runs in your browser.
+Dimensions and file size are related, because more pixels usually need more bytes, but they are not the same number. A 4000 by 3000 pixel picture of a plain white wall can be smaller in bytes than a 600 by 400 picture of a crowded market. If a form gives only a file size, you are free to change the pixels. If it gives pixels as well, you have to satisfy both.
+
+## What "KB" and "MB" mean
+
+A byte is the unit of storage, a kilobyte (KB) is about a thousand of them, and a megabyte (MB) is about a thousand kilobytes. "About" matters here. In the decimal convention 1 KB is 1,000 bytes. In the binary convention it is 1,024 bytes, and the difference grows with size: 50 KB is 50,000 bytes in one system and 51,200 in the other. Windows file properties follow the binary habit and macOS Finder follows the decimal one, so the same file can show two different numbers on two computers.
+
+The practical rule is to land a little under the limit. A file of 49.0 KB by one count is still below 50 KB by the other. SizeTune aims below the smaller reading of your maximum for exactly this reason. Also remember that 1 MB equals roughly 1,000 KB, so a 2 MB phone photo is about forty times larger than a 50 KB limit.
+
+## JPEG, PNG and WebP
+
+The format decides how the pixels are stored, and it has a large effect on size.
+
+**JPEG** is built for photographs. It is lossy: it throws away fine detail that the eye is least likely to miss, and a quality setting controls how much. Lower quality gives a smaller file and more visible blockiness around edges and in smooth skies or skin. JPEG cannot store transparency, so a see-through area is filled with a solid colour, usually white. It is accepted almost everywhere, which is why most form limits assume it.
+
+**PNG** is lossless. Every pixel comes back exactly as it went in. That is ideal for logos, line drawings and screenshots with flat colour, and poor for photographs, where PNG files can be many times larger than the same picture as a JPEG. PNG has no quality slider to turn down, so the only way to shrink one is to reduce the pixels or reduce the number of colours.
+
+**WebP** can work in either mode and often makes smaller files than JPEG at similar looks. It is not universally accepted by upload forms, and not every browser can create it. Use it only if the form lists it. Changing a file's extension does not convert it: renaming a PNG to .jpg gives you a PNG with a misleading name, which some portals reject.
+
+Some phones also save photos as HEIC. HEIC is efficient but many websites cannot read it. On iPhones the camera setting for the most compatible format saves JPEG instead, and exporting or converting a copy before you upload is another route.
+
+## Why phone photos and screenshots are so big
+
+A recent phone camera records 12 million pixels or more. Even after JPEG compression at high quality, a picture like that is typically a few megabytes, because the phone is optimised to keep detail, not to fit a form.
+
+Screenshots are large for a different reason. They are usually saved as PNG, which does not discard anything, and modern screens have a very high pixel count. A screenshot of a page full of small text and gradients can be larger than a photo of the same screen. If a screenshot is all you have, converting it to JPEG and reducing its dimensions will make a big difference. If you can, go back to the original file instead, because a screenshot of a photo has already lost detail before you start.
+
+Pictures that have passed through a chat app are a third case. Many messaging apps recompress images, so the copy you receive is smaller than the original but also more damaged. Compressing it again lowers quality a second time.
+
+## How to check a file's size
+
+- **iPhone or iPad:** In the Files app, press and hold the file and choose Get Info. In recent versions of Photos, opening the information panel for a picture also shows its size.
+- **Android:** In the Files app, open the file's details or information screen from the menu. Gallery apps often show size in their info panel.
+- **Windows:** Right-click the file, choose Properties and read Size. Do not read "Size on disk", which counts storage blocks and is larger.
+- **Mac:** Select the file in Finder and press Command and I to open Get Info.
+
+Check the size of the file you actually intend to upload, not the original. Also look at the pixel dimensions in the same panel when your form mentions them.
+
+## Reducing a photo with the least loss
+
+Order matters. A sensible sequence is:
+
+1. **Start from the original.** Every lossy save removes detail, so avoid working on a copy of a copy.
+2. **Crop to what is needed.** A tighter frame means fewer pixels without making the subject any smaller.
+3. **Reduce the dimensions if the form allows it.** Pixel count is the largest single lever. A picture with a quarter of the pixels takes roughly a quarter of the space, before compression.
+4. **Then lower the quality.** Move the JPEG quality down in small steps, and stop at the highest setting that fits.
+5. **Compare on screen.** Look at the face or the text at full size. If it is blotchy, go back to step 3 and use fewer pixels with a higher quality instead.
+
+Smoother pictures compress better. A plain background, even light and a steady camera reduce the amount of detail the encoder has to store, and this often helps more than turning the quality down further.
+
+## What a tool can and cannot do
+
+A resizer can search for the right combination of pixels and quality, and it can show you the result. It cannot make a very detailed picture fit a tiny limit without a visible cost, and it cannot make a tiny, simple picture reach a large minimum. Both ends exist. When a form asks for a file between, say, 20 and 50 KB, a very small and plain image may fall short of the 20 even at maximum quality. The honest fixes are a larger source image, more pixels if allowed, or checking whether the minimum is really enforced. Padding a file with empty data to reach a minimum does not add any picture information, and it vanishes whenever the portal re-saves the image.
+
+Nobody can promise that a result will be accepted. Portals have their own checks, and sizes in their instructions change. Always compare the final size, pixels and format against the wording on your own form, and follow that wording rather than anything you read elsewhere, including here.
+
+## Privacy when the work happens in your browser
+
+Some online resizers send your picture to a server, process it there and send it back. SizeTune is built differently: the processing is done by code running in your own browser, on your own device, and SizeTune's code does not upload the picture. That matters for photos of your face, identity documents and signatures.
+
+Local processing is not the same as total invisibility. Loading any web page sends a request to the host, which sees ordinary technical details such as your IP address. Browser extensions can read pages you open, and a phone's backup service may copy files you save. Re-encoding a picture also usually drops its camera metadata, such as location tags, but you should still check the result if that matters to you. The [privacy page](/privacy/) lists what SizeTune does and does not collect.
+
+## Putting it together
+
+Read the form's instructions, note the maximum, any minimum and any pixel size, and then work from your original photo. Crop, reduce pixels if allowed, and let quality fall only as far as needed. Check the number before you upload.
+
+When you are ready, use the [SizeTune image resizer](/) for any limit, the [20 KB page](/resize-image-to-20kb/) when the limit is that small, or the [signature page](/resize-signature/) for a signature. To learn who runs the site and how to reach them, see the [about page](/about/).

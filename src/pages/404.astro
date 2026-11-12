@@ -1,7 +1,16 @@
 ---
 import Base from '../layouts/Base.astro';
+import { proseClass } from './_seo';
 ---
-<Base pageType="error" title="Page not found | SizeTune" description="This page does not exist. Go back to the SizeTune image resizer to reduce a photo to a size in KB." path="/404/" noindex>
-  <h1 class="text-3xl font-bold mb-3">Page not found</h1>
-  <p><a class="underline" href="/">Go to the image resizer</a></p>
+<Base pageType="error" title="Page not found | SizeTune" description="This page does not exist. Go back to the SizeTune image resizer to reduce a photo or signature to a size in KB." path="/404/" noindex>
+  <h1 class="mb-3 text-3xl font-bold">Page not found</h1>
+  <div class={proseClass}>
+    <p>The page you are looking for is not here, or the address has a typo. These pages may help:</p>
+    <ul>
+      <li><a href="/">Resize an image to a size in KB</a></li>
+      <li><a href="/resize-image-to-20kb/">Resize an image to 20 KB</a></li>
+      <li><a href="/resize-signature/">Resize a signature image</a></li>
+      <li><a href="/guides/photo-size-for-online-forms/">Photo size for online forms</a></li>
+    </ul>
+  </div>
 </Base>

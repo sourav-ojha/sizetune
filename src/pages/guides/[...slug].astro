@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import { publisherLd } from '../_seo';
 export async function getStaticPaths() {
   const guides = await getCollection('guides');
   return guides.map((g) => ({ params: { slug: g.id }, props: { g } }));
@@ -8,15 +9,24 @@ export async function getStaticPaths() {
 const { g } = Astro.props;
 const { Content } = await render(g);
 const path = `/guides/${g.id}/`;
+// First-publication dates per guide (the content schema only carries `updated`).
+const published: Record<string, string> = { 'photo-size-for-online-forms': '2026-11-12' };
+const modified = g.data.updated.toISOString().slice(0, 10);
 const jsonLd = {
-  '@context': 'https://schema.org', '@type': 'Article',
-  headline: g.data.title, description: g.data.description,
-  dateModified: g.data.updated.toISOString().slice(0, 10),
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: g.data.title,
+  description: g.data.description,
+  datePublished: published[g.id] ?? modified,
+  dateModified: modified,
   mainEntityOfPage: new URL(path, Astro.site).href,
+  author: publisherLd,
+  publisher: publisherLd,
+  inLanguage: 'en',
 };
 ---
-<Base pageType="guide" title={`${g.data.title} | SizeTune`} description={g.data.description} path={path} jsonLd={jsonLd}>
-  <article class="prose-sm space-y-3 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:mt-6 [&_a]:underline [&_ol]:list-decimal [&_ol]:pl-6">
+<Base pageType="guide" ogType="article" title={`${g.data.title} | SizeTune`} description={g.data.description} path={path} jsonLd={jsonLd}>
+  <article class="space-y-4 leading-relaxed [&_h2]:mt-8 [&_h2]:text-2xl [&_h2]:font-semibold [&_a]:underline [&_ol]:list-decimal [&_ol]:space-y-1 [&_ol]:pl-6 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 [&_em]:text-slate-600">
     <h1 class="text-3xl font-bold">{g.data.title}</h1>
     <Content />
   </article>

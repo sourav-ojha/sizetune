@@ -1,0 +1,147 @@
+---
+import Base from '../layouts/Base.astro';
+import SignatureTool from '../components/SignatureTool.tsx';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Resize Signature Image for Online Forms | SizeTune';
+const description =
+  'Crop and resize a photo or scan of your signature to a size in KB in your browser. Capture tips, size guidance and why a tiny signature can miss a minimum.';
+const jsonLd = webApplicationLd('SizeTune: resize signature', '/resize-signature/', description);
+---
+<Base pageType="tool" title={title} description={description} path="/resize-signature/" jsonLd={jsonLd}>
+  <h1 class="mb-3 text-3xl font-bold">Resize a signature image</h1>
+  <p class="mb-6">
+    Add a photo or scan of your signature, crop it close, and reduce it to the file size your form asks for. The
+    maximum starts at 20 KB, and you can change it or add a minimum.
+  </p>
+
+  <SignatureTool client:load defaultMaxKb={20} />
+  <noscript>
+    <p class="mt-4 rounded border border-amber-400 bg-amber-50 p-3">
+      The signature tool crops and compresses your image inside your browser, so it needs JavaScript. Turn it on and
+      reload to continue. The guidance on this page about capturing a clean signature and choosing sizes works without
+      it.
+    </p>
+  </noscript>
+
+  <div class={`mt-10 ${proseClass}`}>
+    <h2>Capture a clean signature first</h2>
+    <p>
+      The quality of the final file depends mostly on the starting picture. A clean source also compresses into fewer
+      bytes, which matters when the limit is tight. A few habits help:
+    </p>
+    <ul>
+      <li>Use plain white paper without lines, folds or printed text near the signature.</li>
+      <li>Sign with a dark pen that makes a solid line, such as a black or dark blue gel or felt-tip pen. Pencil and pale ink fade out.</li>
+      <li>Sign a little larger than usual and leave a margin of empty paper all around it.</li>
+      <li>Photograph it in daylight, with the paper flat and your phone held directly above it so the page is not at an angle.</li>
+      <li>Keep your own hand and phone from casting a shadow across the paper.</li>
+      <li>Sign several times and use the best one rather than trying to repair a poor one afterwards.</li>
+    </ul>
+    <p>Use only your own signature, and only on forms where you are the person signing.</p>
+
+    <h2>Crop and position</h2>
+    <p>
+      Use the crop and positioning controls to cut away the empty paper so the signature fills most of the frame, with a
+      small, even border. A tight crop means fewer pixels spent on blank paper and a larger signature at any given
+      output size. Make sure no stroke touches the edge, since a cut-off flourish looks like a different signature.
+    </p>
+    <p>
+      If the paper looks grey or yellow in the photo, retaking it in better light usually works better than heavy
+      contrast editing. Strong contrast filters can turn thin strokes into jagged steps, and they add detail that has
+      to be stored, which pushes the file size up.
+    </p>
+
+    <h2>Size and dimension guidance</h2>
+    <p>
+      Forms describe signature size in different ways: as a file size in KB, as pixels such as a width and height, or in
+      centimetres. We do not publish a standard because there is none, and portals change their rules. Follow the exact
+      words on your form.
+    </p>
+    <ul>
+      <li>
+        <strong>File size in KB</strong> is the number the tool works to. Set the maximum, and the minimum if the form
+        gives one.
+      </li>
+      <li>
+        <strong>Pixels</strong> are set with the width and height fields. Turn on the aspect lock unless the form needs a
+        ratio that differs from your crop, in which case crop to that shape first.
+      </li>
+      <li>
+        <strong>Centimetres</strong> depend on print resolution, which an upload check usually cannot see. When a form
+        gives centimetres and also gives pixels or KB, work from the pixels or KB.
+      </li>
+    </ul>
+    <p>
+      Signatures are normally wide and short, so expect a wide rectangle. If the form fixes the pixel size, choose the
+      quality-first option, because it keeps the dimensions you typed and lowers only the compression.
+    </p>
+
+    <h2>Why a tiny signature may not reach a minimum</h2>
+    <p>
+      Compression can make a file smaller, but it cannot invent detail to make a file larger. A signature that is only
+      a few hundred pixels wide, drawn in one colour on a white background, holds very little information. In our
+      tests, a signature at 140 by 60 pixels stayed at roughly 5 KB even when saved at the highest JPEG quality. A
+      minimum of 10 KB cannot be met honestly at that pixel size.
+    </p>
+    <p>
+      A larger source behaves differently. In the same tests, a scan of 1,200 by 400 pixels fitted inside a 10 to 20 KB
+      window at high quality. If you run into this limit, the choices are:
+    </p>
+    <ol>
+      <li>Start again from a larger photo or scan of the signature.</li>
+      <li>Allow more pixels, if the form does not fix the dimensions. Enlarging adds bytes but no sharper detail.</li>
+      <li>Check whether the form actually enforces the minimum, or whether only the maximum matters.</li>
+    </ol>
+    <p>
+      When none of this works, the tool reports that the minimum was not reached. It will not pretend otherwise, and
+      it does not add hidden filler to inflate the file.
+    </p>
+
+    <h2>Which file format to choose</h2>
+    <p>
+      JPEG is the common answer. A dark signature on white paper compresses well as a JPEG, and almost every upload form
+      accepts it. PNG keeps edges perfectly crisp and can be small for a flat white background, but it may be larger
+      than the JPEG for a photograph of paper with slight shading. WebP is offered where your browser can create it, and
+      is only useful if your form lists it. A JPEG cannot hold transparency, so a signature with a see-through background
+      is saved with a solid colour behind it.
+    </p>
+
+    <h2>Last look before you upload</h2>
+    <ul>
+      <li>Zoom in on the preview and compare the thin ends of strokes with your original.</li>
+      <li>Confirm the size and the pixel dimensions displayed, then compare them with your form.</li>
+      <li>Keep the signature file apart from your photo file, since the two usually have different limits.</li>
+      <li>Rename the downloaded file clearly, for example with the word signature in it, so you do not attach the wrong one.</li>
+    </ul>
+    <p>
+      The same process works for photographs. The <a href="/resize-image-to-20kb/">20 KB page</a> covers
+      photos in detail, and the <a href="/guides/photo-size-for-online-forms/">guide to photo sizes</a> explains the
+      terms used here. The <a href="/privacy/">privacy page</a> describes what happens to your signature image.
+    </p>
+
+    <h2>Frequently asked questions about signature images</h2>
+    <h3>Do I need a scanner?</h3>
+    <p>No. A phone photo in good light is enough, as long as the paper is flat and evenly lit.</p>
+    <h3>Can I draw my signature on screen?</h3>
+    <p>
+      SizeTune works from an image file of a signature. It does not provide a drawing pad, so sign on paper and
+      photograph it.
+    </p>
+    <h3>The result looks faint or grey. What went wrong?</h3>
+    <p>
+      Most often the ink was light or the paper was in shadow. Retake the photo with a darker pen and brighter, even
+      light, then crop again.
+    </p>
+    <h3>Is my signature uploaded to SizeTune?</h3>
+    <p>
+      SizeTune's code does not send your image anywhere. The cropping and compression run in your browser. You decide
+      where the downloaded file goes next.
+    </p>
+    <h3>Can I be sure the portal will accept the result?</h3>
+    <p>
+      No. We cannot see your portal's checks, so compare the displayed size, dimensions and format with what the form
+      says before you submit. The <a href="/">home page tool</a> offers the same engine without the signature
+      cropping.
+    </p>
+  </div>
+</Base>
