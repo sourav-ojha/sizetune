@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId } from 'preact/hooks';
 import type { OutputFormat } from '../../lib/engine/types';
 import { backgroundFor, needsFlattenChoice, type BgChoice, type FieldErrors, type FormState } from './options';
 import { errCls, fieldsetCls, hintCls, inputCls, legendCls } from './ui';

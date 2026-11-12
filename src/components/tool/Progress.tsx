@@ -1,3 +1,4 @@
+import type { Ref } from 'preact';
 import type { Progress as P } from './session';
 import { btnSecondary } from './ui';
 
@@ -8,7 +9,7 @@ export function progressText(p: P | null): string {
   return p.attempt && p.total ? `Finding the best size… step ${p.attempt} of ${p.total}` : 'Finding the best size…';
 }
 
-export default function ProgressBar({ progress, onCancel, cancelRef }: { progress: P | null; onCancel: () => void; cancelRef?: React.Ref<HTMLButtonElement> }) {
+export default function ProgressBar({ progress, onCancel, cancelRef }: { progress: P | null; onCancel: () => void; cancelRef?: Ref<HTMLButtonElement> }) {
   const determinate = progress?.stage === 'encoding' && progress.attempt != null && progress.total != null && progress.total > 0;
   return (
     <div data-testid="progress" className="space-y-2 rounded-xl border border-slate-300 bg-slate-50 p-4">

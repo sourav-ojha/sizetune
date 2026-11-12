@@ -1,4 +1,5 @@
-import { useEffect, useRef, type KeyboardEvent, type PointerEvent, type RefObject } from 'react';
+import type { RefObject, TargetedKeyboardEvent, TargetedPointerEvent } from 'preact';
+import { useEffect, useRef } from 'preact/hooks';
 import { aspectOf, displayToSource, moveRect, nudgeRect, rectToPercent, resizeRect, type Handle, type NudgeKey, type Rect, type Size } from './crop';
 
 interface Props {
@@ -40,7 +41,7 @@ export default function CropEditor({ src, natural, rect, lockAspect, imgRef, onC
     el.style.setProperty('--ch', `${p.height}%`);
   }, [rect, natural]);
 
-  const begin = (kind: Drag['kind']) => (e: PointerEvent<HTMLElement>) => {
+  const begin = (kind: Drag['kind']) => (e: TargetedPointerEvent<HTMLElement>) => {
     if (!rect || !natural || !imgRef.current || e.button > 0) return;
     e.preventDefault();
     e.stopPropagation();
@@ -48,18 +49,18 @@ export default function CropEditor({ src, natural, rect, lockAspect, imgRef, onC
     const b = imgRef.current.getBoundingClientRect();
     drag.current = { kind, px: e.clientX, py: e.clientY, start: rect, w: b.width, h: b.height };
   };
-  const move = (e: PointerEvent<HTMLElement>) => {
+  const move = (e: TargetedPointerEvent<HTMLElement>) => {
     const d = drag.current;
     if (!d || !natural) return;
     const dx = displayToSource(e.clientX - d.px, natural.width, d.w);
     const dy = displayToSource(e.clientY - d.py, natural.height, d.h);
     onChange(d.kind === 'move' ? moveRect(d.start, dx, dy, natural) : resizeRect(d.start, d.kind, dx, dy, natural, { aspect: lockAspect ? aspectOf(d.start) : null, minSize: MIN_SIZE }));
   };
-  const end = (e: PointerEvent<HTMLElement>) => {
+  const end = (e: TargetedPointerEvent<HTMLElement>) => {
     drag.current = null;
     if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);
   };
-  const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
+  const onKey = (e: TargetedKeyboardEvent<HTMLDivElement>) => {
     if (!rect || !natural || !e.key.startsWith('Arrow')) return;
     e.preventDefault();
     onChange(nudgeRect(rect, e.key as NudgeKey, e.shiftKey ? 10 : 1, natural, e.altKey ? 'resize' : 'move', lockAspect ? aspectOf(rect) : null));

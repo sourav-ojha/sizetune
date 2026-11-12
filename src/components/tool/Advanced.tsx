@@ -1,4 +1,5 @@
-import { useEffect, useId, useRef, type ReactNode } from 'react';
+import type { ComponentChildren } from 'preact';
+import { useEffect, useId, useRef } from 'preact/hooks';
 import { derivedDimension, parseNumber, type FieldErrors, type FormState } from './options';
 import { errCls, fieldsetCls, hintCls, inputCls, labelCls, legendCls } from './ui';
 
@@ -132,7 +133,7 @@ export function DimensionFields({ form, errors, update, basis, showMax, legend =
 }
 
  /** `forceOpen`: a field inside has an error, so the section must not hide it. */
-export function AdvancedBlock({ children, forceOpen }: { children: ReactNode; forceOpen?: boolean }) {
+export function AdvancedBlock({ children, forceOpen }: { children: ComponentChildren; forceOpen?: boolean }) {
   const ref = useRef<HTMLDetailsElement>(null);
   useEffect(() => { if (forceOpen && ref.current) ref.current.open = true; }, [forceOpen]);
   return (

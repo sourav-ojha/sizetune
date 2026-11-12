@@ -1,7 +1,7 @@
 // Negative fixtures for scripts/verify-privacy.mjs (and unit tests for the shared scanners in scripts/verify-lib.mjs).
 // Requires a built dist/ (npm run build). Mutations run on TEMP COPIES of dist.
 import { describe, it, expect, beforeAll } from 'vitest';
-import { rmSync, mkdtempSync, cpSync } from 'node:fs';
+import { rmSync, mkdtempSync, cpSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -155,6 +155,16 @@ describe('P5 network primitives in JS loaded by tool pages', () => {
   it('the old React-era tokens (preconnect, navigator.connection, script injection) are NOT allow-listed any more, not even in the Preact chunk', () => { has(vp((d) => edit(d, preactChunk(d), (s) => s + ';"preconnect";')), /resource-hint/); has(vp((d) => edit(d, preactChunk(d), (s) => s + ';navigator.connection;')), /navigator-api/); has(vp((d) => edit(d, preactChunk(d), (s) => s + ';document.createElement("script");')), /script-inject/); });
   it('allow-listed namespace URLs growing past the audited count', () => has(vp((d) => edit(d, preactChunk(d), (s) => s + ';"http://www.w3.org/2000/svg";')), /re-audit/));
   it('a second / non-literal dynamic import in the island client is not a free pass', () => { has(vp((d) => edit(d, clientChunk(d), (s) => s + ';import("/_astro/x.js");')), /dyn-import|re-audit/); has(vp((d) => edit(d, clientChunk(d), (s) => s.replace(/import\(`\.\/signals\.module\.[\w-]+\.js`\)/, 'import(location.hash.slice(1))'))), /dyn-import/); });
+  const sigName = (d: string) => jsChunks(d).find((f) => /signals\.module\./.test(f))!.split('/').pop()!;
+  const realImport = /import\(`\.\/signals\.module\.[\w-]+\.js`\)/;
+  it('M10: a non-literal import() in the client with a decoy literal string elsewhere in the file is flagged', () => has(vp((d) => edit(d, clientChunk(d), (s) => s.replace(realImport, 'import(location.hash.slice(1))') + `;var decoy="import(\`./${sigName(d)}\`)";`)), /dyn-import/));
+  it('M10b: import(atob(..)) with a decoy `a.import(`./signals..`)` / `$import(...)` is flagged', () => has(vp((d) => edit(d, clientChunk(d), (s) => s.replace(realImport, 'import(atob("L3gu"))') + `;a.import(\`./${sigName(d)}\`);$import(\`./${sigName(d)}\`);`)), /dyn-import/));
+  it('M11: the literal import is only excused when the target chunk exists in dist', () => has(vp((d) => edit(d, clientChunk(d), (s) => s.replace(realImport, 'import(`./signals.module.Missing1.js`)'))), /dyn-import/));
+  it('allowances are pinned to their audited file: an app chunk carrying the signature strings gets nothing', () => {
+    has(vp((d) => edit(d, appChunk(d), (s) => s + ';var q="foreignObject dangerouslySetInnerHTML http://www.w3.org/1998/Math/MathML http://www.w3.org/2000/svg";')), /\[js\].*external-url/);
+    has(vp((d) => edit(d, appChunk(d), (s) => s + ';var q="data-preact-island-id";import(`./' + sigName(d) + '`);')), /\[js\].*dyn-import/);
+  });
+  it('F3: an island carrying data-preact-signals fails the privacy verifier itself', () => has(onHome((s) => s.replace('<astro-island ', '<astro-island data-preact-signals="{}" ')), /data-preact-signals/));
   it('allow-listed Preact tokens are not a free pass in app code', () => has(vp((d) => edit(d, appChunk(d), (s) => s + ';var u="http://www.w3.org/2000/svg";import("./signals.module.x.js");')), /\[js\]/));
   it('inline script on a tool page', () => { has(onHome((s) => headEnd(s, '<script>fetch("/x")</script>')), /\[js\]|CSP/); });
   it('Worker from a non-literal / cross-origin URL', () => { has(vp((d) => edit(d, appChunk(d), (s) => s + ';new Worker(u);')), /non-literal/); has(vp((d) => edit(d, appChunk(d), (s) => s + ';new Worker("https://x.example/w.js");')), /\[js\]/); });
@@ -171,7 +181,25 @@ describe('shared scanners (unit)', () => {
     expect(ids('a.prefetch=1;b.fetchStatus')).toEqual([]);
   });
   it('allow-list entries are evidence-backed and bounded', () => { for (const a of JS_PRIMITIVE_ALLOWLIST) { expect(a.reason.length).toBeGreaterThan(40); expect(a.max).toBeGreaterThan(0); expect(a.signature).toBeInstanceOf(RegExp); } });
-  it('jsIssues applies the allow-list only to files matching the signature', () => { expect(jsIssues('x.js', 'a="dns-prefetch"')).not.toEqual([]); expect(jsIssues('x.js', 'a="http://www.w3.org/2000/svg"')).not.toEqual([]); expect(jsIssues('x.js', 'foreignObject dangerouslySetInnerHTML "http://www.w3.org/1998/Math/MathML" a="http://www.w3.org/2000/svg"')).toEqual([]); expect(jsIssues('x.js', 'foreignObject dangerouslySetInnerHTML "http://www.w3.org/1998/Math/MathML" a="https://evil.example/x"')).not.toEqual([]); expect(jsIssues('x.js', 'data-preact-island-id import(`./signals.module.AbC-1.js`)')).toEqual([]); expect(jsIssues('x.js', 'data-preact-island-id import(`./other.js`)')).not.toEqual([]); });
+  it('jsIssues applies the allow-list only to the audited file AND signature (and proves literal imports exist)', () => {
+    const NS = 'foreignObject dangerouslySetInnerHTML "http://www.w3.org/1998/Math/MathML" a="http://www.w3.org/2000/svg"';
+    expect(jsIssues('/_astro/x.js', 'a="http://www.w3.org/2000/svg"')).not.toEqual([]);
+    expect(jsIssues('/_astro/preact.AbC.js', NS)).toEqual([]);
+    expect(jsIssues('/_astro/useSession.AbC.js', NS), 'right signature, wrong file').not.toEqual([]);
+    expect(jsIssues('/_astro/preact.AbC.js', 'foreignObject dangerouslySetInnerHTML "http://www.w3.org/1998/Math/MathML" a="https://evil.example/x"')).not.toEqual([]);
+    const d = mkdtempSync(join(tmpdir(), 'ji-')); mkdirSync(join(d, '_astro')); writeFileSync(join(d, '_astro', 'signals.module.AbC-1.js'), 'x');
+    const ok = 'data-preact-island-id import(`./signals.module.AbC-1.js`)';
+    expect(jsIssues('/_astro/client.Q.js', ok, d)).toEqual([]);
+    expect(jsIssues('/_astro/client.Q.js', ok), 'no dist => cannot prove the target exists').not.toEqual([]);
+    expect(jsIssues('/_astro/client.Q.js', 'data-preact-island-id import(`./signals.module.Nope.js`)', d), 'target missing').not.toEqual([]);
+    expect(jsIssues('/_astro/client.Q.js', 'data-preact-island-id import(`./other.js`)', d)).not.toEqual([]);
+    expect(jsIssues('/_astro/useSession.Q.js', ok, d), 'right signature, wrong file').not.toEqual([]);
+    // reviewer M10/M11: a decoy elsewhere in the file must not vouch for a different call
+    expect(jsIssues('/_astro/client.Q.js', ok + ';import(location.hash.slice(1));', d)).not.toEqual([]);
+    expect(jsIssues('/_astro/client.Q.js', 'data-preact-island-id import(atob("x")); a.import(`./signals.module.AbC-1.js`); $import(`./signals.module.AbC-1.js`)', d)).not.toEqual([]);
+    expect(jsIssues('/_astro/client.Q.js', 'data-preact-island-id "import(`./signals.module.AbC-1.js`)"; import(location.hash.slice(1))', d)).not.toEqual([]);
+    rmSync(d, { recursive: true, force: true });
+  });
   it('workerRefs', () => { expect(workerRefs('new Worker(new URL(`/_astro/w.js`,``+import.meta.url),{type:`module`})').literals).toEqual(['/_astro/w.js']); expect(workerRefs('new Worker(u)').bad.length).toBe(1); });
   it('cssIssues ignores comments, data:image, same-site; flags external', () => {
     expect(cssIssues('a.css', '/*! https://tailwindcss.com */ a{background:url(data:image/svg+xml;base64,AAAA)} b{background:url(/x.png)}')).toEqual([]);

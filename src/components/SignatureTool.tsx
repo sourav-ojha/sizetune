@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import type { OutputFormat } from '../lib/engine/types';
 import { AdvancedBlock, DimensionFields, MinimumField, StrategyField } from './tool/Advanced';
 import CropEditor from './tool/CropEditor';

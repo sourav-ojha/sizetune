@@ -129,7 +129,7 @@ test.describe('Preact semantics', () => {
     expect(n[0]).toBe(n[1]);
   });
 
-  test('stale run: a result that arrives after Cancel or a settings change is dropped and leaves no URL behind', async ({ page }) => {
+  test('stale run: a result that arrives after Cancel, or after a settings change mid-run, is dropped and leaves no URL behind', async ({ page }) => {
     await openTool(page);
     await pick(page, NOISE);
     await page.getByTestId('run').click();
@@ -139,5 +139,13 @@ test.describe('Preact semantics', () => {
     await page.waitForTimeout(1500); // a late worker reply must not resurrect a result
     await expect(page.getByTestId('result')).toHaveCount(0);
     await expect(page.getByTestId('run')).toBeFocused(); // focus moved to a live control when Cancel disappeared
+    // a settings change while a run is in flight must supersede it too
+    await page.getByTestId('run').click();
+    await expect(page.getByTestId('cancel')).toBeVisible();
+    await page.getByTestId('preset-30').click();
+    await expect(page.getByTestId('cancel')).toHaveCount(0);
+    await page.waitForTimeout(1500);
+    await expect(page.getByTestId('result')).toHaveCount(0);
+    await expect(page.getByTestId('target')).toHaveValue('30');
   });
 });

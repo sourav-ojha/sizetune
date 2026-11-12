@@ -223,10 +223,10 @@ export function verifyDist(dist = 'dist', { strict = false } = {}) {
   const toolPages = pages.filter((p) => p.toolRoute);
   const { files: jsFilesLoaded, missing } = jsClosure(dist, toolPages);
   for (const m of missing) fails.push(`${m.via}: JS chunk ${m.path} referenced but missing from dist`);
-  for (const [path, { src }] of jsFilesLoaded) for (const m of jsIssues(path, src)) fails.push(`[tool JS] ${m}`);
+  for (const [path, { src }] of jsFilesLoaded) for (const m of jsIssues(path, src, dist)) fails.push(`[tool JS] ${m}`);
   for (const f of all.filter((x) => /\.m?js$/.test(x))) {
     const rel = '/' + f.slice(dist.length).replace(/^[\\/]+/, '').split('\\').join('/');
-    if (!jsFilesLoaded.has(rel)) for (const m of jsIssues(rel, readFileSync(f, 'utf8'))) fails.push(`[unreferenced JS] ${m}`);
+    if (!jsFilesLoaded.has(rel)) for (const m of jsIssues(rel, readFileSync(f, 'utf8'), dist)) fails.push(`[unreferenced JS] ${m}`);
   }
   for (const f of all.filter((x) => x.endsWith('.css'))) for (const m of cssIssues(f.slice(dist.length), readFileSync(f, 'utf8'))) fails.push(`[css] ${m}`);
 

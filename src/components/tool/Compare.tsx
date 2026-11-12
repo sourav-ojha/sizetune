@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'preact/hooks';
 import { btnToggleOff, btnToggleOn } from './ui';
 
 interface Props { beforeUrl: string; afterUrl: string; beforeLabel?: string; afterLabel?: string }

@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId } from 'preact/hooks';
 import { activePreset, PRESETS_KB, type FieldErrors, type FormState } from './options';
 import { btnToggleOff, btnToggleOn, errCls, fieldsetCls, hintCls, inputCls, labelCls, legendCls } from './ui';
 

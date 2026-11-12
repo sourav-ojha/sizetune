@@ -160,6 +160,8 @@ test.describe('signature tool', () => {
     await expect(page.getByTestId('crop-box')).toHaveCount(0);
     await expect(page.getByTestId('result')).toHaveCount(0);
     await pick(page, sig());
+    // Run becomes enabled as soon as the file is chosen; the full-picture crop is applied once the preview has loaded (effect after image onLoad).
+    await expect(page.getByTestId('crop-width')).toHaveValue('600');
     expect(await crop(page)).toEqual({ x: 0, y: 0, w: 600, h: 200 });
   });
 
