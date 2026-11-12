@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
-import { openHarness, run, BASE, chromeTreeRssMb, ORIGIN } from './harness';
+import { openHarness, run, BASE, browserRssMb, ORIGIN } from './harness';
 
 /** Measurements are appended here and summarised in docs/engine/ENGINE.md (not committed: .tmp is ignored). */
 const MEASURE = path.resolve(import.meta.dirname, '../../.tmp/engine-e2e-measurements.jsonl');
@@ -220,13 +220,15 @@ test.describe('engine in real Chrome (worker path)', () => {
     expect(pb).toEqual(pa);
   });
 
-  test('large 36 MP image (generated on the fly): reduced decode, max 50 KB, time and memory recorded', async ({ page }) => {
+  test('large 36 MP image (generated on the fly): reduced decode, max 50 KB, time and memory recorded', async ({ page, browser }) => {
     const gen = await page.evaluate(async () => { const f = await (window as unknown as { makeLarge: (w: number, h: number) => Promise<File> }).makeLarge(6000, 6000); (window as unknown as { big: File }).big = f; return f.size; });
-    const base = chromeTreeRssMb();
+    const base = await browserRssMb(browser);
     let peak = base;
-    const iv = setInterval(() => { try { peak = Math.max(peak, chromeTreeRssMb()); } catch { /* ps hiccup */ } }, 150);
+    let sampling = true;
+    const sampler = (async () => { while (sampling) { try { peak = Math.max(peak, await browserRssMb(browser)); } catch { /* ps hiccup */ } await new Promise((r) => setTimeout(r, 100)); } })();
     const r = await page.evaluate((o) => { const w = window as unknown as { run: (f: File, o: unknown) => Promise<{ ok: boolean }>; big: File }; return w.run(w.big, o); }, { ...BASE, maxKb: 50 }) as Awaited<ReturnType<typeof run>>;
-    clearInterval(iv);
+    sampling = false;
+    await sampler;
     expect(r.ok, r.message).toBe(true);
     expect(r.status).toBe('ok');
     expect(r.bytes).toBeLessThanOrEqual(50_000);
@@ -234,6 +236,16 @@ test.describe('engine in real Chrome (worker path)', () => {
     expect(r.wallMs).toBeLessThan(5000);
     expect(peak - base).toBeLessThan(600);
     record('36mp-max50', { inputBytes: gen, bytes: r.bytes, q: r.quality, w: r.width, h: r.height, attempts: r.attempts, ms: r.elapsedMs, wallMs: r.wallMs, rssBaseMb: Math.round(base), rssPeakDeltaMb: Math.round(peak - base) });
+  });
+
+  test('output limits on the resolved geometry (review F1): derived side / lockAspect:false rejected, not out_of_memory', async ({ page }) => {
+    const tall = await run(page, { large: [100, 10000] }, { ...BASE, width: 16384 });
+    expect(tall).toMatchObject({ ok: false, code: 'invalid_options' });
+    expect(tall.message).toBe("This browser can't safely create images this big; the maximum is 16 megapixels (16384 px per side).");
+    const stretch = await run(page, { large: [5000, 5000] }, { ...BASE, width: 5000, lockAspect: false });
+    expect(stretch).toMatchObject({ ok: false, code: 'invalid_options' });
+    const okBig = await run(page, { large: [4000, 4000] }, { ...BASE, width: 4000 });
+    expect(okBig).toMatchObject({ ok: true, width: 4000, height: 4000 });
   });
 
   test('too many pixels by header (no decode) and too many bytes', async ({ page }) => {
@@ -256,7 +268,7 @@ test.describe('engine in real Chrome (worker path)', () => {
 test.describe('lifecycle: repeated runs, cancellation, stale protection, timeout', () => {
   test.beforeEach(async ({ page, context }) => { await openHarness(page, context); });
 
-  test('10 repeated 12 MP runs: no unbounded memory growth', async ({ page }) => {
+  test('10 repeated 12 MP runs: no unbounded memory growth', async ({ page, browser }) => {
     const rss: number[] = [];
     const heap: number[] = [];
     const times: number[] = [];
@@ -265,7 +277,7 @@ test.describe('lifecycle: repeated runs, cancellation, stale protection, timeout
       expect(r.status).toBe('ok');
       times.push(r.elapsedMs);
       await page.waitForTimeout(300);
-      rss.push(Math.round(chromeTreeRssMb()));
+      rss.push(Math.round(await browserRssMb(browser)));
       heap.push(await page.evaluate(() => Math.round(((performance as unknown as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize ?? 0) / 1048576)));
     }
     record('repeat-12mp-x10', { rssMb: rss, pageHeapMb: heap, ms: times });

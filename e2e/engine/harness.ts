@@ -1,4 +1,4 @@
-import type { BrowserContext, Page } from '@playwright/test';
+import type { Browser, BrowserContext, Page } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -50,16 +50,22 @@ export async function openHarness(page: Page, context: BrowserContext, o: Harnes
   return { requests };
 }
 
-/** Resident memory (MB) of the Chrome process tree launched by Playwright (the browser root has --remote-debugging-pipe). */
-export function chromeTreeRssMb(): number {
-  const ps = execFileSync('ps', ['-axo', 'pid=,ppid=,rss=,command='], { maxBuffer: 1e8 }).toString().split('\n')
-    .map((l) => l.trim().match(/^(\d+)\s+(\d+)\s+(\d+)\s+(.*)$/)).filter((m): m is RegExpMatchArray => !!m)
-    .map((m) => ({ pid: +m[1], ppid: +m[2], rss: +m[3], cmd: m[4] }));
-  const roots = ps.filter((p) => /Google Chrome/.test(p.cmd) && /--remote-debugging-pipe/.test(p.cmd) && !/--type=/.test(p.cmd));
-  const ids = new Set(roots.map((r) => r.pid));
-  let grew = true;
-  while (grew) { grew = false; for (const p of ps) if (!ids.has(p.pid) && ids.has(p.ppid)) { ids.add(p.pid); grew = true; } }
-  return ps.filter((p) => ids.has(p.pid)).reduce((a, p) => a + p.rss, 0) / 1024;
+/**
+ * Resident memory (MB) of THIS Playwright-launched browser only: the process ids come from CDP
+ * SystemInfo.getProcessInfo (browser, renderer, GPU, utility; the worker lives in the renderer), RSS from `ps -p`.
+ * Other Chrome instances on the machine (other test runs, the user's browser) are not counted.
+ */
+export async function browserRssMb(browser: Browser): Promise<number> {
+  const cdp = await browser.newBrowserCDPSession();
+  try {
+    const { processInfo } = (await cdp.send('SystemInfo.getProcessInfo')) as { processInfo: Array<{ id: number; type: string }> };
+    const pids = processInfo.map((p) => p.id).filter((id) => id > 0);
+    if (!pids.length) return 0;
+    const out = execFileSync('ps', ['-o', 'rss=', '-p', pids.join(',')]).toString();
+    return out.split('\n').map((l) => Number(l.trim()) || 0).reduce((x, y) => x + y, 0) / 1024;
+  } finally {
+    await cdp.detach();
+  }
 }
 
 export type RunResult = {

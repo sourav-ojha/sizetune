@@ -3,14 +3,11 @@ import { stripIccProfile, isStructurallyValidJpeg } from '../../src/lib/engine/j
 import { buildMessage, formatKb, type MessageInput } from '../../src/lib/engine/messages';
 import { RunContext } from '../../src/lib/engine/context';
 import { createObjectUrlSlot, outputFileName } from '../../src/lib/engine/urls';
-import { jpegBytes } from './bytes';
+import { jpegBytes, app2Icc, iccProfile } from './bytes';
 
 function withIcc(): Uint8Array {
   const j = jpegBytes({ width: 8, height: 8 });
-  const id = [...'ICC_PROFILE'].map((c) => c.charCodeAt(0));
-  const payload = [...id, 0, 1, 1, ...new Array(460).fill(7)];
-  const seg = [0xff, 0xe2, (payload.length + 2) >> 8, (payload.length + 2) & 255, ...payload];
-  return new Uint8Array([...j.slice(0, 20), ...seg, ...j.slice(20)]); // after SOI+APP0
+  return new Uint8Array([...j.slice(0, 20), ...app2Icc(iccProfile('sRGB', 'mluc')), ...j.slice(20)]); // after SOI+APP0
 }
 
 describe('ICC strip', () => {
@@ -18,7 +15,7 @@ describe('ICC strip', () => {
     const src = withIcc();
     expect(isStructurallyValidJpeg(src)).toBe(true);
     const out = stripIccProfile(src)!;
-    expect(out.length).toBe(src.length - 478);
+    expect(out.length).toBe(src.length - app2Icc(iccProfile('sRGB', 'mluc')).length);
     expect(isStructurallyValidJpeg(out)).toBe(true);
     expect(Array.from(out)).toEqual(Array.from(jpegBytes({ width: 8, height: 8 })));
   });

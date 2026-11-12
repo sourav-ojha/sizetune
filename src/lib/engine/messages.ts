@@ -44,6 +44,7 @@ export function buildMessage(m: MessageInput): string {
     }
     case 'raised':
       if (b.enlarged) return `Your minimum is ${num(m.minKb!)} KB. We enlarged the image to ${px(b.width, b.height)} to reach ${formatKb(b.bytes)}. Enlarging adds pixels, not detail.`;
+      if (b.scale < 0.999) return `Your minimum is ${num(m.minKb!)} KB. We raised ${fmt} quality to ${b.quality}% and reduced the image to ${px(b.width, b.height)} to land at ${formatKb(b.bytes)} inside your range. The picture keeps its look; the file just stores more detail.`;
       return `Your minimum is ${num(m.minKb!)} KB. We raised ${fmt} quality to ${b.quality}% to reach ${formatKb(b.bytes)}. The picture looks the same; the file just stores more detail.`;
     case 'below_min': {
       if (m.reason === 'window_gap' && m.gapAbove) {
@@ -71,7 +72,7 @@ export function buildMessage(m: MessageInput): string {
 export const NOTES = {
   flattened: (bg: string) => `Transparent areas were filled with ${bg === '#ffffff' ? 'white' : bg === '#000000' ? 'black' : `the colour ${bg}`}.`,
   lowQuality: (q: number) => `Quality had to go down to ${q}% to fit, so the image may look blocky.`,
-  reduced: (w: number, h: number, sw: number, sh: number) => `This large photo was processed at ${px(w, h)} (original ${px(sw, sh)}) to stay within browser memory limits.`,
+  reduced: (w: number, h: number, sw: number, sh: number) => `This large photo was opened at reduced size (${px(w, h)} of the original ${px(sw, sh)}) to stay within browser memory limits, so the result can have less detail than the original.`,
   webpFallback: (fmt: string) => `WebP can't be saved in this browser, so the result is ${fmt}.`,
   animated: 'Only the first frame of the animated image was used.',
   kbConflict: (minKb: number) => `Your minimum and maximum are too close to satisfy both ways of counting KB (1 KB = 1000 or 1024 bytes), so the minimum was treated as ${num(minKb)} × 1000 bytes.`,

@@ -10,6 +10,10 @@ const FITS = ['contain', 'cover', 'stretch'];
 const HEX = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
 const MAX_KB = 100_000; // 100 MB: beyond any file we accept
 
+/** Shared user message for outputs above maxOutputPixels / maxSide. */
+export const outputTooLargeMessage = (l: FullLimits) =>
+  `This browser can't safely create images this big; the maximum is ${Math.round((l.maxOutputPixels / 1e6) * 10) / 10} megapixels (${l.maxSide} px per side).`;
+
 const invalid = (msg: string): never => { throw new EngineError('invalid_options', msg); };
 
 function posNum(v: unknown, name: string, max: number) {
@@ -29,7 +33,8 @@ export function normalizeOptions(input: ProcessOptions, limits: FullLimits): Nor
     strategy: input.strategy ?? 'quality-first',
     lockAspect: input.lockAspect ?? true,
     fit: input.fit ?? 'contain',
-    background: input.background ?? 'white',
+    // JPEG has no alpha: white (disclosed when it fills transparency). PNG/WebP/auto keep transparency unless told otherwise.
+    background: input.background ?? (input.format === 'jpeg' ? 'white' : 'keep'),
   };
   if ((o as { allowPadding?: unknown }).allowPadding) invalid('Padding files to a minimum size is not supported.');
   if (!FORMATS.includes(o.format)) invalid('Unknown output format.');
@@ -43,7 +48,7 @@ export function normalizeOptions(input: ProcessOptions, limits: FullLimits): Nor
   posNum(o.minKb, 'Minimum size', MAX_KB);
   if (o.minKb !== undefined && o.maxKb !== undefined && o.minKb > o.maxKb) invalid('The minimum size is larger than the maximum size.');
   for (const k of ['width', 'height', 'maxWidth', 'maxHeight'] as const) posInt(o[k], k, limits.maxSide);
-  if (o.width && o.height && o.width * o.height > limits.maxOutputPixels) invalid('The requested dimensions are too large to create in a browser.');
+  if (o.width && o.height && o.width * o.height > limits.maxOutputPixels) invalid(outputTooLargeMessage(limits));
   if (o.quality !== undefined && (typeof o.quality !== 'number' || !Number.isFinite(o.quality) || o.quality < 1 || o.quality > 100)) invalid('Quality must be between 1 and 100.');
   if (o.quality !== undefined) o.quality = Math.round(o.quality);
   if (o.crop !== undefined) {

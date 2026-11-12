@@ -85,3 +85,24 @@ export function webpVp8x(width: number, height: number, flags: { alpha?: boolean
   return riff([...ascii('VP8X'), ...u32le(data.length), ...data]);
 }
 export const asciiBytes = (s: string) => new Uint8Array(ascii(s));
+
+/** ICC APP2 segment ("ICC_PROFILE\0", seq 1 of 1) wrapping `profile`. */
+export const app2Icc = (profile: number[]) => {
+  const payload = [...'ICC_PROFILE'].map((c) => c.charCodeAt(0)).concat([0, 1, 1], profile);
+  return [0xff, 0xe2, (payload.length + 2) >> 8, (payload.length + 2) & 255, ...payload];
+};
+/** Minimal ICC profile: 128-byte header (RGB, acsp) + tag table with one desc tag (v4 mluc or v2 desc). */
+export const iccProfile = (desc: string, kind: 'mluc' | 'desc') => {
+  const be32 = (n: number) => [(n >>> 24) & 255, (n >>> 16) & 255, (n >>> 8) & 255, n & 255];
+  const a = (t: string) => [...t].map((c) => c.charCodeAt(0));
+  const text = kind === 'mluc'
+    ? a('mluc').concat([0, 0, 0, 0], be32(1), be32(12), a('enUS'), be32(desc.length * 2), be32(28), ...[...desc].flatMap((c) => [0, c.charCodeAt(0)]))
+    : a('desc').concat([0, 0, 0, 0], be32(desc.length + 1), a(desc), [0]);
+  const header = new Array(128).fill(0);
+  header.splice(16, 4, ...a('RGB '));
+  header.splice(36, 4, ...a('acsp'));
+  const table = [...be32(1), ...a('desc'), ...be32(128 + 4 + 12), ...be32(text.length)];
+  const all = [...header, ...table, ...text];
+  all.splice(0, 4, ...be32(all.length));
+  return all;
+};

@@ -42,6 +42,11 @@ export interface Candidate<B> {
   enlarged: boolean;
 }
 
+/** Candidate metadata without the encoded bytes. */
+export type CandidateInfo = Omit<Candidate<unknown>, 'blob'>;
+/** Internal: the Blob is dropped (null) as soon as the candidate can no longer be the result. */
+type Cand<B> = CandidateInfo & { blob: B | undefined; released: boolean };
+
 export type SearchEncoder<B> = (width: number, height: number, quality: number | null) => Promise<{ blob: B; bytes: number }>;
 
 export type OutcomeReason = 'no_target' | 'in_window' | 'min_unreachable' | 'window_gap' | 'max_unreachable' | 'budget_exhausted';
@@ -51,11 +56,14 @@ export interface SearchOutcome<B> {
   reason: OutcomeReason;
   best: Candidate<B>;
   attempts: number;
-  /** For window_gap: the smallest candidate above the maximum. */
-  gapAbove?: Candidate<B>;
+  /** For window_gap: the smallest candidate above the maximum (metadata only). */
+  gapAbove?: CandidateInfo;
   /** Highest-quality result at full (non-enlarged) dimensions, if probed (for "at most X KB even at maximum quality"). */
-  maxQualityProbe?: Candidate<B>;
-  candidates: Candidate<B>[];
+  maxQualityProbe?: CandidateInfo;
+  /** Every encode performed (metadata only: Blobs of rejected candidates are released during the search). */
+  candidates: CandidateInfo[];
+  /** Most candidate Blobs held at once (memory diagnostics; <= 3 retained + the one just encoded). */
+  peakRetained: number;
 }
 
 export const Q_CAP = 95;
@@ -72,9 +80,10 @@ interface Tag { raised?: boolean }
 class Search<B> {
   attempts = 0;
   exhausted = false;
-  readonly cands: Candidate<B>[] = [];
-  private readonly cache = new Map<string, Candidate<B>>();
-  maxProbe?: Candidate<B>;
+  readonly cands: Cand<B>[] = [];
+  private readonly cache = new Map<string, Cand<B>>();
+  maxProbe?: Cand<B>;
+  peakRetained = 0;
   private readonly minScale: number;
 
   constructor(private readonly p: SearchParams, private readonly encode: SearchEncoder<B>) {
@@ -85,7 +94,7 @@ class Search<B> {
     return [Math.max(1, Math.round(this.p.baseWidth * s)), Math.max(1, Math.round(this.p.baseHeight * s))];
   }
 
-  private async E(s: number, q: number | null, tag: Tag = {}): Promise<Candidate<B>> {
+  private async E(s: number, q: number | null, tag: Tag = {}): Promise<Cand<B>> {
     const [w, h] = this.dims(s);
     const key = `${w}x${h}@${q}`;
     const hit = this.cache.get(key);
@@ -93,14 +102,35 @@ class Search<B> {
     if (this.attempts >= this.p.maxEncodes) throw new BudgetExhausted();
     this.attempts++;
     const r = await this.encode(w, h, q);
-    const c: Candidate<B> = { width: w, height: h, quality: q, bytes: r.bytes, blob: r.blob, scale: s, raised: !!tag.raised, enlarged: s > 1 && (w > this.p.baseWidth || h > this.p.baseHeight) };
+    const c: Cand<B> = { width: w, height: h, quality: q, bytes: r.bytes, blob: r.blob, scale: s, raised: !!tag.raised, enlarged: s > 1 && (w > this.p.baseWidth || h > this.p.baseHeight), released: false };
     this.cache.set(key, c);
     this.cands.push(c);
+    this.peakRetained = Math.max(this.peakRetained, this.cands.filter((x) => !x.released).length);
+    this.prune();
     return c;
   }
 
-  private inWin = (c: Candidate<B>) => c.bytes >= this.p.lo && c.bytes <= this.p.hi;
-  private good = (c: Candidate<B>) => this.inWin(c) && (!Number.isFinite(this.p.hi) || c.bytes >= FILL * this.p.hi);
+  /** The three candidates that can still become the result; everything else drops its Blob. */
+  private picks() {
+    const { hi } = this.p;
+    let win: Cand<B> | undefined, fit: Cand<B> | undefined, above: Cand<B> | undefined;
+    const normalWin = this.cands.filter((c) => this.inWin(c) && !c.raised);
+    const raisedWin = this.cands.filter((c) => this.inWin(c) && c.raised);
+    if (normalWin.length) win = normalWin.reduce((a, c) => (rank(c) > rank(a) ? c : a));
+    else if (raisedWin.length) win = raisedWin.reduce((a, c) => (raiseRank(c) > raiseRank(a) ? c : a));
+    for (const c of this.cands) {
+      if (c.bytes <= hi) { if (!fit || c.bytes > fit.bytes) fit = c; } else if (!above || c.bytes < above.bytes) above = c;
+    }
+    return { win, fit, above };
+  }
+
+  private prune() {
+    const { win, fit, above } = this.picks();
+    for (const c of this.cands) if (c !== win && c !== fit && c !== above && !c.released) { c.blob = undefined; c.released = true; }
+  }
+
+  private inWin = (c: CandidateInfo) => c.bytes >= this.p.lo && c.bytes <= this.p.hi;
+  private good = (c: CandidateInfo) => this.inWin(c) && (!Number.isFinite(this.p.hi) || c.bytes >= FILL * this.p.hi);
   private target() { return Math.max(this.p.hi * 0.97, (this.p.lo + this.p.hi) / 2); }
 
   async run(): Promise<void> {
@@ -152,7 +182,7 @@ class Search<B> {
   }
 
   /** Highest q in [qFit, qNoFit) with bytes <= hi (qFit known to fit). */
-  private async bisectHighestQ(s: number, qFit: number, qNoFit: number): Promise<Candidate<B>> {
+  private async bisectHighestQ(s: number, qFit: number, qNoFit: number): Promise<Cand<B>> {
     let a = qFit, b = qNoFit;
     let best = await this.E(s, a);
     while (b - a > 1) {
@@ -264,36 +294,32 @@ class Search<B> {
   }
 
   finalize(): SearchOutcome<B> {
-    const { hi, fixed } = this.p;
-    const base = { attempts: this.attempts, candidates: this.cands, maxQualityProbe: this.maxProbe };
-    const win = this.cands.filter(this.inWin);
-    if (win.length) {
-      // Prefer a normal (non-raised) result; among raised ones take the smallest honest raise.
-      const normal = win.filter((c) => !c.raised);
-      const best = normal.length ? normal.reduce((a, c) => (rank(c) > rank(a) ? c : a)) : win.reduce((a, c) => (raiseRank(c) > raiseRank(a) ? c : a));
-      return { ...base, status: best.raised ? 'raised' : 'ok', reason: this.p.hasTarget ? 'in_window' : 'no_target', best };
-    }
+    const { fixed } = this.p;
     if (!this.cands.length) throw new Error('search produced no candidate'); // only if maxEncodes < 1
-    const fitting = this.cands.filter((c) => c.bytes <= hi);
-    const above = this.cands.filter((c) => c.bytes > hi);
-    const gapAbove = above.length ? above.reduce((a, c) => (c.bytes < a.bytes ? c : a)) : undefined;
-    if (fitting.length) {
-      const best = fitting.reduce((a, c) => (c.bytes > a.bytes ? c : a));
-      const reason: OutcomeReason = gapAbove ? 'window_gap' : this.exhausted ? 'budget_exhausted' : 'min_unreachable';
-      return { ...base, status: 'below_min', reason, best, gapAbove };
+    const info = ({ blob: _b, released: _r, ...rest }: Cand<B>): CandidateInfo => rest;
+    const withBlob = (c: Cand<B>): Candidate<B> => {
+      if (c.released) throw new Error('internal: result Blob was released');
+      return { ...info(c), blob: c.blob as B };
+    };
+    const base = { attempts: this.attempts, candidates: this.cands.map(info), maxQualityProbe: this.maxProbe && info(this.maxProbe), peakRetained: this.peakRetained };
+    const { win, fit, above } = this.picks();
+    if (win) return { ...base, status: win.raised ? 'raised' : 'ok', reason: this.p.hasTarget ? 'in_window' : 'no_target', best: withBlob(win) };
+    const gapAbove = above && info(above);
+    if (fit) {
+      const reason: OutcomeReason = above ? 'window_gap' : this.exhausted ? 'budget_exhausted' : 'min_unreachable';
+      return { ...base, status: 'below_min', reason, best: withBlob(fit), gapAbove };
     }
-    const best = this.cands.reduce((a, c) => (c.bytes < a.bytes ? c : a));
-    return { ...base, status: fixed ? 'above_max_fixed' : 'above_max', reason: this.exhausted ? 'budget_exhausted' : 'max_unreachable', best };
+    return { ...base, status: fixed ? 'above_max_fixed' : 'above_max', reason: this.exhausted ? 'budget_exhausted' : 'max_unreachable', best: withBlob(above as Cand<B>) };
   }
 }
 
 /** Preference among in-window candidates: more pixels, then higher quality, then more bytes (closer to max). */
-function rank(c: Candidate<unknown>) {
+function rank(c: CandidateInfo) {
   return c.width * c.height * 1e6 + (c.quality ?? 0) * 1e3 + Math.min(999, c.bytes / 1e6);
 }
 
 /** Among raised candidates: no enlargement first, then most pixels, then LOWEST quality; enlarged ones: fewest pixels. */
-function raiseRank(c: Candidate<unknown>) {
+function raiseRank(c: CandidateInfo) {
   if (c.enlarged) return -c.width * c.height;
   return 1e15 + c.width * c.height * 1e3 - (c.quality ?? 0);
 }

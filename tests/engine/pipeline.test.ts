@@ -1,60 +1,11 @@
 import { describe, it, expect, vi } from 'vitest';
 import { runPipeline } from '../../src/lib/engine/pipeline';
-import type { Env, DecodedImage } from '../../src/lib/engine/env';
-import { EngineError, type ProcessOptions } from '../../src/lib/engine/types';
-import { jpegBytes, pngBytes, webpVp8, asciiBytes } from './bytes';
+import { fakeEnv, base, jpg, png } from './fake-env';
+import { EngineError } from '../../src/lib/engine/types';
+import { webpVp8, asciiBytes } from './bytes';
 import { resolveFormat, planDecode } from '../../src/lib/engine/plan';
 import { resolveGeometry } from '../../src/lib/engine/dims';
 import { DEFAULT_LIMITS } from '../../src/lib/engine/limits';
-
-const MAGIC: Record<string, number[]> = {
-  'image/jpeg': [0xff, 0xd8, 0xff, 0xe0],
-  'image/png': [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a],
-  'image/webp': [...asciiBytes('RIFF'), 0, 0, 0, 0, ...asciiBytes('WEBP')],
-};
-
-interface FakeImg extends DecodedImage { closed: boolean; id: number }
-interface FakeOpts { alpha?: boolean; webp?: boolean; complexity?: number; decodeDelay?: number; renderDelay?: number; swapOrientation?: boolean; wrongMagic?: boolean; decodeFails?: unknown }
-
-function fakeEnv(o: FakeOpts = {}) {
-  const images: FakeImg[] = [];
-  const renders: Array<{ w: number; h: number; q?: number; mime: string; fill: string | null; src: { x: number; y: number; width: number; height: number } }> = [];
-  let released = 0;
-  let decodeArgs: Array<number | undefined> = [];
-  const env: Env<FakeImg> = {
-    async decode(blob, resizeWidth) {
-      decodeArgs.push(resizeWidth);
-      if (o.decodeFails) throw o.decodeFails;
-      if (o.decodeDelay) await new Promise((r) => setTimeout(r, o.decodeDelay));
-      const { readHeader } = await import('../../src/lib/engine/header');
-      const h = await readHeader(blob);
-      let [w, hh] = o.swapOrientation ? [h.storedWidth, h.storedHeight] : [h.width, h.height];
-      if (resizeWidth) { hh = Math.round((hh * resizeWidth) / w); w = resizeWidth; }
-      const img: FakeImg = { width: w, height: hh, closed: false, id: images.length, close() { this.closed = true; } };
-      images.push(img);
-      return img;
-    },
-    async render(img, src, w, h, fill, mime, quality) {
-      if (img.closed) throw new Error('render on closed image');
-      renders.push({ w, h, q: quality, mime, fill, src });
-      if (o.renderDelay) await new Promise((r) => setTimeout(r, o.renderDelay));
-      const q = quality ?? 1;
-      const bpp = mime === 'image/png' ? 1.5 : 0.03 + 0.5 * Math.pow(q, 3.5);
-      const n = Math.max(20, Math.round(400 + w * h * bpp * (o.complexity ?? 1)));
-      const bytes = new Uint8Array(n);
-      bytes.set(o.wrongMagic ? MAGIC['image/png'] : MAGIC[mime]);
-      return new Blob([bytes], { type: o.wrongMagic ? 'image/png' : mime });
-    },
-    async hasAlpha() { return !!o.alpha; },
-    async canEncode(mime) { return mime === 'image/webp' ? !!o.webp : true; },
-    release() { released++; },
-  };
-  return { env, images, renders, get released() { return released; }, decodeArgs };
-}
-
-const base: ProcessOptions = { format: 'jpeg', strategy: 'quality-first', lockAspect: true, fit: 'contain', background: 'white' };
-const jpg = (w: number, h: number, extra: Parameters<typeof jpegBytes>[0] | object = {}) => new Blob([jpegBytes({ width: w, height: h, ...extra }) as BlobPart], { type: 'image/jpeg' });
-const png = (w: number, h: number, colorType = 6) => new Blob([pngBytes({ width: w, height: h, colorType }) as BlobPart], { type: 'image/png' });
 
 describe('runPipeline: validation before decoding', () => {
   it('rejects by magic bytes, not MIME (SVG labelled image/png)', async () => {
@@ -115,7 +66,7 @@ describe('runPipeline: results', () => {
     const [w, h] = [r.width, r.height];
     expect(w * h).toBeLessThanOrEqual(6_000_000 * 1.01);
     expect(Math.abs(w / h - 8000 / 6000)).toBeLessThan(0.01);
-    expect(r.notes.join(' ')).toMatch(/processed at/);
+    expect(r.notes.join(' ')).toMatch(/opened at reduced size/);
     // small source: full decode
     const g = fakeEnv();
     await runPipeline(jpg(3000, 2000), { ...base }, g.env);

@@ -5,10 +5,10 @@
  */
 import { EngineError, type ProcessHooks, type ProcessOptions, type ProcessResult } from './types';
 import { resolveLimits, type FullLimits } from './limits';
-import { normalizeOptions, hasSizeTarget } from './options';
+import { normalizeOptions, hasSizeTarget, outputTooLargeMessage } from './options';
 import { readHeader } from './header';
 import { hasMagic } from './sniff';
-import { resolveGeometry, type Rect } from './dims';
+import { resolveGeometry, type Geometry, type Rect } from './dims';
 import { byteWindow } from './window';
 import { planDecode, resolveFormat } from './plan';
 import { fitSearch, Q_MIN } from './search';
@@ -32,6 +32,16 @@ function mapDecodeError(e: unknown): EngineError {
   return new EngineError('corrupt', 'This image could not be opened. The file may be damaged.');
 }
 
+/** Output limits apply to the RESOLVED geometry (a derived side or lockAspect:false can make it huge). */
+function checkOutput(g: Geometry, limits: FullLimits): Geometry {
+  // Free dimensions are bounded by the (reduced) decode; only user-fixed sizes can ask for a huge canvas.
+  if (g.fixed && (g.baseWidth > limits.maxSide || g.baseHeight > limits.maxSide || g.baseWidth * g.baseHeight > limits.maxOutputPixels)) {
+    throw new EngineError('invalid_options', outputTooLargeMessage(limits));
+  }
+  return g;
+}
+const mp = (px: number) => (px / 1e6).toFixed(1);
+
 export async function runPipeline<I extends DecodedImage>(file: Blob, input: ProcessOptions, env: Env<I>, hooks: ProcessHooks = {}, cfg: PipelineConfig = {}): Promise<ProcessResult> {
   const limits = resolveLimits(cfg.limits);
   const now = cfg.now ?? (() => Date.now());
@@ -46,15 +56,16 @@ export async function runPipeline<I extends DecodedImage>(file: Blob, input: Pro
   if (file.size > limits.maxFileBytes) throw new EngineError('too_large_bytes', `This file is larger than ${Math.round(limits.maxFileBytes / 1024 / 1024)} MB. Please choose a smaller image.`);
   const header = await ctx.race(readHeader(file));
   const srcPixels = header.width * header.height;
-  if (srcPixels > limits.maxPixels) throw new EngineError('too_many_pixels', `This image has ${Math.round(srcPixels / 1e6)} megapixels; the limit is ${Math.round(limits.maxPixels / 1e6)}. Please choose a smaller image.`);
+  if (srcPixels > limits.maxPixels) throw new EngineError('too_many_pixels', `This image has ${mp(srcPixels)} megapixels; the limit is ${mp(limits.maxPixels)}. Please choose a smaller image.`);
 
   const win = byteWindow(opts.minKb, opts.maxKb);
+  if (win.lo > win.hi) throw new EngineError('invalid_options', 'The minimum and maximum sizes are too close together to be met. Please widen the range.');
   const notes: string[] = [];
   if (win.conflict) notes.push(NOTES.kbConflict(opts.minKb as number));
   if (header.animated) notes.push(NOTES.animated);
 
   let srcW = header.width, srcH = header.height;
-  let geom = resolveGeometry(srcW, srcH, opts);
+  let geom = checkOutput(resolveGeometry(srcW, srcH, opts), limits);
   const plan = planDecode(srcW, srcH, geom, win.lo, win.hi, limits);
 
   progress({ stage: 'decoding' });
@@ -66,6 +77,10 @@ export async function runPipeline<I extends DecodedImage>(file: Blob, input: Pro
       throw mapDecodeError(e);
     }
     if (!(img.width > 0 && img.height > 0)) throw new EngineError('corrupt', 'This image could not be opened. The file may be damaged.');
+    // The decoded bitmap must not be bigger than the header promised (limits were enforced on the header).
+    const aspect = Math.max(srcW / srcH, srcH / srcW); // a browser that ignores orientation inverts the aspect of a width-only resize
+    const expectedPx = plan.reduced ? plan.width * plan.width * aspect : srcW * srcH;
+    if (img.width * img.height > expectedPx * 1.01 + 1) throw new EngineError('corrupt', 'The image data does not match its header. The file may be damaged.');
 
     // Reconcile orientation with what the browser actually produced (it is the source of truth for pixels).
     let orientationApplied = true;
@@ -73,18 +88,16 @@ export async function runPipeline<I extends DecodedImage>(file: Blob, input: Pro
     if (srcW !== srcH && img.width !== img.height && headerLandscape !== bmpLandscape) {
       if (header.orientation >= 5) { orientationApplied = false; notes.push(NOTES.orientationUnknown); }
       [srcW, srcH] = [srcH, srcW];
-      geom = resolveGeometry(srcW, srcH, opts);
+      geom = checkOutput(resolveGeometry(srcW, srcH, opts), limits);
     }
     const k = img.width / srcW; // source px -> decoded px
     const src: Rect = { x: geom.src.x * k, y: geom.src.y * k, width: Math.min(img.width, geom.src.width * k), height: Math.min(img.height, geom.src.height * k) };
 
     // Base output size: free dims are capped by what we decoded (never upscale beyond the working bitmap).
     let baseW = geom.baseWidth, baseH = geom.baseHeight;
-    let memoryReduced = false;
     if (!geom.fixed && (src.width < baseW - 0.5 || src.height < baseH - 0.5)) {
       const f = Math.min(src.width / baseW, src.height / baseH);
       baseW = Math.max(1, Math.round(baseW * f)); baseH = Math.max(1, Math.round(baseH * f));
-      memoryReduced = true;
     }
     if (geom.upscaled) notes.push(NOTES.upscaled);
 
@@ -131,20 +144,22 @@ export async function runPipeline<I extends DecodedImage>(file: Blob, input: Pro
     const best = out.best;
     const blob = best.blob;
     // Final checks on the real bytes (never trust bookkeeping).
-    const finalHead = new Uint8Array(await blob.slice(0, 16).arrayBuffer());
+    const finalHead = new Uint8Array(await ctx.race(blob.slice(0, 16).arrayBuffer()));
     if (!hasMagic(finalHead, fmt.mime)) throw new EngineError('encode_unsupported', 'The browser produced an unexpected file type.');
-    if (strip && !isStructurallyValidJpeg(new Uint8Array(await blob.arrayBuffer()))) throw new EngineError('encode_unsupported', 'The browser produced an invalid JPEG.');
+    if (strip && !isStructurallyValidJpeg(new Uint8Array(await ctx.race(blob.arrayBuffer())))) throw new EngineError('encode_unsupported', 'The browser produced an invalid JPEG.');
     if ((out.status === 'ok' || out.status === 'raised') && !(blob.size >= win.lo && blob.size <= win.hi)) throw new Error('internal: success outside window'); // unreachable by construction
 
     if (lossy && best.quality !== null && best.quality < Q_MIN && (out.status === 'ok' || out.status === 'raised')) notes.push(NOTES.lowQuality(best.quality));
     if (fmt.mime === 'image/png' && !hasAlpha && opts.format === 'auto' && hasSizeTarget(opts) && (best.scale < 0.999 || out.status === 'above_max' || out.status === 'above_max_fixed')) notes.push(NOTES.pngTryJpeg);
-    if (memoryReduced && best.scale >= 0.999) notes.push(NOTES.reduced(best.width, best.height, header.width, header.height));
+    // Disclose the reduced decode whenever it limited the detail available to the output (free or fixed dims, crops).
+    if (plan.reduced && (best.width > src.width * 0.98 || best.height > src.height * 0.98)) notes.push(NOTES.reduced(img.width, img.height, srcW, srcH));
 
     const message = buildMessage({
       status: out.status, reason: out.reason, mime: fmt.mime, lossless: !lossy, fixed: geom.fixed, allowEnlarge: !!opts.allowEnlarge,
       minKb: opts.minKb, maxKb: opts.maxKb, lo: win.lo, hi: win.hi, maxEncodes,
       best, gapAbove: out.gapAbove, maxProbe: out.maxQualityProbe,
     });
+    ctx.check(); // an abort that arrived during the final checks must not resolve
     return {
       status: out.status,
       blob,
