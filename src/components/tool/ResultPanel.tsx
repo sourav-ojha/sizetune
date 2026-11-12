@@ -25,8 +25,8 @@ const HINT: Partial<Record<ResultStatus, string>> = {
 interface Props {
   view: ResultView;
   originalName: string;
-  /** Pixel size shown for the original (from the file); falls back to the engine's report. */
-  originalUrl?: string | null;
+  /** The user's original file (blob URL + name), offered for download when the result is larger than it. */
+  original?: { url: string; name: string } | null;
   /** Extra preview content (before/after compare or signature-on-white). */
   preview: ReactNode;
   onReset: () => void;
@@ -39,7 +39,7 @@ interface Props {
   autoFocus?: boolean;
 }
 
-export default function ResultPanel({ view, originalName, preview, onReset, onTryJpeg, resetLabel = 'Process another image', autoFocus = true, hints }: Props) {
+export default function ResultPanel({ view, originalName, original, preview, onReset, onTryJpeg, resetLabel = 'Process another image', autoFocus = true, hints }: Props) {
   const { data, options } = view;
   const headingRef = useRef<HTMLHeadingElement>(null);
   useEffect(() => { if (autoFocus) headingRef.current?.focus(); }, [autoFocus, view.url]);
@@ -48,10 +48,18 @@ export default function ResultPanel({ view, originalName, preview, onReset, onTr
   const { minBytes, maxBytes } = data.window;
   const over = maxBytes != null && data.bytes > maxBytes ? data.bytes - maxBytes : 0;
   const under = minBytes != null && data.bytes < minBytes ? minBytes - data.bytes : 0;
-  const frame = ok ? 'border-emerald-700 bg-emerald-50 text-emerald-950' : 'border-amber-700 bg-amber-50 text-amber-950';
+  const larger = data.bytes > data.source.bytes;
+  const keepOriginal = larger && data.originalFits === true && !!original;
+  const good = ok && !larger;
+  const frame = good ? 'border-emerald-700 bg-emerald-50 text-emerald-950' : 'border-amber-700 bg-amber-50 text-amber-950';
   const fmt = FORMAT_NAME[data.mime] ?? data.mime;
   const basis = describeWindow(data.window, options.minKb, options.maxKb);
-  const dlLabel = ok ? 'Download' : 'Download anyway';
+  const typedW = options.width, typedH = options.height;
+  const notes = [...data.notes];
+  if (typedW && typedH && (data.width !== typedW || data.height !== typedH)) {
+    notes.push(`${options.lockAspect ? 'Aspect lock kept the shape' : 'The size was adjusted'}: the result is ${formatDims(data.width, data.height)}, not the ${formatDims(typedW, typedH)} you typed.`);
+  }
+  const dlLabel = !ok ? 'Download anyway' : larger ? 'Download the larger result anyway' : 'Download';
   const hint = hints?.[data.status] ?? HINT[data.status];
   // Lossless PNG can only reach a small size by shrinking the pixels; for a picture without transparency JPEG usually keeps more detail.
   const pngShrunk = ok && data.mime === 'image/png' && !data.source.hasAlpha && data.width < data.source.width;
@@ -64,11 +72,19 @@ export default function ResultPanel({ view, originalName, preview, onReset, onTr
       className={`space-y-4 rounded-xl border-2 p-4 sm:p-5 ${frame}`}
     >
       <h3 id="sizetune-result-heading" ref={headingRef} tabIndex={-1} className="text-lg font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-800" data-testid="result-heading">
-        <span aria-hidden="true">{ok ? '✓ ' : '⚠ '}</span>{HEADING[data.status]}
+        <span aria-hidden="true">{good ? '✓ ' : '⚠ '}</span>{larger && ok ? 'The result is larger than your original' : HEADING[data.status]}
       </h3>
 
       {data.message && !plainOk && <p data-testid="result-message">{data.message}</p>}
       {hint && <p data-testid="result-hint">{hint}</p>}
+      {larger && (
+        <p data-testid="larger-note">
+          Your original ({formatSize(data.source.bytes)}) is already smaller than this result ({formatSize(data.bytes)}). Re-saving can make a small or already-compressed file bigger.{' '}
+          {data.originalFits === true
+            ? 'Your original already fits your limit, so you can simply keep it. Note that the original still contains any camera or location details.'
+            : data.originalFits === false ? 'Your original does not fit your limit either, so neither file meets it.' : ''}
+        </p>
+      )}
 
       <dl className="grid grid-cols-1 gap-x-6 gap-y-1 text-sm sm:grid-cols-2">
         <div>
@@ -99,11 +115,11 @@ export default function ResultPanel({ view, originalName, preview, onReset, onTr
         )}
       </dl>
 
-      {data.notes.length > 0 && (
+      {notes.length > 0 && (
         <div data-testid="result-notes">
           <h4 className="text-sm font-semibold">Please note</h4>
           <ul className="ml-5 list-disc text-sm">
-            {data.notes.map((n, i) => <li key={i}>{n}</li>)}
+            {notes.map((n, i) => <li key={i}>{n}</li>)}
           </ul>
         </div>
       )}
@@ -111,11 +127,16 @@ export default function ResultPanel({ view, originalName, preview, onReset, onTr
       {preview}
 
       <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+        {keepOriginal && original && (
+          <a data-testid="keep-original" href={original.url} download={original.name} className={btnPrimary}>
+            Keep your original instead<span className="sr-only">: {original.name}</span>
+          </a>
+        )}
         <a
           data-testid={ok ? 'download' : 'download-anyway'}
           href={view.url}
           download={view.filename}
-          className={ok ? btnPrimary : btnSecondary}
+          className={good ? btnPrimary : btnSecondary}
         >
           {dlLabel}<span className="sr-only">: {view.filename}</span>
         </a>
@@ -128,7 +149,7 @@ export default function ResultPanel({ view, originalName, preview, onReset, onTr
       </div>
       {pngShrunk && <p className="text-sm" data-testid="png-tip">PNG keeps every pixel exactly, so it had to shrink the picture to reach this size. For a photograph, JPEG usually keeps more detail at the same size.</p>}
       {!ok && <p className="text-sm" data-testid="not-success-note">This file does not meet your target. Download it only if you can still use it.</p>}
-      <p className="text-xs" data-testid="kb-basis">KB in this page = 1,024 bytes. A maximum of N KB is applied as N × 1,000 bytes so the file also passes a check that counts 1 KB as 1,000 bytes.</p>
+      <p className="text-xs" data-testid="kb-basis">KB figures on this page use 1 KB = 1,024 bytes; the exact byte counts are always shown.</p>
       <p className="text-sm">Saved as <span data-testid="download-name">{view.filename}</span> from “{originalName}”.</p>
     </section>
   );

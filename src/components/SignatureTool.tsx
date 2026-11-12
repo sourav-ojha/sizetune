@@ -12,7 +12,7 @@ import { getLimits } from './tool/engine';
 import { formatCap, formatDims, formatSize } from './tool/format';
 import { useForm, useWebpSupport } from './tool/hooks';
 import { probeAlpha } from './tool/alpha';
-import { buildOptions, type FormState } from './tool/options';
+import { buildOptions, parseNumber, type FormState } from './tool/options';
 import { findInkBounds, scaleRect } from './tool/trim';
 import { statusText, useIntake } from './tool/useIntake';
 import { useToolSession } from './tool/useSession';
@@ -60,7 +60,7 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
   const sendCrop = crop && state.natural && !isFullRect(crop, state.natural) ? crop : undefined;
   const built = buildOptions(effective, { crop: sendCrop });
   const errors = built.ok ? {} : built.errors;
-  const busy = state.phase === 'processing' || state.phase === 'checking';
+  const busy = state.phase === 'processing';
   const basis = crop ? { width: crop.width, height: crop.height } : null;
 
   const update = useCallback((patch: Partial<FormState>) => {
@@ -94,10 +94,11 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
   const editField = (f: RectField, raw: string) => {
     if (!crop || !state.natural) return;
     setDraft((d) => ({ ...d, [f]: raw }));
-    if (/^\d+$/.test(raw.trim())) {
-      const next = setRectField(crop, f, Number(raw), state.natural, lockCrop && (f === 'width' || f === 'height'));
+    const pn = parseNumber(raw, 'px');
+    if (pn.kind === 'ok' && Number.isInteger(pn.value)) {
+      const next = setRectField(crop, f, pn.value, state.natural, lockCrop && (f === 'width' || f === 'height'));
       changeCrop(next);
-      if (next[f] !== Number(raw)) setDraft((d) => ({ ...d, [f]: String(next[f]) })); // show the value that was actually applied
+      if (next[f] !== pn.value) setDraft((d) => ({ ...d, [f]: String(next[f]) })); // show the value that was actually applied
     }
   };
 
@@ -227,6 +228,7 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
       {state.error && state.file && (
         <div role="alert" data-testid="error" className="space-y-2 rounded-lg border border-red-700 bg-red-50 p-3 text-red-950">
           <p>{state.error.message}</p>
+          {state.error.action === 'retry' && <button type="button" data-testid="retry" className={btnSecondary} onClick={() => run()}>Try again</button>}
           {state.error.action === 'use-jpeg' && <button type="button" data-testid="use-jpeg" className={btnSecondary} onClick={useJpeg}>Use JPEG instead</button>}
         </div>
       )}
@@ -239,6 +241,7 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
           resetLabel="Process another signature"
           onReset={reset}
           onTryJpeg={() => { setUserFormat('jpeg'); session.clearResult(); }}
+          original={state.previewUrl ? { url: state.previewUrl, name: state.file?.name ?? 'original' } : null}
           preview={(
             <div data-testid="signature-preview" className="rounded-lg border border-slate-300 bg-white p-3">
               <p className="mb-2 text-sm text-slate-800">Preview on white paper, at its real pixel size (reduced only if it does not fit the screen).</p>

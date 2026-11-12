@@ -1,12 +1,10 @@
 /** Real browser Env: createImageBitmap + one reused canvas (OffscreenCanvas in workers, <canvas> on the main-thread fallback). */
-import { EngineError } from './types';
 import type { Env } from './env';
 import { sniffType } from './sniff';
+import { classifyBrowserError } from './errors';
 
 type AnyCanvas = OffscreenCanvas | HTMLCanvasElement;
-type Ctx2D = OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D;
-
-const oom = (what: string) => new EngineError('out_of_memory', `The browser could not allocate memory to ${what}. Try a smaller image or close other tabs.`);
+type Ctx2D = (OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D) & { isContextLost?: () => boolean };
 
 export function createCanvasEnv(kind: 'offscreen' | 'dom'): Env<ImageBitmap> {
   const make = (w: number, h: number): AnyCanvas => {
@@ -17,7 +15,7 @@ export function createCanvasEnv(kind: 'offscreen' | 'dom'): Env<ImageBitmap> {
   };
   const encode = (c: AnyCanvas, type: string, quality?: number): Promise<Blob> => {
     if ('convertToBlob' in c) return c.convertToBlob({ type, quality });
-    return new Promise((resolve, reject) => (c as HTMLCanvasElement).toBlob((b) => (b ? resolve(b) : reject(oom('encode the image'))), type, quality));
+    return new Promise((resolve, reject) => (c as HTMLCanvasElement).toBlob((b) => (b ? resolve(b) : reject(classifyBrowserError(null, 'encode', c.width * c.height))), type, quality));
   };
   let canvas: AnyCanvas | null = null;
   let ctx: Ctx2D | null = null;
@@ -28,9 +26,23 @@ export function createCanvasEnv(kind: 'offscreen' | 'dom'): Env<ImageBitmap> {
       return resizeWidth ? createImageBitmap(blob, { resizeWidth, resizeQuality: 'high' }) : createImageBitmap(blob);
     },
     async render(img, src, w, h, fill, mime, quality) {
-      if (!canvas) { canvas = make(w, h); ctx = null; } else { canvas.width = w; canvas.height = h; } // resizing clears to transparent
-      ctx ??= canvas.getContext('2d') as Ctx2D | null;
-      if (!ctx || canvas.width !== w || canvas.height !== h) throw oom('create the image');
+      // One reused canvas. A lost/unusable context (GPU reset, failed resize) is rebuilt ONCE on a fresh canvas;
+      // if that also fails it is out_of_memory only for large canvases, otherwise encode_failed (errors.ts).
+      for (let attempt = 0; ; attempt++) {
+        try {
+          if (!canvas) { canvas = make(w, h); ctx = null; } else { canvas.width = w; canvas.height = h; } // resizing clears to transparent
+          ctx ??= canvas.getContext('2d') as Ctx2D | null;
+        } catch (e) {
+          canvas = null; ctx = null;
+          if (attempt === 0) continue;
+          throw classifyBrowserError(e, 'canvas', w * h);
+        }
+        if (ctx && !ctx.isContextLost?.() && canvas.width === w && canvas.height === h) break;
+        if (canvas) { canvas.width = 0; canvas.height = 0; }
+        canvas = null; ctx = null;
+        if (attempt > 0) throw classifyBrowserError(null, 'canvas', w * h);
+      }
+      if (!canvas || !ctx) throw classifyBrowserError(null, 'canvas', w * h);
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
       if (fill) { ctx.fillStyle = fill; ctx.fillRect(0, 0, w, h); }
@@ -38,8 +50,7 @@ export function createCanvasEnv(kind: 'offscreen' | 'dom'): Env<ImageBitmap> {
       try {
         return await encode(canvas, mime, quality);
       } catch (e) {
-        if (e instanceof EngineError) throw e;
-        throw oom('encode the image');
+        throw classifyBrowserError(e, 'encode', w * h);
       }
     },
     async hasAlpha(img) {
@@ -48,7 +59,7 @@ export function createCanvasEnv(kind: 'offscreen' | 'dom'): Env<ImageBitmap> {
       const c = make(w, h);
       try {
         const x = c.getContext('2d', { willReadFrequently: true }) as Ctx2D | null;
-        if (!x) throw oom('inspect the image');
+        if (!x) throw classifyBrowserError(null, 'canvas', w * h);
         x.imageSmoothingEnabled = true;
         x.imageSmoothingQuality = 'high';
         x.drawImage(img, 0, 0, w, h);

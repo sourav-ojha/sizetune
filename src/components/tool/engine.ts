@@ -6,6 +6,10 @@ import { canEncode, DEFAULT_LIMITS, EngineError, processImage as engineProcessIm
 export { EngineError };
 export type { ProcessOptions, ProcessResult };
 
+/**
+ * Static import on purpose. Lazy-loading the engine on first pick (dynamic import()) was tried and rejected: scripts/verify-privacy.mjs
+ * and verify-html.mjs forbid 'dyn-import' on tool pages, and the saving is tiny (engine chunk ~11 KB gz; the worker is already loaded lazily).
+ */
 export const processImage: ProcessImage = (file, opts, hooks) => engineProcessImage(file, opts, hooks);
 
 /** Engine limits (file size cap etc.). */

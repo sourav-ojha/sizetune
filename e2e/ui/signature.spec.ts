@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { downloaded, file, flatPng, isJpeg, isPng, openTool, pick, resize, signaturePng } from './helpers';
+import { downloaded, exifRotatedJpeg, file, flatPng, isJpeg, isPng, isRed, openTool, pick, pixelsAt, redBlockPng, resize, signaturePng } from './helpers';
 
 const URL = '/resize-signature/';
 const sig = () => file('sig.png', signaturePng());
@@ -161,5 +161,54 @@ test.describe('signature tool', () => {
     await expect(page.getByTestId('result')).toHaveCount(0);
     await pick(page, sig());
     expect(await crop(page)).toEqual({ x: 0, y: 0, w: 600, h: 200 });
+  });
+
+  const typeInTabOrder = async (page: Page) => {
+    await page.getByTestId('crop-x').click();
+    for (const [v, last] of [['290', false], ['90', false], ['220', false], ['70', true]] as const) {
+      await page.keyboard.press('ControlOrMeta+A');
+      await page.keyboard.type(v);
+      if (!last) await page.keyboard.press('Tab');
+    }
+    await page.keyboard.press('Tab'); // commit the last field
+  };
+
+  test('M1: typing Left, Top, Width, Height in tab order gives the exact region (1200x400 PNG)', async ({ page }) => {
+    await openTool(page, URL);
+    await pick(page, file('wide.png', redBlockPng(1200, 400, 290, 90, 220, 70)));
+    expect(await crop(page)).toEqual({ x: 0, y: 0, w: 1200, h: 400 });
+    await typeInTabOrder(page);
+    expect(await crop(page)).toEqual({ x: 290, y: 90, w: 220, h: 70 });
+    await page.getByTestId('preset-20').click();
+    await resize(page);
+    const d = await downloaded(page, 'download');
+    expect([d.w, d.h]).toEqual([220, 70]);
+    const px = await pixelsAt(page, d.buf, [[6, 6], [213, 6], [6, 63], [213, 63], [110, 35]]);
+    expect(px.every(isRed), JSON.stringify(px)).toBe(true);
+  });
+
+  test('M1: same with an EXIF-orientation-6 JPEG (crop is in oriented source pixels)', async ({ page }) => {
+    await openTool(page, URL);
+    await pick(page, file('rotated.jpg', await exifRotatedJpeg(page), 'image/jpeg'));
+    await expect(page.getByTestId('crop-width')).toHaveValue('1200'); // displayed size, orientation applied
+    await expect(page.getByTestId('crop-height')).toHaveValue('400');
+    await typeInTabOrder(page);
+    expect(await crop(page)).toEqual({ x: 290, y: 90, w: 220, h: 70 });
+    await page.getByTestId('preset-20').click();
+    await resize(page);
+    const d = await downloaded(page, 'download');
+    expect([d.w, d.h]).toEqual([220, 70]);
+    const px = await pixelsAt(page, d.buf, [[8, 8], [211, 8], [8, 61], [211, 61], [110, 35]]);
+    expect(px.every(isRed), JSON.stringify(px)).toBe(true);
+  });
+
+  test('crop fields accept units and show the value that was applied', async ({ page }) => {
+    await openTool(page, URL);
+    await pick(page, sig());
+    await page.getByTestId('crop-x').fill('100 px');
+    await page.getByTestId('crop-x').blur(); // on blur the field shows the applied number
+    expect((await crop(page)).x).toBe(100);
+    await page.getByTestId('crop-height').fill('9,999');
+    await expect(page.getByTestId('crop-height')).toHaveValue('200');
   });
 });

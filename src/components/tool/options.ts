@@ -46,29 +46,37 @@ export function defaultForm(over: Partial<FormState> = {}): FormState {
 
 type Parsed = { kind: 'empty' } | { kind: 'ok'; value: number } | { kind: 'bad' };
 
-export function parseNumber(raw: string): Parsed {
-  const s = raw.trim();
+/**
+ * Lenient numeric parsing for typed values: accepts thousands separators ("1,000", "1 000") and a trailing unit
+ * ("20 KB", "300px"); anything else is "bad" (never guessed, e.g. "1,5" or "1e3").
+ */
+export function parseNumber(raw: string, unit: 'kb' | 'px' | null = null): Parsed {
+  let s = raw.trim();
   if (s === '') return { kind: 'empty' };
+  const unitRe = unit === 'kb' ? /\s*(kb|kib|k)$/i : unit === 'px' ? /\s*(px|pixels?)$/i : null;
+  if (unitRe) s = s.replace(unitRe, '').trim();
+  if (/^\d{1,3}(,\d{3})+(\.\d+)?$/.test(s)) s = s.replace(/,/g, '');
+  else if (/^\d{1,3}( \d{3})+(\.\d+)?$/.test(s)) s = s.replace(/ /g, '');
   if (!/^\d*\.?\d+$/.test(s)) return { kind: 'bad' };
   const n = Number(s);
   return Number.isFinite(n) ? { kind: 'ok', value: n } : { kind: 'bad' };
 }
 
 function kbField(raw: string, name: 'maxKb' | 'minKb', errors: FieldErrors, requiredMsg?: string): number | undefined {
-  const p = parseNumber(raw);
+  const p = parseNumber(raw, 'kb');
   if (p.kind === 'empty') { if (requiredMsg) errors[name] = requiredMsg; return undefined; }
   if (p.kind === 'bad' || p.value < 1 || p.value > MAX_KB_LIMIT) {
-    errors[name] = `Enter a size between 1 and ${MAX_KB_LIMIT.toLocaleString('en-US')} KB.`;
+    errors[name] = `Enter a size between 1 and ${MAX_KB_LIMIT.toLocaleString('en-US')} KB, for example 20 or “20 KB”.`;
     return undefined;
   }
   return p.value;
 }
 
 function pxField(raw: string, name: 'width' | 'height' | 'maxWidth' | 'maxHeight', errors: FieldErrors): number | undefined {
-  const p = parseNumber(raw);
+  const p = parseNumber(raw, 'px');
   if (p.kind === 'empty') return undefined;
   if (p.kind === 'bad' || !Number.isInteger(p.value) || p.value < 1 || p.value > MAX_DIM_LIMIT) {
-    errors[name] = `Enter a whole number of pixels between 1 and ${MAX_DIM_LIMIT.toLocaleString('en-US')}.`;
+    errors[name] = `Enter a whole number of pixels between 1 and ${MAX_DIM_LIMIT.toLocaleString('en-US')}, for example 600 or “600 px”.`;
     return undefined;
   }
   return p.value;
@@ -119,7 +127,7 @@ export function buildOptions(f: FormState, ctx: BuildContext = {}): BuildResult 
     format: f.format,
     strategy: f.strategy,
     lockAspect: f.lockAspect,
-    fit: both ? (f.lockAspect ? f.fit : 'stretch') : 'contain',
+    fit: both ? (f.lockAspect ? f.fit : 'stretch') : 'contain', // with the aspect lock off both sizes are used exactly
     background,
   };
   if (maxKb != null) options.maxKb = maxKb;
@@ -136,13 +144,13 @@ export function buildOptions(f: FormState, ctx: BuildContext = {}): BuildResult 
 
 /** Which preset (if any) matches the current max text exactly. */
 export function activePreset(maxKb: string): number | null {
-  const p = parseNumber(maxKb);
+  const p = parseNumber(maxKb, 'kb');
   return p.kind === 'ok' && (PRESETS_KB as readonly number[]).includes(p.value) ? p.value : null;
 }
 
 /** When one output dimension is typed and aspect is locked, the other is shown (not sent) from this ratio. */
 export function derivedDimension(typed: string, srcW: number, srcH: number, solve: 'width' | 'height'): number | null {
-  const p = parseNumber(typed);
+  const p = parseNumber(typed, 'px');
   if (p.kind !== 'ok' || !(srcW > 0) || !(srcH > 0)) return null;
   const v = solve === 'height' ? (p.value * srcH) / srcW : (p.value * srcW) / srcH;
   return Math.max(1, Math.round(v));

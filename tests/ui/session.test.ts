@@ -18,6 +18,43 @@ function setup(over: Partial<SessionDeps> = {}) {
 const opts = { format: 'auto', strategy: 'quality-first', lockAspect: true, fit: 'contain', background: 'keep', maxKb: 20 } as const;
 const tick = () => new Promise((r) => setTimeout(r, 0));
 
+describe('ToolSession (rejection, settings change)', () => {
+  it('a wrong-type pick over a loaded image keeps the file, the result and its URLs, and reports the error', async () => {
+    const { s, eng, live } = setup();
+    await s.selectFile(pngFile('keep.png'));
+    const p = s.run(opts);
+    eng.calls[0].resolve(makeResult());
+    await p;
+    await s.selectFile(new File(['<svg></svg>'], 'x.svg', { type: 'image/svg+xml' }));
+    const st = s.getSnapshot();
+    expect(st.file?.name).toBe('keep.png');
+    expect(st.phase).toBe('done');
+    expect(st.result).not.toBeNull();
+    expect(st.error?.code).toBe('unsupported_type');
+    expect(live.size).toBe(2);
+  });
+  it('an oversized pick over a loaded image is also rejected without losing the current one', async () => {
+    const { s } = setup({ maxFileBytes: 100 });
+    await s.selectFile(pngFile('small.png'));
+    await s.selectFile(new File([new Uint8Array(500)], 'big.png'));
+    expect(s.getSnapshot().file?.name).toBe('small.png');
+    expect(s.getSnapshot().error?.code).toBe('too_large_bytes');
+  });
+  it('changing settings during a run cancels it and says so', async () => {
+    const { s, eng } = setup();
+    await s.selectFile(pngFile());
+    const p = s.run(opts);
+    s.clearResult();
+    expect(eng.calls[0].hooks!.signal!.aborted).toBe(true);
+    expect(s.getSnapshot()).toMatchObject({ phase: 'ready', notice: expect.stringContaining('cancelled') });
+    eng.calls[0].resolve(makeResult());
+    await p;
+    expect(s.getSnapshot().result).toBeNull();
+    void s.run(opts); // starting again clears the notice
+    expect(s.getSnapshot().notice).toBeNull();
+  });
+});
+
 describe('ToolSession', () => {
   it('rejects non-image content by magic bytes without creating any URL', async () => {
     const { s, live } = setup();
@@ -105,6 +142,15 @@ describe('ToolSession', () => {
     expect(st.phase).toBe('ready');
     expect(st.file).not.toBeNull();
     expect(st.error).toMatchObject({ code: 'encode_unsupported', action: 'use-jpeg' });
+  });
+  it('a transient engine failure keeps the file and offers a retry', async () => {
+    const { s, eng } = setup();
+    await s.selectFile(pngFile());
+    const p = s.run(opts);
+    eng.calls[0].reject(new EngineError('encode_failed', 'x'));
+    await p;
+    expect(s.getSnapshot()).toMatchObject({ phase: 'ready', error: { code: 'encode_failed', action: 'retry' } });
+    expect(s.getSnapshot().file).not.toBeNull();
   });
   it('a newer run supersedes an older one', async () => {
     const { s, eng } = setup();

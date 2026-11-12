@@ -96,13 +96,23 @@ describe('keyboard nudging', () => {
 describe('numeric fields', () => {
   const r = { x: 100, y: 100, width: 400, height: 200 };
   it('clamps x/y so the box stays inside', () => {
-    expect(setRectField(r, 'x', 900, B)).toMatchObject({ x: 600, width: 400 });
+    expect(setRectField(r, 'x', 900, B)).toMatchObject({ x: 900, width: 100 }); // shrinks to fit instead of snapping
+    expect(setRectField(r, 'x', 5000, B)).toMatchObject({ x: 999, width: 1 });
     expect(setRectField(r, 'y', -5, B).y).toBe(0);
     expect(setRectField(r, 'x', NaN, B)).toBe(r);
   });
   it('clamps width/height to the room left', () => {
     expect(setRectField(r, 'width', 5000, B)).toMatchObject({ width: 900 });
     expect(setRectField(r, 'height', 0, B).height).toBe(1);
+  });
+  it('typing Left, Top, Width, Height in tab order on a full-size box yields the exact region', () => {
+    const B2 = { width: 1200, height: 400 };
+    let c = fullRect(B2);
+    c = setRectField(c, 'x', 290, B2);
+    c = setRectField(c, 'y', 90, B2);
+    c = setRectField(c, 'width', 2, B2); c = setRectField(c, 'width', 22, B2); c = setRectField(c, 'width', 220, B2);
+    c = setRectField(c, 'height', 7, B2); c = setRectField(c, 'height', 70, B2);
+    expect(c).toEqual({ x: 290, y: 90, width: 220, height: 70 });
   });
   it('locks aspect on width/height edits', () => {
     expect(setRectField(r, 'width', 600, B, true)).toMatchObject({ width: 600, height: 300 });

@@ -34,21 +34,13 @@ export function formatChange(originalBytes: number, outputBytes: number): string
   return up < 1 ? 'less than 1% larger than the original' : `${Math.round(up)}% larger than the original`;
 }
 
-/** Describes the byte window the engine aimed for, e.g. "under 20,000 bytes (20 × 1,000)". */
+/** Describes the byte window the engine aimed for, with the 1,000 / 1,024 basis spelled out. */
 export function describeWindow(w: { minBytes: number | null; maxBytes: number | null }, minKb?: number, maxKb?: number): string {
   const parts: string[] = [];
-  if (w.minBytes != null && w.maxBytes != null) {
-    parts.push(`between ${formatInt(w.minBytes)} and ${formatInt(w.maxBytes)} bytes`);
-  } else if (w.maxBytes != null) {
-    parts.push(`under ${formatInt(w.maxBytes)} bytes`);
-  } else if (w.minBytes != null) {
-    parts.push(`at least ${formatInt(w.minBytes)} bytes`);
-  }
-  let basis = '';
-  if (maxKb != null && w.maxBytes != null) basis += ` (maximum: ${trimNum(maxKb)} × 1,000 bytes`;
-  if (minKb != null && w.minBytes != null) basis += `${basis ? ', ' : ' ('}minimum: ${trimNum(minKb)} × 1,024 bytes`;
-  if (basis) basis += ')';
-  return parts.length ? `Aimed for ${parts[0]}${basis}` : '';
+  if (w.maxBytes != null) parts.push(`below ${maxKb != null ? `${trimNum(maxKb)} × 1,000 = ` : ''}${formatInt(w.maxBytes)} bytes`);
+  if (w.minBytes != null) parts.push(`above ${minKb != null ? `${trimNum(minKb)} × 1,024 = ` : ''}${formatInt(w.minBytes)} bytes`);
+  if (!parts.length) return '';
+  return `Aims ${parts.join(' and ')}, so it passes whether a portal counts 1 KB as 1,000 or 1,024 bytes`;
 }
 
 const trimNum = (n: number): string => (Number.isInteger(n) ? formatInt(n) : String(n));

@@ -15,6 +15,7 @@ import { fitSearch, Q_MIN } from './search';
 import { buildMessage, NOTES } from './messages';
 import { stripIccProfile, isStructurallyValidJpeg } from './jpeg';
 import { RunContext } from './context';
+import { classifyBrowserError } from './errors';
 import type { DecodedImage, Env } from './env';
 
 export interface PipelineConfig {
@@ -25,11 +26,10 @@ export interface PipelineConfig {
 
 const isEngineError = (e: unknown): e is EngineError => e instanceof EngineError || (typeof e === 'object' && e !== null && (e as { name?: string }).name === 'EngineError');
 
-function mapDecodeError(e: unknown): EngineError {
+/** Decode failures: only a genuine allocation failure is out_of_memory; anything else is corrupt (see errors.ts). */
+function mapDecodeError(e: unknown, pixels: number): EngineError {
   if (isEngineError(e)) return e;
-  const msg = String((e as { message?: string })?.message ?? e).toLowerCase();
-  if (e instanceof RangeError || /memory|allocation|too large/.test(msg)) return new EngineError('out_of_memory', 'The browser ran out of memory while opening this image. Try a smaller image or close other tabs.');
-  return new EngineError('corrupt', 'This image could not be opened. The file may be damaged.');
+  return classifyBrowserError(e, 'decode', pixels);
 }
 
 /** Output limits apply to the RESOLVED geometry (a derived side or lockAspect:false can make it huge). */
@@ -74,7 +74,7 @@ export async function runPipeline<I extends DecodedImage>(file: Blob, input: Pro
     try {
       img = await ctx.race(env.decode(file, plan.reduced ? plan.width : undefined), (late) => late.close());
     } catch (e) {
-      throw mapDecodeError(e);
+      throw mapDecodeError(e, plan.reduced ? plan.width * plan.height : srcW * srcH);
     }
     if (!(img.width > 0 && img.height > 0)) throw new EngineError('corrupt', 'This image could not be opened. The file may be damaged.');
     // The decoded bitmap must not be bigger than the header promised (limits were enforced on the header).

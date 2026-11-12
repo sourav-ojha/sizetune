@@ -96,8 +96,9 @@ export function nudgeRect(r: Rect, key: NudgeKey, step: number, b: Size, mode: '
 export function setRectField(r: Rect, field: RectField, value: number, b: Size, lockAspect = false): Rect {
   if (!Number.isFinite(value)) return r;
   const v = Math.round(value);
-  if (field === 'x') return clampRect({ ...r, x: v }, b);
-  if (field === 'y') return clampRect({ ...r, y: v }, b);
+  // Left/Top never fail because of the current width/height: the box shrinks to fit instead (so typing the four fields in any order works).
+  if (field === 'x') { const x = clamp(v, 0, b.width - 1); return clampRect({ ...r, x, width: Math.min(r.width, b.width - x) }, b); }
+  if (field === 'y') { const y = clamp(v, 0, b.height - 1); return clampRect({ ...r, y, height: Math.min(r.height, b.height - y) }, b); }
   const aspect = aspectOf(r);
   if (field === 'width') {
     let width = clamp(v, 1, b.width - r.x);

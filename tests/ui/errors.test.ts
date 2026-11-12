@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { EngineError } from '../../src/lib/engine/types';
 import { errorCodeOf, isSilent, toToolError } from '../../src/components/tool/errors';
 
-const codes = ['unsupported_type', 'corrupt', 'too_large_bytes', 'too_many_pixels', 'timeout', 'cancelled', 'out_of_memory', 'encode_unsupported', 'invalid_options'] as const;
+const codes = ['unsupported_type', 'corrupt', 'too_large_bytes', 'too_many_pixels', 'timeout', 'cancelled', 'out_of_memory', 'encode_unsupported', 'invalid_options', 'worker_failed', 'encode_failed'] as const;
 
 describe('error mapping', () => {
   it('maps every engine code to friendly, non-empty copy (cancelled is silent)', () => {
@@ -24,6 +24,15 @@ describe('error mapping', () => {
     const t = toToolError(new EngineError('encode_unsupported', 'x'), { requestedFormat: 'webp' });
     expect(t.action).toBe('use-jpeg');
     expect(t.message).toContain('WebP');
+  });
+  it('offers Try again for transient engine failures, with friendly copy', () => {
+    for (const c of ['encode_failed', 'worker_failed'] as const) {
+      const t = toToolError(new EngineError(c, 'raw engine text'));
+      expect(t.action).toBe('retry');
+      expect(t.message).toMatch(/try again/i);
+      expect(t.message).not.toContain('raw engine text');
+    }
+    expect(toToolError(new EngineError('worker_failed', 'x')).message).toContain('not a problem with your image');
   });
   it('shows the file cap when known', () => {
     expect(toToolError(new EngineError('too_large_bytes', 'x'), { maxFileBytes: 25 * 1024 * 1024 }).message).toContain('limit is 25 MB');

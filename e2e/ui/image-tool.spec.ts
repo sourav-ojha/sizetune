@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import fs from 'node:fs';
 import { NOISE, bytesOf, downloaded, file, flatPng, isJpeg, isPng, isWebp, openTool, pick, resize, transparentPng } from './helpers';
 
 test.describe('image tool', () => {
@@ -12,8 +13,8 @@ test.describe('image tool', () => {
     await resize(page);
     await expect(page.getByTestId('result')).toHaveAttribute('data-status', 'ok');
     expect(await bytesOf(page)).toBeLessThanOrEqual(30_000);
-    await expect(page.getByTestId('result-target')).toContainText('under 30,000 bytes');
-    await expect(page.getByTestId('result-target')).toContainText('30 × 1,000');
+    await expect(page.getByTestId('result-target')).toContainText('below 30 × 1,000 = 30,000 bytes');
+    await expect(page.getByTestId('result-target')).toContainText('passes whether a portal counts 1 KB as 1,000 or 1,024 bytes');
     await expect(page.getByTestId('result-change')).toContainText('smaller than the original');
     await expect(page.getByTestId('original-info')).toContainText('800 × 600 px');
     const d = await downloaded(page);
@@ -67,7 +68,7 @@ test.describe('image tool', () => {
     const b = await bytesOf(page);
     expect(b).toBeLessThanOrEqual(50_000);
     expect(b).toBeGreaterThanOrEqual(20 * 1024);
-    await expect(page.getByTestId('result-target')).toContainText('between 20,480 and 50,000 bytes');
+    await expect(page.getByTestId('result-target')).toContainText('below 50 × 1,000 = 50,000 bytes and above 20 × 1,024 = 20,480 bytes');
   });
 
   test('range validation: a minimum above the maximum is rejected (and the advanced section opens)', async ({ page }) => {
@@ -292,5 +293,155 @@ test.describe('image tool', () => {
     const d = await downloaded(page, (await page.getByTestId('download').count()) ? 'download' : 'download-anyway');
     expect(d.w).toBe(400);
     expect(d.h).toBe(300);
+  });
+
+  test('M4: a result larger than the original is not presented as success; the original can be kept', async ({ page }) => {
+    await openTool(page);
+    const tiny = flatPng(60, 30);
+    await pick(page, { name: 'tiny.png', mimeType: 'image/png', buffer: tiny });
+    await page.getByTestId('preset-200').click();
+    await resize(page);
+    await expect(page.getByTestId('result-heading')).toContainText('The result is larger than your original');
+    await expect(page.getByTestId('result-heading')).not.toContainText('ready');
+    await expect(page.getByTestId('result')).toHaveClass(/amber/);
+    await expect(page.getByTestId('larger-note')).toContainText('already fits your limit');
+    await expect(page.getByTestId('status')).toContainText('larger than your original');
+    const [dl] = await Promise.all([page.waitForEvent('download'), page.getByTestId('keep-original').click()]);
+    expect(dl.suggestedFilename()).toBe('tiny.png');
+    expect(Buffer.compare(fs.readFileSync(await dl.path()), tiny)).toBe(0);
+    await expect(page.getByTestId('download')).toContainText('larger result anyway');
+  });
+
+  test('M5: an opaque PNG with a size limit is preselected as JPEG, visibly; Auto/PNG keep the format; transparent PNGs keep Auto', async ({ page }) => {
+    await openTool(page);
+    await pick(page, NOISE);
+    await expect(page.getByTestId('format-jpeg')).toBeChecked();
+    await expect(page.getByTestId('default-format-note')).toContainText('Your PNG will be saved as a JPEG: smaller files keep more detail. Choose PNG to keep the format.');
+    await page.getByTestId('preset-20').click();
+    await resize(page);
+    const d = await downloaded(page, (await page.getByTestId('download').count()) ? 'download' : 'download-anyway');
+    expect(isJpeg(d.buf)).toBe(true);
+    expect(d.w).toBeGreaterThan(300); // pixels are not shrunk to a thumbnail
+    await page.getByTestId('format-auto').check();
+    await expect(page.getByTestId('default-format-note')).toHaveCount(0);
+    await expect(page.getByTestId('format-auto')).toBeChecked();
+    await page.getByTestId('preset-none').click();
+    await expect(page.getByTestId('format-auto')).toBeChecked();
+    // a transparent PNG is never switched
+    await page.getByTestId('file').setInputFiles(file('logo.png', transparentPng()));
+    await expect(page.getByTestId('alpha-note')).toBeVisible();
+    await expect(page.getByTestId('default-format-note')).toHaveCount(0);
+  });
+
+  test('M5: transparent PNG with a limit stays on Auto (no switch)', async ({ page }) => {
+    await openTool(page);
+    await pick(page, file('logo.png', transparentPng()));
+    await expect(page.getByTestId('alpha-note')).toBeVisible();
+    await expect(page.getByTestId('format-auto')).toBeChecked();
+    await expect(page.getByTestId('default-format-note')).toHaveCount(0);
+  });
+
+  test('L1: typed width and height that the aspect lock changes are explained; Fit appears when needed', async ({ page }) => {
+    await openTool(page);
+    await pick(page, NOISE); // 800x600
+    await page.getByTestId('advanced').locator('summary').click();
+    await expect(page.getByTestId('fit')).toHaveCount(0);
+    await page.getByTestId('width').fill('300');
+    await expect(page.getByTestId('fit')).toHaveCount(0);
+    await page.getByTestId('height').fill('100');
+    await expect(page.getByTestId('fit')).toBeVisible();
+    await page.getByTestId('preset-200').click();
+    await resize(page);
+    await expect(page.getByTestId('result-notes')).toContainText('Aspect lock kept the shape');
+    await expect(page.getByTestId('result-notes')).toContainText('133 × 100 px');
+    await page.getByTestId('lock-aspect').uncheck();
+    await expect(page.getByTestId('fit')).toBeVisible();
+    await expect(page.getByTestId('fit')).toBeDisabled();
+    await resize(page);
+    const d = await downloaded(page, (await page.getByTestId('download').count()) ? 'download' : 'download-anyway');
+    expect([d.w, d.h]).toEqual([300, 100]);
+    await page.getByTestId('width').fill('');
+    await page.getByTestId('height').fill('');
+    await expect(page.getByTestId('fit')).toBeVisible(); // lock is still off
+  });
+
+  test('L2: a wrong-type pick over a loaded image keeps the image and result, and shows the error beside them', async ({ page }) => {
+    await openTool(page);
+    await pick(page, NOISE);
+    await resize(page);
+    await page.getByTestId('file').setInputFiles(file('evil.svg', Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"></svg>'), 'image/svg+xml'));
+    await expect(page.getByRole('alert')).toContainText('JPEG, PNG or WebP');
+    await expect(page.getByTestId('result')).toBeVisible();
+    await expect(page.getByTestId('file-info')).toContainText('noise.png');
+    await expect(page.getByTestId('compare')).toBeVisible();
+    // the error goes away with the next real action
+    await page.getByTestId('preset-10').click();
+    await expect(page.getByRole('alert')).toHaveCount(0);
+  });
+
+  test('L2: a miss-drop outside the drop zone does not navigate the tab', async ({ page }) => {
+    await openTool(page);
+    const prevented = await page.evaluate(async () => {
+      const dt = new DataTransfer();
+      dt.items.add(new File([new Uint8Array(4)], 'x.png', { type: 'image/png' }));
+      const out: boolean[] = [];
+      for (const type of ['dragover', 'drop']) {
+        const ev = new DragEvent(type, { bubbles: true, cancelable: true, dataTransfer: dt });
+        document.querySelector('main')!.dispatchEvent(ev);
+        out.push(ev.defaultPrevented);
+      }
+      return out;
+    });
+    expect(prevented).toEqual([true, true]);
+  });
+
+  test('L3: changing a setting during a run cancels it with a visible notice', async ({ page }) => {
+    await openTool(page);
+    await pick(page, NOISE);
+    await page.evaluate(async () => {
+      (document.querySelector('[data-testid=run]') as HTMLButtonElement).click();
+      await Promise.resolve();
+      (document.querySelector('[data-testid=preset-10]') as HTMLButtonElement).click();
+    });
+    await expect(page.getByTestId('notice')).toContainText('Settings changed, so the run was cancelled');
+    await page.waitForTimeout(2000);
+    await expect(page.getByTestId('result')).toHaveCount(0);
+    await expect(page.getByTestId('run')).toBeEnabled();
+    await expect(page.getByTestId('preset-10')).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  test('L4: sizes accept units and separators, and say what is expected otherwise', async ({ page }) => {
+    await openTool(page);
+    await pick(page, NOISE);
+    await page.getByTestId('target').fill('20 KB');
+    await expect(page.getByTestId('preset-20')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.getByTestId('run')).toBeEnabled();
+    await page.getByTestId('target').fill('1,000');
+    await expect(page.getByTestId('run')).toBeEnabled();
+    await page.getByTestId('target').fill('abc');
+    await expect(page.getByTestId('size-picker')).toContainText('for example 20 or “20 KB”');
+    await expect(page.getByTestId('run')).toBeDisabled();
+    await page.getByTestId('target').fill('30kb');
+    await resize(page);
+    expect(await bytesOf(page)).toBeLessThanOrEqual(30_000);
+    await page.getByTestId('advanced').locator('summary').click();
+    await page.getByTestId('width').fill('1,200 px');
+    await expect(page.getByTestId('run')).toBeEnabled();
+    await page.getByTestId('width').fill('12 KB');
+    await expect(page.getByTestId('advanced')).toContainText('whole number of pixels');
+  });
+
+  test('a worker that fails to load shows a friendly error with Try again, and retry works', async ({ page }) => {
+    await page.route('**/_astro/*worker*.js', (r) => r.abort());
+    await openTool(page);
+    await pick(page, NOISE);
+    await page.getByTestId('run').click();
+    await expect(page.getByRole('alert')).toContainText(/try again/i, { timeout: 20_000 });
+    await expect(page.getByRole('alert')).not.toContainText(/undefined|Error:/);
+    await expect(page.getByTestId('retry')).toBeVisible();
+    await page.unroute('**/_astro/*worker*.js');
+    await page.getByTestId('retry').click();
+    await expect(page.getByTestId('result')).toBeVisible({ timeout: 60_000 });
+    await expect(page.getByRole('alert')).toHaveCount(0);
   });
 });

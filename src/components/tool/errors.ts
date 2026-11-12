@@ -1,7 +1,7 @@
 import type { EngineErrorCode } from '../../lib/engine/types';
 import { formatCap } from './format';
 
-export type ToolErrorAction = 'use-jpeg';
+export type ToolErrorAction = 'use-jpeg' | 'retry';
 export interface ToolError {
   code: EngineErrorCode | 'unknown';
   message: string;
@@ -11,7 +11,7 @@ export interface ToolError {
 
 const KNOWN: readonly string[] = [
   'unsupported_type', 'corrupt', 'too_large_bytes', 'too_many_pixels', 'timeout',
-  'cancelled', 'out_of_memory', 'encode_unsupported', 'invalid_options',
+  'cancelled', 'out_of_memory', 'encode_unsupported', 'invalid_options', 'worker_failed', 'encode_failed',
 ];
 
 /** Duck-typed so it also works if an error crossed a worker boundary (class identity lost). */
@@ -52,6 +52,10 @@ export function toToolError(e: unknown, ctx: ErrorContext = {}): ToolError {
       const detail = e instanceof Error && e.message ? ` (${e.message})` : '';
       return { code, message: `Some settings cannot be used together${detail}. Check the size, dimensions and format options.` };
     }
+    case 'encode_failed':
+      return { code, message: 'The browser could not save the image this time. Please try again.', action: 'retry' };
+    case 'worker_failed':
+      return { code, message: 'The image processor could not start or stopped unexpectedly. This is not a problem with your image. Please try again, or reload the page if it keeps happening.', action: 'retry' };
     default:
       return { code: 'unknown', message: 'Something went wrong while processing this image. Nothing was uploaded. Try again or choose another image.' };
   }

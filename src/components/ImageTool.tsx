@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type { OutputFormat } from '../lib/engine/types';
 import { AdvancedBlock, DimensionFields, MinimumField, StrategyField } from './tool/Advanced';
 import Compare from './tool/Compare';
 import Dropzone from './tool/Dropzone';
@@ -30,21 +31,28 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
   const runRef = useRef<HTMLButtonElement>(null);
   const cap = getLimits().maxFileBytes;
 
-  const built = buildOptions(form);
+  const [userFormat, setUserFormat] = useState<OutputFormat | null>(null);
+  // An opaque PNG with a size limit is preselected as JPEG (visible note, one click to undo); transparent PNGs keep Auto.
+  const autoJpeg = userFormat === null && state.sniff?.kind === 'png' && state.alpha === false && !form.noLimit;
+  const format: OutputFormat = userFormat ?? (autoJpeg ? 'jpeg' : 'auto');
+  const effective: FormState = { ...form, format };
+  const built = buildOptions(effective);
   const errors = built.ok ? {} : built.errors;
   const hasAlpha = state.result?.data.source.hasAlpha ?? state.alpha;
-  const busy = state.phase === 'processing' || state.phase === 'checking';
+  const busy = state.phase === 'processing';
   const advancedError = ADVANCED_FIELDS.some((k) => errors[k]);
 
   /** Any settings change invalidates the shown result/error (it no longer describes the current settings). */
   const update = useCallback((patch: Partial<FormState>) => {
-    setForm(patch);
+    const { format: f, ...rest } = patch;
+    if (f) setUserFormat(f);
+    setForm(rest);
     session.clearResult();
     session.dismissError();
   }, [session, setForm]);
 
   const run = (override?: Partial<FormState>) => {
-    const b = buildOptions(override ? { ...form, ...override } : form);
+    const b = buildOptions({ ...effective, ...override });
     if (b.ok) void session.run(b.options);
   };
 
@@ -57,7 +65,7 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
 
   const reset = () => { session.reset(); inputRef.current?.focus(); };
   const useJpeg = () => {
-    setForm({ format: 'jpeg' });
+    setUserFormat('jpeg');
     session.dismissError();
     if (hasAlpha === true) session.clearResult(); // the colour choice must be seen before anything is flattened
     else run({ format: 'jpeg' });
@@ -95,13 +103,13 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
         </div>
       )}
 
-      <SizePicker form={form} errors={errors} update={update} />
-      <FormatPicker form={form} errors={errors} update={update} formats={['auto', 'jpeg', 'png', 'webp']} webp={webp} hasAlpha={hasAlpha} />
+      <SizePicker form={effective} errors={errors} update={update} />
+      <FormatPicker form={effective} errors={errors} update={update} formats={['auto', 'jpeg', 'png', 'webp']} webp={webp} hasAlpha={hasAlpha} defaultNote={autoJpeg ? 'Your PNG will be saved as a JPEG: smaller files keep more detail. Choose PNG to keep the format.' : undefined} />
 
       <AdvancedBlock forceOpen={advancedError}>
-        <MinimumField form={form} errors={errors} update={update} />
-        <DimensionFields form={form} errors={errors} update={update} basis={state.natural} showMax />
-        <StrategyField form={form} update={update} />
+        <MinimumField form={effective} errors={errors} update={update} />
+        <DimensionFields form={effective} errors={errors} update={update} basis={state.natural} showMax />
+        <StrategyField form={effective} update={update} />
       </AdvancedBlock>
 
       {state.phase === 'processing' ? (
@@ -119,6 +127,7 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
       {state.error && state.file && (
         <div role="alert" data-testid="error" className="space-y-2 rounded-lg border border-red-700 bg-red-50 p-3 text-red-950">
           <p>{state.error.message}</p>
+          {state.error.action === 'retry' && <button type="button" data-testid="retry" className={btnSecondary} onClick={() => run()}>Try again</button>}
           {state.error.action === 'use-jpeg' && <button type="button" data-testid="use-jpeg" className={btnSecondary} onClick={useJpeg}>Use JPEG instead</button>}
         </div>
       )}
@@ -129,7 +138,8 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
           originalName={state.file?.name ?? 'your image'}
           preview={<Compare beforeUrl={state.previewUrl} afterUrl={state.result.url} />}
           onReset={reset}
-          onTryJpeg={() => { setForm({ format: 'jpeg' }); session.clearResult(); }}
+          onTryJpeg={() => { setUserFormat('jpeg'); session.clearResult(); }}
+          original={{ url: state.previewUrl, name: state.file?.name ?? 'original' }}
         />
       )}
 

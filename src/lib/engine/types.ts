@@ -82,7 +82,8 @@ export type EngineErrorCode =
   | 'out_of_memory'
   | 'encode_unsupported' // requested format cannot be encoded here (e.g. WebP in Safari) and no fallback was allowed
   | 'invalid_options'
-  | 'worker_failed';     // [engine ext] the worker script failed to load or crashed (not an image problem)
+  | 'worker_failed'      // [engine ext] the worker script failed to load or crashed (not an image problem)
+  | 'encode_failed';     // [engine ext] the browser's canvas/encoder failed for a reason other than memory (transient; retry)
 
 export class EngineError extends Error {
   constructor(public code: EngineErrorCode, message: string) { super(message); this.name = 'EngineError'; }

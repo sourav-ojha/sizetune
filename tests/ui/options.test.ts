@@ -51,6 +51,19 @@ describe('buildOptions', () => {
     expect(buildOptions(defaultForm({ height: '800', maxHeight: '600' }))).toMatchObject({ ok: false, errors: { height: expect.any(String) } });
     expect(ok(buildOptions(defaultForm({ width: '400', maxHeight: '300' })))).toMatchObject({ width: 400, maxHeight: 300 });
   });
+  it('accepts separators and units, and rejects guesses', () => {
+    expect(ok(buildOptions(defaultForm({ maxKb: '20 KB' }))).maxKb).toBe(20);
+    expect(ok(buildOptions(defaultForm({ maxKb: '20kb' }))).maxKb).toBe(20);
+    expect(ok(buildOptions(defaultForm({ maxKb: '1,000' }))).maxKb).toBe(1000);
+    expect(ok(buildOptions(defaultForm({ maxKb: '1 000 KB' }))).maxKb).toBe(1000);
+    expect(ok(buildOptions(defaultForm({ width: '1,200 px' }))).width).toBe(1200);
+    expect(ok(buildOptions(defaultForm({ width: '300PX' }))).width).toBe(300);
+    for (const bad of ['1,5', '20 MB', 'KB', '1,00', '2,0000', '20 px']) expect(buildOptions(defaultForm({ maxKb: bad })), bad).toMatchObject({ ok: false });
+    expect(buildOptions(defaultForm({ width: '20 KB' }))).toMatchObject({ ok: false, errors: { width: expect.stringContaining('whole number') } });
+    expect(buildOptions(defaultForm({ maxKb: 'abc' }))).toMatchObject({ errors: { maxKb: expect.stringContaining('“20 KB”') } });
+    expect(parseNumber('1,000', null)).toEqual({ kind: 'ok', value: 1000 });
+    expect(activePreset('50 KB')).toBe(50);
+  });
   it('maps fit/aspect: fit only matters with both dimensions', () => {
     expect(ok(buildOptions(defaultForm({ width: '400', height: '300', fit: 'cover' })))).toMatchObject({ fit: 'cover', lockAspect: true });
     expect(ok(buildOptions(defaultForm({ width: '400', height: '300', fit: 'cover', lockAspect: false })))).toMatchObject({ fit: 'stretch', lockAspect: false });

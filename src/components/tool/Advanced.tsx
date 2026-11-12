@@ -82,7 +82,8 @@ interface DimProps extends UpdateProps {
 /** Width/height (+ aspect lock, fit) and optional maximum width/height. Nothing is prefilled: blanks mean "keep the original proportions". */
 export function DimensionFields({ form, errors, update, basis, showMax, legend = 'Output size in pixels (optional)' }: DimProps) {
   const id = useId();
-  const both = parseNumber(form.width).kind === 'ok' && parseNumber(form.height).kind === 'ok';
+  const both = parseNumber(form.width, 'px').kind === 'ok' && parseNumber(form.height, 'px').kind === 'ok';
+  const oneOnly = !both && (parseNumber(form.width, 'px').kind === 'ok' || parseNumber(form.height, 'px').kind === 'ok');
   const phW = form.lockAspect && basis ? derivedDimension(form.height, basis.width, basis.height, 'width') : null;
   const phH = form.lockAspect && basis ? derivedDimension(form.width, basis.width, basis.height, 'height') : null;
   return (
@@ -96,16 +97,30 @@ export function DimensionFields({ form, errors, update, basis, showMax, legend =
         <input type="checkbox" data-testid="lock-aspect" className="size-5 accent-indigo-800" checked={form.lockAspect} onChange={(e) => update({ lockAspect: e.target.checked })} />
         <span>Keep the aspect ratio</span>
       </label>
-      {both && form.lockAspect && (
+      {(both || !form.lockAspect) && (
         <div>
           <label htmlFor={`${id}-fit`} className={labelCls}>When the shape differs from the original</label>
-          <select id={`${id}-fit`} data-testid="fit" className={`${inputCls} mt-1`} value={form.fit} onChange={(e) => update({ fit: e.target.value as FormState['fit'] })}>
+          <select
+            id={`${id}-fit`}
+            data-testid="fit"
+            className={`${inputCls} mt-1`}
+            value={form.lockAspect ? form.fit : 'stretch'}
+            disabled={!form.lockAspect}
+            aria-describedby={`${id}-fit-hint`}
+            onChange={(e) => update({ fit: e.target.value as FormState['fit'] })}
+          >
             <option value="contain">Fit inside the size (nothing is cropped)</option>
             <option value="cover">Fill the size (edges are cropped)</option>
+            {!form.lockAspect && <option value="stretch">Stretch to exactly this size (may distort)</option>}
           </select>
+          <p id={`${id}-fit-hint`} className={hintCls}>
+            {form.lockAspect
+              ? both ? 'With both sizes typed and the aspect ratio kept, the picture keeps its shape, so the result can be smaller than one of the sizes.' : 'Type both width and height to choose how the picture is fitted.'
+              : 'The aspect ratio is not kept, so the picture is stretched to the exact size you type.'}
+            {!form.lockAspect && oneOnly ? ' A side you leave empty keeps its original size.' : ''}
+          </p>
         </div>
       )}
-      {both && !form.lockAspect && <p className={hintCls}>The picture will be stretched to exactly this size, which can distort it.</p>}
       {showMax && (
         <div className="grid grid-cols-2 gap-3">
           <NumberField id={`${id}-mw`} testId="max-width" label="Largest width (px)" value={form.maxWidth} error={errors.maxWidth} placeholder="no limit" onChange={(v) => update({ maxWidth: v })} />

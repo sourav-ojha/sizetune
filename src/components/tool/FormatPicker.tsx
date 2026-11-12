@@ -22,11 +22,13 @@ interface Props {
   hasAlpha: boolean | null;
   /** Text shown above the choices explaining the default for this tool. */
   intro?: string;
+  /** Shown when the selected format is a default chosen for the user (never a silent switch). */
+  defaultNote?: string;
 }
 
 const optCls = 'flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-slate-500 bg-white px-3 py-2 text-base text-slate-900 has-[:checked]:border-indigo-800 has-[:checked]:bg-indigo-50 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-indigo-800 has-[:disabled]:cursor-not-allowed has-[:disabled]:bg-slate-100 has-[:disabled]:text-slate-600';
 
-export default function FormatPicker({ form, errors, update, formats, webp, hasAlpha, intro }: Props) {
+export default function FormatPicker({ form, errors, update, formats, webp, hasAlpha, intro, defaultNote }: Props) {
   const id = useId();
   const flatten = needsFlattenChoice(form.format, hasAlpha);
   const bgValue = normalizeHex(form.bgCustom) ?? '#ffffff';
@@ -56,6 +58,7 @@ export default function FormatPicker({ form, errors, update, formats, webp, hasA
             );
           })}
         </div>
+        {defaultNote && <p className="rounded-lg border border-sky-700 bg-sky-50 p-3 text-sm text-sky-950" data-testid="default-format-note">{defaultNote}</p>}
         <p className={hintCls} data-testid="format-help">{HELP[form.format]}</p>
         {formats.includes('webp') && webp === false && (
           <p className={hintCls} data-testid="webp-unsupported">This browser cannot save WebP images, so WebP is switched off. JPEG and PNG work here.</p>

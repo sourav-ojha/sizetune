@@ -23,9 +23,11 @@ describe('size formatting', () => {
     expect(formatChange(0, 5)).toBe('');
   });
   it('describes the KB basis of the byte window', () => {
-    expect(describeWindow({ minBytes: null, maxBytes: 20000 }, undefined, 20)).toBe('Aimed for under 20,000 bytes (maximum: 20 × 1,000 bytes)');
-    expect(describeWindow({ minBytes: 10240, maxBytes: 20000 }, 10, 20)).toBe('Aimed for between 10,240 and 20,000 bytes (maximum: 20 × 1,000 bytes, minimum: 10 × 1,024 bytes)');
-    expect(describeWindow({ minBytes: 10240, maxBytes: null }, 10)).toBe('Aimed for at least 10,240 bytes (minimum: 10 × 1,024 bytes)');
+    const tail = ', so it passes whether a portal counts 1 KB as 1,000 or 1,024 bytes';
+    expect(describeWindow({ minBytes: null, maxBytes: 20000 }, undefined, 20)).toBe('Aims below 20 × 1,000 = 20,000 bytes' + tail);
+    expect(describeWindow({ minBytes: 10240, maxBytes: 20000 }, 10, 20)).toBe('Aims below 20 × 1,000 = 20,000 bytes and above 10 × 1,024 = 10,240 bytes' + tail);
+    expect(describeWindow({ minBytes: 10240, maxBytes: null }, 10)).toBe('Aims above 10 × 1,024 = 10,240 bytes' + tail);
+    expect(describeWindow({ minBytes: null, maxBytes: 30000 })).toBe('Aims below 30,000 bytes' + tail);
     expect(describeWindow({ minBytes: null, maxBytes: null })).toBe('');
   });
 });
