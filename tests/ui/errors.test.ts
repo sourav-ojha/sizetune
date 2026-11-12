@@ -34,6 +34,18 @@ describe('error mapping', () => {
     }
     expect(toToolError(new EngineError('worker_failed', 'x')).message).toContain('not a problem with your image');
   });
+  it('too_many_pixels names the size and the limit; large sources get no retry loop', () => {
+    const t = toToolError(new EngineError('too_many_pixels', 'x'), { width: 20000, height: 20000, maxPixels: 100_000_000 });
+    expect(t.message).toContain('20,000 × 20,000 px');
+    expect(t.message).toContain('limit is 100 megapixels');
+    for (const c of ['worker_failed', 'encode_failed'] as const) {
+      const small = toToolError(new EngineError(c, 'x'), { width: 3000, height: 2000 });
+      expect(small.action).toBe('retry');
+      const large = toToolError(new EngineError(c, 'x'), { width: 6000, height: 4000 });
+      expect(large.action).toBeUndefined();
+      expect(large.message).toMatch(/smaller image/i);
+    }
+  });
   it('shows the file cap when known', () => {
     expect(toToolError(new EngineError('too_large_bytes', 'x'), { maxFileBytes: 25 * 1024 * 1024 }).message).toContain('limit is 25 MB');
     expect(toToolError(new EngineError('too_large_bytes', 'x')).message).not.toContain('limit is');

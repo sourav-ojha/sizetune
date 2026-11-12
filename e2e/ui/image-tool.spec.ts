@@ -305,6 +305,8 @@ test.describe('image tool', () => {
     await expect(page.getByTestId('result-heading')).not.toContainText('ready');
     await expect(page.getByTestId('result')).toHaveClass(/amber/);
     await expect(page.getByTestId('larger-note')).toContainText('already fits your limit');
+    await expect(page.getByTestId('keep-original')).not.toHaveClass(/bg-indigo-800/); // secondary (F3)
+    expect(await page.getByTestId('larger-note').textContent()).not.toContain('))'); // D1
     await expect(page.getByTestId('status')).toContainText('larger than your original');
     const [dl] = await Promise.all([page.waitForEvent('download'), page.getByTestId('keep-original').click()]);
     expect(dl.suggestedFilename()).toBe('tiny.png');

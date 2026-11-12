@@ -33,6 +33,7 @@ test('compresses in-browser to a valid image <= target KB, with no uploads', asy
   expect(bytes).toBeGreaterThan(1000);
   expect(bytes).toBeLessThanOrEqual(50 * 1000);
   expect(await size.getAttribute('data-status')).toBe('ok');
+  expect(await page.getByTestId('result').getAttribute('data-mode'), 'the real site must use the worker').toBe('worker');
   const href = await page.getByTestId('download').getAttribute('href');
   expect(href).toMatch(/^blob:/);
   // Real download (CSP forbids fetch(blob:), which is itself a feature): read the saved file and decode it.
@@ -52,6 +53,15 @@ test('compresses in-browser to a valid image <= target KB, with no uploads', asy
   expect(external, 'no requests to other origins').toEqual([]);
   expect(nonGet.length - afterLoad.nonGet, 'nothing sent while processing').toBe(0);
   expect(external.length - afterLoad.external, 'nothing contacted while processing').toBe(0);
+});
+
+test('without OffscreenCanvas the real site falls back to the main thread and still works (feature detection, not error retry)', async ({ page }) => {
+  await page.addInitScript(() => { Object.defineProperty(window, 'OffscreenCanvas', { value: undefined, configurable: true, writable: true }); });
+  await page.goto('/');
+  const size = await compress(page);
+  expect(await page.getByTestId('result').getAttribute('data-mode')).toBe('main-thread');
+  expect(await size.getAttribute('data-status')).toBe('ok');
+  expect(Number(await size.getAttribute('data-bytes'))).toBeLessThanOrEqual(50_000);
 });
 
 test('no CSP violations on the tool page (hydration + processing + preview + comparison + download)', async ({ page }) => {

@@ -9,8 +9,7 @@ import ResultPanel from './tool/ResultPanel';
 import SizePicker from './tool/SizePicker';
 import { getLimits } from './tool/engine';
 import { formatCap, formatDims, formatSize } from './tool/format';
-import { useForm, useWebpSupport } from './tool/hooks';
-import { probeAlpha } from './tool/alpha';
+import { ensureVisible, useForm, useScrollAnchor, useWebpSupport } from './tool/hooks';
 import { buildOptions, type FormState } from './tool/options';
 import { statusText, useIntake } from './tool/useIntake';
 import { useToolSession } from './tool/useSession';
@@ -27,6 +26,7 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
   const { session, state } = useToolSession();
   const [form, setForm] = useForm({ maxKb: String(defaultMaxKb) });
   const webp = useWebpSupport();
+  const anchor = useScrollAnchor();
   const { inputRef, onPick } = useIntake(session);
   const runRef = useRef<HTMLButtonElement>(null);
   const cap = getLimits().maxFileBytes;
@@ -47,23 +47,30 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
     const { format: f, ...rest } = patch;
     if (f) setUserFormat(f);
     setForm(rest);
+    anchor.hold();
     session.clearResult();
     session.dismissError();
-  }, [session, setForm]);
+  }, [session, setForm, anchor.hold]);
 
   const run = (override?: Partial<FormState>) => {
     const b = buildOptions({ ...effective, ...override });
-    if (b.ok) void session.run(b.options);
+    if (b.ok) { anchor.hold(); void session.run(b.options); }
   };
 
   const wasProcessing = useRef(false);
   useEffect(() => {
     // after Cancel the Cancel button disappears: keep keyboard focus on a live control
-    if (wasProcessing.current && state.phase === 'ready' && !state.error) runRef.current?.focus();
+    if (wasProcessing.current && state.phase === 'ready' && !state.error) runRef.current?.focus({ preventScroll: true });
     wasProcessing.current = state.phase === 'processing';
   }, [state.phase, state.error]);
 
-  const reset = () => { session.reset(); inputRef.current?.focus(); };
+  const reset = () => {
+    anchor.hold();
+    session.reset();
+    inputRef.current?.focus({ preventScroll: true });
+    // the tool just got much shorter: make sure the user is looking at it, not at whatever is now below it
+    requestAnimationFrame(() => requestAnimationFrame(() => ensureVisible(inputRef.current?.closest('[data-testid=dropzone]'), 'center')));
+  };
   const useJpeg = () => {
     setUserFormat('jpeg');
     session.dismissError();
@@ -72,7 +79,7 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
   };
 
   return (
-    <section data-testid="tool" aria-label="Image resizer" className={`space-y-5 ${panelCls}`}>
+    <section ref={anchor.ref} data-testid="tool" aria-label="Image resizer" className={`space-y-5 ${panelCls}`}>
       <h2 className="sr-only">Resize your image</h2>
       <div role="status" aria-live="polite" data-testid="status" className="sr-only">{statusText(state)}</div>
 
@@ -83,19 +90,18 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
         <div role="alert" data-testid="error" className="rounded-lg border border-red-700 bg-red-50 p-3 text-red-950">{state.error.message}</div>
       )}
 
-      {state.file && state.previewUrl && (
+      {state.file && (
         <div className="flex items-center gap-4" data-testid="file-card">
-          <img
-            data-testid="preview"
-            src={state.previewUrl}
-            alt="Preview of the selected image"
-            className="max-h-32 max-w-[40%] rounded-lg border border-slate-300 object-contain"
-            onLoad={(e) => {
-              const img = e.currentTarget;
-              session.setNatural(state.previewUrl!, img.naturalWidth, img.naturalHeight);
-              if (state.sniff?.hasAlpha !== false) session.setAlpha(state.previewUrl!, probeAlpha(img));
-            }}
-          />
+          {state.previewUrl ? (
+            <img
+              data-testid="preview"
+              src={state.previewUrl}
+              alt="Preview of the selected image"
+              className="max-h-32 max-w-[40%] rounded-lg border border-slate-300 object-contain"
+            />
+          ) : (
+            <p data-testid="no-preview" className="max-w-[40%] rounded-lg border border-slate-300 bg-slate-50 p-2 text-xs text-slate-700">No preview for a very large image; it is still processed normally.</p>
+          )}
           <p className="min-w-0 text-sm text-slate-800" data-testid="file-info">
             <span className="block truncate font-medium">{state.file.name}</span>
             {state.natural ? `${formatDims(state.natural.width, state.natural.height)}, ` : ''}{formatSize(state.file.size)}
@@ -113,7 +119,7 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
       </AdvancedBlock>
 
       {state.phase === 'processing' ? (
-        <ProgressBar progress={state.progress} onCancel={() => session.cancel()} />
+        <ProgressBar progress={state.progress} onCancel={() => { anchor.hold(); session.cancel(); }} />
       ) : (
         <div className="flex flex-col gap-2 sm:flex-row">
           <button ref={runRef} type="button" data-testid="run" className={btnPrimary} disabled={!state.file || busy || !built.ok} onClick={() => run()}>
@@ -132,14 +138,17 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
         </div>
       )}
 
-      {state.result && state.previewUrl && (
+      {state.result && (
         <ResultPanel
           view={state.result}
           originalName={state.file?.name ?? 'your image'}
-          preview={<Compare beforeUrl={state.previewUrl} afterUrl={state.result.url} />}
+          preview={state.previewUrl
+            ? <Compare beforeUrl={state.previewUrl} afterUrl={state.result.url} />
+            : <img src={state.result.url} alt="Result image" data-testid="result-image" className="mx-auto block max-h-[70vh] max-w-full rounded-lg border border-slate-300" />}
           onReset={reset}
           onTryJpeg={() => { setUserFormat('jpeg'); session.clearResult(); }}
-          original={{ url: state.previewUrl, name: state.file?.name ?? 'original' }}
+          original={state.originalUrl ? { url: state.originalUrl, name: state.file?.name ?? 'original' } : null}
+          gps={state.gps}
         />
       )}
 

@@ -9,25 +9,25 @@ interface Props {
   lockAspect: boolean;
   imgRef: RefObject<HTMLImageElement | null>;
   onChange: (r: Rect) => void;
-  onImageLoad: (img: HTMLImageElement) => void;
 }
 
 const MIN_SIZE = 4; // source px
+// Edges first, corners last: on a tiny picture the corners (drawn on top) stay grabbable.
 const HANDLES: Array<[Handle, string]> = [
-  ['nw', 'left-0 top-0 cursor-nwse-resize'],
   ['n', 'left-1/2 top-0 cursor-ns-resize'],
-  ['ne', 'left-full top-0 cursor-nesw-resize'],
   ['e', 'left-full top-1/2 cursor-ew-resize'],
-  ['se', 'left-full top-full cursor-nwse-resize'],
   ['s', 'left-1/2 top-full cursor-ns-resize'],
-  ['sw', 'left-0 top-full cursor-nesw-resize'],
   ['w', 'left-0 top-1/2 cursor-ew-resize'],
+  ['nw', 'left-0 top-0 cursor-nwse-resize'],
+  ['ne', 'left-full top-0 cursor-nesw-resize'],
+  ['se', 'left-full top-full cursor-nwse-resize'],
+  ['sw', 'left-0 top-full cursor-nesw-resize'],
 ];
 
 interface Drag { kind: 'move' | Handle; px: number; py: number; start: Rect; w: number; h: number }
 
 /** Crop box over the picture. Geometry lives in CSS variables set from JS; all maths is in ./crop (source pixels). */
-export default function CropEditor({ src, natural, rect, lockAspect, imgRef, onChange, onImageLoad }: Props) {
+export default function CropEditor({ src, natural, rect, lockAspect, imgRef, onChange }: Props) {
   const wrap = useRef<HTMLDivElement>(null);
   const drag = useRef<Drag | null>(null);
 
@@ -67,7 +67,9 @@ export default function CropEditor({ src, natural, rect, lockAspect, imgRef, onC
   };
 
   return (
-    <div ref={wrap} data-testid="crop-editor" className="relative mx-auto w-fit max-w-full overflow-hidden rounded-lg border border-slate-300 bg-white">
+    // Outer padding keeps the corner/edge handles (centred on the picture's border) fully inside the clipping box, so they stay grabbable.
+    <div data-testid="crop-editor" className="mx-auto w-fit max-w-full overflow-hidden rounded-lg border border-slate-300 bg-white p-6">
+      <div ref={wrap} className="relative">
       <img
         ref={imgRef}
         src={src}
@@ -75,7 +77,6 @@ export default function CropEditor({ src, natural, rect, lockAspect, imgRef, onC
         data-testid="crop-image"
         draggable={false}
         className="block max-h-[60vh] max-w-full select-none"
-        onLoad={(e) => onImageLoad(e.currentTarget)}
       />
       {rect && natural && (
         <div
@@ -99,13 +100,14 @@ export default function CropEditor({ src, natural, rect, lockAspect, imgRef, onC
               onPointerMove={move}
               onPointerUp={end}
               onPointerCancel={end}
-              className={`absolute flex size-8 -translate-x-1/2 -translate-y-1/2 touch-none items-center justify-center ${pos}`}
+              className={`absolute flex size-8 -translate-x-1/2 -translate-y-1/2 touch-none items-center justify-center before:absolute before:-inset-2 before:content-[''] pointer-coarse:size-11 ${pos}`}
             >
               <span className="block size-3.5 rounded-full border-2 border-indigo-900 bg-white" />
             </div>
           ))}
         </div>
       )}
+      </div>
     </div>
   );
 }

@@ -18,6 +18,96 @@ function setup(over: Partial<SessionDeps> = {}) {
 const opts = { format: 'auto', strategy: 'quality-first', lockAspect: true, fit: 'contain', background: 'keep', maxKb: 20 } as const;
 const tick = () => new Promise((r) => setTimeout(r, 0));
 
+describe('ToolSession (header checks, thumbnails, interruption)', () => {
+  const big = { width: 20000, height: 20000 };
+  it('rejects a huge-pixel image from its header BEFORE creating any URL or thumbnail', async () => {
+    let thumbCalls = 0;
+    const { s, live } = setup({
+      maxPixels: 100_000_000,
+      inspect: async () => big,
+      makeThumbnail: async () => { thumbCalls++; return { kind: 'original', alpha: false }; },
+    });
+    await s.selectFile(pngFile('bomb.png'));
+    const st = s.getSnapshot();
+    expect(st.phase).toBe('empty');
+    expect(st.file).toBeNull();
+    expect(st.error?.code).toBe('too_many_pixels');
+    expect(st.error?.message).toContain('20,000 × 20,000');
+    expect(st.error?.message).toContain('400 megapixels');
+    expect(live.size).toBe(0);
+    expect(thumbCalls).toBe(0);
+  });
+  it('a header-checked file gets a thumbnail URL and an original URL, both revoked on reset; natural comes from the header', async () => {
+    const { s, live } = setup({
+      maxPixels: 100_000_000,
+      inspect: async () => ({ width: 9000, height: 9000 }),
+      makeThumbnail: async () => ({ kind: 'thumb', blob: new Blob(['t']), alpha: true }),
+    });
+    await s.selectFile(pngFile('a.png', 6)); // RGBA header: alpha possible, the thumbnail probe decides
+    const st = s.getSnapshot();
+    expect(st.natural).toEqual({ width: 9000, height: 9000 });
+    expect(st.previewUrl).not.toBe(st.originalUrl);
+    expect(st.alpha).toBe(true);
+    expect(live.size).toBe(2);
+    s.reset();
+    expect(live.size).toBe(0);
+  });
+  it('a small image uses the file itself as the preview (one URL, revoked once)', async () => {
+    const { s, live } = setup({ inspect: async () => ({ width: 100, height: 100 }), makeThumbnail: async () => ({ kind: 'original', alpha: false }) });
+    await s.selectFile(pngFile());
+    expect(s.getSnapshot().previewUrl).toBe(s.getSnapshot().originalUrl);
+    expect(live.size).toBe(1);
+    s.dispose();
+    expect(live.size).toBe(0);
+  });
+  it('no preview kind: still ready, previewUrl null, original available', async () => {
+    const { s } = setup({ inspect: async () => ({ width: 8000, height: 8000 }), makeThumbnail: async () => ({ kind: 'none', alpha: null }) });
+    await s.selectFile(pngFile());
+    expect(s.getSnapshot()).toMatchObject({ phase: 'ready', previewUrl: null });
+    expect(s.getSnapshot().originalUrl).not.toBeNull();
+  });
+  it('a header error (corrupt) rejects without creating URLs', async () => {
+    const { s, live } = setup({ inspect: async () => { throw new EngineError('corrupt', 'x'); } });
+    await s.selectFile(pngFile());
+    expect(s.getSnapshot().error?.code).toBe('corrupt');
+    expect(live.size).toBe(0);
+  });
+  it('an engine "cancelled" that we did not ask for is shown with a retry, never swallowed', async () => {
+    const { s, eng } = setup();
+    await s.selectFile(pngFile());
+    const p = s.run(opts);
+    eng.calls[0].reject(new EngineError('cancelled', 'superseded inside the engine'));
+    await p;
+    expect(s.getSnapshot()).toMatchObject({ phase: 'ready', error: { action: 'retry' } });
+    expect(s.getSnapshot().error?.message).toContain('interrupted');
+  });
+  it('Cancel keeps the file and returns to ready; a re-run works', async () => {
+    const { s, eng } = setup();
+    await s.selectFile(pngFile('keep.png'));
+    void s.run(opts);
+    s.cancel();
+    expect(s.getSnapshot()).toMatchObject({ phase: 'ready', error: null });
+    expect(s.getSnapshot().file?.name).toBe('keep.png');
+    const p = s.run(opts);
+    eng.calls[1].resolve(makeResult());
+    await p;
+    expect(s.getSnapshot().phase).toBe('done');
+  });
+  it('records the EXIF GPS flag reported by the header inspection', async () => {
+    const { s } = setup({ inspect: async () => ({ width: 10, height: 10, hasGps: true }) });
+    await s.selectFile(pngFile());
+    expect(s.getSnapshot().gps).toBe(true);
+    const t = setup({ inspect: async () => ({ width: 10, height: 10 }) });
+    await t.s.selectFile(pngFile());
+    expect(t.s.getSnapshot().gps).toBe(false);
+  });
+  it('uses width/height carried by an inspection error for the message', async () => {
+    const { s } = setup({ inspect: async () => { throw Object.assign(new EngineError('too_many_pixels', 'x'), { width: 30000, height: 20000 }); } });
+    await s.selectFile(pngFile());
+    expect(s.getSnapshot().error?.message).toContain('30,000 × 20,000');
+  });
+});
+
 describe('ToolSession (rejection, settings change)', () => {
   it('a wrong-type pick over a loaded image keeps the file, the result and its URLs, and reports the error', async () => {
     const { s, eng, live } = setup();
@@ -78,10 +168,6 @@ describe('ToolSession', () => {
     expect(st.phase).toBe('ready');
     expect(st.sniff).toEqual({ kind: 'png', hasAlpha: false });
     expect(live.size).toBe(1);
-    s.setNatural(st.previewUrl!, 600, 400);
-    expect(s.getSnapshot().natural).toEqual({ width: 600, height: 400 });
-    s.setNatural('blob:other', 1, 1); // stale url ignored
-    expect(s.getSnapshot().natural).toEqual({ width: 600, height: 400 });
   });
   it('runs, shows progress and builds a result with a suggested filename', async () => {
     const { s, eng, live } = setup();
@@ -124,10 +210,11 @@ describe('ToolSession', () => {
     expect(s.getSnapshot().error).toBeNull();
     expect(live.size).toBe(1);
   });
-  it('treats an engine "cancelled" rejection as silent', async () => {
+  it('treats the engine "cancelled" rejection that follows OUR abort as silent', async () => {
     const { s, eng } = setup();
     await s.selectFile(pngFile());
     const p = s.run(opts);
+    s.cancel();
     eng.calls[0].reject(new EngineError('cancelled', 'x'));
     await p;
     expect(s.getSnapshot()).toMatchObject({ phase: 'ready', error: null });

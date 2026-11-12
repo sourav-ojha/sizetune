@@ -1,7 +1,8 @@
 import type { ComponentChildren } from 'preact';
 import { useEffect, useRef } from 'preact/hooks';
+import { ensureVisible } from './hooks';
 import type { ResultStatus } from '../../lib/engine/types';
-import { describeWindow, formatChange, formatDims, formatInt, formatSize } from './format';
+import { describeWindow, formatChange, formatDims, formatInt, formatKb, formatSize } from './format';
 import type { ResultView } from './session';
 import { btnPrimary, btnSecondary } from './ui';
 
@@ -36,14 +37,20 @@ interface Props {
   resetLabel?: string;
   /** Tool-specific replacements for the generic explanation of non-success statuses. */
   hints?: Partial<Record<ResultStatus, string>>;
+  /** The original file contains EXIF location (GPS) data (from its header). */
+  gps?: boolean;
   /** Focus the heading when this panel appears. */
   autoFocus?: boolean;
 }
 
-export default function ResultPanel({ view, originalName, original, preview, onReset, onTryJpeg, resetLabel = 'Process another image', autoFocus = true, hints }: Props) {
+export default function ResultPanel({ view, originalName, original, preview, onReset, onTryJpeg, resetLabel = 'Process another image', autoFocus = true, hints, gps = false }: Props) {
   const { data, options } = view;
   const headingRef = useRef<HTMLHeadingElement>(null);
-  useEffect(() => { if (autoFocus) headingRef.current?.focus(); }, [autoFocus, view.url]);
+  useEffect(() => {
+    if (!autoFocus) return;
+    headingRef.current?.focus({ preventScroll: true });
+    ensureVisible(headingRef.current, 'start'); // only scrolls when the result appeared off-screen
+  }, [autoFocus, view.url]);
   const ok = isSuccess(data.status);
   const plainOk = data.status === 'ok'; // the engine's one-liner for plain success just repeats the numbers below
   const { minBytes, maxBytes } = data.window;
@@ -69,6 +76,7 @@ export default function ResultPanel({ view, originalName, original, preview, onR
     <section
       data-testid="result"
       data-status={data.status}
+      data-mode={data.mode}
       aria-labelledby="sizetune-result-heading"
       className={`space-y-4 rounded-xl border-2 p-4 sm:p-5 ${frame}`}
     >
@@ -80,9 +88,11 @@ export default function ResultPanel({ view, originalName, original, preview, onR
       {hint && <p data-testid="result-hint">{hint}</p>}
       {larger && (
         <p data-testid="larger-note">
-          Your original ({formatSize(data.source.bytes)}) is already smaller than this result ({formatSize(data.bytes)}). Re-saving can make a small or already-compressed file bigger.{' '}
+          Your original ({formatKb(data.source.bytes)}, {formatInt(data.source.bytes)} bytes) is already smaller than this result ({formatKb(data.bytes)}, {formatInt(data.bytes)} bytes). Re-saving can make a small or already-compressed file bigger.{' '}
           {data.originalFits === true
-            ? 'Your original already fits your limit, so you can simply keep it. Note that the original still contains any camera or location details.'
+            ? (gps
+              ? 'Your original contains location data; the SizeTune result does not. The original already fits your limit, so keep it only if you are happy to share that location.'
+              : 'Your original already fits your limit, so you can keep it. Note that an original can still contain camera details and sometimes location data; the SizeTune result does not.')
             : data.originalFits === false ? 'Your original does not fit your limit either, so neither file meets it.' : ''}
         </p>
       )}
@@ -129,7 +139,7 @@ export default function ResultPanel({ view, originalName, original, preview, onR
 
       <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
         {keepOriginal && original && (
-          <a data-testid="keep-original" href={original.url} download={original.name} className={btnPrimary}>
+          <a data-testid="keep-original" href={original.url} download={original.name} className={btnSecondary}>
             Keep your original instead<span className="sr-only">: {original.name}</span>
           </a>
         )}

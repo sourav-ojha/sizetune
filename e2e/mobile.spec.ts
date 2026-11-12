@@ -1,5 +1,5 @@
 import { test, expect, devices } from '@playwright/test';
-import { NOISE, openTool, pick, resize, signaturePng, file } from './ui/helpers';
+import { NOISE, openTool, pick, resize, signaturePng, file, flatPng } from './ui/helpers';
 
 test.use({ ...devices['Pixel 7'], channel: 'chrome' });
 
@@ -32,10 +32,26 @@ test('mobile: primary controls are at least 44px tall', async ({ page }) => {
   }
 });
 
+test('mobile: on a tiny source the corner handles are still >= 44px and win over the edge handles (D7)', async ({ page }) => {
+  await openTool(page, '/resize-signature/');
+  await pick(page, file('tiny.png', flatPng(140, 60)));
+  const corner = (await page.locator('[data-handle=se]').boundingBox())!;
+  expect(corner.width).toBeGreaterThanOrEqual(43.5);
+  const cx = corner.x + corner.width / 2, cy = corner.y + corner.height / 2;
+  expect(await page.evaluate(([x, y]) => (document.elementFromPoint(x, y) as HTMLElement).closest('[data-handle]')?.getAttribute('data-handle'), [cx, cy])).toBe('se');
+  // grab it by touch-sized slop (12 px outside the visible dot) and resize
+  const before = await page.getByTestId('crop-width').inputValue();
+  await page.mouse.move(cx - 10, cy - 10);
+  await page.mouse.down();
+  await page.mouse.move(cx - 40, cy - 20, { steps: 4 });
+  await page.mouse.up();
+  expect(Number(await page.getByTestId('crop-width').inputValue())).toBeLessThan(Number(before));
+});
+
 test('mobile: crop handles can be dragged by touch-sized pointer events', async ({ page }) => {
   await openTool(page, '/resize-signature/');
   await pick(page, file('s.png', signaturePng()));
   const h = (await page.locator('[data-handle=se]').boundingBox())!;
-  expect(h.width).toBeGreaterThanOrEqual(31);
-  expect(h.height).toBeGreaterThanOrEqual(31);
+  expect(h.width).toBeGreaterThanOrEqual(43.5); // touch hit area (D7)
+  expect(h.height).toBeGreaterThanOrEqual(43.5);
 });

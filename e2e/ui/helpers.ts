@@ -2,6 +2,9 @@ import { expect, type Page } from '@playwright/test';
 import zlib from 'node:zlib';
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
+import { execSync } from 'node:child_process';
+import { once } from 'node:events';
 
 export const NOISE = path.join(import.meta.dirname, '..', 'noise.png'); // 800x600 RGB noise (1.4 MB)
 
@@ -124,3 +127,69 @@ export async function pixelsAt(page: Page, buf: Buffer, pts: Array<[number, numb
   }, { b64: buf.toString('base64'), pts });
 }
 export const isRed = (p: number[]) => p[0] > 170 && p[1] < 100 && p[2] < 100;
+
+const pngChunk = chunk;
+const SIG = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+const ihdrOf = (w: number, h: number) => { const b = Buffer.alloc(13); b.writeUInt32BE(w, 0); b.writeUInt32BE(h, 4); b[8] = 8; b[9] = 6; return b; };
+
+/** Writes a real w x h opaque-white RGBA PNG to a temp file, streaming (never holds the raw image in memory). Caller deletes it. */
+export async function writeBigPng(w: number, h: number): Promise<string> {
+  const file = path.join(os.tmpdir(), `sizetune-big-${w}x${h}-${process.pid}.png`);
+  const deflate = zlib.createDeflate({ level: 1 });
+  const parts: Buffer[] = [];
+  deflate.on('data', (c: Buffer) => parts.push(c));
+  const ended = once(deflate, 'end');
+  const row = Buffer.alloc(w * 4 + 1, 255); row[0] = 0;
+  for (let y = 0; y < h; y++) if (!deflate.write(row)) await once(deflate, 'drain');
+  deflate.end();
+  await ended;
+  fs.writeFileSync(file, Buffer.concat([SIG, pngChunk('IHDR', ihdrOf(w, h)), pngChunk('IDAT', Buffer.concat(parts)), pngChunk('IEND', Buffer.alloc(0))]));
+  return file;
+}
+
+/** A tiny PNG whose HEADER claims w x h (e.g. a 400 MP "bomb"); the pixel data is not real. */
+export const bombPng = (w: number, h: number) => Buffer.concat([SIG, pngChunk('IHDR', ihdrOf(w, h)), pngChunk('IDAT', zlib.deflateSync(Buffer.alloc(64))), pngChunk('IEND', Buffer.alloc(0))]);
+
+/** Sum of resident memory (MB) of every browser process (CDP SystemInfo gives the pids). */
+export async function browserRssMb(page: Page): Promise<number> {
+  const cdp = await page.context().browser()!.newBrowserCDPSession();
+  try {
+    const { processInfo } = await cdp.send('SystemInfo.getProcessInfo');
+    const out = execSync(`ps -o rss= -p ${processInfo.map((p) => p.id).join(',')} || true`).toString();
+    return out.split('\n').map((l) => Number(l.trim())).filter(Boolean).reduce((a, b) => a + b, 0) / 1024;
+  } finally { await cdp.detach(); }
+}
+
+/** 8x8 JPEG without any APPn metadata, then optionally an EXIF APP1 (orientation and/or a GPS IFD). */
+export async function smallJpeg(page: Page, opts: { orientation?: number; gps?: boolean } = {}): Promise<Buffer> {
+  const b64 = await page.evaluate(async () => {
+    const c = document.createElement('canvas'); c.width = 8; c.height = 8;
+    const x = c.getContext('2d')!; x.fillStyle = '#c33'; x.fillRect(0, 0, 8, 8);
+    const blob = await new Promise<Blob>((r) => c.toBlob((b) => r(b!), 'image/jpeg', 0.9));
+    let s = ''; for (const v of new Uint8Array(await blob.arrayBuffer())) s += String.fromCharCode(v);
+    return btoa(s);
+  });
+  const src = Buffer.from(b64, 'base64');
+  const out: Buffer[] = [src.subarray(0, 2)];
+  let p = 2;
+  while (p + 4 <= src.length) { // drop APP1..APP15 (ICC, EXIF), keep everything else
+    const m = src[p + 1]; const len = src.readUInt16BE(p + 2);
+    if (m === 0xda) { out.push(src.subarray(p)); break; }
+    if (!(m >= 0xe1 && m <= 0xef)) out.push(src.subarray(p, p + 2 + len));
+    p += 2 + len;
+  }
+  const jpeg = Buffer.concat(out);
+  if (opts.orientation === undefined && !opts.gps) return jpeg;
+  const entries: Buffer[] = [];
+  const be16 = (n: number) => Buffer.from([n >> 8, n & 255]);
+  const be32 = (n: number) => Buffer.from([(n >>> 24) & 255, (n >>> 16) & 255, (n >>> 8) & 255, n & 255]);
+  const n = (opts.orientation !== undefined ? 1 : 0) + (opts.gps ? 1 : 0);
+  const gpsAt = 8 + 2 + 12 * n + 4;
+  if (opts.orientation !== undefined) entries.push(Buffer.concat([be16(0x0112), be16(3), be32(1), be16(opts.orientation), be16(0)]));
+  if (opts.gps) entries.push(Buffer.concat([be16(0x8825), be16(4), be32(1), be32(gpsAt)]));
+  const tiff = Buffer.concat([Buffer.from('MM'), be16(42), be32(8), be16(n), ...entries, be32(0),
+    ...(opts.gps ? [be16(1), be16(0x0001), be16(2), be32(2), Buffer.from('N\0\0\0'), be32(0)] : [])]);
+  const body = Buffer.concat([Buffer.from('Exif\0\0', 'binary'), tiff]);
+  const seg = Buffer.concat([Buffer.from([0xff, 0xe1]), be16(body.length + 2), body]);
+  return Buffer.concat([jpeg.subarray(0, 2), seg, jpeg.subarray(2)]);
+}

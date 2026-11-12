@@ -25,5 +25,5 @@ export function manualEngine() {
   return { calls, process };
 }
 
-export const PNG_HEAD = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 13, 0x49, 0x48, 0x44, 0x52, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, 0, 0, 0]);
-export const pngFile = (name = 'photo.png'): File => new File([PNG_HEAD], name, { type: 'image/png' });
+export const pngHead = (colorType = 2) => new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 13, 0x49, 0x48, 0x44, 0x52, 0, 0, 0, 1, 0, 0, 0, 1, 8, colorType, 0, 0, 0]);
+export const pngFile = (name = 'photo.png', colorType = 2): File => new File([pngHead(colorType)], name, { type: 'image/png' });

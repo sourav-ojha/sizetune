@@ -10,8 +10,7 @@ import SizePicker from './tool/SizePicker';
 import { aspectOf, fullRect, isFullRect, padRect, setRectField, type Rect, type RectField } from './tool/crop';
 import { getLimits } from './tool/engine';
 import { formatCap, formatDims, formatSize } from './tool/format';
-import { useForm, useWebpSupport } from './tool/hooks';
-import { probeAlpha } from './tool/alpha';
+import { ensureVisible, useForm, useScrollAnchor, useWebpSupport } from './tool/hooks';
 import { buildOptions, parseNumber, type FormState } from './tool/options';
 import { findInkBounds, scaleRect } from './tool/trim';
 import { statusText, useIntake } from './tool/useIntake';
@@ -46,6 +45,7 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
   const [draft, setDraft] = useState<Partial<Record<RectField, string>>>({});
   const [trimMsg, setTrimMsg] = useState('');
   const webp = useWebpSupport();
+  const anchor = useScrollAnchor();
   const { inputRef, onPick } = useIntake(session);
   const cropImg = useRef<HTMLImageElement>(null);
   const runRef = useRef<HTMLButtonElement>(null);
@@ -67,23 +67,30 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
     const { format: f, ...rest } = patch;
     if (f) setUserFormat(f);
     setForm(rest);
+    anchor.hold();
     session.clearResult();
     session.dismissError();
-  }, [session, setForm]);
+  }, [session, setForm, anchor.hold]);
 
   const changeCrop = useCallback((r: Rect) => { setCrop(r); session.clearResult(); session.dismissError(); }, [session]);
 
   const wasProcessing = useRef(false);
   useEffect(() => {
-    if (wasProcessing.current && state.phase === 'ready' && !state.error) runRef.current?.focus();
+    if (wasProcessing.current && state.phase === 'ready' && !state.error) runRef.current?.focus({ preventScroll: true });
     wasProcessing.current = state.phase === 'processing';
   }, [state.phase, state.error]);
 
   const run = (overrideFormat?: OutputFormat) => {
     const b = buildOptions(overrideFormat ? { ...effective, format: overrideFormat } : effective, { crop: sendCrop });
-    if (b.ok) void session.run(b.options);
+    if (b.ok) { anchor.hold(); void session.run(b.options); }
   };
-  const reset = () => { session.reset(); inputRef.current?.focus(); };
+  const reset = () => {
+    anchor.hold();
+    session.reset();
+    inputRef.current?.focus({ preventScroll: true });
+    // the tool just got much shorter: make sure the user is looking at it, not at whatever is now below it
+    requestAnimationFrame(() => requestAnimationFrame(() => ensureVisible(inputRef.current?.closest('[data-testid=dropzone]'), 'center')));
+  };
   const useJpeg = () => {
     setUserFormat('jpeg');
     session.dismissError();
@@ -125,7 +132,7 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
   };
 
   return (
-    <section data-testid="tool" aria-label="Signature resizer" className={`space-y-5 ${panelCls}`}>
+    <section ref={anchor.ref} data-testid="tool" aria-label="Signature resizer" className={`space-y-5 ${panelCls}`}>
       <h2 className="sr-only">Resize your signature</h2>
       <div role="status" aria-live="polite" data-testid="status" className="sr-only">{statusText(state)}</div>
 
@@ -145,25 +152,25 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
         <div role="alert" data-testid="error" className="rounded-lg border border-red-700 bg-red-50 p-3 text-red-950">{state.error.message}</div>
       )}
 
-      {state.file && state.previewUrl && (
+      {state.file && (
         <fieldset className="min-w-0 space-y-3" data-testid="crop-section">
           <legend className={legendCls}>Crop the signature</legend>
           <p className="text-sm text-slate-800" data-testid="file-info">
             <span className="font-medium">{state.file.name}</span>{' '}
             {state.natural ? `${formatDims(state.natural.width, state.natural.height)}, ` : ''}{formatSize(state.file.size)}
           </p>
-          <CropEditor
-            src={state.previewUrl}
-            natural={state.natural}
-            rect={crop}
-            lockAspect={lockCrop}
-            imgRef={cropImg}
-            onChange={(r) => { changeCrop(r); setDraft({}); }}
-            onImageLoad={(img) => {
-              session.setNatural(state.previewUrl!, img.naturalWidth, img.naturalHeight);
-              if (state.sniff?.hasAlpha !== false) session.setAlpha(state.previewUrl!, probeAlpha(img));
-            }}
-          />
+          {state.previewUrl ? (
+            <CropEditor
+              src={state.previewUrl}
+              natural={state.natural}
+              rect={crop}
+              lockAspect={lockCrop}
+              imgRef={cropImg}
+              onChange={(r) => { changeCrop(r); setDraft({}); }}
+            />
+          ) : (
+            <p data-testid="no-preview" className="rounded-lg border border-slate-300 bg-slate-50 p-3 text-sm text-slate-800">This picture is too large to show here. Use the number fields to crop it.</p>
+          )}
           <p className={hintCls}>Drag the box or its handles. With the keyboard: focus the box, then arrow keys move it, Alt plus arrow keys resize it, and Shift makes bigger steps. Or type exact numbers below.</p>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {CROP_FIELDS.map(([f, label]) => (
@@ -189,7 +196,7 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
             <span>Keep the crop box’s shape when resizing it</span>
           </label>
           <div className="flex flex-col gap-2 sm:flex-row">
-            <button type="button" data-testid="auto-trim" className={btnSecondary} onClick={autoTrim} disabled={!crop}>Auto-trim whitespace</button>
+            <button type="button" data-testid="auto-trim" className={btnSecondary} onClick={autoTrim} disabled={!crop || !state.previewUrl}>Auto-trim whitespace</button>
             <button type="button" data-testid="crop-reset" className={btnSecondary} onClick={() => { if (state.natural) { changeCrop(fullRect(state.natural)); setDraft({}); setTrimMsg(''); } }} disabled={!crop}>Use the whole picture</button>
           </div>
           <p role="status" className={hintCls} data-testid="trim-status">{trimMsg}</p>
@@ -214,7 +221,7 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
       </AdvancedBlock>
 
       {state.phase === 'processing' ? (
-        <ProgressBar progress={state.progress} onCancel={() => session.cancel()} />
+        <ProgressBar progress={state.progress} onCancel={() => { anchor.hold(); session.cancel(); }} />
       ) : (
         <div className="flex flex-col gap-2 sm:flex-row">
           <button ref={runRef} type="button" data-testid="run" className={btnPrimary} disabled={!state.file || busy || !built.ok} onClick={() => run()}>
@@ -241,7 +248,8 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
           resetLabel="Process another signature"
           onReset={reset}
           onTryJpeg={() => { setUserFormat('jpeg'); session.clearResult(); }}
-          original={state.previewUrl ? { url: state.previewUrl, name: state.file?.name ?? 'original' } : null}
+          original={state.originalUrl ? { url: state.originalUrl, name: state.file?.name ?? 'original' } : null}
+          gps={state.gps}
           preview={(
             <div data-testid="signature-preview" className="rounded-lg border border-slate-300 bg-white p-3">
               <p className="mb-2 text-sm text-slate-800">Preview on white paper, at its real pixel size (reduced only if it does not fit the screen).</p>

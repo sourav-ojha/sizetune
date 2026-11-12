@@ -1,5 +1,6 @@
 import type { ProcessImage, ProcessOptions, ProcessResult } from '../../lib/engine/types';
-import { toToolError, type ErrorContext, type ToolError } from './errors';
+import { errorCodeOf, INTERRUPTED, toToolError, type ErrorContext, type ToolError } from './errors';
+import type { Thumb } from './thumb';
 import { suggestFilename } from './format';
 import { sniffImage, SNIFF_BYTES, type Sniff } from './sniff';
 
@@ -19,12 +20,16 @@ export interface ResultView {
 export interface SessionState {
   phase: Phase;
   file: File | null;
-  /** blob: URL of the original (preview + "before" image); revoked by the session. */
+  /** blob: URL of the preview / "before" image: the file itself for small images, else a reduced-size thumbnail (null: no preview). Revoked by the session. */
   previewUrl: string | null;
+  /** blob: URL of the untouched original file (only used for "keep your original"; never decoded by the UI). */
+  originalUrl: string | null;
+  /** The file header says it contains EXIF location (GPS) data. */
+  gps: boolean;
   sniff: Sniff | null;
   /** Real transparency: false when the header rules it out, null until the preview has been scanned, then true/false. */
   alpha: boolean | null;
-  /** Source pixel size as the browser displays it (EXIF applied); reported by the preview <img>. */
+  /** Source pixel size after EXIF orientation, from the file header (never from a decode). */
   natural: { width: number; height: number } | null;
   progress: Progress | null;
   result: ResultView | null;
@@ -39,11 +44,16 @@ export interface SessionDeps {
   createObjectURL: (b: Blob) => string;
   revokeObjectURL: (u: string) => void;
   maxFileBytes?: number;
+  maxPixels?: number;
   readHead?: (f: Blob) => Promise<Uint8Array>;
+  /** Header-only inspection (no decode): display size after EXIF orientation, EXIF GPS flag. Throws EngineError (limits, unsupported, corrupt). */
+  inspect?: (f: Blob) => Promise<{ width: number; height: number; hasGps?: boolean }>;
+  /** Reduced-size preview + alpha probe. Without it the file itself is the preview. */
+  makeThumbnail?: (f: Blob, w: number, h: number, alphaPossible: boolean) => Promise<Thumb>;
 }
 
 const EMPTY: SessionState = {
-  phase: 'empty', file: null, previewUrl: null, sniff: null, alpha: null, natural: null, progress: null, result: null, error: null, notice: null, fileSerial: 0,
+  phase: 'empty', file: null, previewUrl: null, originalUrl: null, gps: false, sniff: null, alpha: null, natural: null, progress: null, result: null, error: null, notice: null, fileSerial: 0,
 };
 
 const defaultReadHead = async (f: Blob): Promise<Uint8Array> => new Uint8Array(await f.slice(0, SNIFF_BYTES).arrayBuffer());
@@ -71,6 +81,13 @@ export class ToolSession {
 
   private revoke(u: string | null | undefined): void { if (u) this.deps.revokeObjectURL(u); }
 
+  /** Revokes the preview/original URLs of the current file (each once, they may be the same URL). */
+  private dropFileUrls(): void {
+    const { previewUrl, originalUrl } = this.state;
+    this.revoke(originalUrl);
+    if (previewUrl && previewUrl !== originalUrl) this.revoke(previewUrl);
+  }
+
   private stopRun(): void {
     this.runId++;
     this.abort?.abort();
@@ -88,41 +105,48 @@ export class ToolSession {
   async selectFile(file: File | null, notice: string | null = null): Promise<void> {
     const token = ++this.fileToken;
     if (file) {
-      const ctx: ErrorContext = { maxFileBytes: this.deps.maxFileBytes };
-      const reject = (code: 'too_large_bytes' | 'corrupt' | 'unsupported_type') => this.set({ error: toToolError({ name: 'EngineError', code }, ctx), notice: null });
-      if (this.deps.maxFileBytes && file.size > this.deps.maxFileBytes) return reject('too_large_bytes');
-      let sniff: Sniff;
-      try {
-        sniff = sniffImage(await (this.deps.readHead ?? defaultReadHead)(file));
-      } catch {
-        if (token === this.fileToken) reject('corrupt');
-        return;
-      }
+      const ctx: ErrorContext = { maxFileBytes: this.deps.maxFileBytes, maxPixels: this.deps.maxPixels };
+      const reject = (e: unknown, extra: ErrorContext = {}) => this.set({ error: toToolError(e, { ...ctx, ...extra }), notice: null });
+      const code = (c: 'too_large_bytes' | 'corrupt' | 'unsupported_type' | 'too_many_pixels') => ({ name: 'EngineError', code: c });
+      // 1. cheap checks that need no decode and create no object URL
+      if (this.deps.maxFileBytes && file.size > this.deps.maxFileBytes) return reject(code('too_large_bytes'));
+      let head: Uint8Array;
+      try { head = await (this.deps.readHead ?? defaultReadHead)(file); } catch { if (token === this.fileToken) reject(code('corrupt')); return; }
       if (token !== this.fileToken) return; // a newer selection won
-      if (!sniff.kind) return reject('unsupported_type');
+      const sniff = sniffImage(head);
+      if (!sniff.kind) return reject(code('unsupported_type'));
+      let size: { width: number; height: number; hasGps?: boolean } | null = null;
+      if (this.deps.inspect) {
+        try { size = await this.deps.inspect(file); } catch (e) {
+          if (token === this.fileToken) { const d = e as { width?: number; height?: number }; reject(e, { width: d.width, height: d.height }); }
+          return;
+        }
+        if (token !== this.fileToken) return;
+        if (this.deps.maxPixels && size.width * size.height > this.deps.maxPixels) return reject(code('too_many_pixels'), { width: size.width, height: size.height });
+      }
+      // 2. reduced preview (only now, after the file passed the header checks)
+      const alphaPossible = sniff.hasAlpha !== false;
+      let thumb: Thumb = { kind: 'original', alpha: alphaPossible ? null : false };
+      if (this.deps.makeThumbnail && size) {
+        try { thumb = await this.deps.makeThumbnail(file, size.width, size.height, alphaPossible); } catch { thumb = { kind: 'none', alpha: alphaPossible ? null : false }; }
+        if (token !== this.fileToken) return;
+      }
+      // 3. accept: replace everything
       this.stopRun();
       this.dropResult();
-      this.revoke(this.state.previewUrl);
-      this.set({ ...EMPTY, fileSerial: this.state.fileSerial + 1, notice, phase: 'ready', file, sniff, alpha: sniff.hasAlpha === false ? false : null, previewUrl: this.deps.createObjectURL(file) });
+      this.dropFileUrls();
+      const originalUrl = this.deps.createObjectURL(file);
+      const previewUrl = thumb.kind === 'original' ? originalUrl : thumb.kind === 'thumb' ? this.deps.createObjectURL(thumb.blob) : null;
+      this.set({
+        ...EMPTY, fileSerial: this.state.fileSerial + 1, notice, phase: 'ready', file, sniff,
+        alpha: sniff.hasAlpha === false ? false : thumb.alpha, gps: size?.hasGps === true, natural: size ? { width: size.width, height: size.height } : null, previewUrl, originalUrl,
+      });
       return;
     }
     this.stopRun();
     this.dropResult();
-    this.revoke(this.state.previewUrl);
+    this.dropFileUrls();
     this.set({ ...EMPTY, fileSerial: this.state.fileSerial + 1, notice });
-  }
-
-  setNatural(url: string, width: number, height: number): void {
-    if (url !== this.state.previewUrl || !(width > 0) || !(height > 0)) return;
-    const n = this.state.natural;
-    if (n && n.width === width && n.height === height) return;
-    this.set({ natural: { width, height } });
-  }
-
-  /** Result of scanning the preview for real transparency (ignored for a stale preview). */
-  setAlpha(url: string, value: boolean): void {
-    if (url !== this.state.previewUrl || this.state.alpha === value) return;
-    this.set({ alpha: value });
   }
 
   /** Runs the engine. Ignored unless a file is ready. A newer run/cancel/reset makes this one's result be dropped. */
@@ -150,7 +174,9 @@ export class ToolSession {
     } catch (e) {
       if (my !== this.runId) return;
       this.abort = null;
-      const err = toToolError(e, { maxFileBytes: this.deps.maxFileBytes, requestedFormat: options.format });
+      let err = toToolError(e, { maxFileBytes: this.deps.maxFileBytes, requestedFormat: options.format, width: this.state.natural?.width, height: this.state.natural?.height });
+      // 'cancelled' is only silent when WE aborted (Cancel / settings change / new file all bump runId, handled above)
+      if (errorCodeOf(e) === 'cancelled' && !ctrl.signal.aborted) err = INTERRUPTED;
       this.set({ phase: 'ready', progress: null, error: err.code === 'cancelled' ? null : err });
     }
   }
@@ -184,7 +210,7 @@ export class ToolSession {
     this.stopRun();
     this.fileToken++;
     this.dropResult();
-    this.revoke(this.state.previewUrl);
+    this.dropFileUrls();
     this.state = { ...EMPTY, fileSerial: this.state.fileSerial + 1 };
     this.listeners.forEach((l) => l());
   }
