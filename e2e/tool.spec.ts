@@ -149,13 +149,30 @@ test('invalid target disables the button', async ({ page }) => {
   await expect(page.getByTestId('run')).toBeDisabled();
 });
 
-test('undecodable file shows an error, no crash', async ({ page }) => {
+test('undecodable file shows an error, no crash (complete structure, unreadable pixels: fails at Resize)', async ({ page }) => {
   await page.goto('/');
   await page.getByTestId('preset-100').click();
-  const real = fs.readFileSync(IMG).subarray(0, 200); // valid PNG signature, truncated body
-  await page.getByTestId('file').setInputFiles({ name: 'bad.png', mimeType: 'image/png', buffer: real });
+  // valid PNG structure (signature, IHDR 100x100, IDAT, IEND) whose pixel data cannot be decoded
+  const zlib = await import('node:zlib');
+  const crc = (b: Buffer) => { let c = 0xffffffff; for (const x of b) { c ^= x; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; } return (c ^ 0xffffffff) >>> 0; };
+  const chunk = (t: string, d: Buffer) => { const l = Buffer.alloc(4); l.writeUInt32BE(d.length); const td = Buffer.concat([Buffer.from(t), d]); const c = Buffer.alloc(4); c.writeUInt32BE(crc(td)); return Buffer.concat([l, td, c]); };
+  const ihdr = Buffer.alloc(13); ihdr.writeUInt32BE(100, 0); ihdr.writeUInt32BE(100, 4); ihdr[8] = 8; ihdr[9] = 6;
+  const bad = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), chunk('IHDR', ihdr), chunk('IDAT', zlib.deflateSync(Buffer.alloc(64))), chunk('IEND', Buffer.alloc(0))]);
+  await page.getByTestId('file').setInputFiles({ name: 'bad.png', mimeType: 'image/png', buffer: bad });
+  await expect(page.getByTestId('run')).toBeEnabled();
   await page.getByTestId('run').click();
   await expect(page.getByRole('alert')).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByTestId('run')).toBeEnabled();
+});
+
+test('a truncated file is rejected at pick with a friendly message, and a good file recovers', async ({ page }) => {
+  await page.goto('/');
+  await page.getByTestId('preset-100').click();
+  await page.getByTestId('file').setInputFiles({ name: 'cut.png', mimeType: 'image/png', buffer: fs.readFileSync(IMG).subarray(0, 200) });
+  await expect(page.getByRole('alert')).toContainText(/incomplete or damaged/);
+  await expect(page.getByTestId('run')).toBeDisabled();
+  await page.getByTestId('file').setInputFiles(IMG);
+  await expect(page.getByRole('alert')).toHaveCount(0);
   await expect(page.getByTestId('run')).toBeEnabled();
 });
 

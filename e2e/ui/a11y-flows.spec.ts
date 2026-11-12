@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import fs from 'node:fs';
-import { NOISE, file, flatPng, isJpeg, openTool, pick, resize, signaturePng } from './helpers';
+import { NOISE, bombPng, file, flatPng, isJpeg, openTool, pick, resize, signaturePng } from './helpers';
 
 /** Presses Tab until the element with this data-testid has focus (fails if it takes more than `max` presses = unreachable by keyboard). */
 async function tabTo(page: Page, testId: string, max = 120) {
@@ -47,26 +47,56 @@ test.describe('keyboard only', () => {
     await expect(page.getByTestId('file')).toBeFocused();
   });
 
-  for (const how of ['escape', 'button'] as const) {
-    test(`${how === 'escape' ? 'Escape' : 'The Cancel button (by keyboard)'} cancels a run, keeps the file and settings, and leaves focus on a live control`, async ({ page }) => {
+  const TOOLS = [
+    { name: 'image tool', url: '/', pickFile: () => NOISE as string | { name: string; mimeType: string; buffer: Buffer } },
+    { name: 'signature tool', url: '/resize-signature/', pickFile: () => file('sig.png', signaturePng()) },
+  ];
+  for (const tool of TOOLS) {
+    for (const how of ['mouse click on Resize', 'Enter on Resize', 'Space on Resize'] as const) {
+      test(`${tool.name}: Escape cancels a run started by ${how} (no need to focus Cancel first); focus is on Cancel, then back on Resize`, async ({ page }) => {
+        let release!: () => void;
+        const gate = new Promise<void>((r) => (release = r));
+        await page.route('**/_astro/*worker*.js', async (route) => { await gate; await route.continue(); });
+        await openTool(page, tool.url);
+        await pick(page, tool.pickFile());
+        await page.getByTestId('preset-30').click();
+        if (how === 'mouse click on Resize') await page.getByTestId('run').click();
+        else { await page.getByTestId('run').focus(); await page.keyboard.press(how === 'Enter on Resize' ? 'Enter' : 'Space'); }
+        await expect(page.getByTestId('progress')).toBeVisible();
+        await expect(page.getByTestId('cancel'), 'focus moves to Cancel when the run starts (the Resize button unmounted)').toBeFocused();
+        await page.evaluate(() => (document.activeElement as HTMLElement).blur()); // worst case: focus lost to <body>
+        expect(await page.evaluate(() => document.activeElement === document.body)).toBe(true);
+        await page.keyboard.press('Escape');
+        await expect(page.getByTestId('progress')).toHaveCount(0);
+        await expect(page.getByTestId('run')).toBeFocused();
+        await expect(page.getByTestId('file-info')).toContainText(/noise\.png|sig\.png/);
+        await expect(page.getByTestId('preset-30')).toHaveAttribute('aria-pressed', 'true');
+        await expect(page.getByRole('alert')).toHaveCount(0);
+        release();
+        await page.waitForTimeout(800);
+        await expect(page.getByTestId('result')).toHaveCount(0); // the cancelled run never shows up later
+      });
+    }
+    test(`${tool.name}: the Cancel button works by keyboard`, async ({ page }) => {
       let release!: () => void;
       const gate = new Promise<void>((r) => (release = r));
       await page.route('**/_astro/*worker*.js', async (route) => { await gate; await route.continue(); });
-      await openTool(page);
-      await pick(page, NOISE);
-      await page.getByTestId('preset-30').click();
+      await openTool(page, tool.url);
+      await pick(page, tool.pickFile());
       await page.getByTestId('run').click();
       await expect(page.getByTestId('progress')).toBeVisible();
-      if (how === 'escape') { await page.getByTestId('cancel').focus(); await page.keyboard.press('Escape'); }
-      else { await tabTo(page, 'cancel'); await page.keyboard.press('Enter'); }
+      await expect(page.getByTestId('cancel')).toBeFocused(); // focus was moved to it when the run started
+      await page.keyboard.press('Enter');
       await expect(page.getByTestId('progress')).toHaveCount(0);
       await expect(page.getByTestId('run')).toBeFocused();
-      await expect(page.getByTestId('file-info')).toContainText('noise.png');
-      await expect(page.getByTestId('preset-30')).toHaveAttribute('aria-pressed', 'true');
-      await expect(page.getByRole('alert')).toHaveCount(0);
       release();
-      await page.waitForTimeout(800);
-      await expect(page.getByTestId('result')).toHaveCount(0); // the cancelled run never shows up later
+    });
+    test(`${tool.name}: Escape does nothing when no run is in progress`, async ({ page }) => {
+      await openTool(page, tool.url);
+      await pick(page, tool.pickFile());
+      await page.keyboard.press('Escape');
+      await expect(page.getByTestId('file-info')).toBeVisible();
+      await expect(page.getByTestId('run')).toBeEnabled();
     });
   }
 
@@ -215,7 +245,7 @@ test.describe('screen-reader semantics (accessibility tree)', () => {
     await page.getByTestId('file').setInputFiles(file('x.svg', Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"></svg>'), 'image/svg+xml'));
     await expect(page.getByRole('alert')).toHaveCount(1);
     expect((await page.getByRole('status').textContent())!.trim()).toBe('');
-    await pick(page, file('broken.png', flatPng(200, 200).subarray(0, 60)));
+    await pick(page, file('unreadable.png', bombPng(100, 100)));
     await page.getByTestId('run').click();
     await expect(page.getByRole('alert')).toHaveCount(1, { timeout: 20_000 });
     expect((await page.getByRole('status').textContent())!.trim()).toBe('');

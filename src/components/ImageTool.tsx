@@ -79,7 +79,7 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
   };
 
   return (
-    <section ref={anchor.ref} data-testid="tool" onKeyDown={(e) => { if (e.key === 'Escape' && state.phase === 'processing') { anchor.hold(); session.cancel(); } }} aria-label="Image resizer" className={`space-y-5 ${panelCls}`}>
+    <section ref={anchor.ref} data-testid="tool" aria-label="Image resizer" className={`space-y-5 ${panelCls}`}>
       <h2 className="sr-only">Resize your image</h2>
       <div role="status" aria-live="polite" data-testid="status" className="sr-only">{statusText(state)}</div>
 
@@ -100,7 +100,7 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
               className="max-h-32 max-w-[40%] rounded-lg border border-slate-300 object-contain"
             />
           ) : (
-            <p data-testid="no-preview" className="max-w-[40%] rounded-lg border border-slate-300 bg-slate-50 p-2 text-xs text-slate-700">No preview for a very large image; it is still processed normally.</p>
+            <p data-testid="no-preview" className="max-w-[40%] rounded-lg border border-slate-300 bg-slate-50 p-2 text-xs text-slate-700">{state.previewNote === 'failed' ? 'The preview could not be created; the file may be incomplete or damaged. You can still try Resize.' : 'No preview for a very large image; it is still processed normally.'}</p>
           )}
           <p className="min-w-0 text-sm text-slate-800" data-testid="file-info">
             <span className="block truncate font-medium">{state.file.name}</span>

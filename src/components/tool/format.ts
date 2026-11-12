@@ -29,7 +29,10 @@ export function formatChange(originalBytes: number, outputBytes: number): string
   if (!(originalBytes > 0)) return '';
   const pct = ((originalBytes - outputBytes) / originalBytes) * 100;
   if (outputBytes === originalBytes) return 'same size as the original';
-  if (pct > 0) return pct < 1 ? 'less than 1% smaller than the original' : `${Math.round(pct)}% smaller than the original`;
+  if (pct > 0) {
+    if (pct < 1) return 'less than 1% smaller than the original';
+    return pct >= 99 ? 'more than 99% smaller than the original' : `${Math.round(pct)}% smaller than the original`; // never claim "100% smaller"
+  }
   const up = -pct;
   return up < 1 ? 'less than 1% larger than the original' : `${Math.round(up)}% larger than the original`;
 }

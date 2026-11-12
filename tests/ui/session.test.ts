@@ -61,9 +61,9 @@ describe('ToolSession (header checks, thumbnails, interruption)', () => {
     expect(live.size).toBe(0);
   });
   it('no preview kind: still ready, previewUrl null, original available', async () => {
-    const { s } = setup({ inspect: async () => ({ width: 8000, height: 8000 }), makeThumbnail: async () => ({ kind: 'none', alpha: null }) });
+    const { s } = setup({ inspect: async () => ({ width: 8000, height: 8000 }), makeThumbnail: async () => ({ kind: 'none', alpha: null, reason: 'too-large' }) });
     await s.selectFile(pngFile());
-    expect(s.getSnapshot()).toMatchObject({ phase: 'ready', previewUrl: null });
+    expect(s.getSnapshot()).toMatchObject({ phase: 'ready', previewUrl: null, previewNote: 'too-large' });
     expect(s.getSnapshot().originalUrl).not.toBeNull();
   });
   it('a header error (corrupt) rejects without creating URLs', async () => {

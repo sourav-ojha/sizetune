@@ -132,7 +132,7 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
   };
 
   return (
-    <section ref={anchor.ref} data-testid="tool" onKeyDown={(e) => { if (e.key === 'Escape' && state.phase === 'processing') { anchor.hold(); session.cancel(); } }} aria-label="Signature resizer" className={`space-y-5 ${panelCls}`}>
+    <section ref={anchor.ref} data-testid="tool" aria-label="Signature resizer" className={`space-y-5 ${panelCls}`}>
       <h2 className="sr-only">Resize your signature</h2>
       <div role="status" aria-live="polite" data-testid="status" className="sr-only">{statusText(state)}</div>
 
@@ -169,7 +169,7 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
               onChange={(r) => { changeCrop(r); setDraft({}); }}
             />
           ) : (
-            <p data-testid="no-preview" className="rounded-lg border border-slate-300 bg-slate-50 p-3 text-sm text-slate-800">This picture is too large to show here. Use the number fields to crop it.</p>
+            <p data-testid="no-preview" className="rounded-lg border border-slate-300 bg-slate-50 p-3 text-sm text-slate-800">{state.previewNote === 'failed' ? 'The preview could not be created; the file may be incomplete or damaged. You can still use the number fields and try Resize.' : 'This picture is too large to show here. Use the number fields to crop it.'}</p>
           )}
           <p className={hintCls}>Drag the box or its handles. With the keyboard: focus the box, then arrow keys move it, Alt plus arrow keys resize it, and Shift makes bigger steps. Or type exact numbers below.</p>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

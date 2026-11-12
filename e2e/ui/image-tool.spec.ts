@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import fs from 'node:fs';
-import { NOISE, bytesOf, downloaded, file, flatPng, isJpeg, isPng, isWebp, openTool, pick, resize, transparentPng } from './helpers';
+import { NOISE, bombPng, bytesOf, downloaded, file, flatPng, isJpeg, isPng, isWebp, openTool, pick, resize, transparentPng } from './helpers';
 
 test.describe('image tool', () => {
   test('preset buttons set the maximum and the result honours it', async ({ page }) => {
@@ -255,17 +255,27 @@ test.describe('image tool', () => {
     await expect(page.getByTestId('run')).toBeDisabled();
   });
 
-  test('a damaged image shows a friendly error and can be retried', async ({ page }) => {
+  test('an image that cannot be decoded shows a friendly error at Resize and can be retried', async ({ page }) => {
     await openTool(page);
-    const real = flatPng(200, 200);
-    await page.getByTestId('file').setInputFiles(file('broken.png', real.subarray(0, 60)));
+    await pick(page, file('unreadable.png', bombPng(100, 100))); // valid structure, undecodable pixels
     await page.getByTestId('run').click();
     await expect(page.getByRole('alert')).toBeVisible({ timeout: 20_000 });
     await expect(page.getByRole('alert')).not.toContainText(/undefined|Error:/);
     await expect(page.getByTestId('run')).toBeEnabled();
-    await pick(page, file('ok.png', real));
+    await pick(page, file('ok.png', flatPng(200, 200)));
     await resize(page);
     await expect(page.getByRole('alert')).toHaveCount(0);
+  });
+
+  test('a truncated image is rejected at pick (incomplete or damaged), and the next good pick recovers', async ({ page }) => {
+    await openTool(page);
+    await page.getByTestId('file').setInputFiles(file('broken.png', flatPng(200, 200).subarray(0, 60)));
+    await expect(page.getByRole('alert')).toContainText(/incomplete or damaged/);
+    await expect(page.getByTestId('preview')).toHaveCount(0);
+    await expect(page.getByTestId('run')).toBeDisabled();
+    await pick(page, file('ok.png', flatPng(200, 200)));
+    await expect(page.getByRole('alert')).toHaveCount(0);
+    await resize(page);
   });
 
   test('picking a new file replaces the old result', async ({ page }) => {

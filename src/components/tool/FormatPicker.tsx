@@ -67,7 +67,7 @@ export default function FormatPicker({ form, errors, update, formats, webp, hasA
 
       {hasAlpha === true && (
         <p className="rounded-lg border border-sky-700 bg-sky-50 p-3 text-sm text-sky-950" data-testid="alpha-note">
-          This image has transparent areas.{' '}
+          This image appears to have transparent areas.{' '}
           {form.format === 'jpeg'
             ? 'JPEG cannot store transparency, so those areas will be filled with the colour you choose below.'
             : 'The chosen format keeps them transparent. Pick JPEG only if your form needs it; you would then choose a fill colour.'}

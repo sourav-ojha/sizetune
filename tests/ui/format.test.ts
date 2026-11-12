@@ -21,6 +21,11 @@ describe('size formatting', () => {
     expect(formatChange(100_000, 99_999)).toBe('less than 1% smaller than the original');
     expect(formatChange(100_000, 100_001)).toBe('less than 1% larger than the original');
     expect(formatChange(0, 5)).toBe('');
+    // never "100% smaller"
+    expect(formatChange(12_200_000, 19_000)).toBe('more than 99% smaller than the original');
+    expect(formatChange(100_000, 1_000)).toBe('more than 99% smaller than the original');
+    expect(formatChange(100_000, 1_400)).toBe('99% smaller than the original');
+    expect(formatChange(1_000_000, 0)).toBe('more than 99% smaller than the original');
   });
   it('describes the KB basis of the byte window', () => {
     const tail = ', so it passes whether a portal counts 1 KB as 1,000 or 1,024 bytes';

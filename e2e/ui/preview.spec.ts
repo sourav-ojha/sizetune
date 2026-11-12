@@ -81,6 +81,44 @@ test.describe('previews never undo the engine’s memory-safe decode (F1)', () =
   });
 });
 
+test.describe('A4: truncated files', () => {
+  test('a truncated 16 MP JPEG gets a friendly "incomplete" message, never "very large image"', async ({ page }) => {
+    test.setTimeout(90_000);
+    await openTool(page);
+    const jpeg = await page.evaluate(async () => {
+      const c = document.createElement('canvas'); c.width = 4000; c.height = 4000;
+      const x = c.getContext('2d')!;
+      for (let i = 0; i < 40; i++) { x.fillStyle = `hsl(${i * 9} 70% 50%)`; x.fillRect(0, i * 100, 4000, 100); }
+      const blob = await new Promise<Blob>((r) => c.toBlob((b) => r(b!), 'image/jpeg', 0.9));
+      let s = ''; for (const v of new Uint8Array(await blob.arrayBuffer())) s += String.fromCharCode(v);
+      return btoa(s);
+    });
+    const whole = Buffer.from(jpeg, 'base64');
+    const cut = whole.subarray(0, Math.floor(whole.length * 0.6));
+    await page.getByTestId('file').setInputFiles(file('cut.jpg', cut, 'image/jpeg'));
+    // Either the engine rejects it at pick (alert), or the file is accepted with an honest "could not create a preview" note.
+    await expect.poll(async () => (await page.getByRole('alert').count()) + (await page.getByTestId('no-preview').count()) + (await page.getByTestId('preview').count()), { timeout: 30_000 }).toBeGreaterThan(0);
+    const body = (await page.getByTestId('tool').textContent()) ?? '';
+    expect(body).not.toContain('very large image');
+    if (await page.getByRole('alert').count()) {
+      await expect(page.getByRole('alert')).toContainText(/incomplete or damaged/);
+      await expect(page.getByTestId('run')).toBeDisabled();
+    } else if (await page.getByTestId('no-preview').count()) {
+      await expect(page.getByTestId('no-preview')).toContainText('incomplete or damaged');
+    }
+  });
+
+  test('the "very large image" note appears only above the preview limit (here 45 MP, header only)', async ({ page }) => {
+    await openTool(page);
+    const { bombPng: _unused } = await import('./helpers');
+    const png = Buffer.from(await (async () => (await import('./helpers')).bombPng(7000, 6500))());
+    await page.getByTestId('file').setInputFiles(file('wide.png', png));
+    await expect.poll(async () => (await page.getByRole('alert').count()) + (await page.getByTestId('no-preview').count())).toBeGreaterThan(0);
+    // a header-only fake: the engine may still reject it as corrupt; if accepted, the note must say "very large"
+    if (await page.getByTestId('no-preview').count()) await expect(page.getByTestId('no-preview')).toContainText('very large image');
+  });
+});
+
 test.describe('F3: keeping the original', () => {
   test('result larger than a GPS-tagged original: keep-original is SECONDARY and the location warning is explicit', async ({ page }) => {
     await openTool(page);

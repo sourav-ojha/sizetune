@@ -47,7 +47,7 @@ export function toToolError(e: unknown, ctx: ErrorContext = {}): ToolError {
     case 'unsupported_type':
       return { code, message: 'This file is not a JPEG, PNG or WebP image. SVG, GIF, HEIC and other formats are not supported.' };
     case 'corrupt':
-      return { code, message: 'This image could not be read. It may be damaged or incomplete. Try saving or exporting it again.' };
+      return { code, message: 'This image file looks incomplete or damaged (for example a download that did not finish). Try saving or exporting it again.' };
     case 'too_large_bytes':
       return { code, message: `This file is too large to process in the browser${ctx.maxFileBytes ? ` (the limit is ${formatCap(ctx.maxFileBytes)})` : ''}. Choose a smaller file.` };
     case 'too_many_pixels':

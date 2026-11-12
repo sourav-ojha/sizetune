@@ -26,6 +26,8 @@ export interface SessionState {
   originalUrl: string | null;
   /** The file header says it contains EXIF location (GPS) data. */
   gps: boolean;
+  /** Why there is no preview image: 'too-large' (above the preview decode limit) or 'failed' (the reduced decode failed, file may be incomplete). */
+  previewNote: 'too-large' | 'failed' | null;
   sniff: Sniff | null;
   /** Real transparency: false when the header rules it out, null until the preview has been scanned, then true/false. */
   alpha: boolean | null;
@@ -53,7 +55,7 @@ export interface SessionDeps {
 }
 
 const EMPTY: SessionState = {
-  phase: 'empty', file: null, previewUrl: null, originalUrl: null, gps: false, sniff: null, alpha: null, natural: null, progress: null, result: null, error: null, notice: null, fileSerial: 0,
+  phase: 'empty', file: null, previewUrl: null, originalUrl: null, gps: false, previewNote: null, sniff: null, alpha: null, natural: null, progress: null, result: null, error: null, notice: null, fileSerial: 0,
 };
 
 const defaultReadHead = async (f: Blob): Promise<Uint8Array> => new Uint8Array(await f.slice(0, SNIFF_BYTES).arrayBuffer());
@@ -128,7 +130,7 @@ export class ToolSession {
       const alphaPossible = sniff.hasAlpha !== false;
       let thumb: Thumb = { kind: 'original', alpha: alphaPossible ? null : false };
       if (this.deps.makeThumbnail && size) {
-        try { thumb = await this.deps.makeThumbnail(file, size.width, size.height, alphaPossible); } catch { thumb = { kind: 'none', alpha: alphaPossible ? null : false }; }
+        try { thumb = await this.deps.makeThumbnail(file, size.width, size.height, alphaPossible); } catch { thumb = { kind: 'none', alpha: alphaPossible ? null : false, reason: 'failed' }; }
         if (token !== this.fileToken) return;
       }
       // 3. accept: replace everything
@@ -139,7 +141,7 @@ export class ToolSession {
       const previewUrl = thumb.kind === 'original' ? originalUrl : thumb.kind === 'thumb' ? this.deps.createObjectURL(thumb.blob) : null;
       this.set({
         ...EMPTY, fileSerial: this.state.fileSerial + 1, notice, phase: 'ready', file, sniff,
-        alpha: sniff.hasAlpha === false ? false : thumb.alpha, gps: size?.hasGps === true, natural: size ? { width: size.width, height: size.height } : null, previewUrl, originalUrl,
+        alpha: sniff.hasAlpha === false ? false : thumb.alpha, gps: size?.hasGps === true, previewNote: thumb.kind === 'none' ? thumb.reason : null, natural: size ? { width: size.width, height: size.height } : null, previewUrl, originalUrl,
       });
       return;
     }
