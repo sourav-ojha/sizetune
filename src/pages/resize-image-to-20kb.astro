@@ -43,9 +43,9 @@ const jsonLd = webApplicationLd('SizeTune: resize image to 20 KB', '/resize-imag
       one, so the same file can look slightly different on two computers. A portal may use either.
     </p>
     <p>
-      To be safe under both, SizeTune aims for a file below 20,000 bytes. That is why you may see a result such as 19.4
-      KB and not 19.99 KB: the small gap is the safety margin and not a mistake. If you set a minimum as well, the
-      tool aims above the larger reading of that number.
+      SizeTune aims below your maximum counted as 1,000 bytes per KB, and above your minimum counted as 1,024, so the
+      file passes whether a portal counts KB as 1,000 or 1,024 bytes. Results are displayed in 1,024-byte KB, so a 20
+      KB target may display as about 19.5 KB. That gap is the safety margin and not a mistake.
     </p>
 
     <h2>Reaching 20 KB with the least visible loss</h2>
@@ -73,9 +73,9 @@ const jsonLd = webApplicationLd('SizeTune: resize image to 20 KB', '/resize-imag
       </li>
     </ol>
     <p>
-      As a rough idea, a 20 KB photograph usually ends up a few hundred pixels across. In our own testing with one
-      landscape sample, a width of about 600 pixels at medium quality landed close to 20 KB. Your picture will behave
-      differently, so treat that as a feel for the scale and not as a promise.
+      As a rough expectation, a photograph at 20 KB is much smaller in pixels than a phone photo, and how small depends
+      on the picture: plain scenes keep more pixels than busy ones. Treat this as a feel for the scale and not as a
+      promise, and read the dimensions the tool displays.
     </p>
 
     <h2>If the image is too complex or too simple</h2>

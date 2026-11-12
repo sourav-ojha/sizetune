@@ -45,9 +45,10 @@ const jsonLd = webApplicationLd('SizeTune image resizer', '/', description);
       cleaner detail often looks better than a large, heavily compressed one.
     </p>
     <p>
-      If you want a specific width or height, type it in. The aspect lock keeps the picture from being stretched. The
-      output is a JPEG by default, which is the usual choice for photographs. PNG and WebP are offered when your browser
-      is able to produce them. The tool can also be stopped part-way with the cancel button, and nothing is saved until
+      If you want a specific width or height, type it in. The aspect lock keeps the picture from being stretched. By
+      default the output keeps the format of the file you added (JPEG, PNG or WebP). The exception is an opaque PNG with a
+      size limit: the tool preselects JPEG for it and shows a note, and you can switch back to PNG. WebP output is
+      offered only where your browser can produce it. The tool can also be stopped part-way with the cancel button, and nothing is saved until
       you press download.
     </p>
 
@@ -95,9 +96,9 @@ const jsonLd = webApplicationLd('SizeTune image resizer', '/', description);
     <h2>Frequently asked questions</h2>
     <h3>Is 20 KB the same as 20,000 bytes or 20,480 bytes?</h3>
     <p>
-      Both conventions are in use. Some systems count a kilobyte as 1,000 bytes and others as 1,024. SizeTune aims for a
-      result that is under the limit by the smaller measure, so it should pass whichever one the form uses. If you set
-      a minimum, it aims above the larger measure for the same reason.
+      Both conventions are in use. SizeTune aims below your maximum counted as 1,000 bytes per KB, and above your minimum
+      counted as 1,024, so the file passes whether a portal counts a KB as 1,000 or 1,024 bytes. Results are displayed
+      in 1,024-byte KB, so a 20 KB target may display as about 19.5 KB.
     </p>
     <h3>Will my picture look worse?</h3>
     <p>
@@ -112,8 +113,9 @@ const jsonLd = webApplicationLd('SizeTune image resizer', '/', description);
     </p>
     <h3>Which pictures can I open?</h3>
     <p>
-      Any image your browser can decode, which normally includes JPEG, PNG and WebP. Support for other types, such as
-      HEIC photos from some phones, depends on the browser. If a file will not open, save or export it as a JPEG first.
+      Only JPEG, PNG and WebP files are accepted. Other types, such as HEIC photos from some phones or GIF images, need
+      converting first. On an iPhone you can set Settings, Camera, Formats to Most Compatible, or export the photo as
+      a JPEG.
     </p>
     <h3>Why did the tool say it could not reach my limit?</h3>
     <p>

@@ -79,13 +79,12 @@ const jsonLd = webApplicationLd('SizeTune: resize signature', '/resize-signature
     <h2>Why a tiny signature may not reach a minimum</h2>
     <p>
       Compression can make a file smaller, but it cannot invent detail to make a file larger. A signature that is only
-      a few hundred pixels wide, drawn in one colour on a white background, holds very little information. In our
-      tests, a signature at 140 by 60 pixels stayed at roughly 5 KB even when saved at the highest JPEG quality. A
-      minimum of 10 KB cannot be met honestly at that pixel size.
+      a few hundred pixels wide, drawn in one colour on a white background, holds very little information. A
+      very small, simple image can stay under a few KB even at maximum quality, so a large minimum may be unreachable
+      at that size.
     </p>
     <p>
-      A larger source behaves differently. In the same tests, a scan of 1,200 by 400 pixels fitted inside a 10 to 20 KB
-      window at high quality. If you run into this limit, the choices are:
+      A larger, sharper source holds more information and has more room to reach a minimum. If you run into this limit, the choices are:
     </p>
     <ol>
       <li>Start again from a larger photo or scan of the signature.</li>
