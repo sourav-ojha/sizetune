@@ -11,7 +11,10 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "verify:html": "node scripts/verify-html.mjs",
-    "verify": "npm run check && npm run build && npm test && npm run verify:html && npm run test:e2e"
+    "verify:html:strict": "node scripts/verify-html.mjs --strict",
+    "verify:html:final": "node scripts/verify-html.mjs --final",
+    "verify:privacy": "node scripts/verify-privacy.mjs",
+    "verify": "npm run check && npm run build && npm test && npm run verify:html && npm run verify:html:strict && npm run verify:privacy && npm run test:e2e"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.1.5",
