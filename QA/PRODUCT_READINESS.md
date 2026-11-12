@@ -6,7 +6,7 @@ Legend: ✅ implemented + verified by automated evidence · 🟡 implemented, ev
 | Gate | Status | Evidence / gap |
 |--|--|--|
 | Architecture (Astro static + Preact islands, Workers static assets) | ✅ | ADR v3; independent reviews; nothing deployed |
-| Full local verify chain | ✅ | `npm run verify` exit 0: 665 unit, 183 browser (Chrome), verifiers OK |
+| Full local verify chain | ✅ | `npm run verify` exit 0: 672 unit, 188 browser (Chrome), verifiers OK |
 | HTML/SEO structure | ✅ | parse5 verifier + ~320 mutation tests; STRICT=1 OK |
 | Launch gate with owner markers | 👤 | STRICT=2 fails until the 9 `[[HUMAN]]` markers are filled |
 | Privacy: no uploads / no third-party origins / no trackers / CSP | ✅ (Chrome, local) | e2e network + CSP-violation tests; verify:privacy; live edge untested |

@@ -36,7 +36,7 @@ Held back until Search Console shows impressions: 50/100/10/30/200 KB pages, PAN
 | Layout, nav, footer, copy, FAQ, guides, legal, JSON-LD, metadata | `.astro` / `.mdx`, build time | none |
 | Image upload, decode, compress, preview, download, signature editor | Preact island `client:load` (main tool above the fold) | tool bundle only on tool routes |
 | Secondary widgets (e.g. "popular sizes" selector, FAQ accordions) | prefer plain HTML (`<details>`), else `client:visible`/`client:idle` | lazy |
-Measured in spike (React build): guide/privacy pages load **0** JS files; the tool page loads 4 files totalling 71.8 KB gzip (React runtime 65.8 KB). Now: Preact 11 compat islands with `client:load` (migrated and merged; first-load JS ≈39.0 KB image pages / ≈42.4 KB signature gzip, worker ≈13.1 KB on demand; ADR D3 / `docs/experiments/PREACT.md`).
+Measured in spike (React build): guide/privacy pages load **0** JS files; the tool page loads 4 files totalling 71.8 KB gzip (React runtime 65.8 KB). Now: Preact 11 compat islands with `client:load` (migrated and merged; first-load JS ≈39.1 KB image pages / ≈42.5 KB signature gzip, worker ≈13.1 KB on demand; ADR D3 / `docs/experiments/PREACT.md`).
 
 ## 6. No-JS and failure behaviour
 Tool pages include server-rendered explanatory copy and a `<noscript>` message. Image processing without JS is impossible by design; the page still carries the full SEO content. If Worker/OffscreenCanvas is missing, the island falls back to main-thread canvas.

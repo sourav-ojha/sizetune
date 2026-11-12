@@ -12,6 +12,7 @@
 ### Changed
 - Islands migrated React 19 → **Preact 11.2.0 (compat)** (`@astrojs/preact` 6.1.5, pinned exactly); first-load JS on tool pages ≈95–98 KB → ≈39–42 KB gzip; verifier allow-list re-audited and anchored.
 - Review-driven fixes: output limits (16 MP), header-first rejection at file pick, reduced-size preview, truncated-file detection, narrowed `out_of_memory`, keep-original secondary + GPS note, Escape cancels, 44 px crop handles, accessibility audit (axe-core 4.14.0, test-only).
+- Audit follow-ups: truncated JPEG/PNG/WebP rejected at pick; libjpeg-style tolerance for stray bytes (and `FF 00` junk, reserved markers rejected) in JPEG headers; full-resolution alpha scan whenever the decode is full-size (≤12 MP, ~16 MP for fixed dims) with an explicit note above that; "appears to have transparent areas" wording; percentage display capped ("more than 99% smaller"); Escape cancels from anywhere during a run (focus moves to Cancel; listener attached at mount); focus returns to Try again/Resize after a failed run; thumbnail canvas sized from the plan; header-first rejection and reduced-size preview.
 - `engines.node` >=24; `sharp` pinned as devDependency (fixtures/OG generation only).
 - `.nvmrc` = 24; `npm run verify` now also runs `verify:html:strict` and `verify:privacy`.
 - Spike compression code (`src/lib/compress.ts`, old worker, `ImageCompressor.tsx`) removed; superseded by the engine.
