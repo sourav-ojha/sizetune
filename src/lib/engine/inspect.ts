@@ -3,10 +3,13 @@
  * Reads the leading bytes needed for the header (readHeader) plus a bounded metadata scan for an EXIF GPS IFD:
  * JPEG APP1 "Exif" (first 256 KB), PNG eXIf chunk (chunks up to IDAT in the first 256 KB), WebP EXIF chunk (chunk walk,
  * at most 64 chunk headers). Enforces the same byte/pixel limits as processImage. Throws only EngineError.
- * It does NOT check that the file is complete (processImage does that before decoding).
+ * It also runs the completeness check (complete.ts: JPEG EOI after the main scan, PNG IEND, WebP RIFF size) so a
+ * truncated file fails at pick with the same 'incomplete' error processImage gives. Cost: the tail (64 KB) plus, only
+ * when the end marker is not in the tail, a forward scan in 1 MB windows (file <= maxFileBytes).
  */
 import { EngineError } from './types';
-import { readHeader, type HeaderInfo } from './header';
+import { readHeader, JPEG_EXTRANEOUS_MAX, type HeaderInfo } from './header';
+import { assertComplete } from './complete';
 import { resolveLimits, type FullLimits } from './limits';
 import type { ImageMime } from './sniff';
 
@@ -53,8 +56,9 @@ const ascii = (b: Uint8Array, o: number, s: string) => o >= 0 && o + s.length <=
 
 function jpegGps(b: Uint8Array): boolean {
   let i = 2;
-  for (let guard = 0; guard < 1000 && i + 4 <= b.length; guard++) {
-    if (b[i] !== 0xff) return false;
+  let extraneous = 0;
+  for (let guard = 0; guard < JPEG_EXTRANEOUS_MAX + 1000 && i + 4 <= b.length; guard++) {
+    if (b[i] !== 0xff) { if (++extraneous > JPEG_EXTRANEOUS_MAX) return false; i++; continue; }
     const m = b[i + 1];
     if (m === 0xff) { i++; continue; }
     if (m === 0xda || m === 0xd9) return false;
@@ -110,5 +114,6 @@ export async function inspectFile(file: Blob, limitsIn?: Partial<FullLimits>): P
   const h = await readHeader(file);
   const px = h.width * h.height;
   if (px > limits.maxPixels) throw new EngineError('too_many_pixels', `This image has ${(px / 1e6).toFixed(1)} megapixels; the limit is ${(limits.maxPixels / 1e6).toFixed(1)}. Please choose a smaller image.`);
+  await assertComplete(file, h);
   return { mime: h.mime, width: h.width, height: h.height, orientation: h.orientation, alphaPossible: h.alphaPossible, hasGps: await hasGps(file, h) };
 }

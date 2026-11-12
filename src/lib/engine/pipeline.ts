@@ -114,10 +114,18 @@ export async function runPipeline<I extends DecodedImage>(file: Blob, input: Pro
     }
     if (geom.upscaled) notes.push(NOTES.upscaled);
 
-    const hasAlpha = header.alphaPossible ? await ctx.race(env.hasAlpha(img)) : false;
+    // Alpha: header first (JPEG / opaque PNG / lossy WebP need no scan), then a ≤ 1 MP probe, then — only if the probe
+    // saw nothing and the bitmap is full resolution (≤ 12 MP) — every pixel in strips. Reduced decodes cannot show
+    // sub-pixel holes; that case gets a disclosure note below instead of a false "no transparency".
+    let hasAlpha = false;
+    if (header.alphaPossible) {
+      hasAlpha = await ctx.race(env.hasAlpha(img));
+      if (!hasAlpha && !plan.reduced) hasAlpha = await ctx.race(env.hasAlpha(img, true));
+    }
     const canWebp = opts.format === 'webp' || (opts.format === 'auto' && header.mime === 'image/webp') ? await ctx.race(env.canEncode('image/webp')) : false;
     const fmt = resolveFormat(opts.format, header.mime, hasAlpha, opts.background, canWebp);
     notes.push(...fmt.notes);
+    if (header.alphaPossible && !hasAlpha && plan.reduced && fmt.mime === 'image/jpeg') notes.push(NOTES.alphaMaybeMissed);
     const lossy = fmt.mime !== 'image/png';
 
     // Optional ICC strip: probe once that a stripped JPEG still decodes here.

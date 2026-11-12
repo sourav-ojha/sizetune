@@ -33,7 +33,12 @@ const corrupt = (detail: string): HeaderParse => ({ ok: false, reason: 'corrupt'
  * Parse a header from the first `bytes.length` bytes of a file whose real size is `totalSize`.
  * Returns need_more when the answer lies beyond the provided bytes but within the file.
  */
-export function parseHeader(bytes: Uint8Array, totalSize: number): HeaderParse {
+export interface ParseOptions {
+  /** PNG only: if the bytes run out before IDAT, return the header with alphaPossible=true (conservative) instead of need_more. */
+  pngAssumeAlphaIfShort?: boolean;
+}
+
+export function parseHeader(bytes: Uint8Array, totalSize: number, opts: ParseOptions = {}): HeaderParse {
   const mime = sniffType(bytes);
   if (!mime) {
     // A file that is only a few bytes long may be a truncated JPEG/PNG/WebP; still not an image we can use.
@@ -43,7 +48,7 @@ export function parseHeader(bytes: Uint8Array, totalSize: number): HeaderParse {
     need > bytes.length && bytes.length < totalSize ? { ok: false, reason: 'need_more', needBytes: Math.min(totalSize, Math.max(need, bytes.length * 2)) } : corrupt('truncated header');
   try {
     if (mime === 'image/jpeg') return parseJpeg(bytes, truncated);
-    if (mime === 'image/png') return parsePng(bytes, truncated);
+    if (mime === 'image/png') return parsePng(bytes, truncated, !!opts.pngAssumeAlphaIfShort);
     return parseWebp(bytes, truncated);
   } catch {
     return corrupt('header parse error');
@@ -53,13 +58,25 @@ export function parseHeader(bytes: Uint8Array, totalSize: number): HeaderParse {
 type Trunc = (need: number) => HeaderParse;
 const orient = (w: number, h: number, o: number) => (o >= 5 && o <= 8 ? [h, w] : [w, h]);
 
+/** libjpeg skips stray non-FF bytes before a marker ("extraneous bytes"); we mirror it, bounded in total. */
+export const JPEG_EXTRANEOUS_MAX = 64 * 1024;
+
 function parseJpeg(b: Uint8Array, truncated: Trunc): HeaderParse {
   let i = 2;
   let orientation = 1;
   let sawExif = false;
+  let extraneous = 0;
   for (let guard = 0; guard < 100_000; guard++) {
     if (i + 2 > b.length) return truncated(i + 4);
-    if (b[i] !== 0xff) return corrupt('expected JPEG marker');
+    if (b[i] !== 0xff) {
+      let j = i;
+      while (j < b.length && b[j] !== 0xff && extraneous + (j - i) <= JPEG_EXTRANEOUS_MAX) j++;
+      extraneous += j - i;
+      if (extraneous > JPEG_EXTRANEOUS_MAX) return corrupt('too many extraneous bytes');
+      if (j >= b.length) return truncated(j + 4);
+      i = j;
+      continue;
+    }
     const m = b[i + 1];
     if (m === 0xff) { i++; continue; } // fill byte
     if (m === 0x01 || (m >= 0xd0 && m <= 0xd7)) { i += 2; continue; } // standalone markers
@@ -119,7 +136,7 @@ export function exifOrientation(b: Uint8Array, p: number, end: number): number |
   return 1;
 }
 
-function parsePng(b: Uint8Array, truncated: Trunc): HeaderParse {
+function parsePng(b: Uint8Array, truncated: Trunc, assumeAlphaIfShort: boolean): HeaderParse {
   if (b.length < 33) return truncated(33);
   const r32 = (o: number) => ((b[o] << 24) | (b[o + 1] << 16) | (b[o + 2] << 8) | b[o + 3]) >>> 0;
   const type = (o: number) => String.fromCharCode(b[o], b[o + 1], b[o + 2], b[o + 3]);
@@ -131,10 +148,13 @@ function parsePng(b: Uint8Array, truncated: Trunc): HeaderParse {
   if (![0, 2, 3, 4, 6].includes(colorType)) return corrupt('bad colour type');
   let alpha = colorType === 4 || colorType === 6;
   let animated = false;
-  // Walk ancillary chunks up to the first IDAT looking for tRNS / acTL.
+  // Walk ancillary chunks up to the first IDAT looking for tRNS (palette/RGB/grey transparency) / acTL.
+  // If the walk cannot finish (chunk cap or read cap), alpha is assumed possible: conservative, never "no alpha" by guess.
+  const info = (a: boolean): HeaderParse => ({ ok: true, info: { mime: 'image/png', storedWidth: w, storedHeight: h, width: w, height: h, orientation: 1, alphaPossible: a, animated } });
   let i = 33;
-  for (let guard = 0; guard < 10_000; guard++) {
-    if (i + 8 > b.length) return truncated(i + 8);
+  for (let guard = 0; ; guard++) {
+    if (guard >= 200_000) return info(true);
+    if (i + 8 > b.length) return assumeAlphaIfShort ? info(true) : truncated(i + 8);
     const len = r32(i);
     const t = type(i + 4);
     if (len > MAX_DIM) return corrupt('bad chunk length');
@@ -144,7 +164,7 @@ function parsePng(b: Uint8Array, truncated: Trunc): HeaderParse {
     if (t === 'acTL') animated = true;
     i += 12 + len;
   }
-  return { ok: true, info: { mime: 'image/png', storedWidth: w, storedHeight: h, width: w, height: h, orientation: 1, alphaPossible: alpha, animated } };
+  return info(alpha);
 }
 
 function parseWebp(b: Uint8Array, truncated: Trunc): HeaderParse {
@@ -184,10 +204,11 @@ async function readSlice(blob: Blob, end: number): Promise<Uint8Array> {
   return new Uint8Array(await blob.slice(0, end).arrayBuffer());
 }
 
-/** Read and parse the header from a Blob/File, reading more of the file only when needed. Throws EngineError. */
-export async function readHeader(blob: Blob): Promise<HeaderInfo> {
+/** Read and parse the header from a Blob/File, reading more of the file only when needed (at most `maxRead`). Throws EngineError. */
+export async function readHeader(blob: Blob, opts: { maxRead?: number } = {}): Promise<HeaderInfo> {
+  const cap = opts.maxRead ?? MAX_HEADER_READ;
   if (blob.size === 0) throw new EngineError('corrupt', 'The file is empty.');
-  let n = Math.min(blob.size, FIRST_READ);
+  let n = Math.min(blob.size, FIRST_READ, cap);
   let bytes = await readSlice(blob, n);
   if (!sniffType(bytes)) {
     const kind = describeUnsupported(bytes);
@@ -196,10 +217,15 @@ export async function readHeader(blob: Blob): Promise<HeaderInfo> {
   for (let round = 0; round < 12; round++) {
     const r = parseHeader(bytes, blob.size);
     if (r.ok) return r.info;
-    if (r.reason === 'need_more' && r.needBytes > n && r.needBytes <= MAX_HEADER_READ) {
-      n = Math.min(blob.size, r.needBytes);
+    if (r.reason === 'need_more' && r.needBytes > n && n < cap) {
+      n = Math.min(blob.size, r.needBytes, cap);
       bytes = await readSlice(blob, n);
       continue;
+    }
+    if (r.reason === 'need_more') {
+      // Read cap reached: PNG dimensions are known from IHDR; assume alpha is possible rather than failing.
+      const last = parseHeader(bytes, blob.size, { pngAssumeAlphaIfShort: true });
+      if (last.ok && last.info.mime === 'image/png') return last.info;
     }
     break;
   }

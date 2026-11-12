@@ -46,6 +46,18 @@ export async function makeLarge(w, h, quality = 0.9) {
   return new File([blob], `large-${w}x${h}.jpg`, { type: 'image/jpeg' });
 }
 
+/** Opaque PNG with ONE pixel of alpha `a` at (x, y): a transparent hole a downscaled probe averages away. */
+export async function makeHolePng(w, h, x, y, a = 254) {
+  const c = new OffscreenCanvas(w, h);
+  const g = c.getContext('2d');
+  g.fillStyle = '#6699cc'; g.fillRect(0, 0, w, h);
+  const px = g.createImageData(1, 1); px.data.set([102, 153, 204, a]);
+  g.putImageData(px, x, y);
+  const blob = await c.convertToBlob({ type: 'image/png' });
+  c.width = 0; c.height = 0;
+  return new File([blob], `hole-${w}x${h}.png`, { type: 'image/png' });
+}
+
 export async function summarize(r) {
   const u = new Uint8Array(await r.blob.arrayBuffer());
   const txt = new TextDecoder('latin1').decode(u);
@@ -66,7 +78,7 @@ export function makeEngine(limits) {
 }
 
 export async function run(input, opts, { limits, keep = true } = {}) {
-  const file = typeof input === 'string' ? await fixture(input) : input && input.large ? (window.lastLarge = await makeLarge(input.large[0], input.large[1])) : input;
+  const file = typeof input === 'string' ? await fixture(input) : input && input.large ? (window.lastLarge = await makeLarge(input.large[0], input.large[1])) : input && input.hole ? await makeHolePng(...input.hole) : input;
   const t = performance.now();
   try {
     const eng = limits ? (engine = makeEngine(limits)) : null;
@@ -88,4 +100,4 @@ export async function pixels(points, blob = window.last) {
   return points.map(([px, py]) => [...x.getImageData(px, py, 1, 1).data]);
 }
 
-Object.assign(window, { fixture, makeLarge, summarize, run, pixels, makeEngine, harnessReady: true });
+Object.assign(window, { fixture, makeLarge, makeHolePng, summarize, run, pixels, makeEngine, harnessReady: true });

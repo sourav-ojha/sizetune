@@ -302,6 +302,41 @@ test.describe('robustness: browser ignores createImageBitmap resize options (rev
   });
 });
 
+test.describe('second audit: A4 inspect completeness, A5 extraneous bytes, A2 alpha', () => {
+  test.beforeEach(async ({ page, context }) => { await openHarness(page, context); });
+  test('A5: JPEG with 4 stray zero bytes between segments decodes in Chrome and is accepted', async ({ page }) => {
+    const r = await run(page, 'jpeg-extraneous-bytes.jpg', { ...BASE, maxKb: 30 });
+    expect(r).toMatchObject({ ok: true, status: 'ok', width: 200, height: 230 });
+  });
+  test('A4: inspectFile refuses truncated files at pick, incl. a 16 MP JPEG cut at 90% (time recorded)', async ({ page }) => {
+    const r = await page.evaluate(async () => {
+      const w = window as unknown as { E: { inspectFile: (f: Blob) => Promise<unknown> }; fixture: (n: string) => Promise<File> };
+      const out: Record<string, unknown> = {};
+      for (const n of ['corrupt-truncated.jpg', 'jpeg-no-eoi.jpg', 'progressive-truncated-70.jpg', '.generated/real-truncated-90.jpg', 'photo-1200x800.jpg']) {
+        const f = await w.fixture(n);
+        const t = performance.now();
+        try { await w.E.inspectFile(f); out[n] = 'ok'; } catch (e) { out[n] = (e as { code: string }).code; }
+        out[n + ' ms'] = Math.round(performance.now() - t);
+      }
+      return out;
+    });
+    expect(r).toMatchObject({ 'corrupt-truncated.jpg': 'corrupt', 'jpeg-no-eoi.jpg': 'corrupt', 'progressive-truncated-70.jpg': 'corrupt', '.generated/real-truncated-90.jpg': 'corrupt', 'photo-1200x800.jpg': 'ok' });
+    expect(r['.generated/real-truncated-90.jpg ms'] as number).toBeLessThan(1000);
+    record('inspect-truncated', r);
+  });
+  test('A2: a single near-opaque pixel is never flattened silently (full scan <= 12 MP; note above)', async ({ page }) => {
+    const small = await run(page, { hole: [3500, 3400, 1234, 2345, 254] }, { ...BASE, format: 'jpeg' });
+    expect(small.ok, small.message).toBe(true);
+    expect(small.source.hasAlpha).toBe(true);
+    expect(small.notes).toContain('Transparent areas were filled with white.');
+    const big = await run(page, { hole: [4000, 3400, 1234, 2345, 254] }, { ...BASE, format: 'jpeg' });
+    expect(big.ok, big.message).toBe(true);
+    const disclosed = big.notes.includes('Transparent areas were filled with white.') || big.notes.includes('Very small transparent areas in very large images may be filled with the background colour.');
+    expect(disclosed, JSON.stringify(big.notes)).toBe(true);
+    record('alpha-hole', { smallMs: small.elapsedMs, smallHasAlpha: small.source.hasAlpha, bigHasAlpha: big.source.hasAlpha, bigNotes: big.notes });
+  });
+});
+
 test.describe('lifecycle: repeated runs, cancellation, stale protection, timeout', () => {
   test.beforeEach(async ({ page, context }) => { await openHarness(page, context); });
 

@@ -16,7 +16,9 @@ export interface FakeOpts { alpha?: boolean; webp?: boolean; complexity?: number
   /** Decoded bitmap is this factor larger per side than the header says (malicious/mismatched file). */
   inflate?: number;
   /** Browser that ignores createImageBitmap resizeWidth (decodes at full size). */
-  ignoreResize?: boolean }
+  ignoreResize?: boolean;
+  /** Alpha that a downscaled probe cannot see but a full-resolution scan can. */
+  alphaSubpixel?: boolean }
 
 export function fakeEnv(o: FakeOpts = {}) {
   const images: FakeImg[] = [];
@@ -24,6 +26,7 @@ export function fakeEnv(o: FakeOpts = {}) {
   let released = 0;
   let decodeArgs: Array<number | undefined> = [];
   const downscales: Array<{ w: number; h: number }> = [];
+  const alphaCalls: string[] = [];
   const env: Env<FakeImg> = {
     async decode(blob, resizeWidth) {
       decodeArgs.push(resizeWidth);
@@ -57,11 +60,11 @@ export function fakeEnv(o: FakeOpts = {}) {
       images.push(out);
       return out;
     },
-    async hasAlpha() { return !!o.alpha; },
+    async hasAlpha(_img, full) { alphaCalls.push(full ? 'full' : 'probe'); return !!o.alpha || (!!full && !!o.alphaSubpixel); },
     async canEncode(mime) { return mime === 'image/webp' ? !!o.webp : true; },
     release() { released++; },
   };
-  return { env, images, renders, get released() { return released; }, decodeArgs, downscales };
+  return { env, images, renders, get released() { return released; }, decodeArgs, downscales, alphaCalls };
 }
 
 export const base: ProcessOptions = { format: 'jpeg', strategy: 'quality-first', lockAspect: true, fit: 'contain', background: 'white' };

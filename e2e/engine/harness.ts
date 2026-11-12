@@ -77,7 +77,7 @@ export type RunResult = {
 };
 
 /** Run processImage in the page. `input` is a fixture name or { large: [w, h] } (generated in the page, not committed). */
-export async function run(page: Page, input: string | { large: [number, number] }, opts: Record<string, unknown>, extra: Record<string, unknown> = {}): Promise<RunResult> {
+export async function run(page: Page, input: string | { large: [number, number] } | { hole: [number, number, number, number, number?] }, opts: Record<string, unknown>, extra: Record<string, unknown> = {}): Promise<RunResult> {
   return page.evaluate(([input, opts, extra]) => (window as unknown as { run: (i: unknown, o: unknown, e: unknown) => Promise<unknown> }).run(input, opts, extra), [input, opts, extra] as const) as Promise<RunResult>;
 }
 

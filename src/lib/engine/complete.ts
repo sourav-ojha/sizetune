@@ -9,7 +9,7 @@
  * Never throws anything but EngineError('corrupt').
  */
 import { EngineError } from './types';
-import type { HeaderInfo } from './header';
+import { JPEG_EXTRANEOUS_MAX, type HeaderInfo } from './header';
 
 const TAIL = 64 * 1024;
 const WINDOW = 1024 * 1024;
@@ -40,9 +40,10 @@ async function tail(blob: Blob): Promise<{ start: number; bytes: Uint8Array }> {
 
 async function jpegFirstSos(r: Reader): Promise<number> {
   let i = 2;
-  for (let guard = 0; guard < 100_000; guard++) {
+  let extraneous = 0;
+  for (let guard = 0; guard < 200_000; guard++) {
     if (!(await r.ensure(i, 4))) return -1;
-    if (r.at(i) !== 0xff) return -1;
+    if (r.at(i) !== 0xff) { if (++extraneous > JPEG_EXTRANEOUS_MAX) return -1; i++; continue; } // libjpeg-style stray bytes
     const m = r.at(i + 1);
     if (m === 0xff) { i++; continue; }
     if (m === 0x01 || (m >= 0xd0 && m <= 0xd7)) { i += 2; continue; }

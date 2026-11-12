@@ -68,18 +68,30 @@ export function createCanvasEnv(kind: 'offscreen' | 'dom'): Env<ImageBitmap> {
         c.width = 0; c.height = 0;
       }
     },
-    async hasAlpha(img) {
-      const k = Math.min(1, Math.sqrt(1_000_000 / (img.width * img.height)));
-      const w = Math.max(1, Math.round(img.width * k)), h = Math.max(1, Math.round(img.height * k));
-      const c = make(w, h);
+    async hasAlpha(img, full = false) {
+      // Probe: one ≤ 1 MP downscale (averaging keeps most small holes visible). Full: every pixel, in ≤ 1 MP strips.
+      const k = full ? 1 : Math.min(1, Math.sqrt(1_000_000 / (img.width * img.height)));
+      const w = Math.max(1, Math.round(img.width * k));
+      const stripH = full ? Math.max(1, Math.min(img.height, Math.floor(1_000_000 / w))) : Math.max(1, Math.round(img.height * k));
+      const c = make(w, stripH);
       try {
         const x = c.getContext('2d', { willReadFrequently: true }) as Ctx2D | null;
-        if (!x) throw classifyBrowserError(null, 'canvas', w * h);
+        if (!x) throw classifyBrowserError(null, 'canvas', w * stripH);
         x.imageSmoothingEnabled = true;
         x.imageSmoothingQuality = 'high';
-        x.drawImage(img, 0, 0, w, h);
-        const d = x.getImageData(0, 0, w, h).data;
-        for (let i = 3; i < d.length; i += 4) if (d[i] < 255) return true;
+        if (!full) {
+          x.drawImage(img, 0, 0, w, stripH);
+          const d = x.getImageData(0, 0, w, stripH).data;
+          for (let i = 3; i < d.length; i += 4) if (d[i] < 255) return true;
+          return false;
+        }
+        for (let y = 0; y < img.height; y += stripH) {
+          const h = Math.min(stripH, img.height - y);
+          x.clearRect(0, 0, w, stripH);
+          x.drawImage(img, 0, y, w, h, 0, 0, w, h);
+          const d = x.getImageData(0, 0, w, h).data;
+          for (let i = 3; i < d.length; i += 4) if (d[i] < 255) return true;
+        }
         return false;
       } finally {
         c.width = 0; c.height = 0;

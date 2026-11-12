@@ -78,6 +78,7 @@ export const NOTES = {
   kbConflict: (minKb: number) => `Your minimum and maximum are too close to satisfy both ways of counting KB (1 KB = 1000 or 1024 bytes), so the minimum was treated as ${num(minKb)} × 1000 bytes.`,
   orientationUnknown: 'This browser did not apply the photo’s rotation setting, so the result may appear sideways.',
   iccKept: 'The colour profile could not be removed safely in this browser, so it was kept.',
+  alphaMaybeMissed: 'Very small transparent areas in very large images may be filled with the background colour.',
   pngTryJpeg: 'PNG is lossless, so only the pixel dimensions could shrink. JPEG would keep more pixels at this size.',
   upscaled: 'The requested dimensions are larger than the original, so the image was enlarged (no extra detail).',
 } as const;

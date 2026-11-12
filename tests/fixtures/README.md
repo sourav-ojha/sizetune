@@ -25,6 +25,9 @@ node scripts/gen-fixtures.mjs --device-pack   # .generated/device-pack/ for real
 | `corrupt-truncated.png`, `corrupt-truncated.webp` | cut at 60 % (no IEND / RIFF size > file) | completeness check |
 | `trailing-garbage.jpg` | valid JPEG + text after EOI | accepted, tail dropped |
 | `motion-photo-like.jpg` | valid JPEG + 70 KB MP4-like trailer (EOI not in the last 64 KB) | accepted via the forward scan |
+| `jpeg-extraneous-bytes.jpg` | 4 zero bytes between APP0 and the next segment | libjpeg-style tolerance (accepted) |
+| `jpeg-no-eoi.jpg`, `progressive-truncated-70.jpg` | only the final EOI missing / progressive cut at 70 % | completeness (`corrupt`, also at `inspectFile`) |
+| `.generated/real-truncated-90.jpg` | 16 MP photo-like JPEG cut at 90 % | inspectFile cost + completeness |
 | `svg-renamed.png`, `gif-renamed.jpg`, `heic-header.heic` | wrong types with misleading names | magic-byte rejection |
 | `.generated/photo-12mp.jpg` | 4000×3000 wallpaper photo (or procedural) | 12 MP e2e, repeat/memory |
 

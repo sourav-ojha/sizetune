@@ -10,8 +10,8 @@ export interface Env<I extends DecodedImage = DecodedImage> {
   render(img: I, src: Rect, w: number, h: number, fill: string | null, mime: string, quality?: number): Promise<Blob>;
   /** Redraw `img` at w×h (used when a browser ignored resize-at-decode). Returns a NEW image; the caller closes both. */
   downscale(img: I, w: number, h: number): Promise<I>;
-  /** Any pixel with alpha < 255, checked on a downscaled copy. */
-  hasAlpha(img: I): Promise<boolean>;
+  /** Any pixel with alpha < 255: on a downscaled (≤ 1 MP) copy, or with `full` at full resolution in ≤ 1 MP strips. */
+  hasAlpha(img: I, full?: boolean): Promise<boolean>;
   /** Feature detection: does an encode of `mime` really produce that format (checked by magic bytes)? */
   canEncode(mime: string): Promise<boolean>;
   /** Free canvases. Called in `finally`. */

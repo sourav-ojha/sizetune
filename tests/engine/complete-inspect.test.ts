@@ -125,7 +125,8 @@ describe('inspectFile (header-only, for the UI at file pick)', () => {
       if (i % 5 === 0) { b = new Uint8Array(1 + Math.floor(R() * 200)); for (let k = 0; k < b.length; k++) b[k] = (R() * 256) | 0; }
       else {
         const src = seeds[i % seeds.length];
-        b = new Uint8Array(src.subarray(0, 1 + Math.floor(R() * src.length)));
+        // half full-length (header mutations), half truncated (now refused by the completeness check)
+        b = new Uint8Array(i % 2 ? src : src.subarray(0, 1 + Math.floor(R() * src.length)));
         const flips = 1 + Math.floor(R() * 8);
         for (let k = 0; k < flips; k++) b[Math.floor(R() * Math.min(b.length, 400))] = (R() * 256) | 0;
       }
