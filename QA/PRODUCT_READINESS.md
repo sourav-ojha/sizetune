@@ -15,7 +15,7 @@ Legend: ✅ implemented + verified by automated evidence · 🟡 implemented, ev
 | WebKit (simulator only) | 🟡 | engine harness 23 cases + UI smoke; Mac RAM; not a phone |
 | Firefox | 👤❌ | not run (needs browser download approval) |
 | Real phones | 👤❌ | `QA/REAL_DEVICE_TEST_PLAN.md` not run |
-| Performance (Lighthouse/CrUX) | ❌ | only bundle sizes: first-load JS ≈39.0 KB (image pages) / ≈42.4 KB (signature) gzip, worker ≈13.1 KB on demand; 0 JS on content pages |
+| Performance (Lighthouse/CrUX) | ❌ | only bundle sizes: first-load JS ≈39.1 KB (image pages) / ≈42.5 KB (signature) gzip, worker ≈13.1 KB on demand; 0 JS on content pages |
 | Legal / trademark | 👤❌ | USPTO exact search no hits (screening); IP India + lawyer pending |
 | CI / deploy | ❌ | no remote; CI file written, never run; Cloudflare unconnected |
 
