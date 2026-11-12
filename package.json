@@ -30,11 +30,12 @@
     "@astrojs/check": "^0.9.12",
     "@playwright/test": "^1.65.0",
     "parse5": "^8.1.1",
+    "sharp": "0.35.5",
     "typescript": "^6.0.3",
     "vitest": "^5.1.0",
     "wrangler": "^4.160.1"
   },
   "engines": {
-    "node": ">=22.23.4"
+    "node": ">=24"
   }
 }
