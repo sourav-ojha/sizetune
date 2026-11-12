@@ -1,49 +1,68 @@
-# QA / PRODUCT_READINESS.md — SizeTune (2026-11-12)
+# QA/PRODUCT_READINESS.md — feature-by-feature readiness (2026-11-12, after the build sprint)
 
-Status legend: ✅ done & evidenced · 🟡 partly · ❌ not done · 👤 needs human/device. Evidence files: `docs/reviews/*.md`. Nothing here claims legal compliance.
+Legend: ✅ implemented + verified by automated evidence · 🟡 implemented, evidence partial (see note) · ❌ not implemented · 👤 needs your device/approval. "Evidence" paths are in this repo; counts are in `QA/TEST_RESULTS.md`. Nothing here claims legal compliance, WCAG conformance certification, or real-device verification.
 
-## 1. Gate summary
+## 1. Gates
 | Gate | Status | Evidence / gap |
 |--|--|--|
-| G1 Architecture (static Astro + island, Workers static assets) | ✅ conditional | ADR v2; spike 8/8; 4 domain reviews + final independent review (conditional; findings fixed, second pass in ADR §8b) |
-| G2 Generated-HTML SEO gate | ✅ tooling (tripwire) / ❌ content | `verify-html` rewritten + hardened after review; 41 negative-fixture tests prove each rule can fail; it is a build-time tripwire, not proof; `STRICT=1` fails on placeholder copy by design |
-| G3 Privacy: no upload, no third-party origins on tool routes | ✅ | e2e: zero non-GET/off-origin requests; CSP e2e zero violations; verify rule P1 |
-| G4 CSP | 🟡 | Astro built-in meta CSP (hashes) + `frame-ancestors` header; tested Chrome only; ad-route CSP untested draft |
-| G5 Compression engine production-ready | ❌ | see §2–3; spike has known defects |
-| G6 Real-device compression | 👤❌ | see §3 |
-| G7 Content (launch set copy, about, terms, privacy) | ❌ | placeholder copy |
-| G8 Cloudflare deployment | 🟡 | local workerd verified; no deploy; first deploy = production; repo/ruleset pending (BLOCKERS H1–H4, H12) |
-| G9 Performance (Lighthouse/CrUX, mobile) | ❌ | only bundle sizes measured (71.8 KB gz tool page JS; 0 on content pages) |
-| G10 Accessibility | ❌ | basic labels only; no audit |
-| G11 Legal/brand (IP India TM, policies) | 👤❌ | USPTO exact search: no "sizetune" hits (screening only) |
+| Architecture (Astro static + Preact islands, Workers static assets) | ✅ | ADR v3; independent reviews; nothing deployed |
+| Full local verify chain | ✅ | `npm run verify` exit 0: 643 unit, 168 browser (Chrome), verifiers OK |
+| HTML/SEO structure | ✅ | parse5 verifier + ~320 mutation tests; STRICT=1 OK |
+| Launch gate with owner markers | 👤 | STRICT=2 fails until the 9 `[[HUMAN]]` markers are filled |
+| Privacy: no uploads / no third-party origins / no trackers / CSP | ✅ (Chrome, local) | e2e network + CSP-violation tests; verify:privacy; live edge untested |
+| Accessibility (automated) | ✅ / 👤 | axe-core 0 violations on 8 pages×2 widths + 12 tool states; screen readers not done |
+| Compression correctness in Chrome | ✅ | engine unit + browser tests; independent review |
+| WebKit (simulator only) | 🟡 | engine harness 23 cases + UI smoke; Mac RAM; not a phone |
+| Firefox | 👤❌ | not run (needs browser download approval) |
+| Real phones | 👤❌ | `QA/REAL_DEVICE_TEST_PLAN.md` not run |
+| Performance (Lighthouse/CrUX) | ❌ | only bundle sizes: first-load JS ≈38.4 KB (image pages) / ≈41.8 KB (signature) gzip, worker 12.7 KB on demand; 0 JS on content pages |
+| Legal / trademark | 👤❌ | USPTO exact search no hits (screening); IP India + lawyer pending |
+| CI / deploy | ❌ | no remote; CI file written, never run; Cloudflare unconnected |
 
-## 2. Compression engine — production requirements (from `docs/reviews/compression-review.md`)
-**Verified facts (measured 2026-11-12):** Chrome 157 (macOS), Android Chrome 133 (throwaway emulator, deleted afterwards; user AVD untouched), Safari 26.3 (iOS Simulator). Corpus: system wallpapers + synthetic fixtures; luma SSIM at 640 px; no faces.
-- Current spike algorithm fits the target only in the middle range; **ladder floor 0.3 + q=0.05 last resort**: 20 KB target → 8.9 KB, SSIM 0.835 (continuous search: 18.9 KB, 0.947). 48 MP @ 50 KB → SSIM 0.89. iOS Safari: `fits=false` at 36/48 MP (encoder output 1.4–1.9× larger at same quality).
-- Chrome quality is integer percent; use integer bisect. Size ≈ monotone in q (rare violation). Chrome emits 4:2:0 except q=1.0 (4:4:4, size jump) and a 472 B ICC profile (strip = −474 B, 0 pixel difference).
-- Memory: full decode 36 MP ≈ +1.0 GB RSS (2.3 s) vs decode-at-reduced-size ≈ +0.32 GB (0.9 s); 48 MP +1.4 GB vs +0.44 GB. Android Chrome silently decodes >~20 MP at reduced size. iOS Simulator allocated 8192² canvases (Mac RAM) — **real iPhone limits unverified**.
-- EXIF orientation 6 applied automatically in all three engines (also in Worker, also with `resizeWidth`); `imageOrientation:'none'` no longer disables it. Re-encode strips Make/Model/GPS everywhere (Safari leaves a 76 B Exif stub).
-- Transparency: JPEG needs a background (white default, user-selectable); PNG/WebP keep alpha; **WebP encode unsupported in Safari** (silently PNG) and AVIF mislabelled → check `blob.type` **and** magic bytes after every encode. WebP is not better than a well-searched JPEG on tested photos.
-- Min/max windows: raising JPEG quality (≤q100) is an honest way to reach a minimum (1500×1960 → fixed 200×230: 17.1 KB@q95 → 21.4 KB@q97). A 140×60 signature caps at 4.65 KB at q100: **below_min is reported, not faked**.
-- **Padding policy:** metadata/COM padding is technically valid (decodes) but adds no image information and vanishes on any re-encode. **Not shipped by default.** Only as an explicit, opt-in, disclosed "advanced" option after a product/legal decision (human).
+## 2. Engine features (requirement → status)
+| Requirement | Status | Evidence / note |
+|--|--|--|
+| JPEG/PNG/WebP input, magic-byte validation; SVG/HEIC/GIF rejected | ✅ | tests; Chrome + Simulator |
+| JPEG/PNG/WebP output where supported | ✅ | WebP probe `canEncode`; Safari reports unsupported (simulator) |
+| Maximum size | ✅ | window `[·, max·1000]`, verified on real bytes |
+| Min–max range | ✅ | raise quality ≤q100 (and pixels only with `allowEnlarge`) |
+| Target size behaviour | ✅ | aims at/below max; ok within window; best effort + honest status otherwise |
+| Width/height, max dims, aspect lock default, fit modes, crop | ✅ | unit + e2e (signature crop pixel-exact) |
+| Quality-first vs dimensions-first | ✅ | search tests; UI control |
+| Actual Blob verification; never claims unmet target | ✅ | property tests; mutation review |
+| Worker + main-thread fallback | ✅ / 🟡 | worker default; fallback by feature detection tested in Chrome only |
+| Memory-conscious decode, large images | ✅ Chrome / 👤 phones | 36 MP→50 KB ≈0.33 s, +145–151 MB; header-first limits; 16 MP output cap |
+| EXIF orientation | ✅ | Chrome + Simulator |
+| Location metadata stripped | ✅ | test with GPS fixture; original-file download is secondary and warns when GPS present |
+| Transparency never silently flattened | ✅ | disclosure notes + UI choice; opaque PNG→JPEG preselect is visible |
+| Corrupt/unsupported/truncated/huge handling | ✅ | header fuzz; truncated JPEG/PNG/WebP → `corrupt`; Simulator-verified |
+| Impossible-target detection/messaging | ✅ | `below_min`, `above_max(_fixed)`, tests + copy |
+| Cancellation, stale-result protection | ✅ | unit + e2e |
+| Object URL cleanup | ✅ | e2e balance tests |
+| Limits (bytes/pixels/time/encodes) | ✅ | `limits.ts`; real-phone tuning pending (H2) |
+| Padding | ✅ (disabled) | `allowPadding` rejected; never default |
 
-**Spec adopted (`fitRange`):** byte window `[min·1024, max·1000]` (satisfies both KB readings; show exact bytes); Phase A fixed dims q95 → bisect q∈[40,95]; Phase B continuous scale bisect at q60 then integer q bisect [60,95]; if below min at q95 → probe q100 and bisect (95,100]; statuses `ok | raised | below_min | above_max | above_max_fixed`; ≤20 encodes, per-encode timeout, cancel on new file; never show success unless `lo ≤ size ≤ hi`; no ladder, no q=0.05 last resort; min side 64 px. Messages for each status are drafted in the review §7.
+## 3. Image tool UX
+| Requirement | Status |
+|--|--|
+| Picker + drag-and-drop, formats and size cap shown | ✅ |
+| Preview, before/after (touch + keyboard) | ✅ (very large sources: no preview by design) |
+| Original/output dims + sizes + compression % | ✅ |
+| Format selection, quality control | ✅ |
+| Presets 10/20/30/50/100/200 KB + custom + range | ✅ |
+| Dimension controls + aspect lock (Advanced `<details>`) | ✅ |
+| Progress, cancel (Escape), download, reset | ✅ |
+| Useful errors, impossible-target explanations | ✅ |
+| Responsive mobile-first | ✅ (no horizontal scroll at 320/375 px in Chrome; simulator smoke) / 👤 phones |
 
-## 3. Roadmap and acceptance tests
-| Stage | Scope | Acceptance | Owner |
-|--|--|--|--|
-| 0 | Fixture generators (script, no downloads): EXIF-6+GPS JPEG, RGBA PNG, signature PNG, 200×230, noise, 12 MP smooth | `npm test` regenerates; Playwright: orientation, no Make/Model/GPS bytes, RGBA corner colours | AGENT |
-| 1 | Pure `fitRange()` + tests (fake monotone/non-monotone/4:4:4-jump encoders, window gap, statuses, ≤20 encodes) | vitest green; replaces ladder | AGENT |
-| 2 | Worker pipeline: header dims read, resize-at-decode >12 MP, single canvas, `bitmap.close()` in `finally`, terminate on cancel, typed errors | 36 MP < 5 s, peak RSS Δ < 600 MB (Chrome), no leak after 5 runs | AGENT |
-| 3 | Alpha detect + bg picker, PNG/WebP gated by magic bytes, optional ICC strip | exact pixel tests; stubbed PNG-for-WebP fallback handled | AGENT |
-| 4 | UI: min+max inputs, dims presets, status messages, no primary Download unless `ok`/`raised` | e2e per status; aria-live; mobile viewport | AGENT |
-| 5 | Cross-browser matrix (Chrome + Playwright WebKit as Safari proxy; iOS-simulator manual script) | matrix JSON committed; CI fails on `fits` regression | AGENT |
-| 6 | **Real-device gate:** ≥3 phones (iPhone 2–4 GB, 2 Android ≤3 GB), 12 MP & 48 MP photos, in-app browsers (WhatsApp/Instagram), note time, success, OOM/tab kill | table of results; fail = lower max-pixel cap | 👤 HUMAN |
-| 7 | Optional: WASM progressive/mozjpeg (+~3.5% measured for progressive); HEIC input; opt-in filler | decision after launch | later |
-Human portrait review (5–10 passport-style photos at 20 KB) is needed because SSIM on landscapes under-penalises faces.
+## 4. Signature tool
+Crop/position (pointer, keyboard, numeric), auto-trim, output size, aspect handling, presets/range, preview, download, guidance, impossible-minimum messaging: ✅. Drawing pad: ❌ (not in scope). No invented exam/government specs: ✅ (copy tells users to follow their form).
 
-## 4. Other QA gates (before any public launch)
-- `npm run verify` green on pinned Node in CI (first CI run pending H1).
-- `STRICT=1 npm run verify:html` green with real copy; Rich Results/Schema check; Lighthouse mobile (LCP < 2.5 s, CLS < 0.1, INP < 200 ms) on the **local `wrangler dev` build** (no preview URL exists; real-edge/CrUX numbers only after the first production deploy); WCAG pass; keyboard-only use; screen reader on tool.
-- Live headers check on `sizetune.com` **immediately after the first deploy** (there is no preview host by config; see BLOCKERS H12/B11): CSP meta, `frame-ancestors`, cache headers, 307/404.
-- Privacy statements re-audited against final page set (security review §5) — no ad/analytics script on tool routes.
+## 5. Content / SEO
+Launch set built (7 pages + 404): ✅. Titles/descriptions/H1/canonical/OG/WebApplication+Article JSON-LD/no FAQPage/sitemap/robots/trailing slashes/noscript content: ✅ (verifier). Useful original copy: ✅ by verifier thresholds (unique words 936–1573 on tool/home/guide) and independent review; **human review of tone/accuracy recommended**. Owner facts: 👤 (9 markers). Rich-result/schema validation in Google tools: 👤. Search performance: unknowable before launch.
+
+## 6. Security/privacy checks
+No uploads ✅ · no third-party origins on tool pages ✅ · no ad/analytics code ✅ · CSP meta (hashes) + frame-ancestors header ✅ (local) · MIME/signature validation ✅ · malformed/huge inputs ✅ · no image logging ✅ · no storage/cookies ✅ · privacy/terms text honest about current behaviour ✅ (legal review pending 👤).
+
+## 7. Known limitations (honest list)
+See `BUILD_STATUS.md` "Implemented but not fully verified" and `BLOCKERS.md` §B. Highlights: no real-device/Firefox evidence; Safari sizes differ and WebP is unavailable there; quality on real faces unreviewed; sources >100 MP refused and >36 MP get no preview; output capped at 16 MP; main-thread fallback untested on real old browsers; verifiers are static analysis, not proof.
