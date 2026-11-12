@@ -13,7 +13,7 @@ async function compress(page: import('@playwright/test').Page, kb = '50') {
   return size;
 }
 
-test('compresses in-browser to a valid JPEG <= target KB, via worker, with no uploads', async ({ page, context, baseURL }) => {
+test('compresses in-browser to a valid image <= target KB, with no uploads', async ({ page, context, baseURL }) => {
   const origin = new URL(baseURL!).origin;
   const external: string[] = [];
   const nonGet: string[] = [];
@@ -25,84 +25,128 @@ test('compresses in-browser to a valid JPEG <= target KB, via worker, with no up
   });
   await page.goto('/');
   await expect(page.getByTestId('tool')).toBeVisible();
+  // wait for hydration, then watch only the processing phase for requests too
+  await page.getByTestId('preset-100').click();
+  const afterLoad = { external: external.length, nonGet: nonGet.length };
   const size = await compress(page);
   const bytes = Number(await size.getAttribute('data-bytes'));
   expect(bytes).toBeGreaterThan(1000);
-  expect(bytes).toBeLessThanOrEqual(50 * 1024);
-  expect(await size.getAttribute('data-mode')).toBe('worker');
+  expect(bytes).toBeLessThanOrEqual(50 * 1000);
+  expect(await size.getAttribute('data-status')).toBe('ok');
   const href = await page.getByTestId('download').getAttribute('href');
   expect(href).toMatch(/^blob:/);
   // Real download (CSP forbids fetch(blob:), which is itself a feature): read the saved file and decode it.
   const [dl] = await Promise.all([page.waitForEvent('download'), page.getByTestId('download').click()]);
+  expect(dl.suggestedFilename()).toMatch(/^noise-sizetune\.(jpg|png|webp)$/);
   const buf = fs.readFileSync(await dl.path());
+  expect(buf.length).toBe(bytes);
   const dim = await page.evaluate(async (b64) => {
     const bin = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
-    const bmp = await createImageBitmap(new Blob([bin], { type: 'image/jpeg' }));
+    const bmp = await createImageBitmap(new Blob([bin]));
     return { w: bmp.width, h: bmp.height };
   }, buf.toString('base64'));
-  const info = { sig: [buf[0], buf[1]], w: dim.w, h: dim.h, n: buf.length };
-  expect(info.sig).toEqual([0xff, 0xd8]);
-  expect(info.w).toBeGreaterThan(50);
-  expect(info.w).toBeLessThanOrEqual(800);
+  expect(buf[0] === 0xff || buf[0] === 0x89).toBe(true); // JPEG or PNG magic
+  expect(dim.w).toBeGreaterThan(50);
+  expect(dim.w).toBeLessThanOrEqual(800);
   expect(nonGet, 'no non-GET requests').toEqual([]);
   expect(external, 'no requests to other origins').toEqual([]);
+  expect(nonGet.length - afterLoad.nonGet, 'nothing sent while processing').toBe(0);
+  expect(external.length - afterLoad.external, 'nothing contacted while processing').toBe(0);
 });
 
-test('no CSP violations on the tool page (hydration + worker + preview + download)', async ({ page }) => {
+test('no CSP violations on the tool page (hydration + processing + preview + comparison + download)', async ({ page }) => {
   await page.addInitScript(() => { (window as any).__csp = []; document.addEventListener('securitypolicyviolation', (e) => (window as any).__csp.push(`${e.violatedDirective} ${e.blockedURI}`)); });
   const errs: string[] = [];
   page.on('console', (m) => { if (/content security policy/i.test(m.text())) errs.push(m.text()); });
+  page.on('pageerror', (e) => errs.push(e.message));
   await page.goto('/');
   await compress(page);
+  await page.getByTestId('compare-slider').focus();
+  await page.keyboard.press('ArrowLeft');
+  await page.getByTestId('advanced').locator('summary').click();
+  await Promise.all([page.waitForEvent('download'), page.getByTestId('download').click()]);
   expect(await page.evaluate(() => (window as any).__csp)).toEqual([]);
   expect(errs).toEqual([]);
 });
 
-test('file picked BEFORE hydration is not lost', async ({ page }) => {
-  // Hold back the island JS so the SSR'd input is interactive but React is not.
-  let release!: () => void;
-  const gate = new Promise<void>((r) => (release = r));
-  await page.route('**/_astro/*.js', async (route) => { await gate; await route.continue(); });
-  await page.goto('/', { waitUntil: 'commit' });
+test('no CSP violations on the signature tool (crop overlay, canvas trim, preview)', async ({ page }) => {
+  await page.addInitScript(() => { (window as any).__csp = []; document.addEventListener('securitypolicyviolation', (e) => (window as any).__csp.push(`${e.violatedDirective} ${e.blockedURI}`)); });
+  const errs: string[] = [];
+  page.on('console', (m) => { if (/content security policy/i.test(m.text())) errs.push(m.text()); });
+  await page.goto('/resize-signature/');
   await page.getByTestId('file').setInputFiles(IMG);
-  release();
-  await expect(page.getByTestId('preview')).toBeVisible({ timeout: 20_000 });
-  await expect(page.getByTestId('run')).toBeEnabled();
+  await expect(page.getByTestId('crop-box')).toBeVisible();
+  await page.getByTestId('auto-trim').click();
+  await page.getByTestId('crop-box').focus();
+  await page.keyboard.press('ArrowRight');
+  await page.getByTestId('run').click();
+  await expect(page.getByTestId('result')).toBeVisible({ timeout: 30_000 });
+  expect(await page.evaluate(() => (window as any).__csp)).toEqual([]);
+  expect(errs).toEqual([]);
+});
+
+test('file picked BEFORE hydration is not lost (image tool and signature tool)', async ({ page }) => {
+  for (const [url, extra] of [['/', 'preview'], ['/resize-signature/', 'crop-box']] as const) {
+    // Hold back the island JS so the SSR'd input is interactive but React is not.
+    let release!: () => void;
+    const gate = new Promise<void>((r) => (release = r));
+    await page.route('**/_astro/*.js', async (route) => { await gate; await route.continue(); });
+    await page.goto(url, { waitUntil: 'commit' });
+    await page.getByTestId('file').setInputFiles(IMG);
+    release();
+    await expect(page.getByTestId(extra)).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByTestId('run')).toBeEnabled();
+    await page.unroute('**/_astro/*.js');
+  }
 });
 
 test('stale result from a superseded run is dropped', async ({ page }) => {
   await page.goto('/');
+  await page.getByTestId('preset-100').click();
   await page.getByTestId('file').setInputFiles(IMG);
-  await page.getByTestId('run').click();
-  await page.getByTestId('file').setInputFiles({ name: 'other.png', mimeType: 'image/png', buffer: fs.readFileSync(IMG) });
+  await expect(page.getByTestId('run')).toBeEnabled();
+  // Run, then pick another file in the same task (before the engine can answer).
+  await page.evaluate(async (b64) => {
+    (document.querySelector('[data-testid=run]') as HTMLButtonElement).click();
+    const bin = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+    const input = document.querySelector('[data-testid=file]') as HTMLInputElement;
+    const dt = new DataTransfer();
+    dt.items.add(new File([bin], 'other.png', { type: 'image/png' }));
+    input.files = dt.files;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }, fs.readFileSync(IMG).toString('base64'));
+  await expect(page.getByTestId('file-info')).toContainText('other.png');
   await page.waitForTimeout(2500);
   await expect(page.getByTestId('result-size')).toHaveCount(0);
+  await expect(page.getByTestId('progress')).toHaveCount(0);
 });
 
 test('non-image content is rejected by magic-byte check', async ({ page }) => {
   await page.goto('/');
   await page.getByTestId('file').setInputFiles({ name: 'evil.png', mimeType: 'image/png', buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"></svg>') });
-  await page.getByTestId('run').click();
   await expect(page.getByRole('alert')).toContainText('JPEG, PNG or WebP');
+  await expect(page.getByTestId('run')).toBeDisabled();
 });
 
 test('invalid target disables the button', async ({ page }) => {
   await page.goto('/');
+  await page.getByTestId('preset-100').click(); // wait for hydration
   await page.getByTestId('file').setInputFiles(IMG);
-  await page.getByTestId('target').fill('1');
+  await expect(page.getByTestId('run')).toBeEnabled();
+  await page.getByTestId('target').fill('0');
   await expect(page.getByTestId('run')).toBeDisabled();
   await page.getByTestId('target').fill('');
   await expect(page.getByTestId('run')).toBeDisabled();
 });
 
 test('undecodable file shows an error, no crash', async ({ page }) => {
-  const bad = path.join(import.meta.dirname, 'bad.png');
-  fs.writeFileSync(bad, 'not an image');
   await page.goto('/');
-  await page.getByTestId('file').setInputFiles({ name: 'bad.png', mimeType: 'image/png', buffer: fs.readFileSync(bad) });
+  await page.getByTestId('preset-100').click();
+  const real = fs.readFileSync(IMG).subarray(0, 200); // valid PNG signature, truncated body
+  await page.getByTestId('file').setInputFiles({ name: 'bad.png', mimeType: 'image/png', buffer: real });
   await page.getByTestId('run').click();
-  await expect(page.getByRole('alert')).toBeVisible({ timeout: 15_000 });
-  fs.unlinkSync(bad);
+  await expect(page.getByRole('alert')).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByTestId('run')).toBeEnabled();
 });
 
 test('SEO content is present with JavaScript disabled', async ({ browser, baseURL }) => {
@@ -110,9 +154,9 @@ test('SEO content is present with JavaScript disabled', async ({ browser, baseUR
   const page = await ctx.newPage();
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Resize an image');
-  expect(await page.content()).toContain('This tool needs JavaScript');
+  expect(await page.content()).toMatch(/needs JavaScript/);
   await expect(page.locator('noscript p')).toBeVisible();
-  await expect(page.getByRole('link', { name: 'photo size guide for online forms' })).toHaveAttribute('href', '/guides/photo-size-for-online-forms/');
+  await expect(page.getByRole('link', { name: /photo size guide/i }).first()).toHaveAttribute('href', '/guides/photo-size-for-online-forms/');
   await ctx.close();
 });
 

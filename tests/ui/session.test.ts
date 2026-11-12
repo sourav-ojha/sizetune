@@ -1,0 +1,166 @@
+import { describe, expect, it } from 'vitest';
+import { EngineError } from '../../src/lib/engine/types';
+import { ToolSession, type SessionDeps } from '../../src/components/tool/session';
+import { makeResult, manualEngine, pngFile } from './fake-engine';
+
+function setup(over: Partial<SessionDeps> = {}) {
+  const eng = manualEngine();
+  const live = new Set<string>();
+  let n = 0;
+  const deps: SessionDeps = {
+    process: eng.process,
+    createObjectURL: () => { const u = `blob:test/${++n}`; live.add(u); return u; },
+    revokeObjectURL: (u) => { live.delete(u); },
+    ...over,
+  };
+  return { s: new ToolSession(deps), eng, live };
+}
+const opts = { format: 'auto', strategy: 'quality-first', lockAspect: true, fit: 'contain', background: 'keep', maxKb: 20 } as const;
+const tick = () => new Promise((r) => setTimeout(r, 0));
+
+describe('ToolSession', () => {
+  it('rejects non-image content by magic bytes without creating any URL', async () => {
+    const { s, live } = setup();
+    await s.selectFile(new File(['<svg xmlns="http://www.w3.org/2000/svg"></svg>'], 'evil.png', { type: 'image/png' }));
+    const st = s.getSnapshot();
+    expect(st.phase).toBe('empty');
+    expect(st.file).toBeNull();
+    expect(st.error?.code).toBe('unsupported_type');
+    expect(st.error?.message).toContain('JPEG, PNG or WebP');
+    expect(live.size).toBe(0);
+  });
+  it('rejects files over the cap before reading them', async () => {
+    const { s } = setup({ maxFileBytes: 10 });
+    await s.selectFile(pngFile());
+    expect(s.getSnapshot().error?.code).toBe('too_large_bytes');
+  });
+  it('accepts an image, makes a preview and flags alpha hints', async () => {
+    const { s, live } = setup();
+    await s.selectFile(pngFile('a.png'));
+    const st = s.getSnapshot();
+    expect(st.phase).toBe('ready');
+    expect(st.sniff).toEqual({ kind: 'png', hasAlpha: false });
+    expect(live.size).toBe(1);
+    s.setNatural(st.previewUrl!, 600, 400);
+    expect(s.getSnapshot().natural).toEqual({ width: 600, height: 400 });
+    s.setNatural('blob:other', 1, 1); // stale url ignored
+    expect(s.getSnapshot().natural).toEqual({ width: 600, height: 400 });
+  });
+  it('runs, shows progress and builds a result with a suggested filename', async () => {
+    const { s, eng, live } = setup();
+    await s.selectFile(pngFile('holiday.png'));
+    const p = s.run(opts);
+    expect(s.getSnapshot().phase).toBe('processing');
+    eng.calls[0].hooks!.onProgress!({ stage: 'encoding', attempt: 2, total: 8 });
+    expect(s.getSnapshot().progress).toEqual({ stage: 'encoding', attempt: 2, total: 8 });
+    eng.calls[0].resolve(makeResult());
+    await p;
+    const st = s.getSnapshot();
+    expect(st.phase).toBe('done');
+    expect(st.result?.filename).toBe('holiday-sizetune.jpg');
+    expect(st.result?.options).toEqual(opts);
+    expect(live.size).toBe(2); // preview + result
+  });
+  it('drops the stale result when a new file is picked mid-run, and leaks no URL', async () => {
+    const { s, eng, live } = setup();
+    await s.selectFile(pngFile('a.png'));
+    const p = s.run(opts);
+    await s.selectFile(pngFile('b.png'));
+    eng.calls[0].resolve(makeResult()); // late result for the old run
+    await p;
+    const st = s.getSnapshot();
+    expect(st.phase).toBe('ready');
+    expect(st.result).toBeNull();
+    expect(st.file?.name).toBe('b.png');
+    expect(live.size).toBe(1); // only the new preview
+    expect(eng.calls[0].hooks!.signal!.aborted).toBe(true);
+  });
+  it('drops a result that resolves after Cancel, silently', async () => {
+    const { s, eng, live } = setup();
+    await s.selectFile(pngFile());
+    const p = s.run(opts);
+    s.cancel();
+    expect(s.getSnapshot().phase).toBe('ready');
+    eng.calls[0].resolve(makeResult());
+    await p;
+    expect(s.getSnapshot().result).toBeNull();
+    expect(s.getSnapshot().error).toBeNull();
+    expect(live.size).toBe(1);
+  });
+  it('treats an engine "cancelled" rejection as silent', async () => {
+    const { s, eng } = setup();
+    await s.selectFile(pngFile());
+    const p = s.run(opts);
+    eng.calls[0].reject(new EngineError('cancelled', 'x'));
+    await p;
+    expect(s.getSnapshot()).toMatchObject({ phase: 'ready', error: null });
+  });
+  it('maps engine failures to friendly errors and keeps the file for retry', async () => {
+    const { s, eng } = setup();
+    await s.selectFile(pngFile());
+    const p = s.run({ ...opts, format: 'webp' });
+    eng.calls[0].reject(new EngineError('encode_unsupported', 'no webp'));
+    await p;
+    const st = s.getSnapshot();
+    expect(st.phase).toBe('ready');
+    expect(st.file).not.toBeNull();
+    expect(st.error).toMatchObject({ code: 'encode_unsupported', action: 'use-jpeg' });
+  });
+  it('a newer run supersedes an older one', async () => {
+    const { s, eng } = setup();
+    await s.selectFile(pngFile());
+    const p1 = s.run(opts);
+    const p2 = s.run({ ...opts, maxKb: 10 });
+    eng.calls[0].resolve(makeResult({ width: 1 }));
+    eng.calls[1].resolve(makeResult({ width: 2 }));
+    await Promise.all([p1, p2]);
+    expect(s.getSnapshot().result?.data.width).toBe(2);
+  });
+  it('clearResult revokes the result URL and returns to ready', async () => {
+    const { s, eng, live } = setup();
+    await s.selectFile(pngFile());
+    const p = s.run(opts);
+    eng.calls[0].resolve(makeResult());
+    await p;
+    s.clearResult();
+    expect(s.getSnapshot()).toMatchObject({ phase: 'ready', result: null });
+    expect(live.size).toBe(1);
+  });
+  it('reset and dispose revoke everything and abort', async () => {
+    const { s, eng, live } = setup();
+    await s.selectFile(pngFile());
+    void s.run(opts);
+    s.reset();
+    await tick();
+    expect(eng.calls[0].hooks!.signal!.aborted).toBe(true);
+    expect(s.getSnapshot().phase).toBe('empty');
+    expect(live.size).toBe(0);
+    await s.selectFile(pngFile());
+    const p = s.run(opts);
+    eng.calls[1].resolve(makeResult());
+    await p;
+    expect(live.size).toBe(2);
+    s.dispose();
+    expect(live.size).toBe(0);
+    expect(s.getSnapshot().phase).toBe('empty');
+  });
+  it('ignores an older file whose sniff finishes after a newer pick', async () => {
+    let release!: () => void;
+    const gate = new Promise<void>((r) => (release = r));
+    let first = true;
+    const { s, live } = setup({
+      readHead: async (f) => { if (first) { first = false; await gate; } return new Uint8Array(await f.slice(0, 64).arrayBuffer()); },
+    });
+    const p1 = s.selectFile(pngFile('old.png'));
+    await s.selectFile(pngFile('new.png'));
+    release();
+    await p1;
+    expect(s.getSnapshot().file?.name).toBe('new.png');
+    expect(live.size).toBe(1);
+  });
+  it('does not run without a ready file', async () => {
+    const { s, eng } = setup();
+    await s.run(opts);
+    expect(eng.calls.length).toBe(0);
+  });
+});
