@@ -154,7 +154,7 @@ describe('P5 network primitives in JS loaded by tool pages', () => {
 });
 
 describe('shared scanners (unit)', () => {
-  const ids = (src: string) => scanJs(src).map((f: { id: string }) => f.id);
+  const ids = (src: string): string[] => (scanJs(src) as Array<{ id: string }>).map((f) => f.id);
   it('flags each primitive family', () => { for (const [src, id] of [['fetch(1)', 'fetch'], ['new XMLHttpRequest', 'xhr'], ['navigator.sendBeacon(1)', 'beacon'], ['new WebSocket(1)', 'websocket'], ['new EventSource(1)', 'eventsource'], ['importScripts(1)', 'importscripts'], ['"https://a.example/x"', 'external-url'], ['"//a.example.com/x"', 'external-url']]) expect(ids(src), src).toContain(id); });
   it('no false positives on look-alikes (React internals)', () => {
     expect(ids('fetchPriority:1,prefetchDNS(e),onDoubleClick,"dblclick"')).toEqual(['resource-hint'].filter(() => false));

@@ -14,7 +14,8 @@
     "verify:html:strict": "node scripts/verify-html.mjs --strict",
     "verify:html:final": "node scripts/verify-html.mjs --final",
     "verify:privacy": "node scripts/verify-privacy.mjs",
-    "verify": "npm run check && npm run build && npm test && npm run verify:html && npm run verify:html:strict && npm run verify:privacy && npm run test:e2e"
+    "verify": "npm run check && npm run build && npm test && npm run verify:html && npm run verify:html:strict && npm run verify:privacy && npm run test:e2e",
+    "test:engine:e2e": "playwright test -c e2e/engine/playwright.config.ts"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.1.5",

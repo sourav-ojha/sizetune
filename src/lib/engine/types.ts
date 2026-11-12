@@ -36,6 +36,8 @@ export interface ProcessOptions {
   stripIcc?: boolean;
   /** Reserved, MUST stay false/undefined in v1: padding is never default (see QA/PRODUCT_READINESS §2). */
   allowPadding?: false;
+  /** [engine ext] Allow MORE pixels than the source (upscaling) to reach minKb. Only used when dimensions are free. Default false. */
+  allowEnlarge?: boolean;
 }
 
 export type ResultStatus =
@@ -62,6 +64,12 @@ export interface ProcessResult {
   notes: string[];
   /** One-sentence plain explanation for non-ok statuses and raised results. */
   message: string;
+  /** [engine ext] Where the work ran. */
+  mode?: 'worker' | 'main-thread';
+  /** [engine ext] True when the ORIGINAL file's byte size already lies inside the window (UI may offer "keep original"; note: the original keeps its EXIF/GPS). */
+  originalFits?: boolean;
+  /** [engine ext] Elapsed processing time in ms (decode + all encodes). */
+  elapsedMs?: number;
 }
 
 export type EngineErrorCode =
@@ -73,7 +81,8 @@ export type EngineErrorCode =
   | 'cancelled'
   | 'out_of_memory'
   | 'encode_unsupported' // requested format cannot be encoded here (e.g. WebP in Safari) and no fallback was allowed
-  | 'invalid_options';
+  | 'invalid_options'
+  | 'worker_failed';     // [engine ext] the worker script failed to load or crashed (not an image problem)
 
 export class EngineError extends Error {
   constructor(public code: EngineErrorCode, message: string) { super(message); this.name = 'EngineError'; }
