@@ -33,7 +33,16 @@ Agents work in parallel on disjoint files; humans in bold. Step IDs H# = `BLOCKE
 Production deploy (human go), custom domain attach via `routes` (config prepared), Search Console/Bing, HSTS ramp after 1–2 stable weeks, privacy/terms lawyer review. AdSense only after content exists and strategy (H10) is chosen — **ads are not enabled and the tool routes stay ad-free by policy**.
 
 ## Phase 4 — Growth (LATER, evidence-driven)
-Additional preset pages only on Search Console evidence; PDF/doc size tools; optional WASM encoder; Cloudflare Web Analytics only after a consent decision.
+Additional preset pages only on Search Console evidence; (PDF/document tools are NOT in scope until the owner decides); optional WASM encoder; Cloudflare Web Analytics only after a consent decision.
 
 ## Standing rules
 Never purchase, change DNS, enable ads or publish production without explicit approval. `npm run verify` stays green. Every indexable page passes `verify:html`; launch also needs `STRICT=1`.
+
+## Update after the build sprint (2026-11-12 afternoon)
+**Done locally (see `BUILD_STATUS.md`):** engine (A2/A3), range UI + statuses (A6), signature mode (A7), launch copy + OG + About/Terms (A8), cross-browser lab via iOS Simulator (A9, simulator only), STRICT gate green except owner markers (A10 partial), Preact swap (A1, executed after engine work; kept), axe-core accessibility audit, quality samples, independent reviews.
+**Revised remaining work (work-package order; realistic 3–5 days of elapsed time because most items are yours):**
+1. You: fill markers (BLOCKERS H1), real-device tests (H2), Firefox/WebKit approval+run (H3), trademark/legal (H4), human quality review (H10), screen-reader pass (H11).
+2. You: GitHub repo + ruleset + CI (H5), decide staging (H6), zone/account + mailbox (H7), www (H8), og image (H9).
+3. Agents (after your results): fix real-device findings (limits tuning), engine quality tuning backlog (`QA/QUALITY_SAMPLES.md`), re-run all gates, `verify:html:final`.
+4. Launch only with your explicit approval; then HSTS/Search Console (H13). Ads only per H12 and never on tool pages.
+**Scope guard:** no PDF/document tools in this phase; the earlier "PDF/doc size tools" growth idea is deferred beyond launch and requires an owner decision.

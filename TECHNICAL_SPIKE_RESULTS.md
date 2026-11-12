@@ -65,3 +65,6 @@ A scratch copy swapped React for `@astrojs/preact` (`compat: true`): tool-page J
 - Tests now: Vitest 48 (5 engine + 43 verify-html incl. 41 negative fixtures), Playwright 12 (adds stale-result and magic-byte tests, CSP-violation test and real-download validation: CSP forbids `fetch(blob:)` by design), `astro check` 0/0/0. All green on Node 24.12.0.
 - The spike compression algorithm is **superseded** by the `fitRange` spec (ADR D11, `QA/PRODUCT_READINESS.md` §2): its ladder/last-resort gives 8.9 KB for a 20 KB target and fails to fit on iOS Safari at 36/48 MP. Do not treat §5 numbers as product quality.
 - Changes since: Astro built-in CSP, `data-page-type`, CSP/ad-route verify rules, JSON-LD `<` escaping, static robots, wrangler `workers_dev/preview_urls/routes`, `.nvmrc` 24, CI `ubuntu-24.04`.
+
+## 12. Status note (post build sprint)
+This spike document is historical. The spike code was superseded by the production engine and UI; islands are now Preact 11 compat. Current evidence: `QA/TEST_RESULTS.md`, `BUILD_STATUS.md`.
