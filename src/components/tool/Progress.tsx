@@ -20,7 +20,7 @@ export default function ProgressBar({ progress, onCancel, cancelRef }: { progres
         max={determinate ? progress!.total : undefined}
         value={determinate ? progress!.attempt : undefined}
       />
-      <button ref={cancelRef} type="button" data-testid="cancel" className={btnSecondary} onClick={onCancel}>Cancel</button>
+      <button ref={cancelRef} type="button" data-testid="cancel" aria-keyshortcuts="Escape" className={btnSecondary} onClick={onCancel}>Cancel<span className="sr-only"> (or press Escape)</span></button>
     </div>
   );
 }

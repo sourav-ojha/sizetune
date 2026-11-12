@@ -132,7 +132,7 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
   };
 
   return (
-    <section ref={anchor.ref} data-testid="tool" aria-label="Signature resizer" className={`space-y-5 ${panelCls}`}>
+    <section ref={anchor.ref} data-testid="tool" onKeyDown={(e) => { if (e.key === 'Escape' && state.phase === 'processing') { anchor.hold(); session.cancel(); } }} aria-label="Signature resizer" className={`space-y-5 ${panelCls}`}>
       <h2 className="sr-only">Resize your signature</h2>
       <div role="status" aria-live="polite" data-testid="status" className="sr-only">{statusText(state)}</div>
 

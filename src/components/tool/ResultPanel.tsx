@@ -48,7 +48,10 @@ export default function ResultPanel({ view, originalName, original, preview, onR
   const headingRef = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
     if (!autoFocus) return;
-    headingRef.current?.focus({ preventScroll: true });
+    // move focus to the result only from the control that started the run; never steal it from a control the user has moved on to
+    const a = document.activeElement;
+    const trigger = !a || a === document.body || ['run', 'retry', 'use-jpeg', 'cancel'].includes(a.getAttribute('data-testid') ?? '');
+    if (trigger) headingRef.current?.focus({ preventScroll: true });
     ensureVisible(headingRef.current, 'start'); // only scrolls when the result appeared off-screen
   }, [autoFocus, view.url]);
   const ok = isSuccess(data.status);

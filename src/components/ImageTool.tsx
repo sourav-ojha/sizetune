@@ -79,7 +79,7 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
   };
 
   return (
-    <section ref={anchor.ref} data-testid="tool" aria-label="Image resizer" className={`space-y-5 ${panelCls}`}>
+    <section ref={anchor.ref} data-testid="tool" onKeyDown={(e) => { if (e.key === 'Escape' && state.phase === 'processing') { anchor.hold(); session.cancel(); } }} aria-label="Image resizer" className={`space-y-5 ${panelCls}`}>
       <h2 className="sr-only">Resize your image</h2>
       <div role="status" aria-live="polite" data-testid="status" className="sr-only">{statusText(state)}</div>
 
