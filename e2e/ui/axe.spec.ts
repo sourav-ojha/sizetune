@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { NOISE, bombPng, file, flatPng, openTool, pick, resize, signaturePng, transparentPng } from './helpers';
+import { NOISE, bombPng, unreadablePng, file, flatPng, openTool, pick, resize, signaturePng, transparentPng } from './helpers';
 import { format, runAxe, unexpected } from './axe-helper';
 
 /** Fails on ANY axe violation (all impacts) not in the justified ALLOW list (e2e/ui/axe-helper.ts). */
@@ -99,6 +99,7 @@ for (const vp of VIEWPORTS) {
     });
 
     test('error alert (unsupported file) and run error (damaged)', async ({ page }) => {
+      await page.route('**/_astro/*worker*.js', (r) => r.abort()); // run-time failure reproducible in every browser
       await openTool(page);
       await page.getByTestId('file').setInputFiles(file('x.svg', Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"></svg>'), 'image/svg+xml'));
       await expect(page.getByRole('alert')).toBeVisible();
@@ -106,7 +107,7 @@ for (const vp of VIEWPORTS) {
       await page.getByTestId('file').setInputFiles(file('broken.png', flatPng(200, 200).subarray(0, 60)));
       await expect(page.getByRole('alert')).toContainText(/incomplete or damaged/);
       await expectClean(page, 'truncated file alert');
-      await pick(page, file('unreadable.png', bombPng(100, 100)));
+      await pick(page, file('ok.png', flatPng(100, 100)));
       await page.getByTestId('run').click();
       await expect(page.getByRole('alert')).toBeVisible({ timeout: 20_000 });
       await expectClean(page, 'run error');

@@ -3,7 +3,7 @@ import { downloaded, exifRotatedJpeg, file, flatPng, isJpeg, isPng, isRed, openT
 
 const URL = '/resize-signature/';
 const sig = () => file('sig.png', signaturePng());
-const crop = async (page: Page) => ({
+const crop = async (page: Page) => (await expect(page.getByTestId('crop-width')).not.toHaveValue(''), {
   x: Number(await page.getByTestId('crop-x').inputValue()),
   y: Number(await page.getByTestId('crop-y').inputValue()),
   w: Number(await page.getByTestId('crop-width').inputValue()),
@@ -69,6 +69,7 @@ test.describe('signature tool', () => {
     await pick(page, sig());
     await page.getByTestId('crop-width').fill('300');
     await page.getByTestId('crop-height').fill('100');
+    await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))); // let any layout/scroll compensation settle before measuring
     const img = (await page.getByTestId('crop-image').boundingBox())!;
     const scale = 600 / img.width; // source px per CSS px
     const box = (await page.getByTestId('crop-box').boundingBox())!;
@@ -178,6 +179,7 @@ test.describe('signature tool', () => {
   test('M1: typing Left, Top, Width, Height in tab order gives the exact region (1200x400 PNG)', async ({ page }) => {
     await openTool(page, URL);
     await pick(page, file('wide.png', redBlockPng(1200, 400, 290, 90, 220, 70)));
+    await expect(page.getByTestId('crop-width')).toHaveValue('1200'); // the crop is initialised in an effect right after the file is accepted
     expect(await crop(page)).toEqual({ x: 0, y: 0, w: 1200, h: 400 });
     await typeInTabOrder(page);
     expect(await crop(page)).toEqual({ x: 290, y: 90, w: 220, h: 70 });

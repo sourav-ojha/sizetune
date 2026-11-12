@@ -132,17 +132,23 @@ test.describe('Preact semantics', () => {
   test('stale run: a result that arrives after Cancel, or after a settings change mid-run, is dropped and leaves no URL behind', async ({ page }) => {
     await openTool(page);
     await pick(page, NOISE);
-    await page.getByTestId('run').click();
-    await expect(page.getByTestId('cancel')).toBeVisible();
-    await page.getByTestId('cancel').click();
+    // Start the run and cancel in the SAME task: the engine has been called, its (late) reply arrives after the cancel.
+    // (Waiting for the Cancel button first is a race: a fast browser can finish the run before the click lands.)
+    await page.evaluate(async () => {
+      (document.querySelector('[data-testid=run]') as HTMLButtonElement).click();
+      await Promise.resolve();
+      (document.querySelector('[data-testid=cancel]') as HTMLButtonElement).click();
+    });
     await expect(page.getByTestId('result')).toHaveCount(0);
     await page.waitForTimeout(1500); // a late worker reply must not resurrect a result
     await expect(page.getByTestId('result')).toHaveCount(0);
     await expect(page.getByTestId('run')).toBeFocused(); // focus moved to a live control when Cancel disappeared
     // a settings change while a run is in flight must supersede it too
-    await page.getByTestId('run').click();
-    await expect(page.getByTestId('cancel')).toBeVisible();
-    await page.getByTestId('preset-30').click();
+    await page.evaluate(async () => {
+      (document.querySelector('[data-testid=run]') as HTMLButtonElement).click();
+      await Promise.resolve();
+      (document.querySelector('[data-testid=preset-30]') as HTMLButtonElement).click();
+    });
     await expect(page.getByTestId('cancel')).toHaveCount(0);
     await page.waitForTimeout(1500);
     await expect(page.getByTestId('result')).toHaveCount(0);

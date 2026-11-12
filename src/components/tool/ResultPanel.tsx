@@ -8,6 +8,9 @@ import { btnPrimary, btnSecondary } from './ui';
 
 const FORMAT_NAME: Record<string, string> = { 'image/jpeg': 'JPEG', 'image/png': 'PNG', 'image/webp': 'WebP' };
 
+/** "121 bytes" for tiny files, "1.6 KB, 1,643 bytes" otherwise (never the same number twice). */
+const bothUnits = (n: number): string => (n < 1024 ? `${formatInt(n)} bytes` : `${formatKb(n)}, ${formatInt(n)} bytes`);
+
 const isSuccess = (s: ResultStatus): boolean => s === 'ok' || s === 'raised';
 
 const HEADING: Record<ResultStatus, string> = {
@@ -91,7 +94,7 @@ export default function ResultPanel({ view, originalName, original, preview, onR
       {hint && <p data-testid="result-hint">{hint}</p>}
       {larger && (
         <p data-testid="larger-note">
-          Your original ({formatKb(data.source.bytes)}, {formatInt(data.source.bytes)} bytes) is already smaller than this result ({formatKb(data.bytes)}, {formatInt(data.bytes)} bytes). Re-saving can make a small or already-compressed file bigger.{' '}
+          Your original ({bothUnits(data.source.bytes)}) is already smaller than this result ({bothUnits(data.bytes)}). Re-saving can make a small or already-compressed file bigger.{' '}
           {data.originalFits === true
             ? (gps
               ? 'Your original contains location data; the SizeTune result does not. The original already fits your limit, so keep it only if you are happy to share that location.'

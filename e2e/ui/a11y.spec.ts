@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { NOISE, openTool, pick, resize } from './helpers';
+import { tab, NOISE, openTool, pick, resize } from './helpers';
 
 /** Simple DOM accessibility assertions (no axe dependency). */
 async function audit(page: Page) {
@@ -62,7 +62,7 @@ test('keyboard-only main flow and focus management', async ({ page }) => {
   await expect(page.getByTestId('result-heading')).toBeFocused();
   await expect(page.getByTestId('status')).toContainText(/Finished/);
   // Tab reaches the download link, then Enter on Reset returns focus to the file chooser
-  await page.keyboard.press('Tab');
+  await tab(page);
   await page.getByTestId('reset').focus();
   await page.keyboard.press('Enter');
   await expect(page.getByTestId('file')).toBeFocused();
@@ -74,7 +74,7 @@ test('no keyboard trap: Tab eventually leaves the tool', async ({ page }) => {
   await page.getByTestId('file').focus();
   let left = false;
   for (let i = 0; i < 80 && !left; i++) {
-    await page.keyboard.press('Tab');
+    await tab(page);
     left = await page.evaluate(() => !document.querySelector('[data-testid=tool]')!.contains(document.activeElement));
   }
   expect(left).toBe(true);
@@ -82,13 +82,13 @@ test('no keyboard trap: Tab eventually leaves the tool', async ({ page }) => {
 
 test('focus ring is visible on the file chooser and on buttons', async ({ page }) => {
   await openTool(page);
-  await page.keyboard.press('Tab');
+  await tab(page);
   await page.getByTestId('file').focus();
   const outline = await page.getByTestId('file').locator('xpath=..').evaluate((el) => getComputedStyle(el).outlineStyle);
   expect(outline).not.toBe('none');
   await page.getByTestId('preset-50').focus();
-  await page.keyboard.press('Shift+Tab');
-  await page.keyboard.press('Tab');
+  await tab(page, true);
+  await tab(page);
   expect(await page.getByTestId('preset-50').evaluate((el) => getComputedStyle(el).outlineStyle)).not.toBe('none');
 });
 

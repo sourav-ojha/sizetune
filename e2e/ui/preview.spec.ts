@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import fs from 'node:fs';
-import { NOISE, bombPng, browserRssMb, bytesOf, file, openTool, pick, resize, smallJpeg, writeBigPng } from './helpers';
+import { NOISE, bombPng, browserRssMb, exifTiff, flatPng, isChromium, bytesOf, file, openTool, pick, pngWithExif, resize, writeBigPng } from './helpers';
 
 test.describe('previews never undo the engine’s memory-safe decode (F1)', () => {
   test('a 9000x9000 RGBA PNG (81 MP) is accepted from its header: no decode on the main thread, bounded memory', async ({ page }) => {
@@ -17,7 +17,8 @@ test.describe('previews never undo the engine’s memory-safe decode (F1)', () =
       await page.waitForTimeout(1500);
       const delta = (await browserRssMb(page)) - before;
       console.log(`81 MP pick: RSS delta ${Math.round(delta)} MB`);
-      expect(delta, 'RSS growth while picking an 81 MP PNG').toBeLessThan(150);
+      if (isChromium(page)) expect(delta, 'RSS growth while picking an 81 MP PNG').toBeLessThan(150);
+      else test.info().annotations.push({ type: 'rss-bound-skipped', description: 'process RSS needs CDP (Chromium only); the no-preview and URL-count assertions above still run' });
       // the only object URL is the (never decoded) original
       expect(await page.evaluate(() => (window as any).__urls)).toBe(1);
       // and it can still be resized by the engine
@@ -42,7 +43,8 @@ test.describe('previews never undo the engine’s memory-safe decode (F1)', () =
       await page.waitForTimeout(1500);
       const delta = (await browserRssMb(page)) - before;
       console.log(`36 MP pick: RSS delta ${Math.round(delta)} MB`);
-      expect(delta, 'RSS growth while previewing a 36 MP PNG').toBeLessThan(300);
+      if (isChromium(page)) expect(delta, 'RSS growth while previewing a 36 MP PNG').toBeLessThan(300);
+      else test.info().annotations.push({ type: 'rss-bound-skipped', description: 'process RSS needs CDP (Chromium only); the thumbnail-size assertions above still run' });
     } finally { fs.rmSync(big, { force: true }); }
   });
 
@@ -120,8 +122,9 @@ test.describe('A4: truncated files', () => {
 test.describe('F3: keeping the original', () => {
   test('result larger than a GPS-tagged original: keep-original is SECONDARY and the location warning is explicit', async ({ page }) => {
     await openTool(page);
-    const orig = await smallJpeg(page, { gps: true });
-    await pick(page, file('gps.jpg', orig, 'image/jpeg'));
+    // A tiny PNG carrying an EXIF GPS block: any browser's JPEG re-encode is larger than it (JPEG headers alone outweigh a flat 60x30 PNG)
+    const orig = pngWithExif(flatPng(), exifTiff({ gps: true }));
+    await pick(page, file('gps.png', orig));
     await page.getByTestId('preset-200').click();
     await page.getByTestId('format-jpeg').check();
     await resize(page);
@@ -134,12 +137,12 @@ test.describe('F3: keeping the original', () => {
     // D1: no doubled parenthesis
     const note = (await page.getByTestId('larger-note').textContent()) ?? '';
     expect(note).not.toContain('))');
-    expect(note).toMatch(/Your original \([\d.,]+ (KB|bytes), [\d,]+ bytes\)/);
+    expect(note).toMatch(/Your original \((?:[\d,]+ bytes|[\d.,]+ KB, [\d,]+ bytes)\)/); // one number for tiny files, "KB, bytes" otherwise
   });
 
   test('without GPS the generic caution is shown, not the location claim', async ({ page }) => {
     await openTool(page);
-    await pick(page, file('plain.jpg', await smallJpeg(page, { orientation: 1 }), 'image/jpeg'));
+    await pick(page, file('plain.png', flatPng()));
     await page.getByTestId('preset-200').click();
     await page.getByTestId('format-jpeg').check();
     await resize(page);
@@ -168,11 +171,15 @@ test.describe('layout, scroll and cold-start robustness (D1, D5-D8)', () => {
     await pick(page, NOISE);
     await page.getByTestId('tool').evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY + 300));
     const top = () => page.getByTestId('tool').evaluate((el) => Math.round(el.getBoundingClientRect().top));
-    const t0 = await top();
-    await page.getByTestId('preset-10').click();
-    await page.getByTestId('run').click();
+    // (clicks are dispatched from the page: Playwright's own scroll-into-view before a click would move the page and hide what we measure)
+    const click = (id: string) => page.evaluate((t) => (document.querySelector(`[data-testid=${t}]`) as HTMLElement).click(), id);
+    await click('preset-10');
+    await click('run');
     await expect(page.getByTestId('result')).toBeVisible({ timeout: 30_000 });
-    await page.getByTestId('preset-20').click(); // clears the result
+    // when the result appears off-screen the page may (by design) scroll it into view; measure from the settled position
+    await page.waitForTimeout(300);
+    const t0 = await top();
+    await click('preset-20'); // clears the result: the tool must stay where it is on screen
     await expect(page.getByTestId('result')).toHaveCount(0);
     expect(Math.abs((await top()) - t0)).toBeLessThanOrEqual(2);
   });

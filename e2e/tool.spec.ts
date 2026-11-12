@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import path from 'node:path';
+import { unreadablePng } from './ui/helpers';
 import fs from 'node:fs';
 
 const IMG = path.join(import.meta.dirname, 'noise.png');
@@ -149,15 +150,13 @@ test('invalid target disables the button', async ({ page }) => {
   await expect(page.getByTestId('run')).toBeDisabled();
 });
 
-test('undecodable file shows an error, no crash (complete structure, unreadable pixels: fails at Resize)', async ({ page }) => {
+// @chromium-only: Firefox and WebKit decode a PNG with a corrupt IDAT leniently (they return an image), so no decode error exists to assert there.
+// The cross-browser run-time failure path is covered by the blocked-worker tests (Try again / alert / focus).
+test('undecodable file shows an error, no crash (complete structure, unreadable pixels: fails at Resize) @chromium-only', async ({ page }) => {
   await page.goto('/');
   await page.getByTestId('preset-100').click();
-  // valid PNG structure (signature, IHDR 100x100, IDAT, IEND) whose pixel data cannot be decoded
-  const zlib = await import('node:zlib');
-  const crc = (b: Buffer) => { let c = 0xffffffff; for (const x of b) { c ^= x; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; } return (c ^ 0xffffffff) >>> 0; };
-  const chunk = (t: string, d: Buffer) => { const l = Buffer.alloc(4); l.writeUInt32BE(d.length); const td = Buffer.concat([Buffer.from(t), d]); const c = Buffer.alloc(4); c.writeUInt32BE(crc(td)); return Buffer.concat([l, td, c]); };
-  const ihdr = Buffer.alloc(13); ihdr.writeUInt32BE(100, 0); ihdr.writeUInt32BE(100, 4); ihdr[8] = 8; ihdr[9] = 6;
-  const bad = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), chunk('IHDR', ihdr), chunk('IDAT', zlib.deflateSync(Buffer.alloc(64))), chunk('IEND', Buffer.alloc(0))]);
+  // valid PNG structure (signature, IHDR 100x100, IDAT, IEND) whose IDAT is not a valid zlib stream: every decoder rejects it
+  const bad = unreadablePng(100, 100);
   await page.getByTestId('file').setInputFiles({ name: 'bad.png', mimeType: 'image/png', buffer: bad });
   await expect(page.getByTestId('run')).toBeEnabled();
   await page.getByTestId('run').click();

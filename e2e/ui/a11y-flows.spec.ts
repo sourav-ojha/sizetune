@@ -1,12 +1,12 @@
 import { test, expect, type Page } from '@playwright/test';
 import fs from 'node:fs';
-import { NOISE, bombPng, file, flatPng, isJpeg, openTool, pick, resize, signaturePng } from './helpers';
+import { NOISE, bombPng, unreadablePng, tab, file, flatPng, isJpeg, openTool, pick, resize, signaturePng } from './helpers';
 
 /** Presses Tab until the element with this data-testid has focus (fails if it takes more than `max` presses = unreachable by keyboard). */
 async function tabTo(page: Page, testId: string, max = 120) {
   for (let i = 0; i < max; i++) {
     if (await page.evaluate((id) => document.activeElement?.getAttribute('data-testid') === id, testId)) return i;
-    await page.keyboard.press('Tab');
+    await tab(page);
   }
   throw new Error(`"${testId}" not reachable by Tab within ${max} presses`);
 }
@@ -131,6 +131,7 @@ test.describe('keyboard only', () => {
   test('crop editor by keyboard: reachable, visible focus, move + resize + typed numbers', async ({ page }) => {
     await openTool(page, '/resize-signature/');
     await pick(page, file('sig.png', signaturePng()));
+    await page.getByTestId('file').focus(); // start from the file chooser (Firefox continues from the last clicked control, which is below the crop box)
     await tabTo(page, 'crop-box');
     expect(await focusVisible(page), 'crop box has a visible focus indicator').toBe(true);
     const crop = async () => ({ x: await page.getByTestId('crop-x').inputValue(), w: await page.getByTestId('crop-width').inputValue() });
@@ -141,7 +142,7 @@ test.describe('keyboard only', () => {
     expect(await crop()).toEqual({ x: '1', w: '301' });
     await tabTo(page, 'crop-x'); // next stop after the box is the numeric fields
     expect(await focusVisible(page)).toBe(true);
-    await page.keyboard.press('Tab');
+    await tab(page);
     await expect(page.getByTestId('crop-y')).toBeFocused();
     // the box announces its geometry
     expect(await page.getByTestId('crop-box').getAttribute('aria-label')).toMatch(/Crop box: left \d+, top \d+, \d+ by \d+ pixels/);
@@ -159,7 +160,7 @@ test.describe('keyboard only', () => {
     const seen = new Set<string>();
     const missing: string[] = [];
     for (let i = 0; i < 90; i++) {
-      await page.keyboard.press('Tab');
+      await tab(page);
       const info = await page.evaluate(() => {
         const el = document.activeElement as HTMLElement;
         return { id: el.getAttribute('data-testid') ?? el.tagName, inTool: !!document.querySelector('[data-testid=tool]')?.contains(el) };
@@ -172,7 +173,7 @@ test.describe('keyboard only', () => {
     expect(seen.size, [...seen].join(', ')).toBeGreaterThan(25);
     expect(await page.evaluate(() => !document.querySelector('[data-testid=tool]')!.contains(document.activeElement)), 'Tab left the tool (no trap)').toBe(true);
     // and Shift+Tab goes back in
-    await page.keyboard.press('Shift+Tab');
+    await tab(page, true);
     expect(await page.evaluate(() => document.querySelector('[data-testid=tool]')!.contains(document.activeElement))).toBe(true);
   });
 });
@@ -269,11 +270,12 @@ test.describe('screen-reader semantics (accessibility tree)', () => {
   });
 
   test('errors: exactly one alert, and the status region stays silent', async ({ page }) => {
+    await page.route('**/_astro/*worker*.js', (r) => r.abort()); // a run-time failure that every browser reproduces (decoders differ in how strict they are)
     await openTool(page);
     await page.getByTestId('file').setInputFiles(file('x.svg', Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"></svg>'), 'image/svg+xml'));
     await expect(page.getByRole('alert')).toHaveCount(1);
     expect((await page.getByRole('status').textContent())!.trim()).toBe('');
-    await pick(page, file('unreadable.png', bombPng(100, 100)));
+    await pick(page, file('ok.png', flatPng(100, 100)));
     await page.getByTestId('run').click();
     await expect(page.getByRole('alert')).toHaveCount(1, { timeout: 20_000 });
     expect((await page.getByRole('status').textContent())!.trim()).toBe('');

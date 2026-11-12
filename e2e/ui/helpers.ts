@@ -43,9 +43,11 @@ export const file = (name: string, buffer: Buffer, mimeType = 'image/png') => ({
 export async function openTool(page: Page, url = '/') {
   await page.goto(url);
   await expect(page.getByTestId('tool')).toBeVisible();
-  // hydrated once the preset buttons react
-  await page.getByTestId('preset-100').click();
-  await expect(page.getByTestId('preset-100')).toHaveAttribute('aria-pressed', 'true');
+  // hydrated once the preset buttons react; a click before hydration is lost, so retry until it takes effect
+  await expect(async () => {
+    await page.getByTestId('preset-100').click();
+    await expect(page.getByTestId('preset-100')).toHaveAttribute('aria-pressed', 'true', { timeout: 1500 });
+  }).toPass({ timeout: 20_000 });
 }
 
 export async function pick(page: Page, f: string | { name: string; mimeType: string; buffer: Buffer }) {
@@ -150,8 +152,22 @@ export async function writeBigPng(w: number, h: number): Promise<string> {
 /** A tiny PNG whose HEADER claims w x h (e.g. a 400 MP "bomb"); the pixel data is not real. */
 export const bombPng = (w: number, h: number) => Buffer.concat([SIG, pngChunk('IHDR', ihdrOf(w, h)), pngChunk('IDAT', zlib.deflateSync(Buffer.alloc(64))), pngChunk('IEND', Buffer.alloc(0))]);
 
+/** A PNG with a valid structure (signature, IHDR, IDAT, IEND) whose IDAT is NOT a valid zlib stream, so every browser's decoder rejects it
+ *  (a zero-filled but valid stream decodes "successfully" in Firefox/WebKit, which tolerate short data). */
+export const unreadablePng = (w = 100, h = 100) => Buffer.concat([SIG, pngChunk('IHDR', ihdrOf(w, h)), pngChunk('IDAT', Buffer.alloc(64, 0xff)), pngChunk('IEND', Buffer.alloc(0))]);
+
+/** The Tab key as a keyboard user would use it. WebKit (Safari) does not Tab to buttons/inputs unless "Press Tab to highlight each item" is on;
+ *  its always-available equivalent is Option+Tab, which is what Safari users with default settings press. */
+export async function tab(page: Page, shift = false) {
+  const webkit = page.context().browser()?.browserType().name() === 'webkit';
+  await page.keyboard.press(`${webkit ? 'Alt+' : ''}${shift ? 'Shift+' : ''}Tab`);
+}
+export const isChromium = (page: Page) => page.context().browser()?.browserType().name() === 'chromium';
+
 /** Sum of resident memory (MB) of every browser process (CDP SystemInfo gives the pids). */
+/** Chromium only (CDP): returns NaN elsewhere so callers can skip the numeric bound explicitly. */
 export async function browserRssMb(page: Page): Promise<number> {
+  if (!isChromium(page)) return NaN;
   const cdp = await page.context().browser()!.newBrowserCDPSession();
   try {
     const { processInfo } = await cdp.send('SystemInfo.getProcessInfo');
@@ -164,8 +180,9 @@ export async function browserRssMb(page: Page): Promise<number> {
 export async function smallJpeg(page: Page, opts: { orientation?: number; gps?: boolean } = {}): Promise<Buffer> {
   const b64 = await page.evaluate(async () => {
     const c = document.createElement('canvas'); c.width = 8; c.height = 8;
-    const x = c.getContext('2d')!; x.fillStyle = '#c33'; x.fillRect(0, 0, 8, 8);
-    const blob = await new Promise<Blob>((r) => c.toBlob((b) => r(b!), 'image/jpeg', 0.9));
+    const x = c.getContext('2d')!;
+    for (let i = 0; i < 64; i++) { x.fillStyle = `hsl(${(i * 37) % 360} 70% ${30 + ((i * 11) % 40)}%)`; x.fillRect(i % 8, Math.floor(i / 8), 1, 1); } // detail, so scan data grows with quality in every encoder
+    const blob = await new Promise<Blob>((r) => c.toBlob((b) => r(b!), 'image/jpeg', 0.2)); // low quality: the engine's re-encode at a higher quality is larger in every browser
     let s = ''; for (const v of new Uint8Array(await blob.arrayBuffer())) s += String.fromCharCode(v);
     return btoa(s);
   });
@@ -180,16 +197,28 @@ export async function smallJpeg(page: Page, opts: { orientation?: number; gps?: 
   }
   const jpeg = Buffer.concat(out);
   if (opts.orientation === undefined && !opts.gps) return jpeg;
-  const entries: Buffer[] = [];
+  const tiff = exifTiff(opts);
+  const body = Buffer.concat([Buffer.from('Exif\0\0', 'binary'), tiff]);
+  const seg = Buffer.concat([Buffer.from([0xff, 0xe1, (body.length + 2) >> 8, (body.length + 2) & 0xff]), body]);
+  return Buffer.concat([jpeg.subarray(0, 2), seg, jpeg.subarray(2)]);
+}
+
+
+/** Big-endian TIFF block for EXIF: optional orientation tag and/or a GPS IFD (latitude reference). */
+export function exifTiff(opts: { orientation?: number; gps?: boolean }): Buffer {
   const be16 = (n: number) => Buffer.from([n >> 8, n & 255]);
   const be32 = (n: number) => Buffer.from([(n >>> 24) & 255, (n >>> 16) & 255, (n >>> 8) & 255, n & 255]);
+  const entries: Buffer[] = [];
   const n = (opts.orientation !== undefined ? 1 : 0) + (opts.gps ? 1 : 0);
   const gpsAt = 8 + 2 + 12 * n + 4;
   if (opts.orientation !== undefined) entries.push(Buffer.concat([be16(0x0112), be16(3), be32(1), be16(opts.orientation), be16(0)]));
   if (opts.gps) entries.push(Buffer.concat([be16(0x8825), be16(4), be32(1), be32(gpsAt)]));
-  const tiff = Buffer.concat([Buffer.from('MM'), be16(42), be32(8), be16(n), ...entries, be32(0),
+  return Buffer.concat([Buffer.from('MM'), be16(42), be32(8), be16(n), ...entries, be32(0),
     ...(opts.gps ? [be16(1), be16(0x0001), be16(2), be32(2), Buffer.from('N\0\0\0'), be32(0)] : [])]);
-  const body = Buffer.concat([Buffer.from('Exif\0\0', 'binary'), tiff]);
-  const seg = Buffer.concat([Buffer.from([0xff, 0xe1]), be16(body.length + 2), body]);
-  return Buffer.concat([jpeg.subarray(0, 2), seg, jpeg.subarray(2)]);
+}
+
+/** Inserts an eXIf chunk (before IDAT) into a PNG. */
+export function pngWithExif(png: Buffer, tiff: Buffer): Buffer {
+  const at = 8 + 25; // signature + IHDR chunk
+  return Buffer.concat([png.subarray(0, at), pngChunk('eXIf', tiff), png.subarray(at)]);
 }
