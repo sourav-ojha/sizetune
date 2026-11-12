@@ -96,16 +96,14 @@ test.describe('A4: truncated files', () => {
     const whole = Buffer.from(jpeg, 'base64');
     const cut = whole.subarray(0, Math.floor(whole.length * 0.6));
     await page.getByTestId('file').setInputFiles(file('cut.jpg', cut, 'image/jpeg'));
-    // Either the engine rejects it at pick (alert), or the file is accepted with an honest "could not create a preview" note.
-    await expect.poll(async () => (await page.getByRole('alert').count()) + (await page.getByTestId('no-preview').count()) + (await page.getByTestId('preview').count()), { timeout: 30_000 }).toBeGreaterThan(0);
-    const body = (await page.getByTestId('tool').textContent()) ?? '';
-    expect(body).not.toContain('very large image');
-    if (await page.getByRole('alert').count()) {
-      await expect(page.getByRole('alert')).toContainText(/incomplete or damaged/);
-      await expect(page.getByTestId('run')).toBeDisabled();
-    } else if (await page.getByTestId('no-preview').count()) {
-      await expect(page.getByTestId('no-preview')).toContainText('incomplete or damaged');
-    }
+    // The engine rejects an incomplete file at pick: the alert is REQUIRED (a preview, or a "very large" note, would be wrong).
+    const alert = page.getByRole('alert');
+    await expect(alert).toBeVisible({ timeout: 30_000 });
+    await expect(alert).toContainText(/incomplete or damaged/);
+    await expect(alert).not.toContainText('very large');
+    await expect(page.getByTestId('preview')).toHaveCount(0);
+    await expect(page.getByTestId('no-preview')).toHaveCount(0);
+    await expect(page.getByTestId('run')).toBeDisabled();
   });
 
   test('the "very large image" note appears only above the preview limit (here 45 MP, header only)', async ({ page }) => {

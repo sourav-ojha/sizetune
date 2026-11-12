@@ -74,9 +74,23 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
 
   const changeCrop = useCallback((r: Rect) => { setCrop(r); session.clearResult(); session.dismissError(); }, [session]);
 
+  // Escape cancels a run from anywhere. Attached once at mount and checked against the live session state at key time,
+  // so it works from the very first moment of a run (no wait for a render or an effect).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !e.defaultPrevented && session.getSnapshot().phase === 'processing') { anchor.hold(); session.cancel(); }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [session, anchor.hold]);
+
   const wasProcessing = useRef(false);
   useEffect(() => {
-    if (wasProcessing.current && state.phase === 'ready' && !state.error) runRef.current?.focus({ preventScroll: true });
+    if (wasProcessing.current && state.phase === 'ready') {
+      // Cancel just unmounted. After a failed run focus the remedy ("Try again" / "Use JPEG instead") if there is one, else Resize.
+      const remedy = state.error ? anchor.ref.current?.querySelector<HTMLElement>('[data-testid=retry],[data-testid=use-jpeg]') : null;
+      (remedy ?? runRef.current)?.focus({ preventScroll: true });
+    }
     wasProcessing.current = state.phase === 'processing';
   }, [state.phase, state.error]);
 

@@ -91,6 +91,34 @@ test.describe('keyboard only', () => {
       await expect(page.getByTestId('run')).toBeFocused();
       release();
     });
+    test(`${tool.name}: Escape works at once: pressed right after clicking Resize (no waiting for the progress UI)`, async ({ page }) => {
+      let release!: () => void;
+      const gate = new Promise<void>((r) => (release = r));
+      await page.route('**/_astro/*worker*.js', async (route) => { await gate; await route.continue(); });
+      await openTool(page, tool.url);
+      await pick(page, tool.pickFile());
+      await page.getByTestId('run').click();
+      await page.keyboard.press('Escape'); // immediately: nothing awaited in between
+      await expect(page.getByTestId('progress')).toHaveCount(0);
+      await expect(page.getByTestId('run')).toBeEnabled();
+      release();
+      await page.waitForTimeout(800);
+      await expect(page.getByTestId('result')).toHaveCount(0);
+      await expect(page.getByRole('alert')).toHaveCount(0);
+    });
+    test(`${tool.name}: Escape in the SAME task as the click (0 ms) still cancels`, async ({ page }) => {
+      await openTool(page, tool.url);
+      await pick(page, tool.pickFile());
+      await page.evaluate(() => {
+        (document.querySelector('[data-testid=run]') as HTMLButtonElement).click();
+        document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      });
+      await page.waitForTimeout(2000);
+      await expect(page.getByTestId('result')).toHaveCount(0); // the run never delivered a result
+      await expect(page.getByTestId('progress')).toHaveCount(0);
+      await expect(page.getByTestId('run')).toBeEnabled();
+      await expect(page.getByRole('alert')).toHaveCount(0);
+    });
     test(`${tool.name}: Escape does nothing when no run is in progress`, async ({ page }) => {
       await openTool(page, tool.url);
       await pick(page, tool.pickFile());

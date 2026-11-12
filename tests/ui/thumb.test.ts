@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { makeThumbnail, PREVIEW_DECODE_MAX_PIXELS, PREVIEW_SIDE } from '../../src/components/tool/thumb';
 
 /** Minimal browser fakes: a canvas that records its size and every pixel read, and a createImageBitmap that can IGNORE resize options. */
-function fakes(opts: { honourResize: boolean; srcW: number; srcH: number; failDecode?: boolean }) {
+function fakes(opts: { honourResize: boolean; srcW: number; srcH: number; failDecode?: boolean; throwOnDraw?: boolean; throwOnRead?: boolean; noBlob?: boolean }) {
   const log = { canvases: [] as Array<{ width: number; height: number }>, draws: [] as number[][], reads: [] as number[][], closed: 0, bitmapArgs: [] as unknown[] };
   vi.stubGlobal('createImageBitmap', async (_f: unknown, o?: { resizeWidth?: number; resizeHeight?: number }) => {
     log.bitmapArgs.push(o);
@@ -16,10 +16,10 @@ function fakes(opts: { honourResize: boolean; srcW: number; srcH: number; failDe
       const c = {
         width: 0, height: 0,
         getContext: () => ({
-          drawImage: (...a: number[]) => { log.draws.push(a.slice(1)); },
-          getImageData: (_x: number, _y: number, w: number, h: number) => { log.reads.push([w, h]); return { data: new Uint8ClampedArray(Math.min(w * h * 4, 4096)).fill(255) }; },
+          drawImage: (...a: number[]) => { if (opts.throwOnDraw) throw new Error('draw failed'); log.draws.push(a.slice(1)); },
+          getImageData: (_x: number, _y: number, w: number, h: number) => { if (opts.throwOnRead) throw new Error('read failed'); log.reads.push([w, h]); return { data: new Uint8ClampedArray(Math.min(w * h * 4, 4096)).fill(255) }; },
         }),
-        toBlob: (cb: (b: Blob | null) => void) => cb(new Blob(['x'])),
+        toBlob: (cb: (b: Blob | null) => void) => cb(opts.noBlob ? null : new Blob(['x'])),
       };
       log.canvases.push(c);
       return c;
@@ -60,6 +60,16 @@ describe('makeThumbnail', () => {
     await makeThumbnail(new Blob(['x']), 6000, 6000, false);
     expect(Math.max(...sizes.flat())).toBeLessThanOrEqual(PREVIEW_SIDE);
     expect(log.closed).toBeGreaterThan(0);
+  });
+
+  it('the bitmap is ALWAYS released, even when drawing, reading or encoding fails (finally path)', async () => {
+    for (const failure of [{ throwOnDraw: true }, { throwOnRead: true }, { noBlob: true }] as const) {
+      const log = fakes({ honourResize: true, srcW: 4000, srcH: 4000, ...failure });
+      const t = await makeThumbnail(new Blob(['x']), 4000, 4000, true);
+      expect(t, JSON.stringify(failure)).toMatchObject({ kind: 'none', reason: 'failed' });
+      expect(log.closed, `bitmap closed once for ${JSON.stringify(failure)}`).toBe(1);
+      vi.unstubAllGlobals();
+    }
   });
 
   it('small images use the file itself (no re-encode) and still answer the alpha question', async () => {

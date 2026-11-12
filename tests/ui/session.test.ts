@@ -66,6 +66,17 @@ describe('ToolSession (header checks, thumbnails, interruption)', () => {
     expect(s.getSnapshot()).toMatchObject({ phase: 'ready', previewUrl: null, previewNote: 'too-large' });
     expect(s.getSnapshot().originalUrl).not.toBeNull();
   });
+  it("a failed thumbnail decode is recorded as previewNote 'failed' (not 'too-large'), whether reported or thrown", async () => {
+    const a = setup({ inspect: async () => ({ width: 4000, height: 4000 }), makeThumbnail: async () => ({ kind: 'none', alpha: null, reason: 'failed' }) });
+    await a.s.selectFile(pngFile());
+    expect(a.s.getSnapshot()).toMatchObject({ phase: 'ready', previewUrl: null, previewNote: 'failed' });
+    const b = setup({ inspect: async () => ({ width: 4000, height: 4000 }), makeThumbnail: async () => { throw new Error('boom'); } });
+    await b.s.selectFile(pngFile());
+    expect(b.s.getSnapshot()).toMatchObject({ phase: 'ready', previewUrl: null, previewNote: 'failed' });
+    const c = setup({ inspect: async () => ({ width: 100, height: 100 }), makeThumbnail: async () => ({ kind: 'original', alpha: false }) });
+    await c.s.selectFile(pngFile());
+    expect(c.s.getSnapshot().previewNote).toBeNull();
+  });
   it('a header error (corrupt) rejects without creating URLs', async () => {
     const { s, live } = setup({ inspect: async () => { throw new EngineError('corrupt', 'x'); } });
     await s.selectFile(pngFile());

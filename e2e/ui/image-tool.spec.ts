@@ -262,6 +262,7 @@ test.describe('image tool', () => {
     await expect(page.getByRole('alert')).toBeVisible({ timeout: 20_000 });
     await expect(page.getByRole('alert')).not.toContainText(/undefined|Error:/);
     await expect(page.getByTestId('run')).toBeEnabled();
+    await expect(page.getByTestId('run'), 'N3: focus is not lost after a failed run').toBeFocused();
     await pick(page, file('ok.png', flatPng(200, 200)));
     await resize(page);
     await expect(page.getByRole('alert')).toHaveCount(0);
@@ -451,6 +452,7 @@ test.describe('image tool', () => {
     await expect(page.getByRole('alert')).toContainText(/try again/i, { timeout: 20_000 });
     await expect(page.getByRole('alert')).not.toContainText(/undefined|Error:/);
     await expect(page.getByTestId('retry')).toBeVisible();
+    await expect(page.getByTestId('retry'), 'N3: focus goes to the remedy after a failed run').toBeFocused();
     await page.unroute('**/_astro/*worker*.js');
     await page.getByTestId('retry').click();
     await expect(page.getByTestId('result')).toBeVisible({ timeout: 60_000 });

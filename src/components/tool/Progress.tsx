@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'preact/hooks';
+import { useLayoutEffect, useRef } from 'preact/hooks';
 import type { Progress as P } from './session';
 import { btnSecondary } from './ui';
 
@@ -11,15 +11,10 @@ export function progressText(p: P | null): string {
 
 export default function ProgressBar({ progress, onCancel }: { progress: P | null; onCancel: () => void }) {
   const cancelRef = useRef<HTMLButtonElement>(null);
-  const cancel = useRef(onCancel);
-  cancel.current = onCancel;
-  useEffect(() => {
+  useLayoutEffect(() => {
     // The Resize button just unmounted, so keyboard focus would be lost on <body>: put it on Cancel (same place in the tab order).
+    // (Escape is handled by the tool itself with a listener that is always attached, so there is no window where it is ignored.)
     cancelRef.current?.focus({ preventScroll: true });
-    // Escape cancels from anywhere while a run is in progress (however it was started), not only when Cancel has focus.
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape' && !e.defaultPrevented) cancel.current(); };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
   }, []);
   const determinate = progress?.stage === 'encoding' && progress.attempt != null && progress.total != null && progress.total > 0;
   return (
