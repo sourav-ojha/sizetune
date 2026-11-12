@@ -38,3 +38,11 @@ Notes: the 188 include the engine browser specs (`e2e/engine`, 35 incl. `m6-ui-r
 - **Real iPhone/Android phones** (`QA/REAL_DEVICE_TEST_PLAN.md`: not run). In-app browsers, low-RAM devices, real canvas/memory limits.
 - **Firefox and Playwright-WebKit:** not installed (would need `pnpm exec playwright install firefox webkit`, a browser download I did not make without your approval). Config is ready: `PW_ALL_BROWSERS=1 pnpm exec playwright test`. Real WebKit evidence exists only from the iOS Simulator.
 - GitHub Actions CI (no remote), Cloudflare build image Node version, live edge headers/CSP/certificate, Lighthouse/CrUX, screen readers, legal review, trademark (IP India), human portrait-quality review.
+
+## Cross-browser (2026-11-13)
+`PW_ALL_BROWSERS=1 pnpm exec playwright test` → **562 passed, 0 failed** (8.8 min): Chrome 190, Firefox 159 and Playwright WebKit 27.2 (the rest). Engine-only suite: 107 passed, 3 skipped across the 3 browsers.
+- Not real Safari on an iPhone; real-device run (`QA/REAL_DEVICE_TEST_PLAN.md`) deferred by owner.
+- `@chromium-only` (excluded on Firefox/WebKit, reason in each test): CDP/`performance.memory` checks; corrupt-PNG failure test (Firefox/WebKit decode corrupt PNG pixels leniently).
+- Firefox WebP download byte check skipped (Playwright Firefox opens the blob in a new tab); confirm on real Firefox.
+- WebKit: no WebP encode (→ `encode_unsupported`); Exif stub in output (no camera make/model/GPS); rejects stray-byte JPEGs Chrome accepts; encoders produce larger files at the same quality (engine verifies real bytes).
+- Real bug found: doubled bytes number in result text for tiny files (fixed in `ResultPanel.tsx`).

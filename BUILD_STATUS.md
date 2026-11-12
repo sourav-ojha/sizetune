@@ -19,7 +19,7 @@ A functional, locally committed product candidate: browser-only image resizer + 
 
 ## Implemented but not fully verified (P)
 - **Safari/WebKit behaviour:** engine harness (23 cases) and UI smoke only in the iOS Simulator (Mac RAM); WebP encode unsupported there; Safari output sizes 1–7× Chrome. Real iPhone memory/canvas limits unknown.
-- **Firefox:** nothing run (not installed; no download made).
+- **Firefox/WebKit (Playwright builds):** full suite green 2026-11-13 (562 passed across Chrome, Firefox 159, WebKit 27.2). Not real Safari/iPhone; real-device tests deferred by owner.
 - **Main-thread fallback:** tested in Chrome by deleting OffscreenCanvas; not on real old browsers.
 - **Scroll anchoring fix (iOS)**: tested only in Chrome with scroll anchoring disabled.
 - **Compression quality at 20 KB on real portraits:** no real face images available; SSIM indicative only (`QA/QUALITY_SAMPLES.md` for your eyeballing). Observed design point: quality is pinned (≈q60) when q40 cannot fit, so size targets mostly vary pixels.
@@ -31,7 +31,7 @@ A functional, locally committed product candidate: browser-only image resizer + 
 Deployment/staging (explicitly out of scope), GitHub repo/CI run, real analytics (none by decision), ads, HEIC/GIF/AVIF/SVG input, PDF utilities (out of scope), bulk processing, exact-pixel "form presets", metadata padding (deliberately never default), WASM encoders, Hindi/other languages, additional preset pages (50/100 KB etc.), Search Console setup.
 
 ## Requires you (H)
-Fill the 9 `[[HUMAN: …]]` markers; real-device tests; Firefox/WebKit install approval; trademark (IP India) + legal review; repo + ruleset + CI; staging decision; www; og:image approval; contact mailbox; AdSense strategy. Exact steps: `BLOCKERS.md`.
+Fill the 9 `[[HUMAN: …]]` markers; real-device tests (deferred by owner); trademark (IP India) + legal review (owner reviewing); repo + ruleset + CI; staging decision; www; og:image approval; contact mailbox; AdSense strategy. Exact steps: `BLOCKERS.md`.
 
 ## Sprint work log (commits on local main, oldest→newest, abridged)
 baseline → engine contract → real-device test plan → launch content → parse5 verifiers → UI → engine → review-fix rounds (F1–F13, M1–M6, L1–L5) → Preact merge (+reviews) → audit fixes (F1–F11: header-first rejection, truncated files, keep-original secondary, data-mode) → iOS smoke defects → axe-core audit → quality samples → docs. `git log --oneline` for hashes.

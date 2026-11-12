@@ -13,7 +13,7 @@ Legend: ✅ implemented + verified by automated evidence · 🟡 implemented, ev
 | Accessibility (automated) | ✅ / 👤 | axe-core 0 violations on 8 pages×2 widths + 12 tool states; screen readers not done |
 | Compression correctness in Chrome | ✅ | engine unit + browser tests; independent review |
 | WebKit (simulator only) | 🟡 | engine harness 23 cases + UI smoke; Mac RAM; not a phone |
-| Firefox | 👤❌ | not run (needs browser download approval) |
+| Firefox 159 / Playwright WebKit 27.2 | ✅ | full e2e + engine suites pass (2026-11-13); not real Safari/iPhone, real devices deferred |
 | Real phones | 👤❌ | `QA/REAL_DEVICE_TEST_PLAN.md` not run |
 | Performance (Lighthouse/CrUX) | ❌ | only bundle sizes: first-load JS ≈39.1 KB (image pages) / ≈42.5 KB (signature) gzip, worker ≈13.1 KB on demand; 0 JS on content pages |
 | Legal / trademark | 👤❌ | USPTO exact search no hits (screening); IP India + lawyer pending |
@@ -65,4 +65,4 @@ Launch set built (7 pages + 404): ✅. Titles/descriptions/H1/canonical/OG/WebAp
 No uploads ✅ · no third-party origins on tool pages ✅ · no ad/analytics code ✅ · CSP meta (hashes) + frame-ancestors header ✅ (local) · MIME/signature validation ✅ · malformed/huge inputs ✅ · no image logging ✅ · no storage/cookies ✅ · privacy/terms text honest about current behaviour ✅ (legal review pending 👤).
 
 ## 7. Known limitations (honest list)
-See `BUILD_STATUS.md` "Implemented but not fully verified" and `BLOCKERS.md` §B. Highlights: no real-device/Firefox evidence; Safari sizes differ and WebP is unavailable there; quality on real faces unreviewed; sources >100 MP refused and >36 MP get no preview; output capped at 16 MP; main-thread fallback untested on real old browsers; verifiers are static analysis, not proof.
+See `BUILD_STATUS.md` "Implemented but not fully verified" and `BLOCKERS.md` §B. Highlights: no real-device evidence (deferred by owner); Safari sizes differ and WebP is unavailable there; quality on real faces unreviewed; sources >100 MP refused and >36 MP get no preview; output capped at 16 MP; main-thread fallback untested on real old browsers; verifiers are static analysis, not proof.

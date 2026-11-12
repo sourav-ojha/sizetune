@@ -25,3 +25,18 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: failure()
         with: { name: playwright-results, path: test-results/ }
+  cross-browser:
+    # Firefox + WebKit (Playwright builds). Written on macOS, NOT yet run on Linux CI; treat the first run as a trial.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps firefox webkit
+      - run: PW_ALL_BROWSERS=1 CI=1 pnpm exec playwright test --project=firefox --project=webkit
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with: { name: playwright-results-cross-browser, path: test-results/ }
