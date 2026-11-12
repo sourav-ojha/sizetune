@@ -10,7 +10,7 @@
 - **Test infrastructure**: engine browser tests (`e2e/engine`), iOS Simulator harness (`e2e/engine/sim`, simulator results only), fixture generator incl. `--device-pack` for phone tests, UI/a11y e2e, opt-in Firefox/WebKit Playwright projects (`PW_ALL_BROWSERS=1`).
 - `QA/REAL_DEVICE_TEST_PLAN.md` (manual phone checklist; NOT run).
 ### Changed
-- Islands migrated React 19 → **Preact 11.2.0 (compat)** (`@astrojs/preact` 6.1.5, pinned exactly); first-load JS on tool pages ≈95–98 KB → ≈38–42 KB gzip; verifier allow-list re-audited and anchored.
+- Islands migrated React 19 → **Preact 11.2.0 (compat)** (`@astrojs/preact` 6.1.5, pinned exactly); first-load JS on tool pages ≈95–98 KB → ≈39–42 KB gzip; verifier allow-list re-audited and anchored.
 - Review-driven fixes: output limits (16 MP), header-first rejection at file pick, reduced-size preview, truncated-file detection, narrowed `out_of_memory`, keep-original secondary + GPS note, Escape cancels, 44 px crop handles, accessibility audit (axe-core 4.14.0, test-only).
 - `engines.node` >=24; `sharp` pinned as devDependency (fixtures/OG generation only).
 - `.nvmrc` = 24; `npm run verify` now also runs `verify:html:strict` and `verify:privacy`.

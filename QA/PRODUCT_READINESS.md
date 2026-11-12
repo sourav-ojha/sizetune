@@ -6,7 +6,7 @@ Legend: ✅ implemented + verified by automated evidence · 🟡 implemented, ev
 | Gate | Status | Evidence / gap |
 |--|--|--|
 | Architecture (Astro static + Preact islands, Workers static assets) | ✅ | ADR v3; independent reviews; nothing deployed |
-| Full local verify chain | ✅ | `npm run verify` exit 0: 643 unit, 168 browser (Chrome), verifiers OK |
+| Full local verify chain | ✅ | `npm run verify` exit 0: 665 unit, 183 browser (Chrome), verifiers OK |
 | HTML/SEO structure | ✅ | parse5 verifier + ~320 mutation tests; STRICT=1 OK |
 | Launch gate with owner markers | 👤 | STRICT=2 fails until the 9 `[[HUMAN]]` markers are filled |
 | Privacy: no uploads / no third-party origins / no trackers / CSP | ✅ (Chrome, local) | e2e network + CSP-violation tests; verify:privacy; live edge untested |
@@ -15,7 +15,7 @@ Legend: ✅ implemented + verified by automated evidence · 🟡 implemented, ev
 | WebKit (simulator only) | 🟡 | engine harness 23 cases + UI smoke; Mac RAM; not a phone |
 | Firefox | 👤❌ | not run (needs browser download approval) |
 | Real phones | 👤❌ | `QA/REAL_DEVICE_TEST_PLAN.md` not run |
-| Performance (Lighthouse/CrUX) | ❌ | only bundle sizes: first-load JS ≈38.4 KB (image pages) / ≈41.8 KB (signature) gzip, worker 12.7 KB on demand; 0 JS on content pages |
+| Performance (Lighthouse/CrUX) | ❌ | only bundle sizes: first-load JS ≈39.0 KB (image pages) / ≈42.4 KB (signature) gzip, worker ≈13.1 KB on demand; 0 JS on content pages |
 | Legal / trademark | 👤❌ | USPTO exact search no hits (screening); IP India + lawyer pending |
 | CI / deploy | ❌ | no remote; CI file written, never run; Cloudflare unconnected |
 
@@ -34,7 +34,7 @@ Legend: ✅ implemented + verified by automated evidence · 🟡 implemented, ev
 | Memory-conscious decode, large images | ✅ Chrome / 👤 phones | 36 MP→50 KB ≈0.33 s, +145–151 MB; header-first limits; 16 MP output cap |
 | EXIF orientation | ✅ | Chrome + Simulator |
 | Location metadata stripped | ✅ | test with GPS fixture; original-file download is secondary and warns when GPS present |
-| Transparency never silently flattened | ✅ | disclosure notes + UI choice; opaque PNG→JPEG preselect is visible |
+| Transparency disclosed, not silently flattened | ✅ / 🟡 | notes + UI choice; detection exhaustive ≤12 MP; >12 MP reduced-size decode can miss sub-pixel transparent areas → explicit note; opaque PNG→JPEG preselect is visible |
 | Corrupt/unsupported/truncated/huge handling | ✅ | header fuzz; truncated JPEG/PNG/WebP → `corrupt`; Simulator-verified |
 | Impossible-target detection/messaging | ✅ | `below_min`, `above_max(_fixed)`, tests + copy |
 | Cancellation, stale-result protection | ✅ | unit + e2e |
