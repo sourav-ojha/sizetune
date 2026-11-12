@@ -9,7 +9,7 @@ import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { verifyDist } from '../scripts/verify-html.mjs';
 import { EXTERNAL_RESOURCE_ALLOWLIST, EMBED_ALLOWLIST } from '../scripts/verify-lib.mjs';
-import { requireDist, copyDist, edit, read, write, has, hasNot, withDist, firstOf, pagesOf, headEnd, mainEnd, appChunk, cssChunk, jsChunks, reactChunk, toolFile } from './verify-helpers';
+import { requireDist, copyDist, edit, read, write, has, hasNot, withDist, firstOf, pagesOf, headEnd, mainEnd, appChunk, cssChunk, jsChunks, preactChunk, clientChunk, toolFile } from './verify-helpers';
 
 type R = ReturnType<typeof verifyDist>;
 const run = (d: string, strict: boolean | number = false): R => verifyDist(d, { strict: strict as never });
@@ -210,8 +210,10 @@ describe('verify-html: JS referenced by tool pages (network capability)', () => 
   ];
   it.each(cases)('%s in the app chunk', (_n, code) => has(mutateDir((d) => edit(d, appChunk(d), (s) => s + `\n;${code};`)).fails as string[], /\[tool JS\]/));
   it('network primitive in the web worker chunk', () => has(mutateDir((d) => { const w = jsChunks(d).find((f) => /compress\.worker/.test(f))!; edit(d, w, (s) => s + ';self.fetch("/x");'); }).fails as string[], /\[tool JS\].*fetch/));
-  it('fetch added to the react-dom chunk is NOT covered by the allow-list', () => has(mutateDir((d) => edit(d, reactChunk(d), (s) => s + ';fetch("/x");')).fails as string[], /\[tool JS\].*'fetch'/));
-  it('allow-listed react-dom primitive appearing more often than audited', () => has(mutateDir((d) => edit(d, reactChunk(d), (s) => s + ';var a="preconnect",b="preconnect",c="preconnect",x="dns-prefetch";')).fails as string[], /re-audit/));
+  it('fetch added to the Preact chunk is NOT covered by the allow-list', () => has(mutateDir((d) => edit(d, preactChunk(d), (s) => s + ';fetch("/x");')).fails as string[], /\[tool JS\].*'fetch'/));
+  it('allow-listed Preact namespace URL appearing more often than audited', () => has(mutateDir((d) => edit(d, preactChunk(d), (s) => s + ';var a="http://www.w3.org/2000/svg";')).fails as string[], /re-audit/));
+  it('a second dynamic import in the island client is NOT covered by the allow-list', () => has(mutateDir((d) => edit(d, clientChunk(d), (s) => s + ';import("/_astro/x.js");')).fails as string[], /\[tool JS\].*dyn-import|re-audit/));
+  it('a non-literal dynamic import in the island client is NOT covered (proof of literal form)', () => has(mutateDir((d) => edit(d, clientChunk(d), (s) => s.replace(/import\(`\.\/signals\.module\.[\w-]+\.js`\)/, 'import(location.hash.slice(1))'))).fails as string[], /dyn-import/));
   it('the audited allow-list entries do not hide the same token in app code', () => has(mutateDir((d) => edit(d, appChunk(d), (s) => s + ';var a="preconnect";')).fails as string[], /resource-hint/));
   it('Worker constructed from a non-literal URL', () => has(mutateDir((d) => edit(d, appChunk(d), (s) => s + ';new Worker(location.hash.slice(1));')).fails as string[], /non-literal URL/));
   it('unreferenced JS chunk with fetch is still scanned', () => has(mutateDir((d) => write(d, '_astro/stray.js', 'fetch("/x")')).fails as string[], /\[unreferenced JS\]/));

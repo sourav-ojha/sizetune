@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { verifyPrivacy } from '../scripts/verify-privacy.mjs';
 import { scanJs, jsIssues, cssIssues, cspIssues, parseCsp, findTrackers, findPlaceholders, parseSrcset, classifyUrl, workerRefs, JS_PRIMITIVE_ALLOWLIST } from '../scripts/verify-lib.mjs';
-import { requireDist, copyDist, htmlFiles, pagesOf, edit, read, write, has, hasNot, withDist, firstOf, toolFile, headEnd, mainEnd, appChunk, reactChunk, jsChunks, cssChunk } from './verify-helpers';
+import { requireDist, copyDist, htmlFiles, pagesOf, edit, read, write, has, hasNot, withDist, firstOf, toolFile, headEnd, mainEnd, appChunk, preactChunk, clientChunk, jsChunks, cssChunk } from './verify-helpers';
 
 const vp = (fn: (d: string) => void) => withDist(fn, (d) => verifyPrivacy(d).fails as string[]);
 const onTool = (fn: (s: string) => string) => vp((d) => edit(d, toolFile(d), fn));
@@ -25,9 +25,16 @@ describe('verify-privacy: real build', () => {
     expect(r.info.some((x: string) => /compress\.worker/.test(x))).toBe(true);
     expect(r.info.some((x: string) => /client\./.test(x))).toBe(true);
   });
-  it('the app chunks contain NO flagged primitive at all; only the audited react-dom internals do', () => {
+  it('the app chunks contain NO flagged primitive at all; only the audited Preact runtime chunks do (exact ids and counts)', () => {
     const r = verifyPrivacy('dist').info.filter((x: string) => x.startsWith('scanned'));
-    for (const line of r) if (!/client\./.test(line)) expect(line, line).toMatch(/no flagged primitives/);
+    for (const line of r) {
+      if (/_astro\/client\./.test(line)) expect(line, line).toMatch(/: dyn-importx1$/);
+      else if (/_astro\/preact\./.test(line)) expect(line, line).toMatch(/: external-urlx6$/);
+      else expect(line, line).toMatch(/no flagged primitives/);
+    }
+  });
+  it('no island carries data-preact-signals (the precondition for the audited dynamic import ever running)', () => {
+    for (const f of htmlFiles('dist')) expect(read('dist', f), f).not.toMatch(/data-preact-signals/);
   });
   it('CLI exits 0 on the real build and 1 on a mutated one', () => {
     const ok = spawnSync(process.execPath, ['scripts/verify-privacy.mjs'], { encoding: 'utf8' });
@@ -103,7 +110,7 @@ describe('P3 ad / analytics identifiers anywhere in dist', () => {
   it.each(names)('%s in tool-page markup', (_n, v) => has(onTool((s) => headEnd(s, `<script async src="${v}"></script><!-- ${v} -->`)), /\[tracker\]/));
   it.each(names)('%s in a NON-tool page (markup)', (_n, v) => has(vp((d) => edit(d, PRIV, (s) => mainEnd(s, `<a href="/" data-x="${v}">x</a>`))), /\[tracker\]/));
   it('in a JS chunk', () => has(vp((d) => edit(d, appChunk(d), (s) => s + '\n/*googletagmanager*/')), /\[tracker\].*googletagmanager/));
-  it('in the react-dom chunk', () => has(vp((d) => edit(d, reactChunk(d), (s) => s + '\n;"hotjar";')), /\[tracker\]/));
+  it('in the Preact chunk', () => has(vp((d) => edit(d, preactChunk(d), (s) => s + '\n;"hotjar";')), /\[tracker\]/));
   it('in CSS', () => has(vp((d) => edit(d, cssChunk(d), (s) => s + '\n/*doubleclick.net*/')), /\[tracker\]/));
   it('in robots.txt, sitemap and _headers', () => { has(vp((d) => edit(d, 'robots.txt', (s) => s + '# adsbygoogle\n')), /\[tracker\]/); has(vp((d) => edit(d, 'sitemap-0.xml', (s) => s + '<!-- googletagmanager -->')), /\[tracker\]/); has(headers((s) => s + '\n/x\n  Link: <https://www.google-analytics.com>; rel=preconnect\n'), /\[tracker\]/); });
   it('in a file NAME', () => has(vp((d) => write(d, '_astro/gtag.js', 'var a=1;')), /\[tracker\].*file name/));
@@ -144,9 +151,11 @@ describe('P5 network primitives in JS loaded by tool pages', () => {
   ];
   it.each(prims)('%s in the app chunk', (_n, code) => has(vp((d) => edit(d, appChunk(d), (s) => s + `\n;${code};`)), /\[js\]/));
   it.each(prims.slice(0, 6))('%s in the web worker chunk', (_n, code) => has(vp((d) => edit(d, jsChunks(d).find((f) => /compress\.worker/.test(f))!, (s) => s + `\n;${code};`)), /\[js\]/));
-  it('primitives in react-dom beyond the audited allow-list', () => { has(vp((d) => edit(d, reactChunk(d), (s) => s + ';fetch("/x");')), /\[js\].*'fetch'/); has(vp((d) => edit(d, reactChunk(d), (s) => s + ';navigator.sendBeacon("/x");')), /\[js\].*sendBeacon/); has(vp((d) => edit(d, reactChunk(d), (s) => s + ';var u="https://collect.example.com/x";')), /\[js\].*external-url/); });
-  it('allow-listed react-dom tokens growing past the audited count', () => has(vp((d) => edit(d, reactChunk(d), (s) => s + ';"preconnect";"preconnect";"preconnect";"dns-prefetch";')), /re-audit/));
-  it('allow-listed react-dom tokens are not a free pass in app code', () => has(vp((d) => edit(d, appChunk(d), (s) => s + ';"preconnect";"navigator.connection";')), /\[js\]/));
+  it('primitives in the Preact chunk beyond the audited allow-list', () => { has(vp((d) => edit(d, preactChunk(d), (s) => s + ';fetch("/x");')), /\[js\].*'fetch'/); has(vp((d) => edit(d, preactChunk(d), (s) => s + ';navigator.sendBeacon("/x");')), /\[js\].*sendBeacon/); has(vp((d) => edit(d, preactChunk(d), (s) => s + ';var u="https://collect.example.com/x";')), /\[js\].*external-url/); });
+  it('the old React-era tokens (preconnect, navigator.connection, script injection) are NOT allow-listed any more, not even in the Preact chunk', () => { has(vp((d) => edit(d, preactChunk(d), (s) => s + ';"preconnect";')), /resource-hint/); has(vp((d) => edit(d, preactChunk(d), (s) => s + ';navigator.connection;')), /navigator-api/); has(vp((d) => edit(d, preactChunk(d), (s) => s + ';document.createElement("script");')), /script-inject/); });
+  it('allow-listed namespace URLs growing past the audited count', () => has(vp((d) => edit(d, preactChunk(d), (s) => s + ';"http://www.w3.org/2000/svg";')), /re-audit/));
+  it('a second / non-literal dynamic import in the island client is not a free pass', () => { has(vp((d) => edit(d, clientChunk(d), (s) => s + ';import("/_astro/x.js");')), /dyn-import|re-audit/); has(vp((d) => edit(d, clientChunk(d), (s) => s.replace(/import\(`\.\/signals\.module\.[\w-]+\.js`\)/, 'import(location.hash.slice(1))'))), /dyn-import/); });
+  it('allow-listed Preact tokens are not a free pass in app code', () => has(vp((d) => edit(d, appChunk(d), (s) => s + ';var u="http://www.w3.org/2000/svg";import("./signals.module.x.js");')), /\[js\]/));
   it('inline script on a tool page', () => { has(onHome((s) => headEnd(s, '<script>fetch("/x")</script>')), /\[js\]|CSP/); });
   it('Worker from a non-literal / cross-origin URL', () => { has(vp((d) => edit(d, appChunk(d), (s) => s + ';new Worker(u);')), /non-literal/); has(vp((d) => edit(d, appChunk(d), (s) => s + ';new Worker("https://x.example/w.js");')), /\[js\]/); });
   it('chunk referenced by the page but missing', () => has(vp((d) => rmSync(join(d, jsChunks(d).find((f) => /compress\.worker/.test(f))!))), /not in dist/));
@@ -162,7 +171,7 @@ describe('shared scanners (unit)', () => {
     expect(ids('a.prefetch=1;b.fetchStatus')).toEqual([]);
   });
   it('allow-list entries are evidence-backed and bounded', () => { for (const a of JS_PRIMITIVE_ALLOWLIST) { expect(a.reason.length).toBeGreaterThan(40); expect(a.max).toBeGreaterThan(0); expect(a.signature).toBeInstanceOf(RegExp); } });
-  it('jsIssues applies the allow-list only to files matching the signature', () => { expect(jsIssues('x.js', 'a="dns-prefetch"')).not.toEqual([]); expect(jsIssues('x.js', '__reactFiber$ a="dns-prefetch"')).toEqual([]); });
+  it('jsIssues applies the allow-list only to files matching the signature', () => { expect(jsIssues('x.js', 'a="dns-prefetch"')).not.toEqual([]); expect(jsIssues('x.js', 'a="http://www.w3.org/2000/svg"')).not.toEqual([]); expect(jsIssues('x.js', 'foreignObject dangerouslySetInnerHTML "http://www.w3.org/1998/Math/MathML" a="http://www.w3.org/2000/svg"')).toEqual([]); expect(jsIssues('x.js', 'foreignObject dangerouslySetInnerHTML "http://www.w3.org/1998/Math/MathML" a="https://evil.example/x"')).not.toEqual([]); expect(jsIssues('x.js', 'data-preact-island-id import(`./signals.module.AbC-1.js`)')).toEqual([]); expect(jsIssues('x.js', 'data-preact-island-id import(`./other.js`)')).not.toEqual([]); });
   it('workerRefs', () => { expect(workerRefs('new Worker(new URL(`/_astro/w.js`,``+import.meta.url),{type:`module`})').literals).toEqual(['/_astro/w.js']); expect(workerRefs('new Worker(u)').bad.length).toBe(1); });
   it('cssIssues ignores comments, data:image, same-site; flags external', () => {
     expect(cssIssues('a.css', '/*! https://tailwindcss.com */ a{background:url(data:image/svg+xml;base64,AAAA)} b{background:url(/x.png)}')).toEqual([]);

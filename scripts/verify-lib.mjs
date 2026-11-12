@@ -26,17 +26,19 @@ export const EXTERNAL_RESOURCE_ALLOWLIST = [];
 export const EMBED_ALLOWLIST = [];
 
 // Network/side-channel capability found in tool-page JS. Entry applies only to a file whose source matches `signature`
-// and only up to `max` occurrences (so growth must be re-audited). Evidence was gathered by reading the built chunks
-// (React 19 react-dom production build, bundled by Astro/Vite into _astro/client.*.js):
+// and only up to `max` occurrences (so growth must be re-audited). Optional `only` restricts WHICH matched strings are
+// covered; optional `proof` (global regex) must match at least as many times as the entry covers, i.e. every covered
+// occurrence must be a recognised, literal, same-site form (checked on the whole file, not just the matched token).
+// Evidence was gathered by reading the built chunks (Preact 11 + preact/compat + @astrojs/preact client, bundled by
+// Astro/Vite into _astro/preact.*.js and _astro/client.*.js); full audit in docs/experiments/PREACT.md.
+// Everything else the old React 19 react-dom list covered (preconnect/dns-prefetch, script injection, navigator.connection,
+// react.dev error URLs) does NOT exist in the Preact chunks, so those four entries were REMOVED, not carried over.
 export const JS_PRIMITIVE_ALLOWLIST = [
-  { id: 'resource-hint', signature: /__reactFiber\$|react\.dev\/errors/, max: 3,
-    reason: 'react-dom implements ReactDOM.preconnect()/prefetchDNS() (strings "preconnect"/"dns-prefetch"). They only emit a <link> if APP code calls them; src/ never does and the app chunks contain no such token (asserted by tests/verify-privacy.test.ts).' },
-  { id: 'script-inject', signature: /__reactFiber\$|react\.dev\/errors/, max: 3,
-    reason: 'react-dom resource hoisting (preinit/<script async src> rendering) calls document.createElement("script") with a src given by app code; app code renders no such element. Content-Security-Policy script-src \'self\' + hashes (checked per tool page) blocks any cross-origin script even if it did.' },
-  { id: 'navigator-api', signature: /__reactFiber\$|react\.dev\/errors/, max: 2, only: /^navigator\.connection$/,
-    reason: 'react-dom Suspense bandwidth heuristic READS navigator.connection.downlink. Read-only; no network.' },
-  { id: 'external-url', signature: /__reactFiber\$|react\.dev\/errors/, max: 40, only: /^(http:\/\/www\.w3\.org\/(1998\/Math\/MathML|2000\/svg|1999\/xhtml|1999\/xlink|XML\/1998\/namespace)|https:\/\/react\.dev\/errors)/,
-    reason: 'XML namespace identifiers passed to createElementNS (never fetched) and the react.dev error-decoder URL embedded in error message strings (never fetched; CSP connect-src \'self\').' },
+  { id: 'external-url', signature: /(?=[\s\S]*foreignObject)(?=[\s\S]*http:\/\/www\.w3\.org\/1998\/Math\/MathML)(?=[\s\S]*dangerouslySetInnerHTML)/, max: 6,
+    only: /^http:\/\/www\.w3\.org\/(1998\/Math\/MathML|2000\/svg|1999\/xhtml)$/,
+    reason: 'preact core (diff/createElementNS) uses the SVG, MathML and XHTML XML-namespace identifiers (svg x2, MathML x2, xhtml x2 in this build) as namespace strings for createElementNS/foreignObject handling. They are identifiers, never fetched (CSP connect-src \'self\' would block it anyway).' },
+  { id: 'dyn-import', signature: /data-preact-island-id/, max: 1, proof: /import\(`\.\/signals\.module\.[\w-]+\.js`\)/g,
+    reason: '@astrojs/preact client hydrator lazily imports its own bundled @preact/signals chunk (same-site, literal relative specifier ./signals.module.<hash>.js) only when an island carries data-preact-signals, which SizeTune never emits (asserted by tests). `proof` requires the single import() to be exactly that literal form, so any other dynamic import (or a non-literal specifier) still fails.' },
 ];
 
 /* ------------------------------------------------------------------ parsing */
@@ -253,7 +255,9 @@ export function jsIssues(file, src) {
     const rules = JS_PRIMITIVE_ALLOWLIST.filter((r) => r.id === f.id && r.signature.test(src));
     if (rules.length) {
       const r = rules[0]; const cand = r.only ? items.filter((x) => r.only.test(x)) : items;
-      if (cand.length <= r.max) items = items.filter((x) => !cand.includes(x));
+      const proven = !r.proof || cand.length <= [...src.matchAll(r.proof)].length;
+      if (!proven) out.push(`${file}: allow-listed '${f.id}' is not in the audited literal form (${r.proof}) — re-audit`);
+      else if (cand.length <= r.max) items = items.filter((x) => !cand.includes(x));
       else out.push(`${file}: allow-listed '${f.id}' appears ${cand.length}x (> ${r.max} audited) — re-audit`);
     }
     if (items.length) out.push(`${file}: network/side-channel capability '${f.id}' (${f.desc}) x${items.length}: ${[...new Set(items)].slice(0, 3).join(' | ').slice(0, 120)}`);
