@@ -105,3 +105,15 @@ No crashes, no blank pages, no unexpected reloads, no horizontal scrolling were 
 ## Cleanup
 
 wrangler on port 8820 was stopped (connection refused afterward); the `yes` CPU-load processes were killed; the simulator was left booted (iPhone 17 Pro, portrait). Generated fixtures remain in `tests/fixtures/.generated/device-pack/` (not committed). Nothing was committed, pushed or deployed; no files under `src/`, `tests/` (other than the generated pack), or configs were edited.
+
+## Triage after the smoke test (added by the lead; labels D1–D8 are THIS report's)
+| Defect | Disposition | Evidence / caveat |
+|--|--|--|
+| D1 doubled parenthesis | **Fixed** (UI) | unit/e2e assert no `))` |
+| D2 /about/ missing spaces | **Fixed** (content) | `tests/content-spacing.test.ts` |
+| D3 `[[HUMAN]]` markers visible | Known, intentional | BLOCKERS H1; STRICT=2 fails until filled |
+| D4 truncated JPEG accepted in Safari | **Fixed** in the engine (truncated JPEG/PNG/WebP → `corrupt`); re-verified in the Simulator harness; pick-time rejection added later | `docs/engine/CROSS_BROWSER.md` |
+| D5 first tap ignored on cold load | **Not reproduced**; likely only possible before hydration; cannot be fixed in UI; a defensive test runs Resize immediately after hydration | monitor on real phones (H2) |
+| D6 scroll jump after state change | **Mitigated** (tool keeps its position when its height changes; no focus scroll) — verified **only in Chrome with scroll anchoring off**, not on real Safari | H2 |
+| D7 Cancel drops the file | **Not reproducible** in code (Cancel keeps file + settings); a test pins the behaviour; a Safari-only cause is unconfirmed | H2 |
+| D8 tiny-image crop handles | **Fixed**: ≥44 px touch hit areas, test on a 140×60 source | Chrome only |

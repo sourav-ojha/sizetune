@@ -7,3 +7,4 @@ playwright-report
 docs/evidence-cloudflare-docs-2026-11-12/
 tests/fixtures/.generated/
 .tmp/
+.vitest/
