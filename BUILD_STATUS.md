@@ -31,7 +31,7 @@ A functional, locally committed product candidate: browser-only image resizer + 
 Deployment/staging (explicitly out of scope), GitHub repo/CI run, real analytics (none by decision), ads, HEIC/GIF/AVIF/SVG input, PDF utilities (out of scope), bulk processing, exact-pixel "form presets", metadata padding (deliberately never default), WASM encoders, Hindi/other languages, additional preset pages (50/100 KB etc.), Search Console setup.
 
 ## Requires you (H)
-Fill the 9 `[[HUMAN: …]]` markers; real-device tests (deferred by owner); trademark (IP India) + legal review (owner reviewing); repo + ruleset + CI; staging decision; www; og:image approval; contact mailbox; AdSense strategy. Exact steps: `BLOCKERS.md`.
+Resolve the 4 remaining `[[HUMAN: …]]` markers (legal review x2, governing law, Search Console sentence; name + hello@sizetune.com filled 2026-11-13); real-device tests (deferred by owner); trademark (IP India) + legal review (owner reviewing); repo + ruleset + CI; staging decision; www; og:image approval; contact mailbox; AdSense strategy. Exact steps: `BLOCKERS.md`.
 
 ## Sprint work log (commits on local main, oldest→newest, abridged)
 baseline → engine contract → real-device test plan → launch content → parse5 verifiers → UI → engine → review-fix rounds (F1–F13, M1–M6, L1–L5) → Preact merge (+reviews) → audit fixes (F1–F11: header-first rejection, truncated files, keep-original secondary, data-mode) → iOS smoke defects → axe-core audit → quality samples → docs. `git log --oneline` for hashes.

@@ -8,7 +8,7 @@ Legend: ✅ implemented + verified by automated evidence · 🟡 implemented, ev
 | Architecture (Astro static + Preact islands, Workers static assets) | ✅ | ADR v3; independent reviews; nothing deployed |
 | Full local verify chain | ✅ | `pnpm run verify` exit 0: 672 unit, 188 browser (Chrome), verifiers OK |
 | HTML/SEO structure | ✅ | parse5 verifier + ~320 mutation tests; STRICT=1 OK |
-| Launch gate with owner markers | 👤 | STRICT=2 fails until the 9 `[[HUMAN]]` markers are filled |
+| Launch gate with owner markers | 👤 | STRICT=2 fails until the 4 remaining `[[HUMAN]]` markers are resolved |
 | Privacy: no uploads / no third-party origins / no trackers / CSP | ✅ (Chrome, local) | e2e network + CSP-violation tests; verify:privacy; live edge untested |
 | Accessibility (automated) | ✅ / 👤 | axe-core 0 violations on 8 pages×2 widths + 12 tool states; screen readers not done |
 | Compression correctness in Chrome | ✅ | engine unit + browser tests; independent review |

@@ -10,9 +10,9 @@ Chain: `astro check` → `build` → `vitest run` → `verify:html` → `verify:
 | `pnpm exec astro check` | 95 files · 0 errors · 0 warnings · 3 hints |
 | `pnpm run build` | 8 pages built; sitemap-index + sitemap-0 written |
 | `pnpm exec vitest run` | **23 files, 672 tests passed** (per-folder counts in §2 notes) |
-| `node scripts/verify-html.mjs` | `verify:html OK`; reports 9 `[[HUMAN: …]]` placeholders as pending |
+| `node scripts/verify-html.mjs` | `verify:html OK`; reports 4 `[[HUMAN: …]]` placeholders (9 before 2026-11-13) as pending |
 | `STRICT=1 node scripts/verify-html.mjs` | `verify:html OK (STRICT=1)` (no unmet launch rules; placeholders listed) |
-| `STRICT=2 node scripts/verify-html.mjs` (`pnpm run verify:html:final`) | **FAILS by design** while the 9 owner markers remain (about 2, privacy 4, terms 3) — the pre-launch gate |
+| `STRICT=2 node scripts/verify-html.mjs` (`pnpm run verify:html:final`) | **FAILS by design** while the 4 owner markers remain (privacy 2, terms 2) — the pre-launch gate |
 | `node scripts/verify-privacy.mjs` | `verify:privacy OK` (no third-party origins/trackers; JS network-primitive scan clean; allow-list external-url ≤ 6 namespace URLs in the Preact core chunk, dyn-import ≤ 1 proven literal) |
 | `pnpm exec playwright test` (chrome project) | **188 passed, 0 failed** (~2.6 min) |
 
