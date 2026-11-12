@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import { expect } from 'vitest';
 
 export const requireDist = () => {
-  if (!existsSync('dist/index.html')) throw new Error('dist/ is missing: run `npm run build` before `vitest run tests/verify-*.test.ts`');
+  if (!existsSync('dist/index.html')) throw new Error('dist/ is missing: run `pnpm run build` before `vitest run tests/verify-*.test.ts`');
 };
 export const copyDist = () => { const d = mkdtempSync(join(tmpdir(), 'verify-')); cpSync('dist', d, { recursive: true }); return d; };
 export const read = (d: string, f: string) => readFileSync(join(d, f), 'utf8');

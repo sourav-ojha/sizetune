@@ -2,7 +2,7 @@ import { defineConfig } from '@playwright/test';
 
 // Engine-only browser tests: no Astro build, no server. The engine is bundled with esbuild (global-setup) and served
 // through context.route on a fake origin (http://engine.test), so nothing touches the network.
-// Run: npx playwright test -c e2e/engine/playwright.config.ts
+// Run: pnpm exec playwright test -c e2e/engine/playwright.config.ts
 export default defineConfig({
   testDir: '.',
   testMatch: /.*\.spec\.ts$/,

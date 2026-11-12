@@ -2,7 +2,7 @@
 
 Scope: WCAG 2.2 A/AA as far as automation and scripted keyboard tests can show. **No screen-reader testing (VoiceOver, TalkBack, NVDA, JAWS) has been done; that needs a human** (see "Not done").
 
-## What is tested (all permanent, in `npx playwright test`)
+## What is tested (all permanent, in `pnpm exec playwright test`)
 
 | Spec | What it proves |
 |---|---|

@@ -1,0 +1,5 @@
+# pnpm 11 settings (the package.json "pnpm" field is no longer read).
+# Dependency install scripts are blocked by default; only these two are allowed (esbuild: platform binary check; workerd: local Cloudflare runtime binary).
+allowBuilds:
+  esbuild: true
+  workerd: true

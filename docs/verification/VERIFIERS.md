@@ -1,14 +1,14 @@
 # SizeTune build verifiers
 
-Run `npm run build` first; every verifier and test reads `dist/` (tests fail with "run `npm run build` first" if it is missing).
+Run `pnpm run build` first; every verifier and test reads `dist/` (tests fail with "run `pnpm run build` first" if it is missing).
 
 | Command | What it does | Exit |
 |--|--|--|
-| `npm run verify:html` | all FAIL rules; LAUNCH + PLACEHOLDER items are listed but not enforced | 1 on any FAIL |
-| `npm run verify:html:strict` (`STRICT=1`) | FAIL + every non-placeholder LAUNCH rule. Placeholders are listed as "pending human input" | 1 on FAIL or LAUNCH |
-| `npm run verify:html:final` (`STRICT=2`) | as STRICT=1, and **any remaining `[[HUMAN: ...]]` placeholder fails** | 1 on FAIL, LAUNCH or PLACEHOLDER |
-| `npm run verify:privacy` | privacy / "files never leave the device" checks (P1-P5 below) | 1 on any finding |
-| `npx vitest run tests/verify-*.test.ts` | negative fixtures: each rule is proven to be able to fail, on temp copies of `dist/` | |
+| `pnpm run verify:html` | all FAIL rules; LAUNCH + PLACEHOLDER items are listed but not enforced | 1 on any FAIL |
+| `pnpm run verify:html:strict` (`STRICT=1`) | FAIL + every non-placeholder LAUNCH rule. Placeholders are listed as "pending human input" | 1 on FAIL or LAUNCH |
+| `pnpm run verify:html:final` (`STRICT=2`) | as STRICT=1, and **any remaining `[[HUMAN: ...]]` placeholder fails** | 1 on FAIL, LAUNCH or PLACEHOLDER |
+| `pnpm run verify:privacy` | privacy / "files never leave the device" checks (P1-P5 below) | 1 on any finding |
+| `pnpm exec vitest run tests/verify-*.test.ts` | negative fixtures: each rule is proven to be able to fail, on temp copies of `dist/` | |
 
 Env form also works (`STRICT=1 node scripts/verify-html.mjs`). Programmatic: `verifyDist(dist, {strict: false|true|1|2})`, `verifyPrivacy(dist)`.
 `verifyDist` returns `{fails, hardFails, launch, placeholders, rows, jsFiles}`; `fails` already reflects the level.

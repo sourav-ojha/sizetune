@@ -1,22 +1,22 @@
 # QA/TEST_RESULTS.md — actual commands and results
 
 Date 2026-11-12 · the local `main` commit that adds these figures (`git log -1 -- QA/TEST_RESULTS.md`)  · Node 24.12.0 (`.nvmrc` = 24) · macOS arm64 · system Google Chrome 157 (Playwright `channel:'chrome'`) · Preact 11.2.0 islands · nothing deployed.
-All numbers below are from actual runs (log: `npm run verify`, exit 0). Do not add the Playwright totals to the engine-only total: they overlap (see notes).
+All numbers below are from actual runs (log: `pnpm run verify`, exit 0). Do not add the Playwright totals to the engine-only total: they overlap (see notes).
 
-## 1. Full gate: `npm run verify` (exit 0)
+## 1. Full gate: `pnpm run verify` (exit 0)
 Chain: `astro check` → `build` → `vitest run` → `verify:html` → `verify:html:strict` → `verify:privacy` → `playwright test` (all `e2e/`).
 | Step | Result |
 |--|--|
-| `npx astro check` | 95 files · 0 errors · 0 warnings · 3 hints |
-| `npm run build` | 8 pages built; sitemap-index + sitemap-0 written |
-| `npx vitest run` | **23 files, 672 tests passed** (per-folder counts in §2 notes) |
+| `pnpm exec astro check` | 95 files · 0 errors · 0 warnings · 3 hints |
+| `pnpm run build` | 8 pages built; sitemap-index + sitemap-0 written |
+| `pnpm exec vitest run` | **23 files, 672 tests passed** (per-folder counts in §2 notes) |
 | `node scripts/verify-html.mjs` | `verify:html OK`; reports 9 `[[HUMAN: …]]` placeholders as pending |
 | `STRICT=1 node scripts/verify-html.mjs` | `verify:html OK (STRICT=1)` (no unmet launch rules; placeholders listed) |
-| `STRICT=2 node scripts/verify-html.mjs` (`npm run verify:html:final`) | **FAILS by design** while the 9 owner markers remain (about 2, privacy 4, terms 3) — the pre-launch gate |
+| `STRICT=2 node scripts/verify-html.mjs` (`pnpm run verify:html:final`) | **FAILS by design** while the 9 owner markers remain (about 2, privacy 4, terms 3) — the pre-launch gate |
 | `node scripts/verify-privacy.mjs` | `verify:privacy OK` (no third-party origins/trackers; JS network-primitive scan clean; allow-list external-url ≤ 6 namespace URLs in the Preact core chunk, dyn-import ≤ 1 proven literal) |
-| `npx playwright test` (chrome project) | **188 passed, 0 failed** (~2.6 min) |
+| `pnpm exec playwright test` (chrome project) | **188 passed, 0 failed** (~2.6 min) |
 
-Notes: the 188 include the engine browser specs (`e2e/engine`, 35 incl. `m6-ui-repro`) because `testDir: 'e2e'` is recursive. `npm run test:engine:e2e` (engine-only config) last ran 35 passed, 1 skipped (`m6-ui-repro`, runs only under the repo-wide config). Unit test counts (vitest verbose, measured): tests/engine **198** · tests/ui **95** · verify-html **165** + verify-privacy **157** = 322 · source-conventions **49** · content-spacing **8** — total **672** (no other test files).
+Notes: the 188 include the engine browser specs (`e2e/engine`, 35 incl. `m6-ui-repro`) because `testDir: 'e2e'` is recursive. `pnpm run test:engine:e2e` (engine-only config) last ran 35 passed, 1 skipped (`m6-ui-repro`, runs only under the repo-wide config). Unit test counts (vitest verbose, measured): tests/engine **198** · tests/ui **95** · verify-html **165** + verify-privacy **157** = 322 · source-conventions **49** · content-spacing **8** — total **672** (no other test files).
 
 ## 2. What the automated tests cover (all Chrome, simulated Cloudflare runtime via `wrangler dev`)
 - **Engine unit tests (198):** header parsers (fuzz, truncated, malformed), magic-byte sniffing, window math (1000/1024), search with fake encoders (monotone, non-monotone, 4:4:4 jump, impossible min/max, fixed dims, ≤20 encodes, cancel), statuses never lie (property tests), alpha handling and disclosure notes, option validation, error mapping, completeness (truncated JPEG/PNG/WebP), inspectFile.
@@ -25,7 +25,7 @@ Notes: the 188 include the engine browser specs (`e2e/engine`, 35 incl. `m6-ui-r
 - **Accessibility (axe-core 4.14.0 via CDP, WCAG 2.0/2.1/2.2 A/AA + best-practice):** 8 pages × 2 widths and 12+ tool states: **0 violations**; harness self-test plants violations; 17 keyboard/reflow/semantics tests. Not covered: VoiceOver/TalkBack/NVDA, forced-colors/dark mode, real browser zoom, text-spacing overrides (`QA/ACCESSIBILITY.md`).
 - **HTML/SEO/privacy verifiers:** parse5-based; each rule has negative mutation tests on temp copies of `dist/` (see `docs/verification/VERIFIERS.md`).
 
-## 3. Other test evidence (not part of `npm run verify`)
+## 3. Other test evidence (not part of `pnpm run verify`)
 | Evidence | Result | Scope |
 |--|--|--|
 | iOS Simulator (iPhone 17 Pro, iOS 26.3, Safari 26.3) engine harness, 23 cases (`docs/engine/CROSS_BROWSER.md`) | Statuses match Chrome; WebP encode unsupported → `encode_unsupported`; truncated JPEG/PNG/WebP now `corrupt`; Safari files 1–7× larger at same quality | **Simulator on Mac RAM, not a real phone** |
@@ -36,5 +36,5 @@ Notes: the 188 include the engine browser specs (`e2e/engine`, 35 incl. `m6-ui-r
 
 ## 4. NOT run / NOT verified
 - **Real iPhone/Android phones** (`QA/REAL_DEVICE_TEST_PLAN.md`: not run). In-app browsers, low-RAM devices, real canvas/memory limits.
-- **Firefox and Playwright-WebKit:** not installed (would need `npx playwright install firefox webkit`, a browser download I did not make without your approval). Config is ready: `PW_ALL_BROWSERS=1 npx playwright test`. Real WebKit evidence exists only from the iOS Simulator.
+- **Firefox and Playwright-WebKit:** not installed (would need `pnpm exec playwright install firefox webkit`, a browser download I did not make without your approval). Config is ready: `PW_ALL_BROWSERS=1 pnpm exec playwright test`. Real WebKit evidence exists only from the iOS Simulator.
 - GitHub Actions CI (no remote), Cloudflare build image Node version, live edge headers/CSP/certificate, Lighthouse/CrUX, screen readers, legal review, trademark (IP India), human portrait-quality review.

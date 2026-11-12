@@ -1,5 +1,5 @@
 // Guards against missing spaces around inline links in built pages (Astro trims line-end whitespace before a tag).
-// Reads dist/ (run `npm run build` first); skipped when dist/ is absent.
+// Reads dist/ (run `pnpm run build` first); skipped when dist/ is absent.
 import { describe, it, expect } from 'vitest';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';

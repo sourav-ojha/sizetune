@@ -33,12 +33,12 @@ Built chunks scanned with the unchanged primitive families. Old React entries (r
 `verify-lib.mjs` gained two optional fields (review fixes F1/F2): `file` (regex on the dist path; an app chunk that merely contains the signature strings gets no allowance) and `proof`, a sticky regex run AT THE OFFSET OF EACH `import(` match (never file-wide, so a decoy string, `a.import(...)` or `$import(...)` elsewhere cannot vouch for a different call), whose captured target chunk must also exist in dist. Unproven occurrences stay flagged. `scripts/verify-privacy.mjs` now also fails on any page containing `data-preact-signals` (F3) instead of relying on vitest alone; `jsIssues(file, src, dist)` takes the dist root for the existence check. Mutation tests added (reviewer M10/M11 included: non-literal `import(location.hash.slice(1))` / `import(atob(..))` with decoy literals, missing target chunk, wrong file with right signature): 7th namespace URL, fetch / sendBeacon / external URL / tracker in Preact chunk, second or non-literal `import()` in client, old React tokens not excused, allow-listed tokens not excused in app code, unit tests of `jsIssues`.
 
 ## Test results (Node 24.12.0, system Chrome)
-- `npx astro check`: 0 errors, 0 warnings, 3 hints (same hints as baseline).
-- `npx vitest run`: 18 files, 599 passed (baseline 542; verifier mutation tests + per-file source-convention tests).
-- `npm run build`: OK, 8 pages.
+- `pnpm exec astro check`: 0 errors, 0 warnings, 3 hints (same hints as baseline).
+- `pnpm exec vitest run`: 18 files, 599 passed (baseline 542; verifier mutation tests + per-file source-convention tests).
+- `pnpm run build`: OK, 8 pages.
 - `node scripts/verify-html.mjs`: `verify:html OK`; `STRICT=1 node scripts/verify-html.mjs`: `verify:html OK (STRICT=1)`; `node scripts/verify-privacy.mjs`: `verify:privacy OK` (allow-list: external-url<=6, dyn-import<=1).
-- `PW_PORT=8801 npx playwright test` (chrome; includes e2e/ui, a11y, mobile, tool, engine specs under the repo config): 99 passed (93 existing + 6 new).
-- `npm run test:engine:e2e`: 29 passed, 1 skipped (`m6-ui-repro` skips under the engine-only config by design).
+- `PW_PORT=8801 pnpm exec playwright test` (chrome; includes e2e/ui, a11y, mobile, tool, engine specs under the repo config): 99 passed (93 existing + 6 new).
+- `pnpm run test:engine:e2e`: 29 passed, 1 skipped (`m6-ui-repro` skips under the engine-only config by design).
 No test was weakened or deleted.
 
 ## Behaviour checks (all covered by passing tests)
@@ -56,7 +56,7 @@ Typing fires per keystroke (compat maps onChange->onInput for text/range); contr
 | compress.worker (worker only, unchanged) | 32,023 / 11,908 | 32,023 / 11,908 |
 | signals.module (shipped, never loaded) | - | 7,829 / 2,981 |
 
-First-load JS (static graph, excl. worker): `/` and `/resize-image-to-20kb/`: 94,856 -> 34,966 B gzip (-59,890, -63 %; brotli 82,822 -> 31,258); `/resize-signature/`: 98,305 -> 38,390 (-59,915; brotli 85,896 -> 34,332). The task brief's ~113 KB baseline additionally counts the worker and inline Astro bootstrap (about 2 KB gz). Total dist: 557,342 -> 361,829 bytes (-35 %), 21 -> 23 files. Build time (`npm run build`, 3 runs each, warm): React 1.4-1.8 s, Preact 2.0-2.5 s (the Preact vite preset adds a Babel pass); both negligible. `node_modules`: 255 -> 279 top-level packages (build-time only, preset-vite/babel), similar disk size.
+First-load JS (static graph, excl. worker): `/` and `/resize-image-to-20kb/`: 94,856 -> 34,966 B gzip (-59,890, -63 %; brotli 82,822 -> 31,258); `/resize-signature/`: 98,305 -> 38,390 (-59,915; brotli 85,896 -> 34,332). The task brief's ~113 KB baseline additionally counts the worker and inline Astro bootstrap (about 2 KB gz). Total dist: 557,342 -> 361,829 bytes (-35 %), 21 -> 23 files. Build time (`pnpm run build`, 3 runs each, warm): React 1.4-1.8 s, Preact 2.0-2.5 s (the Preact vite preset adds a Babel pass); both negligible. `node_modules`: 255 -> 279 top-level packages (build-time only, preset-vite/babel), similar disk size.
 
 ## Hydration / interaction (indicative only)
 Local static server, system Chrome, 4x CPU throttle, cache disabled, 15 runs each, median: hydration complete (island `ssr` attribute removed) `/`: 292 -> 260 ms, `/resize-signature/`: 299 -> 270 ms. Click-to-next-frame ~12 -> ~9 ms; typing-to-next-frame ~10 -> 12-15 ms (slightly slower: native-event + debounced render); long-task time over 50 ms: 0 vs 7-9 ms median in Preact (likely initial work now concentrated in a different task split). Differences are within noise for INP purposes; the real win is transfer/parse size on slow networks, which localhost cannot show. Not a Lighthouse/CrUX measurement.

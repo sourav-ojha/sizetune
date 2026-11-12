@@ -1,6 +1,6 @@
 # SEO_ARCHITECTURE.md — SizeTune
 
-Status: design validated by the spike (2026-11-12). Facts about generated HTML come from `npm run verify:html` on a real build; search-demand figures come from the earlier N1 research (`research/validation/n1/keywords_ahrefs_free_tool.csv`, Ahrefs free keyword generator, volume *buckets*, India, retrieved 2026-11-12). Buckets are floors, not exact counts.
+Status: design validated by the spike (2026-11-12). Facts about generated HTML come from `pnpm run verify:html` on a real build; search-demand figures come from the earlier N1 research (`research/validation/n1/keywords_ahrefs_free_tool.csv`, Ahrefs free keyword generator, volume *buckets*, India, retrieved 2026-11-12). Buckets are floors, not exact counts.
 
 ## 1. Principles
 1. Every indexable page is **static HTML at build time**. Crawlers need no JavaScript to see H1, body copy, links, metadata, JSON-LD.
@@ -44,14 +44,14 @@ Tool pages include server-rendered explanatory copy and a `<noscript>` message. 
 ## 7. Performance targets (to be measured with Lighthouse/CrUX once public)
 LCP < 2.5 s on mid-range Android over 4G; CLS < 0.1; INP < 200 ms. Levers: ~71 KB gzip JS only on tool routes, long-cache hashed assets, no web fonts in spike, no third-party scripts before consent. **AdSense will dominate JS weight later**; ads must reserve space to protect CLS.
 
-## 8. Acceptance checks (automated, `npm run verify:html` + Playwright)
+## 8. Acceptance checks (automated, `pnpm run verify:html` + Playwright)
 H1 and enough **words inside `<main>` excluding island/noscript** (thresholds are in `scripts/verify-html.mjs` and §11 — single source; Jaccard cap 0.35 between same-type pages); every internal link canonical (trailing slash); noindex pages absent from sitemap; unique title/description; canonical == site + route; ≥2 real `<a href>` links; valid JSON-LD; no `<form action>`; tool JS only referenced from the tool route; tool markup SSR'd; `<noscript>` present; robots has Sitemap; every page in sitemap; 404 status; no off-origin requests and no non-GET requests during compression.
 
 ## 9. Open items
 `og:image`; real copy for each tool page; hreflang (not needed unless Hindi pages are created); Search Console / Bing Webmaster setup (human); schema validation in Google tools (human).
 
 ## 10. Added after independent review
-- **Thin-page risk (HIGH, fixed in tooling):** preset pages (`/resize-image-to-20kb/` …) must not ship until real, distinct copy passes `STRICT=1 npm run verify:html`. Launch with `/` + at most 1–2 preset pages; add the rest only on Search Console evidence. Also needed on every tool page: a visible FAQ section.
+- **Thin-page risk (HIGH, fixed in tooling):** preset pages (`/resize-image-to-20kb/` …) must not ship until real, distinct copy passes `STRICT=1 pnpm run verify:html`. Launch with `/` + at most 1–2 preset pages; add the rest only on Search Console evidence. Also needed on every tool page: a visible FAQ section.
 - **AdSense / privacy wording:** copy now says *our code* does not upload images, and that ads (when enabled) come from third parties. Before applying: full privacy policy (cookies, ad vendors), terms, about, a Google-certified consent banner for EEA/UK, `ads.txt`, reserved ad-slot heights (CLS). A third-party script on a page with a file input can in principle read the `File`; consider ads only after results or a no-ads tool layout. Decide with the AdSense plan (human).
 - **CSP (applied, Chrome-tested):** Astro 7 built-in `security.csp` emits a hash-based `<meta>` per page (`default-src 'self'; img-src 'self' blob: data:; connect-src 'self'; worker-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; …`) + header `frame-ancestors 'none'`. The meta policy is enforced from the first deploy (no Report-Only possible). `connect-src` alone does not stop navigations/beacons; no inline `style=` attributes allowed (verify lint).
 - Rich-result eligibility and schema conformance: manual validation in Google tools (human).

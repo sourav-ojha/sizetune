@@ -2,8 +2,8 @@ import { defineConfig, devices } from '@playwright/test';
 // Dedicated port (not Astro's 4321 dev port) and never reuse: tests must hit the built dist/ served by workerd.
 const PORT = Number(process.env.PW_PORT ?? 8788); // override with PW_PORT when 8788 is taken
 // Default: system Google Chrome only (no browser downloads).
-// Firefox + WebKit projects are OPT-IN: they need `npx playwright install firefox webkit` (a download the owner must approve),
-// then `PW_ALL_BROWSERS=1 npx playwright test`. Chrome-only CDP assertions are tagged @chromium-only and skipped there.
+// Firefox + WebKit projects are OPT-IN: they need `pnpm exec playwright install firefox webkit` (a download the owner must approve),
+// then `PW_ALL_BROWSERS=1 pnpm exec playwright test`. Chrome-only CDP assertions are tagged @chromium-only and skipped there.
 const ALL = process.env.PW_ALL_BROWSERS === '1';
 export default defineConfig({
   testDir: 'e2e',
@@ -18,7 +18,7 @@ export default defineConfig({
     ] : []),
   ],
   webServer: {
-    command: `npm run build && npx wrangler dev --port ${PORT} --ip 127.0.0.1`,
+    command: `pnpm run build && pnpm exec wrangler dev --port ${PORT} --ip 127.0.0.1`,
     url: `http://127.0.0.1:${PORT}/`,
     reuseExistingServer: false,
     timeout: 120_000,

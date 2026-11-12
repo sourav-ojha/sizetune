@@ -1,5 +1,5 @@
 // Negative-fixture tests: each mutation of a good build must make verify-html FAIL (proving each rule can fail).
-// Requires a built dist/ (npm run build). `npm run verify` builds first. Mutations run on TEMP COPIES, never on dist/.
+// Requires a built dist/ (pnpm run build). `pnpm run verify` builds first. Mutations run on TEMP COPIES, never on dist/.
 // The first 41 tests are the original regex-era fixtures, ported 1:1 (same mutation, same assertion) onto the parse5 verifier;
 // where a fixture depended on exact copy (page titles etc.) it now uses a pattern so content edits cannot turn it into a no-op.
 import { describe, it, expect, beforeAll } from 'vitest';

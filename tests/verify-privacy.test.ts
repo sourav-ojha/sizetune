@@ -1,5 +1,5 @@
 // Negative fixtures for scripts/verify-privacy.mjs (and unit tests for the shared scanners in scripts/verify-lib.mjs).
-// Requires a built dist/ (npm run build). Mutations run on TEMP COPIES of dist.
+// Requires a built dist/ (pnpm run build). Mutations run on TEMP COPIES of dist.
 import { describe, it, expect, beforeAll } from 'vitest';
 import { rmSync, mkdtempSync, cpSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';

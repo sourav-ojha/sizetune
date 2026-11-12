@@ -4,7 +4,7 @@
 Fill the result table as you go. Record PASS/FAIL/N-A and the measured numbers. A FAIL on any "must" row blocks launch (lower the pixel cap or fix, then retest).
 
 ## 0. Prepare (≈10 min)
-1. Run locally on your computer: `npm ci && npm run build && npx wrangler dev --ip 0.0.0.0 --port 8788` (do not deploy). Phones on the same Wi-Fi open `http://<your-computer-LAN-IP>:8788/`. (Plain HTTP over LAN is fine for this test; file picking and canvas work. If the phone blocks it, use the iOS Simulator result as a stand-in and mark "not real device".)
+1. Run locally on your computer: `pnpm install --frozen-lockfile && pnpm run build && pnpm exec wrangler dev --ip 0.0.0.0 --port 8788` (do not deploy). Phones on the same Wi-Fi open `http://<your-computer-LAN-IP>:8788/`. (Plain HTTP over LAN is fine for this test; file picking and canvas work. If the phone blocks it, use the iOS Simulator result as a stand-in and mark "not real device".)
 2. Copy the test images to each phone (AirDrop / USB / cloud drive). Generate them with `node scripts/gen-fixtures.mjs --device-pack` (see `tests/fixtures/README.md`): the pack contains a 12 MP photo, a 36 MP photo, a 48 MP smooth image, a transparent PNG, a tiny 140×60 signature PNG, an EXIF-rotated JPEG with fake GPS, a corrupt JPEG, and an SVG renamed .png. **Also take 2 real photos with each phone camera (default settings) and 1 screenshot.**
 3. Devices (minimum): 1 iPhone with ≤4 GB RAM (SE 2/3, 11, 12 class), 2 Android phones ≤3 GB RAM (one Chrome, one Samsung Internet or another browser). Optional: open the page inside WhatsApp/Instagram in-app browsers.
 4. For each device note: model, OS version, browser + version, free RAM state ("fresh boot" vs "many apps open").

@@ -36,7 +36,7 @@ Production deploy (human go), custom domain attach via `routes` (config prepared
 Additional preset pages only on Search Console evidence; (PDF/document tools are NOT in scope until the owner decides); optional WASM encoder; Cloudflare Web Analytics only after a consent decision.
 
 ## Standing rules
-Never purchase, change DNS, enable ads or publish production without explicit approval. `npm run verify` stays green. Every indexable page passes `verify:html`; launch also needs `STRICT=1`.
+Never purchase, change DNS, enable ads or publish production without explicit approval. `pnpm run verify` stays green. Every indexable page passes `verify:html`; launch also needs `STRICT=1`.
 
 ## Update after the build sprint (2026-11-12 afternoon)
 **Done locally (see `BUILD_STATUS.md`):** engine (A2/A3), range UI + statuses (A6), signature mode (A7), launch copy + OG + About/Terms (A8), cross-browser lab via iOS Simulator (A9, simulator only), STRICT gate green except owner markers (A10 partial), Preact swap (A1, executed after engine work; kept), axe-core accessibility audit, quality samples, independent reviews.
