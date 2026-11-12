@@ -421,10 +421,14 @@ test.describe('lifecycle: repeated runs, cancellation, stale protection, timeout
   test('10 repeated 12 MP runs: no unbounded memory growth (RSS + JS heap) @chromium-only', async ({ page, browser }) => {
     const rss: number[] = [];
     const heap: number[] = [];
+    // Force a GC before each sample (CDP HeapProfiler): usedJSHeapSize otherwise includes collectable garbage and
+    // varies with GC timing between machines (a CI runner showed +27 MB with no leak), so it would not measure retention.
+    const cdp = await page.context().newCDPSession(page);
     for (let i = 0; i < 10; i++) {
       const r = await run(page, '.generated/photo-12mp.jpg', { ...BASE, maxKb: 100 }, { keep: false });
       expect(r.status).toBe('ok');
       await page.waitForTimeout(300);
+      await cdp.send('HeapProfiler.collectGarbage');
       rss.push(Math.round(await browserRssMb(browser)));
       heap.push(await page.evaluate(() => Math.round(((performance as unknown as { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize ?? 0) / 1048576)));
     }
