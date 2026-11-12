@@ -15,7 +15,8 @@
     "verify:html:final": "node scripts/verify-html.mjs --final",
     "verify:privacy": "node scripts/verify-privacy.mjs",
     "verify": "pnpm run check && pnpm run build && pnpm test && pnpm run verify:html && pnpm run verify:html:strict && pnpm run verify:privacy && pnpm run test:e2e",
-    "test:engine:e2e": "playwright test -c e2e/engine/playwright.config.ts"
+    "test:engine:e2e": "playwright test -c e2e/engine/playwright.config.ts",
+    "prepare": "husky"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.1.5",
@@ -30,6 +31,7 @@
     "@astrojs/check": "^0.9.12",
     "@playwright/test": "^1.65.0",
     "axe-core": "4.14.0",
+    "husky": "^9.1.7",
     "parse5": "8.1.1",
     "sharp": "0.35.5",
     "typescript": "^6.0.3",

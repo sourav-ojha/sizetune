@@ -41,3 +41,10 @@ Hashed `/_astro/*` immutable one year; HTML revalidated every request (ETag); fa
 
 ## 7. Known limitations / unverified
 No live edge test, certificate issuance, Workers preview builds or rollback executed; no Linux `wrangler dev`; Range requests return 200 (irrelevant); Pages-vs-Workers preview maturity A.
+
+## Staging (non-production) and branch flow — decided 2026-11-13
+- Branches: `dev` = integration/staging, `main` = production. Work on `dev` (or feature branches), merge `dev` → `main` by pull request. A husky `pre-push` hook (`.husky/pre-push`) blocks direct pushes to `main`. It is a client-side guard only (bypassed by `--no-verify` or the GitHub web UI). The repo is public, so GitHub branch protection/rulesets are available on the free plan if a server-side guard is wanted.
+- Staging Worker: `sizetune-staging` (`env.staging` in `wrangler.jsonc`), own `*.workers.dev` URL, no custom domain. `"routes": []` in that env is mandatory: wrangler inherits top-level `routes`, and without it a staging deploy would take `sizetune.com` away from production (wrangler warns; verified with `wrangler deploy --env staging --dry-run`).
+- `public/_headers` sends `X-Robots-Tag: noindex` for `*.workers.dev` hosts, so staging is not indexed.
+- Manual first deploy (human, needs `wrangler login`): `pnpm run build && pnpm exec wrangler deploy --env staging`.
+- Workers Builds (human, in the Cloudflare dashboard): create two Workers projects from this repo. Staging: Worker `sizetune-staging`, production branch `dev`, build `pnpm run build`, deploy `pnpm exec wrangler deploy --env staging`. Production (later): Worker `sizetune`, branch `main`, deploy `pnpm exec wrangler deploy`.

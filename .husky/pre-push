@@ -1,0 +1,11 @@
+#!/bin/sh
+# Block direct pushes to main. Work on dev (or a feature branch) and merge via pull request.
+# Client-side guard only: it does not stop pushes from the GitHub web UI or `git push --no-verify`.
+zero=0000000000000000000000000000000000000000
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if [ "$remote_ref" = "refs/heads/main" ]; then
+    echo "husky: direct push to main is blocked. Push to dev and open a PR dev -> main." >&2
+    exit 1
+  fi
+done
+exit 0

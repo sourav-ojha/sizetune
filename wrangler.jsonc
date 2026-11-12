@@ -12,5 +12,16 @@
     "directory": "./dist",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
+  },
+  // Non-production: `wrangler deploy --env staging` publishes a separate Worker "sizetune-staging" on its own
+  // *.workers.dev URL (no custom domain). `routes: []` is required: routes ARE inherited, and without it staging would take sizetune.com.
+  // public/_headers already sends X-Robots-Tag: noindex for *.workers.dev hosts.
+  "env": {
+    "staging": {
+      "name": "sizetune-staging",
+      "routes": [],
+      "workers_dev": true,
+      "preview_urls": false
+    }
   }
 }
