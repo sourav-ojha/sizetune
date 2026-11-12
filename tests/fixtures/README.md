@@ -20,8 +20,11 @@ node scripts/gen-fixtures.mjs --device-pack   # .generated/device-pack/ for real
 | `signature-140x60.png`, `signature-1200x400.png` | pen strokes on paper | below_min, PNG |
 | `noise-256.png` | incompressible noise | impossible max |
 | `tiny-1x1.png`, `tiny-8x8.jpg` | tiny inputs | edge cases |
-| `corrupt-truncated.jpg` | photo-200x230 cut at 50 % | corrupt handling (browser-dependent) |
+| `corrupt-truncated.jpg` | photo-200x230 cut at 50 % | completeness check (`corrupt` in every browser) |
 | `corrupt-garbage.jpg` | valid SOI..SOF then random bytes | `corrupt` |
+| `corrupt-truncated.png`, `corrupt-truncated.webp` | cut at 60 % (no IEND / RIFF size > file) | completeness check |
+| `trailing-garbage.jpg` | valid JPEG + text after EOI | accepted, tail dropped |
+| `motion-photo-like.jpg` | valid JPEG + 70 KB MP4-like trailer (EOI not in the last 64 KB) | accepted via the forward scan |
 | `svg-renamed.png`, `gif-renamed.jpg`, `heic-header.heic` | wrong types with misleading names | magic-byte rejection |
 | `.generated/photo-12mp.jpg` | 4000×3000 wallpaper photo (or procedural) | 12 MP e2e, repeat/memory |
 

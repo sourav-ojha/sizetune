@@ -16,6 +16,7 @@ import { buildMessage, NOTES } from './messages';
 import { stripIccProfile, isStructurallyValidJpeg } from './jpeg';
 import { RunContext } from './context';
 import { classifyBrowserError } from './errors';
+import { assertComplete } from './complete';
 import type { DecodedImage, Env } from './env';
 
 export interface PipelineConfig {
@@ -58,6 +59,8 @@ export async function runPipeline<I extends DecodedImage>(file: Blob, input: Pro
   const srcPixels = header.width * header.height;
   if (srcPixels > limits.maxPixels) throw new EngineError('too_many_pixels', `This image has ${mp(srcPixels)} megapixels; the limit is ${mp(limits.maxPixels)}. Please choose a smaller image.`);
 
+  await ctx.race(assertComplete(file, header)); // truncated files are refused before decoding (some browsers paint them grey)
+
   const win = byteWindow(opts.minKb, opts.maxKb);
   if (win.lo > win.hi) throw new EngineError('invalid_options', 'The minimum and maximum sizes are too close together to be met. Please widen the range.');
   const notes: string[] = [];
@@ -78,9 +81,19 @@ export async function runPipeline<I extends DecodedImage>(file: Blob, input: Pro
     }
     if (!(img.width > 0 && img.height > 0)) throw new EngineError('corrupt', 'This image could not be opened. The file may be damaged.');
     // The decoded bitmap must not be bigger than the header promised (limits were enforced on the header).
-    const aspect = Math.max(srcW / srcH, srcH / srcW); // a browser that ignores orientation inverts the aspect of a width-only resize
-    const expectedPx = plan.reduced ? plan.width * plan.width * aspect : srcW * srcH;
-    if (img.width * img.height > expectedPx * 1.01 + 1) throw new EngineError('corrupt', 'The image data does not match its header. The file may be damaged.');
+    if (img.width * img.height > srcW * srcH * 1.01 + 1) throw new EngineError('corrupt', 'The image data does not match its header. The file may be damaged.');
+    // A browser that ignores resize-at-decode returns the full size: redraw it at the planned working size (keeping the
+    // bitmap's own aspect, whatever its orientation) instead of failing, and release the big one at once.
+    if (plan.reduced && img.width * img.height > plan.width * plan.height * 1.01 + 1) {
+      const big: I = img;
+      const tw = Math.max(1, Math.round(Math.sqrt((plan.width * plan.height * big.width) / big.height)));
+      const th = Math.max(1, Math.round((tw * big.height) / big.width));
+      try {
+        img = await ctx.race(env.downscale(big, tw, th), (late) => late.close());
+      } finally {
+        big.close();
+      }
+    }
 
     // Reconcile orientation with what the browser actually produced (it is the source of truth for pixels).
     let orientationApplied = true;

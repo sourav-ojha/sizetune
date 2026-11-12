@@ -205,6 +205,14 @@ async function committed() {
   const sofEnd = findSofEnd(good);
   const R2 = rng(99); const garbage = Buffer.alloc(4000); for (let i = 0; i < garbage.length; i++) garbage[i] = (R2() * 256) | 0;
   write(FIX, 'corrupt-garbage.jpg', Buffer.concat([good.subarray(0, sofEnd), garbage]), 'valid SOI..SOF, then random bytes');
+  const tp = fs.readFileSync(path.join(FIX, 'signature-1200x400.png'));
+  write(FIX, 'corrupt-truncated.png', tp.subarray(0, Math.floor(tp.length * 0.6)), 'PNG cut at 60% (no IEND)');
+  const tw = fs.readFileSync(path.join(FIX, 'photo-800x600.webp'));
+  write(FIX, 'corrupt-truncated.webp', tw.subarray(0, Math.floor(tw.length * 0.6)), 'WebP cut at 60% (RIFF size > file)');
+  write(FIX, 'trailing-garbage.jpg', Buffer.concat([good, Buffer.from('POLYGLOT-TAIL<html>not an image</html>')]), 'valid JPEG + text after EOI (accepted; re-encode drops it)');
+  const R3 = rng(7); const fakeVideo = Buffer.alloc(70 * 1024); for (let i = 0; i < fakeVideo.length; i++) fakeVideo[i] = (R3() * 256) | 0;
+  fakeVideo.write('\0\0\0\x18ftypmp42', 0, 'latin1'); for (let i = 0; i + 1 < fakeVideo.length; i++) if (fakeVideo[i] === 0xff && fakeVideo[i + 1] === 0xd9) fakeVideo[i + 1] = 0xd8;
+  write(FIX, 'motion-photo-like.jpg', Buffer.concat([good, fakeVideo]), 'valid JPEG + 70 KB MP4-like trailer without FFD9 (EOI not in the last 64 KB; accepted)');
   write(FIX, 'svg-renamed.png', Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="10" height="10"/></svg>'), 'SVG text with a .png name');
   write(FIX, 'gif-renamed.jpg', Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64'), '1x1 GIF with a .jpg name');
   write(FIX, 'heic-header.heic', Buffer.from([0, 0, 0, 0x18, ...Buffer.from('ftypheic'), 0, 0, 0, 0, ...Buffer.from('mif1heic')]), 'HEIC ftyp box only');
@@ -258,7 +266,7 @@ async function devicePack() {
 }
 
 function check() {
-  const names = ['exif6-gps.jpg', 'transparent.png', 'signature-140x60.png', 'signature-1200x400.png', 'photo-200x230.jpg', 'photo-1200x800.jpg', 'photo-800x600.webp', 'alpha-400x300.webp', 'progressive-640x480.jpg', 'cmyk-300x200.jpg', 'tiny-1x1.png', 'tiny-8x8.jpg', 'noise-256.png', 'corrupt-truncated.jpg', 'corrupt-garbage.jpg', 'svg-renamed.png', 'gif-renamed.jpg', 'heic-header.heic'];
+  const names = ['exif6-gps.jpg', 'transparent.png', 'signature-140x60.png', 'signature-1200x400.png', 'photo-200x230.jpg', 'photo-1200x800.jpg', 'photo-800x600.webp', 'alpha-400x300.webp', 'progressive-640x480.jpg', 'cmyk-300x200.jpg', 'tiny-1x1.png', 'tiny-8x8.jpg', 'noise-256.png', 'corrupt-truncated.jpg', 'corrupt-garbage.jpg', 'corrupt-truncated.png', 'corrupt-truncated.webp', 'trailing-garbage.jpg', 'motion-photo-like.jpg', 'svg-renamed.png', 'gif-renamed.jpg', 'heic-header.heic'];
   let bad = 0;
   for (const n of names) {
     const p = path.join(FIX, n);

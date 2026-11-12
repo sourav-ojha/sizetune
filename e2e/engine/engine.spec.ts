@@ -95,10 +95,18 @@ test.describe('engine in real Chrome (worker path)', () => {
     expect(await run(page, 'svg-renamed.png', BASE)).toMatchObject({ ok: false, code: 'unsupported_type' });
     expect(await run(page, 'gif-renamed.jpg', BASE)).toMatchObject({ ok: false, code: 'unsupported_type' });
     expect(await run(page, 'heic-header.heic', BASE)).toMatchObject({ ok: false, code: 'unsupported_type' });
-    // Truncated JPEG: Chrome may decode the available part (grey remainder) — must never crash or hang.
-    const t = await run(page, 'corrupt-truncated.jpg', { ...BASE, maxKb: 10 });
-    expect(t.ok ? ['ok', 'below_min'].includes(t.status) : t.code === 'corrupt').toBe(true);
-    record('truncated-jpeg-chrome', { ok: t.ok, status: t.status, code: t.code });
+    // Truncated files are refused before decoding (Safari would otherwise paint the missing part grey).
+    for (const n of ['corrupt-truncated.jpg', 'corrupt-truncated.png', 'corrupt-truncated.webp']) {
+      const t = await run(page, n, { ...BASE, maxKb: 10 });
+      expect(t, n).toMatchObject({ ok: false, code: 'corrupt' });
+      expect(t.message).toMatch(/incomplete/);
+    }
+    // Legit files with data after the end marker are accepted; the re-encode drops the tail.
+    const g = await run(page, 'trailing-garbage.jpg', { ...BASE });
+    expect(g).toMatchObject({ ok: true, status: 'ok', width: 200, height: 230 });
+    const m = await run(page, 'motion-photo-like.jpg', { ...BASE });
+    expect(m).toMatchObject({ ok: true, status: 'ok' });
+    expect(await page.evaluate(async () => new TextDecoder('latin1').decode(await (window as unknown as { last: Blob }).last.arrayBuffer()).includes('ftypmp42'))).toBe(false);
   });
 
   test('EXIF orientation 6 (permanent regression): 300×400 output, red band at the top', async ({ page }) => {
@@ -262,6 +270,35 @@ test.describe('engine in real Chrome (worker path)', () => {
       return w.run(new File([head, new Uint8Array(26 * 1024 * 1024)], 'big.jpg'), { format: 'jpeg', strategy: 'quality-first', lockAspect: true, fit: 'contain', background: 'white' });
     });
     expect(big).toMatchObject({ ok: false, code: 'too_large_bytes' });
+  });
+});
+
+test.describe('robustness: browser ignores createImageBitmap resize options (review F6), inspectFile', () => {
+  test('36 MP job still succeeds when resizeWidth is ignored: redrawn at the working size, not "corrupt"', async ({ page, context }) => {
+    const STUB = `const cib = self.createImageBitmap; self.createImageBitmap = (src) => cib(src);`; // drops all options
+    await openHarness(page, context, { workerPrelude: STUB });
+    const r = await run(page, { large: [6000, 6000] }, { ...BASE, maxKb: 50 });
+    expect(r, r.message).toMatchObject({ ok: true, status: 'ok' });
+    expect(r.bytes).toBeLessThanOrEqual(50_000);
+    expect(r.source).toMatchObject({ width: 6000, height: 6000 });
+    record('36mp-resize-ignored', { bytes: r.bytes, w: r.width, h: r.height, ms: r.elapsedMs });
+  });
+  test('inspectFile: header facts incl. GPS, same errors as processImage, no decode', async ({ page, context }) => {
+    await openHarness(page, context);
+    const r = await page.evaluate(async () => {
+      const w = window as unknown as { E: { inspectFile: (f: Blob) => Promise<unknown> }; fixture: (n: string) => Promise<File> };
+      const out: Record<string, unknown> = {};
+      for (const n of ['exif6-gps.jpg', 'photo-200x230.jpg', 'transparent.png', 'svg-renamed.png']) {
+        try { out[n] = await w.E.inspectFile(await w.fixture(n)); } catch (e) { out[n] = 'ERR:' + (e as { code: string }).code; }
+      }
+      return out;
+    });
+    expect(r).toEqual({
+      'exif6-gps.jpg': { mime: 'image/jpeg', width: 300, height: 400, orientation: 6, alphaPossible: false, hasGps: true },
+      'photo-200x230.jpg': { mime: 'image/jpeg', width: 200, height: 230, orientation: 1, alphaPossible: false, hasGps: false },
+      'transparent.png': { mime: 'image/png', width: 800, height: 600, orientation: 1, alphaPossible: true, hasGps: false },
+      'svg-renamed.png': 'ERR:unsupported_type',
+    });
   });
 });
 

@@ -53,6 +53,21 @@ export function createCanvasEnv(kind: 'offscreen' | 'dom'): Env<ImageBitmap> {
         throw classifyBrowserError(e, 'encode', w * h);
       }
     },
+    async downscale(img, w, h) {
+      const c = make(w, h);
+      try {
+        const x = c.getContext('2d') as Ctx2D | null;
+        if (!x) throw classifyBrowserError(null, 'canvas', w * h);
+        x.imageSmoothingEnabled = true;
+        x.imageSmoothingQuality = 'high';
+        x.drawImage(img, 0, 0, w, h);
+        return 'transferToImageBitmap' in c ? c.transferToImageBitmap() : await createImageBitmap(c);
+      } catch (e) {
+        throw classifyBrowserError(e, 'canvas', w * h);
+      } finally {
+        c.width = 0; c.height = 0;
+      }
+    },
     async hasAlpha(img) {
       const k = Math.min(1, Math.sqrt(1_000_000 / (img.width * img.height)));
       const w = Math.max(1, Math.round(img.width * k)), h = Math.max(1, Math.round(img.height * k));

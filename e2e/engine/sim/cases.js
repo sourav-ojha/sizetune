@@ -28,6 +28,11 @@ export const CASES = [
   ['strip-icc', async () => { const a = pick(await window.run('photo-200x230.jpg', { ...B, quality: 80 })); const b = pick(await window.run('photo-200x230.jpg', { ...B, quality: 80, stripIcc: true })); return { plain: a.bytes, plainIcc: a.hasIcc, stripped: b.bytes, strippedIcc: b.hasIcc, notes: b.notes }; }],
   ['corrupt-garbage', () => window.run('corrupt-garbage.jpg', B).then(pick)],
   ['corrupt-truncated', () => window.run('corrupt-truncated.jpg', { ...B, maxKb: 10 }).then(pick)],
+  ['corrupt-truncated-png', () => window.run('corrupt-truncated.png', B).then(pick)],
+  ['corrupt-truncated-webp', () => window.run('corrupt-truncated.webp', B).then(pick)],
+  ['trailing-garbage', () => window.run('trailing-garbage.jpg', B).then(pick)],
+  ['motion-photo-like', () => window.run('motion-photo-like.jpg', B).then(pick)],
+  ['inspect-gps', async () => window.E.inspectFile(await window.fixture('exif6-gps.jpg'))],
   ['svg-renamed', () => window.run('svg-renamed.png', B).then(pick)],
   ['cancel', async () => {
     const f = await window.makeLarge(6000, 6000);

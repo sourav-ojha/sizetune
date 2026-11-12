@@ -5,6 +5,7 @@ export { byteWindow, type ByteWindow } from './window';
 export { formatKb, formatLabel, NOTES, PRIVACY_NOTE } from './messages';
 export { sniffType, type ImageMime } from './sniff';
 export { readHeader, parseHeader, type HeaderInfo } from './header';
+export { inspectFile, type FileInspection } from './inspect';
 export { resolveGeometry, type Geometry } from './dims';
 export { createObjectUrlSlot, outputFileName, type ObjectUrlSlot } from './urls';
 export { supportsWorkerEngine, canEncode } from './support';

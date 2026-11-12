@@ -14,13 +14,16 @@ export interface FakeOpts { alpha?: boolean; webp?: boolean; complexity?: number
   /** Replace the rendered Blob (n = 1-based render index). */
   renderHook?: (i: { n: number; w: number; h: number; q?: number; mime: string; blob: Blob }) => Blob | undefined;
   /** Decoded bitmap is this factor larger per side than the header says (malicious/mismatched file). */
-  inflate?: number }
+  inflate?: number;
+  /** Browser that ignores createImageBitmap resizeWidth (decodes at full size). */
+  ignoreResize?: boolean }
 
 export function fakeEnv(o: FakeOpts = {}) {
   const images: FakeImg[] = [];
   const renders: Array<{ w: number; h: number; q?: number; mime: string; fill: string | null; src: { x: number; y: number; width: number; height: number } }> = [];
   let released = 0;
   let decodeArgs: Array<number | undefined> = [];
+  const downscales: Array<{ w: number; h: number }> = [];
   const env: Env<FakeImg> = {
     async decode(blob, resizeWidth) {
       decodeArgs.push(resizeWidth);
@@ -29,7 +32,7 @@ export function fakeEnv(o: FakeOpts = {}) {
       const { readHeader } = await import('../../src/lib/engine/header');
       const h = await readHeader(blob);
       let [w, hh] = o.swapOrientation ? [h.storedWidth, h.storedHeight] : [h.width, h.height];
-      if (resizeWidth) { hh = Math.round((hh * resizeWidth) / w); w = resizeWidth; }
+      if (resizeWidth && !o.ignoreResize) { hh = Math.round((hh * resizeWidth) / w); w = resizeWidth; }
       if (o.inflate) { w = Math.round(w * o.inflate); hh = Math.round(hh * o.inflate); }
       const img: FakeImg = { width: w, height: hh, closed: false, id: images.length, close() { this.closed = true; } };
       images.push(img);
@@ -47,11 +50,18 @@ export function fakeEnv(o: FakeOpts = {}) {
       const blob = new Blob([bytes], { type: o.wrongMagic ? 'image/png' : mime });
       return o.renderHook?.({ n: renders.length, w, h, q: quality, mime, blob }) ?? blob;
     },
+    async downscale(img, w, h) {
+      if (img.closed) throw new Error('downscale on closed image');
+      downscales.push({ w, h });
+      const out: FakeImg = { width: w, height: h, closed: false, id: images.length, close() { this.closed = true; } };
+      images.push(out);
+      return out;
+    },
     async hasAlpha() { return !!o.alpha; },
     async canEncode(mime) { return mime === 'image/webp' ? !!o.webp : true; },
     release() { released++; },
   };
-  return { env, images, renders, get released() { return released; }, decodeArgs };
+  return { env, images, renders, get released() { return released; }, decodeArgs, downscales };
 }
 
 export const base: ProcessOptions = { format: 'jpeg', strategy: 'quality-first', lockAspect: true, fit: 'contain', background: 'white' };

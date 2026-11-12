@@ -39,7 +39,10 @@ Environments: **desktop Chrome 157.0.8103.52** (headless, macOS arm64) and **iOS
 | WebP input, auto | ok WebP 44,232 B | ok **JPEG** 49,620 B + "WebP can't be saved in this browser…" note |
 | stripIcc | 7,955 → 7,481 B (ICC removed) | 18,543 B both (Safari writes no ICC; no-op) |
 | corrupt (garbage after SOF) | `corrupt` | `corrupt` |
-| truncated JPEG | `corrupt` | ok (partial decode, grey remainder) |
+| truncated JPEG | `corrupt` | ok (partial decode, grey remainder) — **fixed**: re-run after the completeness check: `corrupt` |
+| truncated PNG / WebP (re-run) | `corrupt` / `corrupt` | `corrupt` / `corrupt` |
+| JPEG + text tail / + 70 KB video-like tail (re-run) | ok 200×230 / ok | ok 200×230 / ok |
+| `inspectFile(exif6-gps.jpg)` (re-run) | 300×400, orientation 6, hasGps true | same |
 | SVG renamed .png | `unsupported_type` | `unsupported_type` |
 | cancel at attempt 2 (36 MP) | `cancelled` 0 ms after abort | `cancelled` 2 ms after abort |
 | 10 × 12 MP @ 100 KB (ms each) | 399–471 | 554–597 |
