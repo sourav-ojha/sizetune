@@ -1,4 +1,5 @@
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useEffect, useState } from 'preact/hooks';
+import { useSyncExternalStore } from 'preact/compat';
 import { getLimits, processImage } from './engine';
 import { ToolSession, type SessionState } from './session';
 

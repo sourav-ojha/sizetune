@@ -108,13 +108,15 @@ export function verifyPrivacy(dist = 'dist') {
   for (const m of missing) f(`${m.via}: JS chunk ${m.path} referenced but not in dist`);
   if (!files.size) f('tool pages load no JS chunks (wiring changed? cannot prove anything)');
   for (const [path, { src }] of files) {
-    for (const m of jsIssues(path, src)) f(`[js] ${m}`);
+    for (const m of jsIssues(path, src, dist)) f(`[js] ${m}`);
     const w = workerRefs(src); for (const lit of w.literals) { const r = lit.startsWith('/') ? lit : null; if (r && !existsSync(join(dist, r))) f(`[js] ${path}: Worker script ${lit} not in dist`); }
     info.push(`scanned ${path} (${src.length} B): ${scanJs(src).map((x) => `${x.id}x${x.items.length}`).join(' ') || 'no flagged primitives'}`);
   }
   for (const p of tools) for (const s of p.els.filter((x) => isExecutableScript(x) && !x.attrs.some((a) => a.name === 'src'))) {
     for (const m of jsIssues(`${p.route} <inline script>`, scriptText(s))) if (!/'dyn-import'/.test(m)) f(`[js] ${m}`); // astro-island bootstrap import()s same-site chunks; CSP enforces 'self'
   }
+  // The audited dynamic import (island hydrator -> bundled signals) only runs for data-preact-signals: no page may ever carry it.
+  for (const p of pages) if (/data-preact-signals/i.test(p.html)) f(`${p.route}: island carries data-preact-signals (would execute the audited dynamic import)`);
   info.push(`JS primitive allow-list: ${JS_PRIMITIVE_ALLOWLIST.map((a) => `${a.id}<=${a.max}`).join(', ')}`);
   return { fails, info };
 }

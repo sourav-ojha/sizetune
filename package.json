@@ -19,19 +19,16 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^8.1.5",
-    "@astrojs/react": "^7.1.8",
+    "@astrojs/preact": "6.1.5",
     "@astrojs/sitemap": "^3.7.4",
     "@tailwindcss/vite": "^4.3.5",
     "astro": "^7.4.11",
-    "react": "^19.3.1",
-    "react-dom": "^19.3.1",
+    "preact": "11.2.0",
     "tailwindcss": "^4.3.5"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
     "@playwright/test": "^1.65.0",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
     "parse5": "^8.1.1",
     "typescript": "^6.0.3",
     "vitest": "^5.1.0",

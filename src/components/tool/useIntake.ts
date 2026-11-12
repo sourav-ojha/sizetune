@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'preact/hooks';
 import type { SessionState, ToolSession } from './session';
 import { formatSize } from './format';
 
@@ -8,7 +8,7 @@ export function useIntake(session: ToolSession) {
   useEffect(() => {
     const el = inputRef.current;
     const f = el?.files?.[0];
-    if (el && f) { void session.selectFile(f); el.value = ''; } // a file chosen before React hydrated would otherwise be invisible
+    if (el && f) { void session.selectFile(f); el.value = ''; } // a file chosen before the island hydrated would otherwise be invisible
   }, [session]);
   // A file dropped slightly outside the drop zone must not make the browser navigate away to the file.
   useEffect(() => {

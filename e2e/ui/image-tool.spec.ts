@@ -177,7 +177,7 @@ test.describe('image tool', () => {
     // click Run then Cancel in the same task so the engine cannot finish in between
     await page.evaluate(async () => {
       (document.querySelector('[data-testid=run]') as HTMLButtonElement).click();
-      await Promise.resolve(); // let React commit the "processing" UI, but not long enough for the engine to answer
+      await Promise.resolve(); // let the UI commit the "processing" UI, but not long enough for the engine to answer
       (document.querySelector('[data-testid=cancel]') as HTMLButtonElement).click();
     });
     await page.waitForTimeout(2500);

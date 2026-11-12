@@ -1,4 +1,5 @@
-import { useEffect, useRef, type ReactNode } from 'react';
+import type { ComponentChildren } from 'preact';
+import { useEffect, useRef } from 'preact/hooks';
 import type { ResultStatus } from '../../lib/engine/types';
 import { describeWindow, formatChange, formatDims, formatInt, formatSize } from './format';
 import type { ResultView } from './session';
@@ -28,7 +29,7 @@ interface Props {
   /** The user's original file (blob URL + name), offered for download when the result is larger than it. */
   original?: { url: string; name: string } | null;
   /** Extra preview content (before/after compare or signature-on-white). */
-  preview: ReactNode;
+  preview: ComponentChildren;
   onReset: () => void;
   /** Offered for non-success results when the output is not JPEG. */
   onTryJpeg?: () => void;

@@ -1,6 +1,6 @@
 # SizeTune — local product candidate (not deployed)
 
-Browser-only image and signature resizer. Astro 7 static output + React islands (Preact under evaluation, see `docs/experiments/PREACT.md` if present), Tailwind v4, MDX guide, in-browser compression engine (`src/lib/engine`). **Nothing is deployed; no remote repository; no ads or analytics; images never leave the browser.**
+Browser-only image and signature resizer. Astro 7 static output + Preact 11 (compat) islands (migrated from React; see `docs/experiments/PREACT.md`), Tailwind v4, MDX guide, in-browser compression engine (`src/lib/engine`). **Nothing is deployed; no remote repository; no ads or analytics; images never leave the browser.**
 Domain `sizetune.com` is registered (Cloudflare) but no site is live and no DNS record was added by this project.
 
 ## Read first

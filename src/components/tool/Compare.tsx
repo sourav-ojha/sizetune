@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'preact/hooks';
 import { btnToggleOff, btnToggleOn } from './ui';
 
 interface Props { beforeUrl: string; afterUrl: string; beforeLabel?: string; afterLabel?: string }
@@ -39,7 +39,7 @@ export default function Compare({ beforeUrl, afterUrl, beforeLabel = 'Original',
         value={pos}
         aria-valuetext={text}
         className="h-11 w-full accent-indigo-800"
-        onChange={(e) => setPos(Number(e.target.value))}
+        onChange={(e) => setPos(Number(e.currentTarget.value))}
       />
       <div className="flex flex-wrap gap-2" role="group" aria-label="Quick comparison views">
         <button type="button" data-testid="compare-show-before" aria-pressed={pos >= 100} className={pos >= 100 ? btnToggleOn : btnToggleOff} onClick={() => setPos(100)}>Show {beforeLabel.toLowerCase()}</button>

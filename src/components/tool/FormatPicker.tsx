@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId } from 'preact/hooks';
 import type { OutputFormat } from '../../lib/engine/types';
 import { backgroundFor, needsFlattenChoice, type BgChoice, type FieldErrors, type FormState } from './options';
 import { errCls, fieldsetCls, hintCls, inputCls, legendCls } from './ui';
@@ -94,10 +94,10 @@ export default function FormatPicker({ form, errors, update, formats, webp, hasA
                 type="color"
                 value={bgValue}
                 className={`h-11 w-16 cursor-pointer rounded-lg border border-slate-500 bg-white p-1`}
-                onChange={(e) => update({ bgCustom: e.target.value })}
+                onChange={(e) => update({ bgCustom: e.currentTarget.value })}
               />
               <label htmlFor={`${id}-hex`} className="sr-only">Colour as hex code</label>
-              <input id={`${id}-hex`} type="text" className={`${inputCls} max-w-32`} value={form.bgCustom} aria-invalid={errors.bgCustom ? true : undefined} onChange={(e) => update({ bgCustom: e.target.value })} />
+              <input id={`${id}-hex`} type="text" className={`${inputCls} max-w-32`} value={form.bgCustom} aria-invalid={errors.bgCustom ? true : undefined} onChange={(e) => update({ bgCustom: e.currentTarget.value })} />
             </div>
           )}
           {errors.bgCustom && <p className={errCls}>{errors.bgCustom}</p>}

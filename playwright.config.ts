@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 // Dedicated port (not Astro's 4321 dev port) and never reuse: tests must hit the built dist/ served by workerd.
-const PORT = 8788;
+const PORT = Number(process.env.PW_PORT ?? 8788); // override with PW_PORT when 8788 is taken
 // Default: system Google Chrome only (no browser downloads).
 // Firefox + WebKit projects are OPT-IN: they need `npx playwright install firefox webkit` (a download the owner must approve),
 // then `PW_ALL_BROWSERS=1 npx playwright test`. Chrome-only CDP assertions are tagged @chromium-only and skipped there.

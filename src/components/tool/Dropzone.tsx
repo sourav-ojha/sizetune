@@ -1,4 +1,5 @@
-import { useId, useState, type ChangeEvent, type DragEvent, type RefObject } from 'react';
+import type { RefObject, TargetedEvent, TargetedDragEvent } from 'preact';
+import { useId, useState } from 'preact/hooks';
 import { btnPrimary, focusRing } from './ui';
 
 interface Props {
@@ -15,26 +16,26 @@ export default function Dropzone({ inputRef, hasFile, capText, disabled, onPick 
   const hintId = useId();
   const [over, setOver] = useState(false);
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChange = (e: TargetedEvent<HTMLInputElement, Event>) => {
     const files = e.currentTarget.files;
     const first = files?.[0];
     if (first) onPick(first, (files?.length ?? 1) - 1);
     e.currentTarget.value = ''; // lets the same file be chosen again
   };
-  const onDrop = (e: DragEvent<HTMLDivElement>) => {
+  const onDrop = (e: TargetedDragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setOver(false);
     const files = e.dataTransfer?.files;
     if (disabled || !files || files.length === 0) return;
     onPick(files[0], files.length - 1);
   };
-  const onDragOver = (e: DragEvent<HTMLDivElement>) => {
+  const onDragOver = (e: TargetedDragEvent<HTMLDivElement>) => {
     if (!e.dataTransfer?.types?.includes('Files')) return;
     e.preventDefault(); // required to allow a drop
     e.dataTransfer.dropEffect = 'copy';
     setOver(true);
   };
-  const onDragLeave = (e: DragEvent<HTMLDivElement>) => {
+  const onDragLeave = (e: TargetedDragEvent<HTMLDivElement>) => {
     if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setOver(false);
   };
 

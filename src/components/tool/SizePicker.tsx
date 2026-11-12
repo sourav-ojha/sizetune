@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId } from 'preact/hooks';
 import { activePreset, PRESETS_KB, type FieldErrors, type FormState } from './options';
 import { btnToggleOff, btnToggleOn, errCls, fieldsetCls, hintCls, inputCls, labelCls, legendCls } from './ui';
 
@@ -54,7 +54,7 @@ export default function SizePicker({ form, errors, update, showQuality = true }:
           value={form.noLimit ? '' : form.maxKb}
           aria-invalid={errors.maxKb ? true : undefined}
           aria-describedby={errors.maxKb ? errId : `${id}-hint`}
-          onChange={(e) => update({ maxKb: e.target.value, noLimit: false })}
+          onChange={(e) => update({ maxKb: e.currentTarget.value, noLimit: false })}
         />
         {errors.maxKb ? <p id={errId} className={errCls}>{errors.maxKb}</p> : (
           <p id={`${id}-hint`} className={hintCls}>
@@ -74,7 +74,7 @@ export default function SizePicker({ form, errors, update, showQuality = true }:
             step={1}
             value={form.quality}
             className="mt-1 h-11 w-full accent-indigo-800"
-            onChange={(e) => update({ quality: Number(e.target.value) })}
+            onChange={(e) => update({ quality: Number(e.currentTarget.value) })}
           />
           <p className={hintCls}>Without a size limit the image is saved at this fixed quality. Higher quality means a larger file.</p>
         </div>

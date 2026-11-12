@@ -1,4 +1,5 @@
-import { useEffect, useId, useRef, type ReactNode } from 'react';
+import type { ComponentChildren } from 'preact';
+import { useEffect, useId, useRef } from 'preact/hooks';
 import { derivedDimension, parseNumber, type FieldErrors, type FormState } from './options';
 import { errCls, fieldsetCls, hintCls, inputCls, labelCls, legendCls } from './ui';
 
@@ -21,7 +22,7 @@ function NumberField({ id, label, value, onChange, error, placeholder, testId, h
         placeholder={placeholder}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${id}-err` : hint ? `${id}-hint` : undefined}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => onChange(e.currentTarget.value)}
       />
       {error ? <p id={`${id}-err`} className={errCls}>{error}</p> : hint ? <p id={`${id}-hint`} className={hintCls}>{hint}</p> : null}
     </div>
@@ -46,7 +47,7 @@ export function MinimumField({ form, errors, update }: UpdateProps) {
       />
       {form.minKb.trim() !== '' && free && (
         <label className="flex min-h-11 items-start gap-2 text-sm text-slate-900">
-          <input type="checkbox" data-testid="allow-enlarge" className="mt-1 size-5 accent-indigo-800" checked={form.allowEnlarge} onChange={(e) => update({ allowEnlarge: e.target.checked })} />
+          <input type="checkbox" data-testid="allow-enlarge" className="mt-1 size-5 accent-indigo-800" checked={form.allowEnlarge} onChange={(e) => update({ allowEnlarge: e.currentTarget.checked })} />
           <span>Allow enlarging the picture (more pixels than the original) to reach the minimum. This adds no detail.</span>
         </label>
       )}
@@ -94,7 +95,7 @@ export function DimensionFields({ form, errors, update, basis, showMax, legend =
         <NumberField id={`${id}-h`} testId="height" label="Height (px)" value={form.height} error={errors.height} placeholder={phH ? String(phH) : 'auto'} onChange={(v) => update({ height: v })} />
       </div>
       <label className="flex min-h-11 items-center gap-2 text-sm text-slate-900">
-        <input type="checkbox" data-testid="lock-aspect" className="size-5 accent-indigo-800" checked={form.lockAspect} onChange={(e) => update({ lockAspect: e.target.checked })} />
+        <input type="checkbox" data-testid="lock-aspect" className="size-5 accent-indigo-800" checked={form.lockAspect} onChange={(e) => update({ lockAspect: e.currentTarget.checked })} />
         <span>Keep the aspect ratio</span>
       </label>
       {(both || !form.lockAspect) && (
@@ -107,7 +108,7 @@ export function DimensionFields({ form, errors, update, basis, showMax, legend =
             value={form.lockAspect ? form.fit : 'stretch'}
             disabled={!form.lockAspect}
             aria-describedby={`${id}-fit-hint`}
-            onChange={(e) => update({ fit: e.target.value as FormState['fit'] })}
+            onChange={(e) => update({ fit: e.currentTarget.value as FormState['fit'] })}
           >
             <option value="contain">Fit inside the size (nothing is cropped)</option>
             <option value="cover">Fill the size (edges are cropped)</option>
@@ -132,7 +133,7 @@ export function DimensionFields({ form, errors, update, basis, showMax, legend =
 }
 
  /** `forceOpen`: a field inside has an error, so the section must not hide it. */
-export function AdvancedBlock({ children, forceOpen }: { children: ReactNode; forceOpen?: boolean }) {
+export function AdvancedBlock({ children, forceOpen }: { children: ComponentChildren; forceOpen?: boolean }) {
   const ref = useRef<HTMLDetailsElement>(null);
   useEffect(() => { if (forceOpen && ref.current) ref.current.open = true; }, [forceOpen]);
   return (

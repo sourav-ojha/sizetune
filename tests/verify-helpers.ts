@@ -34,9 +34,14 @@ export const pagesOf = (d: string, t: string | string[]) => htmlFiles(d).filter(
 export const firstOf = (d: string, t: string | string[]) => { const f = pagesOf(d, t)[0]; if (!f) throw new Error(`no page of type ${t} in dist`); return f; };
 export const toolFile = (d: string) => firstOf(d, ['tool', 'home']);
 export const jsChunks = (d: string) => readdirSync(join(d, '_astro')).filter((f) => f.endsWith('.js')).map((f) => `_astro/${f}`);
-/** An app-owned (non react-dom) chunk loaded by a tool page. */
-export const appChunk = (d: string) => jsChunks(d).find((f) => !/client\./.test(f) && read(d, f).length > 1000 && !/compress\.worker/.test(f)) ?? jsChunks(d).find((f) => !/client\./.test(f))!;
+/** UI-runtime chunks (not app code): Astro island client, Preact core+compat, preact/hooks, bundled @preact/signals. */
+const RUNTIME_NAMES = /_astro\/(client|preact|hooks|signals\.module)\./;
+/** An app-owned (non-Preact-runtime) chunk loaded by a tool page. */
+export const appChunk = (d: string) => jsChunks(d).find((f) => !RUNTIME_NAMES.test(f) && read(d, f).length > 1000 && !/compress\.worker/.test(f)) ?? jsChunks(d).find((f) => !RUNTIME_NAMES.test(f))!;
 export const cssChunk = (d: string) => '_astro/' + readdirSync(join(d, '_astro')).find((f) => f.endsWith('.css'))!;
-export const reactChunk = (d: string) => jsChunks(d).find((f) => /__reactFiber\$|react\.dev\/errors/.test(read(d, f)))!;
+/** The Preact core+compat chunk (the one that legitimately holds the XML-namespace URLs). */
+export const preactChunk = (d: string) => jsChunks(d).find((f) => /foreignObject/.test(read(d, f)) && /Math\/MathML/.test(read(d, f)))!;
+/** The @astrojs/preact island hydrator (holds the one audited dynamic import of the bundled signals chunk). */
+export const clientChunk = (d: string) => jsChunks(d).find((f) => /data-preact-island-id/.test(read(d, f)))!;
 export const headEnd = (s: string, add: string) => s.replace('</head>', add + '</head>');
 export const mainEnd = (s: string, add: string) => s.replace('</main>', add + '</main>');
