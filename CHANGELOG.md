@@ -2,6 +2,7 @@
 
 ## Unreleased — staging audit sprint (2026-11-13, local commits `c8ec1ea`, `3220309`; not pushed, not deployed)
 ### Added
+- CI: Firefox project retries once on CI (`retries: process.env.CI ? 1 : 0`, Firefox only) after Firefox content-process "Page crashed" failures inside axe.run on three CI runs, on different tests each time, never reproducible locally. A deterministic failure still fails twice; Chrome and WebKit have no retry.
 - Signature crop editor: zoom slider (100-400%), crop shape presets (free, 2:1, 3:1, 4:1, 1:1 via `fitAspect()`), auto-trim margin menu.
 - Result compare: Fit / 2x / 4x zoom in a scrollable frame.
 - `_headers`: `Content-Security-Policy: connect-src 'none'` on `/_astro/*.js` (worker scripts).
