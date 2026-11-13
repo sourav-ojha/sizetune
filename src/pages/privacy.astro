@@ -2,74 +2,125 @@
 import Base from '../layouts/Base.astro';
 import { proseClass } from './_seo';
 ---
-<Base pageType="policy" title="Privacy policy | SizeTune" description="What SizeTune does and does not collect: images stay in your browser, there are no accounts, ads or analytics, and the host handles ordinary request data." path="/privacy/">
+<Base pageType="policy" title="Privacy policy | SizeTune" description="What SizeTune collects: images are resized in your browser, with currently no accounts, ads or analytics scripts. The host handles ordinary request data." path="/privacy/">
   <h1 class="mb-3 text-3xl font-bold">Privacy policy</h1>
   <div class={proseClass}>
-    <p>Last updated 12 November 2026. [[HUMAN: legal review pending. Have a lawyer review this policy before launch, then replace this marker with the review date or remove it.]]</p>
+    <p><strong>Effective and last updated: 13 November 2026.</strong> This policy covers the website at sizetune.com. The <a href="/terms/">terms of use</a> apply alongside it.</p>
 
     <h2>The short version</h2>
-    <p>
-      You choose an image, your browser resizes it, and you download the result. SizeTune has no accounts, no ads and no
-      analytics scripts at the time of writing. The code of this site does not upload your images.
-    </p>
+    <ul>
+      <li>You choose an image, your browser resizes it, and you download the result. The code of this site does not upload your image.</li>
+      <li>There are no accounts, no advertising and no analytics scripts in SizeTune's code today.</li>
+      <li>The code of this site sets no cookies and writes nothing to your browser's storage.</li>
+      <li>Like any website, the hosting provider receives ordinary request details when you open a page. These are explained below.</li>
+    </ul>
 
     <h2>Who is responsible</h2>
     <p>
-      The site is run by an independent developer, Kiran T.
-      Questions about privacy can be sent to <a href="mailto:hello@sizetune.com">hello@sizetune.com</a>. More about the
-      site is on the <a href="/about/">about page</a>.
+      SizeTune is run by an independent developer, Kiran T., based in India. Kiran T. decides how the site works and is
+      the person responsible for this policy. The contact for privacy questions, requests and complaints is <a href="mailto:hello@sizetune.com">hello@sizetune.com</a>. More about the site is on the <a href="/about/">about page</a>.
     </p>
 
-    <h2>Your images</h2>
+    <h2>Your images and signatures</h2>
     <p>
-      When you pick or drop a file, it is read by code running inside your own browser. The resizing, cropping and
-      re-encoding happen on your device. SizeTune's code does not send the image, or any part of it, to a server, and we
-      keep no copy. When you close the tab, the working data is released by your browser.
+      When you pick or drop a file, it is read and changed by code running inside your own browser. The resizing,
+      cropping and re-encoding happen on your device. When we tested the site's code on a local copy, no request carried your
+      image, its file name or its metadata. We keep no copy. Your browser releases the working data when you close
+      the tab.
     </p>
+    <ul>
+      <li>The file you download is named after your original file, with "-sizetune" added. That name stays on your device unless you share the file. If you choose "keep your original" instead, you get your original file unchanged, with its metadata.</li>
+      <li>The resized file does not copy the original's camera details or location data (EXIF). We tested this with JPEG, PNG and WebP, but you should check the result if it matters to you. A colour profile may remain.</li>
+      <li>We do not look at, review, verify or keep your images, and we cannot recover one for you.</li>
+    </ul>
     <p>
-      Some things sit outside the site's control. A browser extension may be able to read pages you open, your device may
-      back up files you download, and the file you save goes wherever your browser's download settings put it. Re-saving
-      a picture generally drops its camera metadata such as location, but you should check the result if that matters to
-      you.
-    </p>
-
-    <h2>What the host receives</h2>
-    <p>
-      The website is delivered by Cloudflare. Like any web host, it receives the ordinary details of each request:
-      your IP address, the page address, your browser's user agent, the time and the approximate country. Cloudflare may
-      keep such records under its own policies. Our code adds nothing to that, and the requests do not include your
-      images.
+      Some things are outside the site's control: a browser extension may be able to read pages you open, your device may
+      back up the files you download, and the downloaded file goes wherever your browser's settings put it.
     </p>
 
-    <h2>Cookies and storage</h2>
+    <h2>What the hosting provider receives</h2>
     <p>
-      The code of this site sets no cookies and does not use localStorage, sessionStorage, IndexedDB or the Cache API. Your
-      browser may keep ordinary cached copies of the site's files so that pages load faster, which is normal behaviour
-      and not tracking. The site is hosted on Cloudflare, which may process request data and send network-error
-      reports under its own policies; any cookie set by the hosting layer rather than by this site's code is outside
-      our code's control. When we tested the site, no cookies were set.
+      The website is delivered through Cloudflare. When you open a page, Cloudflare receives the ordinary details of the
+      request: your IP address, the page address, your browser and device type, the time, and your approximate location.
+      Cloudflare uses this to deliver the site, keep it secure and keep it running. It may keep records of requests
+      under its own policies and for periods set by Cloudflare's rules and our account settings. We have not added our own
+      logging, tracking or analytics scripts to the site, but Cloudflare may show the owner aggregated traffic
+      statistics and may keep request logs for the site. These requests never include your images.
+    </p>
+    <p>
+      We do not use this information to identify, profile or contact you. Cloudflare handles your IP address as our service provider, and it also uses request data
+      for its own security purposes. Because the service runs on Cloudflare's worldwide
+      network, request data can be handled in countries outside India.
     </p>
 
-    <h2>Analytics, advertising and search statistics</h2>
+    <h2>Cookies and browser storage</h2>
     <p>
-      SizeTune currently runs no analytics and shows no advertising. [[HUMAN: confirm whether you use Google Search Console; keep or delete this sentence and the next one]] The owner uses Google Search Console to see how the
-      site appears in Google Search. That service works from Google's own data and does not need any script on these
-      pages. If analytics or advertising are ever added, this page will be updated before they go live, with the
-      vendors, cookies and your choices described.
+      The code of this site sets no cookies and does not use localStorage, sessionStorage, IndexedDB or the Cache API. When
+      we tested the site's code on a local copy, no cookies were set. Your browser may keep ordinary cached copies of the site's files so pages
+      load faster, which is normal and not tracking. Security or network features on the hosting layer may use their own
+      cookies or reports, and those are governed by Cloudflare's policies.
     </p>
 
-    <h2>Your rights and contact</h2>
+    <h2>If you email us</h2>
     <p>
-      Because we hold no images, accounts or profiles, there is very little personal data for us to access, correct or
-      delete. If you believe we hold something about you, or you have a concern about this policy, write to the
-      contact address above. Where the law gives you rights over your data, you can also contact your local data
-      protection authority.
+      If you write to <a href="mailto:hello@sizetune.com">hello@sizetune.com</a>, we receive your email address and
+      whatever you put in the message. We use it only to reply, to fix problems and to deal with your request, and we do
+      not sell it or use it for marketing. We keep the message only for as long as we need it for those purposes or the
+      law requires, and you can ask us to delete it. The email service that carries our mail handles it as our service
+      provider.
+    </p>
+
+    <h2>Analytics, advertising and search</h2>
+    <p>
+      SizeTune's code currently runs no analytics and shows no advertising. We may add advertising to some pages in future,
+      possibly through Google AdSense. We would update this policy before any advertising starts, and the tools on
+      SizeTune are meant to stay free of ads. If advertising uses cookies or similar technology, the update would name the
+      companies involved, say what they collect and tell you how to say no. Where the law requires your consent, for
+      example for visitors in the European Economic Area, the United Kingdom or Switzerland, we would ask for it through a
+      consent tool before ads that need it appear.
+    </p>
+    <p>
+      We may use Google Search Console in future to see how the site appears in Google Search. It is not set up at the
+      date above. It reports on search performance from Google's own data and needs no script on these pages.
+    </p>
+
+    <h2>Sharing</h2>
+    <p>
+      We do not sell your information. We share it only with the service providers mentioned above, who help us run the
+      site (and who may also use it as described above), and with authorities when the law requires us to do so.
+    </p>
+
+    <h2>Security</h2>
+    <p>
+      The site is served over HTTPS and holds no images, accounts or profiles. No system can be made perfectly secure. If
+      a security incident affects personal information we hold, we will tell the people affected and the authorities as
+      the law requires.
+    </p>
+
+    <h2>Your rights, requests and complaints</h2>
+    <p>
+      Because we do not hold your images or an account for you, there is little personal data for us to give you. If you
+      think we hold information about you, you can ask us to tell you what it is, correct it or delete it, and you can
+      name someone to act for you. Write to <a href="mailto:hello@sizetune.com">hello@sizetune.com</a>; please say
+      what you want and use the same email address you wrote from, so we can match your request. We aim to resolve requests and complaints within one month, and in any case within the time the law allows.
+    </p>
+    <p>
+      That address is also our grievance contact, and it is handled by Kiran T. If we do not resolve your complaint, you
+      can take it further with the Data Protection Board of India once that route is open to you, or with the authority
+      that protects personal data where you live.
+    </p>
+
+    <h2>Children</h2>
+    <p>
+      SizeTune is not designed for children, and we do not knowingly ask children for personal information. The tool
+      is often used for application forms, so if you are under 18, a parent or guardian must agree to the terms for you and supervise your use of it.
+      If a child has emailed us and a parent or guardian wants the message deleted, write to the address above.
     </p>
 
     <h2>Changes</h2>
     <p>
-      We will change this page when the site's behaviour changes and update the date at the top. The terms of use are
-      on the <a href="/terms/">terms page</a>, and you can try the tool on the <a href="/">home page</a>.
+      We will change this page when the site's behaviour changes, and update the date at the top. If a change affects
+      how we handle your information, it will be shown here before the new handling starts. You can try the tool on the <a href="/">home page</a>.
     </p>
   </div>
 </Base>

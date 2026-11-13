@@ -69,7 +69,7 @@ export default function Dropzone({ inputRef, hasFile, capText, disabled, onPick 
         />
       </label>
       <p id={hintId} className="mt-4 text-sm text-slate-600">
-        Supported: JPEG, PNG and WebP.{capText ? ` ${capText}` : ''} Your image stays in this browser; nothing is uploaded.
+        Supported: JPEG, PNG and WebP.{capText ? ` ${capText}` : ''} Your image stays in this browser; the site's code does not upload it.
       </p>
     </div>
   );
