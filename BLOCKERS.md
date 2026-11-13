@@ -21,6 +21,15 @@ Nothing below has been done by an agent: no push, no deploy, no DNS change, no a
 | H12 | AdSense strategy (ads only on content pages, never tool pages — policy D6; consent tool for EEA/UK/CH). **Nothing is enabled.** Analytics: none at launch. | ads |
 | H13 | After 1–2 stable weeks live: HSTS (zone setting, small max-age), Search Console DNS verification + sitemap `https://sizetune.com/sitemap-index.xml`, Bing optional. | post-launch |
 
+## A2. Added by the 2026-11-13 audit (human decisions that still block launch)
+| # | Action | Detail |
+|--|--|--|
+| H14 | Resolve legal markers; legal review stays pending | `/privacy/` (legal-review-pending, Search Console sentence) and `/terms/` (legal-review-pending, governing law/jurisdiction). Not guessed by an agent. Review by an Indian lawyer is still required; no compliance is claimed. |
+| H15 | Confirm the public identity | About/Privacy/Terms publicly show the pseudonym "Kiran T." and hello@sizetune.com. Confirm both are intended to be public and that the mailbox receives mail (not verified by an agent). |
+| H16 | Point sizetune.com at the Worker | Domain does not resolve yet, so canonicals, OG image and sitemap target nothing. After launch: `curl -sI https://sizetune.com/ \| grep -i x-robots` must print nothing; add HSTS (H13). |
+| H17 | Approve an OG image | Draft recommendation in `QA/SEO_AUDIT.md`; nothing generated. |
+| H18 | Deploy staging | Staging still serves the pre-redesign build; the Firefox "Page crashed" in cross-browser CI blocked `deploy-staging` on `4e46c1b`. Re-run or push is the owner's call. |
+
 ## B. Open technical risks
 | ID | Sev | Risk | Status / next |
 |--|--|--|--|
@@ -37,6 +46,7 @@ Nothing below has been done by an agent: no push, no deploy, no DNS change, no a
 | B11 | MED | Very large sources (>36 MP) get no preview by design; sources >100 MP refused; 16 MP output cap. Message copy is honest but may frustrate users with 108/200 MP phones. | revisit after H2 |
 | B12 | LOW | Hydration glitch from the simulator (smoke report D5: first tap ignored before hydration) cannot be fixed in UI; `client:load` vs `client:idle` not re-evaluated. | monitor |
 | B13 | LOW | Dependency hygiene: TypeScript held at 6.0.3 by `@astrojs/check`; install scripts (esbuild, workerd, fsevents, sharp); Actions pinned by tag not SHA; `axe-core`, `sharp` test/dev-only pinned. | monthly |
+| B15 | MED | Signature: no live crop preview, no two-finger pinch (zoom is a slider); compare zoom limited by the 1024 px preview. 24 MP and 48 MP not individually tested. | follow-up |
 | B14 | LOW | 307 (not 301) trailing-slash redirects by Cloudflare default; internal links are canonical; canonical tags are the backstop. | accepted |
 
 ## C. Closed in this sprint (was open before)

@@ -1,5 +1,19 @@
 # CHANGELOG — SizeTune (local only; nothing released or deployed)
 
+## Unreleased — staging audit sprint (2026-11-13, local commits `c8ec1ea`, `3220309`; not pushed, not deployed)
+### Added
+- Signature crop editor: zoom slider (100-400%), crop shape presets (free, 2:1, 3:1, 4:1, 1:1 via `fitAspect()`), auto-trim margin menu.
+- Result compare: Fit / 2x / 4x zoom in a scrollable frame.
+- `_headers`: `Content-Security-Policy: connect-src 'none'` on `/_astro/*.js` (worker scripts).
+- QA docs: `STAGING_AUDIT.md`, `UX_AND_ACCESSIBILITY.md`, `COMPRESSION_WORKFLOW.md`, `PRIVACY_SECURITY_AUDIT.md`, `SEO_AUDIT.md`; 72 screenshots in `QA/screenshots/`.
+### Changed
+- Header/footer links are 44 px tall (were 20-32 px). Signature output-size fieldset moved below the size picker.
+- Copy: quality-first, PNG->JPEG preselect exception, 1000/1024 caveat, "up to about 19.5 KB", no WebP claim on the signature page, fuller cookies/storage/hosting statement on `/privacy/`, typo "Kiran T..".
+### Tests
+- +3 `fitAspect` unit tests, +6 e2e (shape, zoom, margin, compare zoom, link size, worker CSP header). `pnpm run verify` exit 0: 676 unit, 196 Chrome e2e.
+### Not changed
+- Engine (no defect found), legal text meaning, OG image, deploy config, markers.
+
 ## Unreleased — autonomous product build sprint (2026-11-12)
 ### Added
 - **Compression engine** (`src/lib/engine/`, docs `docs/engine/ENGINE.md`): JPEG/PNG/WebP input validated by magic bytes; dimensions read from file headers before decoding; reduced-size decode for large sources; byte-window targeting `[min·1024, max·1000]` with integer-quality bisect + continuous scale search (≤20 encodes); statuses `ok | raised | below_min | above_max | above_max_fixed`; real `blob.size` and magic-byte verification for every candidate; no metadata padding (`allowPadding` rejected); alpha never flattened silently (disclosure notes); WebP capability probe `canEncode()`; Web Worker client with cancellation, timeout, stale protection; main-thread fallback by feature detection only; optional ICC strip; EXIF orientation + GPS/Make/Model stripping verified by tests.
