@@ -1,4 +1,4 @@
-# Quality gate. Inactive until the repo is pushed to GitHub (human step).
+# Quality gate + gated deploys (see deploy-* jobs below).
 # Pair with a branch ruleset on `main` requiring PR + this check ("verify"), no bypass, BEFORE connecting Cloudflare Workers Builds
 # (Workers Builds deploys every push to the production branch regardless of this workflow).
 name: ci
@@ -40,3 +40,54 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: failure()
         with: { name: playwright-results-cross-browser, path: test-results/ }
+
+  # ---- Deploys: only after BOTH quality jobs are green, only on push (never on pull_request). ----
+  # dev -> Worker "sizetune-staging" (workers.dev). main -> Worker "sizetune" (sizetune.com).
+  # Inert until the repo secrets CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID exist (it then skips, not fails).
+  deploy-staging:
+    needs: [verify, cross-browser]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    concurrency: { group: deploy-staging, cancel-in-progress: false }
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - id: gate
+        run: |
+          if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ]; then echo "ready=true" >> "$GITHUB_OUTPUT"; else echo "Cloudflare secrets not set; skipping deploy."; fi
+      - if: steps.gate.outputs.ready == 'true'
+        uses: actions/checkout@v4
+      - if: steps.gate.outputs.ready == 'true'
+        uses: pnpm/action-setup@v4
+      - if: steps.gate.outputs.ready == 'true'
+        uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: pnpm }
+      - if: steps.gate.outputs.ready == 'true'
+        run: pnpm install --frozen-lockfile
+      - if: steps.gate.outputs.ready == 'true'
+        run: pnpm run build
+      - if: steps.gate.outputs.ready == 'true'
+        run: pnpm exec wrangler deploy --env staging
+
+  deploy-production:
+    needs: [verify, cross-browser]
+    # Needs the repo VARIABLE PRODUCTION_DEPLOY_ENABLED=true (a deliberate switch, off by default) AND the secrets.
+    # Also uses the "production" environment: add a required reviewer there so every deploy waits for a human click.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.PRODUCTION_DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment: production
+    concurrency: { group: deploy-production, cancel-in-progress: false }
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: .nvmrc, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build
+      - run: pnpm exec wrangler deploy
