@@ -210,7 +210,7 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
               </div>
               <div>
                 <label htmlFor="crop-shape" className={labelCls}>Crop shape</label>
-                <select id="crop-shape" data-testid="crop-shape" className={`${inputCls} mt-1`} value={shape} onChange={(e) => applyShape(e.currentTarget.value)}>
+                <select id="crop-shape" data-testid="crop-shape" className={`${inputCls} mt-1`} value={shape} disabled={!crop} onChange={(e) => applyShape(e.currentTarget.value)}>
                   {SHAPES.map(([k, l]) => <option key={k} value={k}>{l}</option>)}
                 </select>
               </div>

@@ -13,6 +13,7 @@
 - +3 `fitAspect` unit tests, +6 e2e (shape, zoom, margin, compare zoom, link size, worker CSP header). `pnpm run verify` exit 0: 677 unit, 198 Chrome e2e (after independent-review fixes).
 ### CI follow-up (2026-11-13, after the first push of these commits)
 - `cross-browser` on `c666677` failed 4 tests. Two were my new shape tests, which I had only run on Chrome: the fixture is already 3:1, so choosing 3:1 fired no change event; they now use 4:1 and 2:1. The Firefox "Page crashed" in `axe.spec.ts:142` recurred on a second run (so it is not a one-off); it was never reproduced locally. Mitigation, not a proven fix: the crop box's `0 0 0 9999px` box-shadow dimming is replaced by a `clip-path` overlay limited to the picture. Local Chrome+Firefox+WebKit: 180 passed for signature/axe/mobile; `verify` 677 unit, 198 Chrome e2e.
+- Second CI run (`33fd9f5`): the Firefox axe crash did not recur (386 passed). Two WebKit shape tests still flaked: `pick()` only waits for Resize to be enabled, so the shape menu could be used before the crop was initialised and the change was ignored. Reproduced locally under load (4/50), fixed by disabling the menu until a crop exists and waiting for it in the tests; 612 passed (signature spec x12 on Chrome, Firefox, WebKit, 6 workers).
 ### Not changed
 - Engine (no defect found), legal text meaning, OG image, deploy config, markers.
 

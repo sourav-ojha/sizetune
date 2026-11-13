@@ -47,7 +47,10 @@ test.describe('signature tool', () => {
   test('crop shape preset reshapes the box and the output', async ({ page }) => {
     await openTool(page, URL);
     await pick(page, sig());
+    await crop(page); // crop initialised (pick only waits for Resize to be enabled)
+    await expect(page.getByTestId('crop-shape')).toBeEnabled();
     await page.getByTestId('crop-shape').selectOption('4'); // the fixture is already 3:1, so 3 would not change the menu
+    await expect(page.getByTestId('lock-crop')).toBeChecked();
     const c = await crop(page);
     expect(Math.abs(c.w / c.h - 4)).toBeLessThan(0.05);
     await expect(page.getByTestId('lock-crop')).toBeChecked();
@@ -96,6 +99,8 @@ test.describe('signature tool', () => {
   test('crop shape menu follows the real crop and Free releases the lock', async ({ page }) => {
     await openTool(page, URL);
     await pick(page, sig());
+    await crop(page);
+    await expect(page.getByTestId('crop-shape')).toBeEnabled();
     await page.getByTestId('crop-shape').selectOption('2');
     await expect(page.getByTestId('crop-shape')).toHaveValue('2');
     await expect(page.getByTestId('lock-crop')).toBeChecked();
