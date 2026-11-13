@@ -156,10 +156,11 @@ test('axe harness self-test: it really detects missing names, missing alt, low c
   await page.goto('/privacy/');
   await page.evaluate(() => {
     const d = document.createElement('div');
-    d.innerHTML = '<button id="t-empty"></button><img id="t-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" /><p id="t-low">Low contrast text sample</p><a id="t-tiny" href="#x">.</a>';
+    d.innerHTML = '<button id="t-empty"></button><img id="t-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" /><p id="t-low">Low contrast text sample</p><a id="t-tiny" href="#x">.</a><a id="t-tiny2" href="#y">.</a>';
     document.body.prepend(d);
     const p = document.getElementById('t-low')!; p.style.color = '#bbbbbb'; p.style.background = '#ffffff';
     const a = document.getElementById('t-tiny')!; a.style.display = 'inline-block'; a.style.width = '10px'; a.style.height = '10px'; a.style.fontSize = '8px';
+    const a2 = document.getElementById('t-tiny2')!; a2.style.display = 'inline-block'; a2.style.width = '10px'; a2.style.height = '10px'; a2.style.fontSize = '8px'; a2.style.marginLeft = '4px'; // two undersized targets close together: fails WCAG 2.5.8 whatever else is nearby
   });
   const ids = (await runAxe(page)).map((v) => v.id);
   for (const id of ['button-name', 'image-alt', 'color-contrast', 'target-size']) expect(ids, `axe must report ${id}`).toContain(id);

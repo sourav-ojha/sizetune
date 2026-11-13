@@ -38,7 +38,7 @@ export default function Compare({ beforeUrl, afterUrl, beforeLabel = 'Original',
         step={1}
         value={pos}
         aria-valuetext={text}
-        className="h-11 w-full accent-indigo-800"
+        className="h-11 w-full accent-teal-700"
         onChange={(e) => setPos(Number(e.currentTarget.value))}
       />
       <div className="flex flex-wrap gap-2" role="group" aria-label="Quick comparison views">

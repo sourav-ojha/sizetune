@@ -46,11 +46,16 @@ export default function Dropzone({ inputRef, hasFile, capText, disabled, onPick 
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDrop}
-      className={`rounded-xl border-2 border-dashed p-4 text-center sm:p-6 ${over ? 'border-indigo-800 bg-indigo-50' : 'border-slate-500 bg-slate-50'}`}
+      className={`rounded-2xl border-2 border-dashed text-center transition-colors ${hasFile ? 'p-4 sm:p-5' : 'px-4 py-10 sm:py-14'} ${over ? 'border-teal-700 bg-teal-50' : 'border-slate-300 bg-slate-50/70 hover:border-teal-600 hover:bg-teal-50/60'}`}
     >
-      {!hasFile && <p className="text-base font-medium text-slate-900">Drag and drop an image here</p>}
-      {!hasFile && <p className="my-1 text-sm text-slate-700">or</p>}
-      <label className={`${btnPrimary} cursor-pointer has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-indigo-800 ${disabled ? 'opacity-50' : ''}`}>
+      {!hasFile && (
+        <span aria-hidden="true" className="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-teal-100 text-teal-800">
+          <svg viewBox="0 0 24 24" className="size-7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 16V5m0 0-4 4m4-4 4 4" /><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" /></svg>
+        </span>
+      )}
+      {!hasFile && <p className="text-lg font-semibold tracking-tight text-slate-900 sm:text-xl">Drag and drop an image here</p>}
+      {!hasFile && <p className="my-1.5 text-sm text-slate-600">or</p>}
+      <label className={`${btnPrimary} cursor-pointer has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-teal-700 ${disabled ? 'opacity-50' : ''}`}>
         <span>{hasFile ? 'Choose a different image' : 'Choose image'}</span>
         <input
           ref={inputRef}
@@ -63,7 +68,7 @@ export default function Dropzone({ inputRef, hasFile, capText, disabled, onPick 
           onChange={onChange}
         />
       </label>
-      <p id={hintId} className="mt-3 text-sm text-slate-700">
+      <p id={hintId} className="mt-4 text-sm text-slate-600">
         Supported: JPEG, PNG and WebP.{capText ? ` ${capText}` : ''} Your image stays in this browser; nothing is uploaded.
       </p>
     </div>

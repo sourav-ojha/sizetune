@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ImageTool from '../components/ImageTool.tsx';
+import Hero from '../components/Hero.astro';
 import { webApplicationLd, proseClass } from './_seo';
 const title = 'Resize Image to 20 KB Online | SizeTune';
 const description =
@@ -8,15 +9,11 @@ const description =
 const jsonLd = webApplicationLd('SizeTune: resize image to 20 KB', '/resize-image-to-20kb/', description);
 ---
 <Base pageType="tool" title={title} description={description} path="/resize-image-to-20kb/" jsonLd={jsonLd}>
-  <h1 class="mb-3 text-3xl font-bold">Resize an image to 20 KB</h1>
-  <p class="mb-6">
-    The tool below starts with a 20 KB maximum already selected. Add your picture, check the result and download it.
-    You can change the limit, or add a minimum, if your form says something different.
-  </p>
+  <Hero title="Resize an image to 20 KB" lead="The tool below starts with a 20 KB maximum already selected. Add your picture, check the result and download it. You can change the limit, or add a minimum, if your form says something different." />
 
   <ImageTool client:load defaultMaxKb={20} />
   <noscript>
-    <p class="mt-4 rounded border border-amber-400 bg-amber-50 p-3">
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
       This tool shrinks images inside your browser, so it will not run while JavaScript is turned off. Enable JavaScript
       and reload to use it. The advice on this page about reaching 20 KB still applies if you prefer to use another
       editor.

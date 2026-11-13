@@ -86,7 +86,7 @@ export default function ResultPanel({ view, originalName, original, preview, onR
       aria-labelledby="sizetune-result-heading"
       className={`space-y-4 rounded-xl border-2 p-4 sm:p-5 ${frame}`}
     >
-      <h3 id="sizetune-result-heading" ref={headingRef} tabIndex={-1} className="text-lg font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-800" data-testid="result-heading">
+      <h3 id="sizetune-result-heading" ref={headingRef} tabIndex={-1} className="text-lg font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700" data-testid="result-heading">
         <span aria-hidden="true">{good ? '✓ ' : '⚠ '}</span>{larger && ok ? 'The result is larger than your original' : HEADING[data.status]}
       </h3>
 

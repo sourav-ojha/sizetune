@@ -17,7 +17,7 @@ const canonical = new URL(path, Astro.site).href;
 const ogImage = new URL('/og-default.png', Astro.site).href;
 const ogImageAlt = 'SizeTune: resize an image to a size in KB, in your browser';
 const navItems = [
-  { href: '/', label: 'Home' },
+  { href: '/', label: 'Image resizer' },
   { href: '/resize-image-to-20kb/', label: '20 KB' },
   { href: '/resize-signature/', label: 'Signature' },
   { href: '/guides/photo-size-for-online-forms/', label: 'Guide' },
@@ -52,24 +52,37 @@ const navItems = [
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
   </head>
-  <body data-page-type={pageType} class="mx-auto max-w-3xl px-4 py-6 text-slate-900">
-    <a href="#main" class="sr-only focus:not-sr-only focus:underline">Skip to main content</a>
-    <header class="mb-8 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-      <a href="/" class="text-xl font-bold">SizeTune</a>
-      <nav aria-label="Main" class="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-        {navItems.map((n) => (
-          <a href={n.href} class="underline-offset-2 hover:underline" aria-current={n.href === path ? 'page' : undefined}>{n.label}</a>
-        ))}
-      </nav>
+  <body data-page-type={pageType} class="text-slate-900 antialiased">
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:font-semibold focus:shadow-pop">Skip to main content</a>
+    <header class="relative z-40 border-b border-slate-200/70 bg-white/80 backdrop-blur">
+      <div class="mx-auto flex max-w-5xl flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <a href="/" class="flex items-center gap-2.5 rounded-lg text-xl font-bold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+          <svg aria-hidden="true" viewBox="0 0 32 32" class="size-8 shrink-0"><rect width="32" height="32" rx="9" fill="#0f766e" /><path d="M9 11h14M9 16h14M9 21h14" stroke="#ccfbf1" stroke-width="2" stroke-linecap="round" /><circle cx="13" cy="11" r="2.6" fill="#fff" /><circle cx="20" cy="16" r="2.6" fill="#fff" /><circle cx="12" cy="21" r="2.6" fill="#fff" /></svg>
+          SizeTune
+        </a>
+        <nav aria-label="Main" class="-mx-1 flex flex-wrap gap-1 text-sm font-medium">
+          {navItems.map((n) => (
+            <a href={n.href} class="rounded-lg px-3 py-1.5 text-slate-700 hover:bg-slate-100 hover:text-slate-900 aria-[current=page]:bg-teal-50 aria-[current=page]:font-semibold aria-[current=page]:text-teal-900 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-teal-700" aria-current={n.href === path ? 'page' : undefined}>{n.label}</a>
+          ))}
+        </nav>
+      </div>
     </header>
-    <main id="main"><slot /></main>
-    <footer class="mt-12 border-t pt-4 text-sm text-slate-600">
-      <nav aria-label="Footer" class="flex flex-wrap gap-x-4 gap-y-1">
-        {navItems.map((n) => (
-          <a href={n.href} class="underline">{n.label}</a>
-        ))}
-      </nav>
-      <p class="mt-3">SizeTune is a free image resizer. Your images are processed in your browser.</p>
+    <main id="main" class="mx-auto max-w-3xl px-4 pb-8 pt-8 sm:pt-12"><slot /></main>
+    <footer class="mt-8 border-t border-slate-200 bg-white/60">
+      <div class="mx-auto flex max-w-5xl flex-col gap-4 px-4 py-8 text-sm text-slate-600 sm:flex-row sm:items-start sm:justify-between">
+        <div class="max-w-sm space-y-2">
+          <p class="flex items-center gap-2 font-semibold text-slate-900">
+            <svg aria-hidden="true" viewBox="0 0 32 32" class="size-6 shrink-0"><rect width="32" height="32" rx="9" fill="#0f766e" /><path d="M9 11h14M9 16h14M9 21h14" stroke="#ccfbf1" stroke-width="2" stroke-linecap="round" /><circle cx="13" cy="11" r="2.6" fill="#fff" /><circle cx="20" cy="16" r="2.6" fill="#fff" /><circle cx="12" cy="21" r="2.6" fill="#fff" /></svg>
+            SizeTune
+          </p>
+          <p>SizeTune is a free image resizer. Your images are processed in your browser.</p>
+        </div>
+        <nav aria-label="Footer" class="flex flex-wrap gap-x-5 gap-y-2">
+          {navItems.map((n) => (
+            <a href={n.href} class="rounded text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-teal-800 hover:decoration-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">{n.label}</a>
+          ))}
+        </nav>
+      </div>
     </footer>
   </body>
 </html>

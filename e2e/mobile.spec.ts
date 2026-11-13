@@ -35,6 +35,10 @@ test('mobile: primary controls are at least 44px tall', async ({ page }) => {
 test('mobile: on a tiny source the corner handles are still >= 44px and win over the edge handles (D7)', async ({ page }) => {
   await openTool(page, '/resize-signature/');
   await pick(page, file('tiny.png', flatPng(140, 60)));
+  // measure only once the crop image has loaded and its handles have stopped moving (an early read races the image layout)
+  await expect(page.getByTestId('crop-image')).toHaveJSProperty('complete', true);
+  let last = '';
+  await expect.poll(async () => { const b = JSON.stringify(await page.locator('[data-handle=se]').boundingBox()); const same = b === last; last = b; return same; }, { intervals: [100, 100, 100], timeout: 5000 }).toBe(true);
   const corner = (await page.locator('[data-handle=se]').boundingBox())!;
   expect(corner.width).toBeGreaterThanOrEqual(43.5);
   const cx = corner.x + corner.width / 2, cy = corner.y + corner.height / 2;

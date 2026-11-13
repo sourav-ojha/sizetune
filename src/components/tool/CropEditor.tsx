@@ -89,7 +89,7 @@ export default function CropEditor({ src, natural, rect, lockAspect, imgRef, onC
           onPointerMove={move}
           onPointerUp={end}
           onPointerCancel={end}
-          className="absolute left-[var(--cx)] top-[var(--cy)] h-[var(--ch)] w-[var(--cw)] cursor-move touch-none border-2 border-white outline outline-1 outline-indigo-900 shadow-[0_0_0_9999px_rgba(15,23,42,0.55)] focus-visible:outline-2 focus-visible:outline-yellow-300"
+          className="absolute left-[var(--cx)] top-[var(--cy)] h-[var(--ch)] w-[var(--cw)] cursor-move touch-none border-2 border-white outline outline-1 outline-teal-900 shadow-[0_0_0_9999px_rgba(15,23,42,0.55)] focus-visible:outline-2 focus-visible:outline-yellow-300"
         >
           {HANDLES.map(([h, pos]) => (
             <div
@@ -102,7 +102,7 @@ export default function CropEditor({ src, natural, rect, lockAspect, imgRef, onC
               onPointerCancel={end}
               className={`absolute flex size-8 -translate-x-1/2 -translate-y-1/2 touch-none items-center justify-center before:absolute before:-inset-2 before:content-[''] pointer-coarse:size-11 ${pos}`}
             >
-              <span className="block size-3.5 rounded-full border-2 border-indigo-900 bg-white" />
+              <span className="block size-3.5 rounded-full border-2 border-teal-900 bg-white" />
             </div>
           ))}
         </div>

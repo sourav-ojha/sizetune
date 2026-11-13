@@ -26,7 +26,7 @@ interface Props {
   defaultNote?: string;
 }
 
-const optCls = 'flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-slate-500 bg-white px-3 py-2 text-base text-slate-900 has-[:checked]:border-indigo-800 has-[:checked]:bg-indigo-50 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-indigo-800 has-[:disabled]:cursor-not-allowed has-[:disabled]:bg-slate-100 has-[:disabled]:text-slate-600';
+const optCls = 'flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-slate-500 bg-white px-3 py-2 text-base text-slate-900 has-[:checked]:border-teal-700 has-[:checked]:bg-teal-50 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-teal-700 has-[:disabled]:cursor-not-allowed has-[:disabled]:bg-slate-100 has-[:disabled]:text-slate-600';
 
 export default function FormatPicker({ form, errors, update, formats, webp, hasAlpha, intro, defaultNote }: Props) {
   const id = useId();
@@ -50,7 +50,7 @@ export default function FormatPicker({ form, errors, update, formats, webp, hasA
                   data-testid={`format-${f}`}
                   checked={form.format === f}
                   disabled={disabled}
-                  className="size-4 accent-indigo-800"
+                  className="size-4 accent-teal-700"
                   onChange={() => update({ format: f })}
                 />
                 <span>{LABEL[f]}{disabled ? ' (not available)' : ''}</span>
@@ -80,7 +80,7 @@ export default function FormatPicker({ form, errors, update, formats, webp, hasA
           <div className="grid grid-cols-3 gap-2">
             {bgOptions.map(([v, label]) => (
               <label key={v} className={optCls}>
-                <input type="radio" name={`${id}-bg`} value={v} data-testid={`bg-${v}`} checked={form.bg === v} className="size-4 accent-indigo-800" onChange={() => update({ bg: v })} />
+                <input type="radio" name={`${id}-bg`} value={v} data-testid={`bg-${v}`} checked={form.bg === v} className="size-4 accent-teal-700" onChange={() => update({ bg: v })} />
                 <span>{label}</span>
               </label>
             ))}

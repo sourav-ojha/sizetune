@@ -1,1 +1,41 @@
 @import "tailwindcss";
+@import "@fontsource-variable/geist/wght.css";
+
+/* Design tokens. One accent (teal), one neutral family (slate). Fonts are self-hosted (no third-party origin). */
+@theme {
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.05), 0 12px 32px -12px rgb(15 79 74 / 0.22);
+  --shadow-pop: 0 1px 2px rgb(15 23 42 / 0.06), 0 6px 16px -6px rgb(15 79 74 / 0.35);
+  --animate-rise: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+}
+
+@layer base {
+  /* No scroll-behavior:smooth: the tool repositions the page itself and relies on instant programmatic scrolls. */
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    background-color: #f6f9f9;
+    background-image:
+      radial-gradient(60rem 28rem at 12% -8%, rgb(45 212 191 / 0.16), transparent 70%),
+      radial-gradient(48rem 24rem at 100% 0%, rgb(56 189 248 / 0.12), transparent 70%);
+    background-repeat: no-repeat;
+    min-height: 100dvh;
+    color: #0f172a;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection { background: #99f6e4; color: #042f2e; }
+  h1, h2, h3 { text-wrap: balance; letter-spacing: -0.02em; }
+  p, li { text-wrap: pretty; }
+  /* Press feedback only. No background/colour transitions: state changes must be at final contrast immediately. */
+  button, label[class*="cursor-pointer"] { transition: transform .1s; }
+  button:not(:disabled):active, label[class*="cursor-pointer"]:active { transform: translateY(1px) scale(0.985); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

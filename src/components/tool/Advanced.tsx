@@ -47,7 +47,7 @@ export function MinimumField({ form, errors, update }: UpdateProps) {
       />
       {form.minKb.trim() !== '' && free && (
         <label className="flex min-h-11 items-start gap-2 text-sm text-slate-900">
-          <input type="checkbox" data-testid="allow-enlarge" className="mt-1 size-5 accent-indigo-800" checked={form.allowEnlarge} onChange={(e) => update({ allowEnlarge: e.currentTarget.checked })} />
+          <input type="checkbox" data-testid="allow-enlarge" className="mt-1 size-5 accent-teal-700" checked={form.allowEnlarge} onChange={(e) => update({ allowEnlarge: e.currentTarget.checked })} />
           <span>Allow enlarging the picture (more pixels than the original) to reach the minimum. This adds no detail.</span>
         </label>
       )}
@@ -57,16 +57,16 @@ export function MinimumField({ form, errors, update }: UpdateProps) {
 
 export function StrategyField({ form, update }: Pick<UpdateProps, 'form' | 'update'>) {
   const id = useId();
-  const opt = 'flex min-h-11 cursor-pointer items-start gap-2 rounded-lg border border-slate-500 bg-white p-3 text-sm text-slate-900 has-[:checked]:border-indigo-800 has-[:checked]:bg-indigo-50 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-indigo-800';
+  const opt = 'flex min-h-11 cursor-pointer items-start gap-2 rounded-lg border border-slate-500 bg-white p-3 text-sm text-slate-900 has-[:checked]:border-teal-700 has-[:checked]:bg-teal-50 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-teal-700';
   return (
     <fieldset className={fieldsetCls} data-testid="strategy">
       <legend className={legendCls}>How to reach the size</legend>
       <label className={opt}>
-        <input type="radio" name={`${id}-s`} data-testid="strategy-quality" className="mt-0.5 size-4 accent-indigo-800" checked={form.strategy === 'quality-first'} onChange={() => update({ strategy: 'quality-first' })} />
+        <input type="radio" name={`${id}-s`} data-testid="strategy-quality" className="mt-0.5 size-4 accent-teal-700" checked={form.strategy === 'quality-first'} onChange={() => update({ strategy: 'quality-first' })} />
         <span><strong>Quality first.</strong> Keep the pixels, lower the quality as needed. Best when a form fixes the pixel size.</span>
       </label>
       <label className={opt}>
-        <input type="radio" name={`${id}-s`} data-testid="strategy-dimensions" className="mt-0.5 size-4 accent-indigo-800" checked={form.strategy === 'dimensions-first'} onChange={() => update({ strategy: 'dimensions-first' })} />
+        <input type="radio" name={`${id}-s`} data-testid="strategy-dimensions" className="mt-0.5 size-4 accent-teal-700" checked={form.strategy === 'dimensions-first'} onChange={() => update({ strategy: 'dimensions-first' })} />
         <span><strong>Dimensions first.</strong> Make the picture smaller in pixels first. Best when only the KB limit matters.</span>
       </label>
     </fieldset>
@@ -95,7 +95,7 @@ export function DimensionFields({ form, errors, update, basis, showMax, legend =
         <NumberField id={`${id}-h`} testId="height" label="Height (px)" value={form.height} error={errors.height} placeholder={phH ? String(phH) : 'auto'} onChange={(v) => update({ height: v })} />
       </div>
       <label className="flex min-h-11 items-center gap-2 text-sm text-slate-900">
-        <input type="checkbox" data-testid="lock-aspect" className="size-5 accent-indigo-800" checked={form.lockAspect} onChange={(e) => update({ lockAspect: e.currentTarget.checked })} />
+        <input type="checkbox" data-testid="lock-aspect" className="size-5 accent-teal-700" checked={form.lockAspect} onChange={(e) => update({ lockAspect: e.currentTarget.checked })} />
         <span>Keep the aspect ratio</span>
       </label>
       {(both || !form.lockAspect) && (
@@ -137,8 +137,8 @@ export function AdvancedBlock({ children, forceOpen }: { children: ComponentChil
   const ref = useRef<HTMLDetailsElement>(null);
   useEffect(() => { if (forceOpen && ref.current) ref.current.open = true; }, [forceOpen]);
   return (
-    <details ref={ref} data-testid="advanced" className="rounded-xl border border-slate-300 bg-white open:pb-4">
-      <summary className="flex min-h-11 cursor-pointer items-center px-4 py-2 text-base font-semibold text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-800">
+    <details ref={ref} data-testid="advanced" className="rounded-2xl border border-slate-300 bg-white open:pb-4">
+      <summary className="flex min-h-11 cursor-pointer items-center px-4 py-2 text-base font-semibold text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
         Advanced options
       </summary>
       <div className="space-y-5 px-4">{children}</div>

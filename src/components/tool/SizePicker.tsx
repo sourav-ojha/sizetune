@@ -73,7 +73,7 @@ export default function SizePicker({ form, errors, update, showQuality = true }:
             max={100}
             step={1}
             value={form.quality}
-            className="mt-1 h-11 w-full accent-indigo-800"
+            className="mt-1 h-11 w-full accent-teal-700"
             onChange={(e) => update({ quality: Number(e.currentTarget.value) })}
           />
           <p className={hintCls}>Without a size limit the image is saved at this fixed quality. Higher quality means a larger file.</p>

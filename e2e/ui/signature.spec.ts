@@ -70,6 +70,8 @@ test.describe('signature tool', () => {
     await page.getByTestId('crop-width').fill('300');
     await page.getByTestId('crop-height').fill('100');
     await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))); // let any layout/scroll compensation settle before measuring
+    await page.getByTestId('crop-box').scrollIntoViewIfNeeded(); // mouse coordinates are viewport-relative: the crop box must be on screen
+    await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
     const img = (await page.getByTestId('crop-image').boundingBox())!;
     const scale = 600 / img.width; // source px per CSS px
     const box = (await page.getByTestId('crop-box').boundingBox())!;

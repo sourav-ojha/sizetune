@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import SignatureTool from '../components/SignatureTool.tsx';
+import Hero from '../components/Hero.astro';
 import { webApplicationLd, proseClass } from './_seo';
 const title = 'Resize Signature Image for Online Forms | SizeTune';
 const description =
@@ -8,15 +9,11 @@ const description =
 const jsonLd = webApplicationLd('SizeTune: resize signature', '/resize-signature/', description);
 ---
 <Base pageType="tool" title={title} description={description} path="/resize-signature/" jsonLd={jsonLd}>
-  <h1 class="mb-3 text-3xl font-bold">Resize a signature image</h1>
-  <p class="mb-6">
-    Add a photo or scan of your signature, crop it close, and reduce it to the file size your form asks for. The
-    maximum starts at 20 KB, and you can change it or add a minimum.
-  </p>
+  <Hero title="Resize a signature image" lead="Add a photo or scan of your signature, crop it close, and reduce it to the file size your form asks for. The maximum starts at 20 KB, and you can change it or add a minimum." />
 
   <SignatureTool client:load defaultMaxKb={20} />
   <noscript>
-    <p class="mt-4 rounded border border-amber-400 bg-amber-50 p-3">
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
       The signature tool crops and compresses your image inside your browser, so it needs JavaScript. Turn it on and
       reload to continue. The guidance on this page about capturing a clean signature and choosing sizes works without
       it.
