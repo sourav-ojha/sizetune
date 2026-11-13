@@ -49,16 +49,14 @@ const jsonLd = webApplicationLd('SizeTune image resizer', '/', description);
 
     <h2>How a picture gets under the limit</h2>
     <p>
-      There are two levers, and the tool lets you choose which one comes first. With quality-first, the pixel
-      dimensions stay as they are and the compression is made stronger until the file fits. With dimensions-first, the
+      There are two levers, and the tool lets you choose which one comes first. With quality-first, the pixels are kept for as long as possible and the compression is made stronger until the file fits; the picture is shrunk only if quality alone cannot reach the limit and you did not fix the dimensions. With dimensions-first, the
       picture is made smaller in pixels and the quality is kept higher. Quality-first suits a form that fixes the exact
       pixel size. Dimensions-first suits a form that only cares about the file size, because a smaller picture with
       cleaner detail often looks better than a large, heavily compressed one.
     </p>
     <p>
-      If you want a specific width or height, type it in. The aspect lock keeps the picture from being stretched. By
-      default the output keeps the format of the file you added (JPEG, PNG or WebP). The exception is an opaque PNG with a
-      size limit: the tool preselects JPEG for it and shows a note, and you can switch back to PNG. WebP output is
+      If you want a specific width or height, type it in. The aspect lock keeps the picture from being stretched. An
+      opaque PNG with a size limit is preselected as JPEG, with a note, and you can switch back to PNG. Every other file keeps its own format (JPEG, PNG or WebP) unless you choose another. WebP output is
       offered only where your browser can produce it. The tool can also be stopped part-way with the cancel button, and nothing is saved until
       you press download.
     </p>
@@ -108,13 +106,13 @@ const jsonLd = webApplicationLd('SizeTune image resizer', '/', description);
     <h3>Is 20 KB the same as 20,000 bytes or 20,480 bytes?</h3>
     <p>
       Both conventions are in use. SizeTune aims below your maximum counted as 1,000 bytes per KB, and above your minimum
-      counted as 1,024, so the file passes whether a portal counts a KB as 1,000 or 1,024 bytes. Results are displayed
-      in 1,024-byte KB, so a 20 KB target may display as about 19.5 KB.
+      counted as 1,024, so the file passes whether a portal counts a KB as 1,000 or 1,024 bytes (except for ranges too narrow for both, which are flagged). Results are displayed
+      in 1,024-byte KB, so a 20 KB target shows as up to about 19.5 KB, often a little lower.
     </p>
     <h3>Will my picture look worse?</h3>
     <p>
       Usually a little, and sometimes a lot, depending on how small the limit is compared with the original. JPEG
-      compression discards detail, and the tool looks for the highest quality that still fits. The preview lets you
+      compression discards detail, and the tool looks for a high quality that still fits. The preview lets you
       compare before you download.
     </p>
     <h3>Is my photo sent anywhere?</h3>

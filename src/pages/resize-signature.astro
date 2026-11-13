@@ -38,8 +38,8 @@ const jsonLd = webApplicationLd('SizeTune: resize signature', '/resize-signature
 
     <h2>Crop and position</h2>
     <p>
-      Use the crop and positioning controls to cut away the empty paper so the signature fills most of the frame, with a
-      small, even border. A tight crop means fewer pixels spent on blank paper and a larger signature at any given
+      Drag the crop box or its handles (zoom in for precision, or type exact numbers) to cut away the empty paper so the signature fills most of the frame, with a
+      small, even border. Auto-trim finds the ink for you, with a margin you can choose, and the crop shape menu sets a 2:1, 3:1 or 4:1 frame if your form wants one. A tight crop means fewer pixels spent on blank paper and a larger signature at any given
       output size. Make sure no stroke touches the edge, since a cut-off flourish looks like a different signature.
     </p>
     <p>
@@ -97,8 +97,7 @@ const jsonLd = webApplicationLd('SizeTune: resize signature', '/resize-signature
     <p>
       JPEG is the common answer. A dark signature on white paper compresses well as a JPEG, and almost every upload form
       accepts it. PNG keeps edges perfectly crisp and can be small for a flat white background, but it may be larger
-      than the JPEG for a photograph of paper with slight shading. WebP is offered where your browser can create it, and
-      is only useful if your form lists it. A JPEG cannot hold transparency, so a signature with a see-through background
+      than the JPEG for a photograph of paper with slight shading. This tool saves JPEG or PNG. A JPEG cannot hold transparency, so a signature with a see-through background
       is saved with a solid colour behind it.
     </p>
 
