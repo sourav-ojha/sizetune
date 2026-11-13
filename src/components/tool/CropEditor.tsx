@@ -95,6 +95,11 @@ export default function CropEditor({ src, natural, rect, lockAspect, imgRef, onC
         className={zoomed ? 'block h-auto w-full select-none' : 'block max-h-[60vh] max-w-full select-none'}
       />
       {rect && natural && (
+        // Dims everything outside the crop box. A clip-path hole keeps the painted area to the picture (a 9999px box-shadow spread
+        // crashed Firefox on a CI runner while axe-core walked the page).
+        <div aria-hidden="true" data-testid="crop-dim" className="pointer-events-none absolute inset-0 bg-slate-900/55 [clip-path:polygon(evenodd,0_0,100%_0,100%_100%,0_100%,0_0,var(--cx)_var(--cy),var(--cx)_calc(var(--cy)+var(--ch)),calc(var(--cx)+var(--cw))_calc(var(--cy)+var(--ch)),calc(var(--cx)+var(--cw))_var(--cy),var(--cx)_var(--cy))]" />
+      )}
+      {rect && natural && (
         <div
           data-testid="crop-box"
           role="group"
@@ -105,7 +110,7 @@ export default function CropEditor({ src, natural, rect, lockAspect, imgRef, onC
           onPointerMove={move}
           onPointerUp={end}
           onPointerCancel={end}
-          className={`absolute left-[var(--cx)] top-[var(--cy)] h-[var(--ch)] w-[var(--cw)] cursor-move ${pan && zoomed ? 'touch-pan-x touch-pan-y' : 'touch-none'} border-2 border-white outline outline-1 outline-teal-900 shadow-[0_0_0_9999px_rgba(15,23,42,0.55)] focus-visible:outline-2 focus-visible:outline-yellow-300`}
+          className={`absolute left-[var(--cx)] top-[var(--cy)] h-[var(--ch)] w-[var(--cw)] cursor-move ${pan && zoomed ? 'touch-pan-x touch-pan-y' : 'touch-none'} border-2 border-white outline outline-1 outline-teal-900 focus-visible:outline-2 focus-visible:outline-yellow-300`}
         >
           {HANDLES.map(([h, pos]) => (
             <div

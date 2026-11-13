@@ -47,14 +47,14 @@ test.describe('signature tool', () => {
   test('crop shape preset reshapes the box and the output', async ({ page }) => {
     await openTool(page, URL);
     await pick(page, sig());
-    await page.getByTestId('crop-shape').selectOption('3');
+    await page.getByTestId('crop-shape').selectOption('4'); // the fixture is already 3:1, so 3 would not change the menu
     const c = await crop(page);
-    expect(Math.abs(c.w / c.h - 3)).toBeLessThan(0.05);
+    expect(Math.abs(c.w / c.h - 4)).toBeLessThan(0.05);
     await expect(page.getByTestId('lock-crop')).toBeChecked();
     await page.getByTestId('preset-20').click();
     await resize(page);
     const d = await downloaded(page, 'download');
-    expect(Math.abs(d.w / d.h - 3)).toBeLessThan(0.1);
+    expect(Math.abs(d.w / d.h - 4)).toBeLessThan(0.1);
   });
 
   test('zoom enlarges the picture inside a scrollable frame; crop still maps to source pixels', async ({ page }) => {
@@ -96,10 +96,11 @@ test.describe('signature tool', () => {
   test('crop shape menu follows the real crop and Free releases the lock', async ({ page }) => {
     await openTool(page, URL);
     await pick(page, sig());
-    await page.getByTestId('crop-shape').selectOption('3');
-    await expect(page.getByTestId('crop-shape')).toHaveValue('3');
-    await page.getByTestId('crop-width').fill('100'); // lock keeps 3:1, still 3:1
-    await expect(page.getByTestId('crop-shape')).toHaveValue('3');
+    await page.getByTestId('crop-shape').selectOption('2');
+    await expect(page.getByTestId('crop-shape')).toHaveValue('2');
+    await expect(page.getByTestId('lock-crop')).toBeChecked();
+    await page.getByTestId('crop-width').fill('100'); // lock keeps 2:1, still 2:1
+    await expect(page.getByTestId('crop-shape')).toHaveValue('2');
     await page.getByTestId('crop-shape').selectOption('free');
     await expect(page.getByTestId('lock-crop')).not.toBeChecked();
   });

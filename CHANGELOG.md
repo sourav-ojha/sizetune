@@ -11,6 +11,8 @@
 - Copy: quality-first, PNG->JPEG preselect exception, 1000/1024 caveat, "up to about 19.5 KB", no WebP claim on the signature page, fuller cookies/storage/hosting statement on `/privacy/`, typo "Kiran T..".
 ### Tests
 - +3 `fitAspect` unit tests, +6 e2e (shape, zoom, margin, compare zoom, link size, worker CSP header). `pnpm run verify` exit 0: 677 unit, 198 Chrome e2e (after independent-review fixes).
+### CI follow-up (2026-11-13, after the first push of these commits)
+- `cross-browser` on `c666677` failed 4 tests. Two were my new shape tests, which I had only run on Chrome: the fixture is already 3:1, so choosing 3:1 fired no change event; they now use 4:1 and 2:1. The Firefox "Page crashed" in `axe.spec.ts:142` recurred on a second run (so it is not a one-off); it was never reproduced locally. Mitigation, not a proven fix: the crop box's `0 0 0 9999px` box-shadow dimming is replaced by a `clip-path` overlay limited to the picture. Local Chrome+Firefox+WebKit: 180 passed for signature/axe/mobile; `verify` 677 unit, 198 Chrome e2e.
 ### Not changed
 - Engine (no defect found), legal text meaning, OG image, deploy config, markers.
 
