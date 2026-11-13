@@ -43,18 +43,20 @@ jobs:
 
   # ---- Deploys: only after BOTH quality jobs are green, only on push (never on pull_request). ----
   # dev -> Worker "sizetune-staging" (workers.dev). main -> Worker "sizetune" (sizetune.com).
-  # Inert until the repo secrets CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID exist (it then skips, not fails).
+  # Secrets live in GitHub ENVIRONMENTS (staging / production), not repo secrets, and are exposed only to the wrangler step
+  # (never to install/build, which run third-party code). Staging skips, not fails, until its secrets exist.
   deploy-staging:
     needs: [verify, cross-browser]
     if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    environment: staging
     concurrency: { group: deploy-staging, cancel-in-progress: false }
-    env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - id: gate
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ]; then echo "ready=true" >> "$GITHUB_OUTPUT"; else echo "Cloudflare secrets not set; skipping deploy."; fi
       - if: steps.gate.outputs.ready == 'true'
@@ -70,6 +72,9 @@ jobs:
         run: pnpm run build
       - if: steps.gate.outputs.ready == 'true'
         run: pnpm exec wrangler deploy --env staging
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
   deploy-production:
     needs: [verify, cross-browser]
@@ -80,9 +85,6 @@ jobs:
     timeout-minutes: 10
     environment: production
     concurrency: { group: deploy-production, cancel-in-progress: false }
-    env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -91,3 +93,6 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build
       - run: pnpm exec wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
