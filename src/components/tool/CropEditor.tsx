@@ -9,6 +9,8 @@ interface Props {
   lockAspect: boolean;
   imgRef: RefObject<HTMLImageElement | null>;
   onChange: (r: Rect) => void;
+  /** 1 = fit the available width; larger values enlarge the picture inside a scrollable frame (drag outside the box to pan). */
+  zoom?: number;
 }
 
 const MIN_SIZE = 4; // source px
@@ -27,19 +29,21 @@ const HANDLES: Array<[Handle, string]> = [
 interface Drag { kind: 'move' | Handle; px: number; py: number; start: Rect; w: number; h: number }
 
 /** Crop box over the picture. Geometry lives in CSS variables set from JS; all maths is in ./crop (source pixels). */
-export default function CropEditor({ src, natural, rect, lockAspect, imgRef, onChange }: Props) {
+export default function CropEditor({ src, natural, rect, lockAspect, imgRef, onChange, zoom = 1 }: Props) {
   const wrap = useRef<HTMLDivElement>(null);
   const drag = useRef<Drag | null>(null);
+  const zoomed = zoom > 1;
 
   useEffect(() => {
     const el = wrap.current;
     if (!el || !rect || !natural) return;
+    el.style.setProperty('--zw', `${zoom * 100}%`);
     const p = rectToPercent(rect, natural);
     el.style.setProperty('--cx', `${p.left}%`);
     el.style.setProperty('--cy', `${p.top}%`);
     el.style.setProperty('--cw', `${p.width}%`);
     el.style.setProperty('--ch', `${p.height}%`);
-  }, [rect, natural]);
+  }, [rect, natural, zoom]);
 
   const begin = (kind: Drag['kind']) => (e: TargetedPointerEvent<HTMLElement>) => {
     if (!rect || !natural || !imgRef.current || e.button > 0) return;
@@ -68,15 +72,15 @@ export default function CropEditor({ src, natural, rect, lockAspect, imgRef, onC
 
   return (
     // Outer padding keeps the corner/edge handles (centred on the picture's border) fully inside the clipping box, so they stay grabbable.
-    <div data-testid="crop-editor" className="mx-auto w-fit max-w-full overflow-hidden rounded-lg border border-slate-300 bg-white p-6">
-      <div ref={wrap} className="relative">
+    <div data-testid="crop-editor" className={`mx-auto max-w-full rounded-lg border border-slate-300 bg-white p-6 ${zoomed ? 'max-h-[70vh] w-full overflow-auto' : 'w-fit overflow-hidden'}`}>
+      <div ref={wrap} className={zoomed ? 'relative w-[var(--zw)]' : 'relative'}>
       <img
         ref={imgRef}
         src={src}
         alt="Your signature image, with the crop box on top"
         data-testid="crop-image"
         draggable={false}
-        className="block max-h-[60vh] max-w-full select-none"
+        className={zoomed ? 'block h-auto w-full select-none' : 'block max-h-[60vh] max-w-full select-none'}
       />
       {rect && natural && (
         <div

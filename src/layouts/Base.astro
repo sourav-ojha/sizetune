@@ -62,7 +62,7 @@ const navItems = [
         </a>
         <nav aria-label="Main" class="-mx-1 flex flex-wrap gap-1 text-sm font-medium">
           {navItems.map((n) => (
-            <a href={n.href} class="rounded-lg px-3 py-1.5 text-slate-700 hover:bg-slate-100 hover:text-slate-900 aria-[current=page]:bg-teal-50 aria-[current=page]:font-semibold aria-[current=page]:text-teal-900 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-teal-700" aria-current={n.href === path ? 'page' : undefined}>{n.label}</a>
+            <a href={n.href} class="inline-flex min-h-11 items-center rounded-lg px-3 text-slate-700 hover:bg-slate-100 hover:text-slate-900 aria-[current=page]:bg-teal-50 aria-[current=page]:font-semibold aria-[current=page]:text-teal-900 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-teal-700" aria-current={n.href === path ? 'page' : undefined}>{n.label}</a>
           ))}
         </nav>
       </div>
@@ -77,9 +77,9 @@ const navItems = [
           </p>
           <p>SizeTune is a free image resizer. Your images are processed in your browser.</p>
         </div>
-        <nav aria-label="Footer" class="flex flex-wrap gap-x-5 gap-y-2">
+        <nav aria-label="Footer" class="flex flex-wrap gap-x-2">
           {navItems.map((n) => (
-            <a href={n.href} class="rounded text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-teal-800 hover:decoration-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">{n.label}</a>
+            <a href={n.href} class="inline-flex min-h-11 items-center rounded px-2 text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-teal-800 hover:decoration-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">{n.label}</a>
           ))}
         </nav>
       </div>

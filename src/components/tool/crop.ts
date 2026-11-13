@@ -140,3 +140,19 @@ export function padRect(r: Rect, fraction: number, b: Size, minPx = 2): Rect {
   const right = Math.min(b.width, r.x + r.width + px), bottom = Math.min(b.height, r.y + r.height + px);
   return { x, y, width: right - x, height: bottom - y };
 }
+
+/**
+ * Reshape a crop to width:height = ratio, keeping its centre where possible. The box keeps its area's scale (width first),
+ * shrinks if the ratio would leave the picture, and is shifted back inside the bounds. Integer source pixels.
+ */
+export function fitAspect(r: Rect, ratio: number, b: Size): Rect {
+  const cx = r.x + r.width / 2, cy = r.y + r.height / 2;
+  let w = r.width, h = w / ratio;
+  const k = Math.min(1, b.width / w, b.height / h);
+  w *= k; h *= k;
+  w = Math.max(1, Math.round(w)); h = Math.max(1, Math.round(w / ratio));
+  if (h > b.height) { h = b.height; w = Math.max(1, Math.round(h * ratio)); }
+  const x = Math.min(Math.max(0, Math.round(cx - w / 2)), b.width - w);
+  const y = Math.min(Math.max(0, Math.round(cy - h / 2)), b.height - h);
+  return { x, y, width: w, height: h };
+}

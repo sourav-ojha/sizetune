@@ -7,7 +7,7 @@ import FormatPicker from './tool/FormatPicker';
 import ProgressBar from './tool/Progress';
 import ResultPanel from './tool/ResultPanel';
 import SizePicker from './tool/SizePicker';
-import { aspectOf, fullRect, isFullRect, padRect, setRectField, type Rect, type RectField } from './tool/crop';
+import { aspectOf, fitAspect, fullRect, isFullRect, padRect, setRectField, type Rect, type RectField } from './tool/crop';
 import { getLimits } from './tool/engine';
 import { formatCap, formatDims, formatSize } from './tool/format';
 import { ensureVisible, useForm, useScrollAnchor, useWebpSupport } from './tool/hooks';
@@ -42,6 +42,9 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
   const [userFormat, setUserFormat] = useState<OutputFormat | null>(null);
   const [crop, setCrop] = useState<Rect | null>(null);
   const [lockCrop, setLockCrop] = useState(false);
+  const [zoom, setZoom] = useState(1);
+  const [margin, setMargin] = useState(0.03);
+  const [shape, setShape] = useState('free');
   const [draft, setDraft] = useState<Partial<Record<RectField, string>>>({});
   const [trimMsg, setTrimMsg] = useState('');
   const webp = useWebpSupport();
@@ -52,7 +55,7 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
   const cap = getLimits().maxFileBytes;
 
   // New picture (natural is reset to null on every selection): the crop starts as the whole picture.
-  useEffect(() => { setCrop(state.natural ? fullRect(state.natural) : null); setDraft({}); setTrimMsg(''); }, [state.natural]);
+  useEffect(() => { setCrop(state.natural ? fullRect(state.natural) : null); setDraft({}); setTrimMsg(''); setZoom(1); setShape('free'); }, [state.natural]);
 
   const hasAlpha = state.result?.data.source.hasAlpha ?? state.alpha;
   const format: OutputFormat = userFormat ?? (hasAlpha === true ? 'png' : 'jpeg'); // JPEG unless the picture has transparency
@@ -123,7 +126,18 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
     }
   };
 
-  const autoTrim = () => {
+  const SHAPES: Array<[string, string, number | null]> = [['free', 'Free', null], ['2', '2 : 1 (wide)', 2], ['3', '3 : 1 (wider)', 3], ['4', '4 : 1 (widest)', 4], ['1', '1 : 1 (square)', 1]];
+  const MARGINS: Array<[string, string]> = [['0', 'None'], ['0.03', 'Small'], ['0.06', 'Medium'], ['0.1', 'Large']];
+  const applyShape = (key: string) => {
+    setShape(key);
+    const ratio = SHAPES.find((x) => x[0] === key)?.[2];
+    if (!ratio || !crop || !state.natural) return;
+    changeCrop(fitAspect(crop, ratio, state.natural));
+    setDraft({});
+    setLockCrop(true);
+  };
+
+  const autoTrim = (frac: number = margin) => {
     const img = cropImg.current;
     const nat = state.natural;
     if (!img || !nat) return;
@@ -137,9 +151,9 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
       ctx.drawImage(img, 0, 0, cw, ch);
       const ink = findInkBounds(ctx.getImageData(0, 0, cw, ch).data, cw, ch);
       if (!ink) { setTrimMsg('No signature was found to trim. Drag the crop box by hand instead.'); return; }
-      changeCrop(padRect(scaleRect(ink, nat.width / cw, nat.height / ch, nat), 0.03, nat));
+      changeCrop(padRect(scaleRect(ink, nat.width / cw, nat.height / ch, nat), frac, nat, frac === 0 ? 0 : 2));
       setDraft({});
-      setTrimMsg('Cropped to the ink with a small margin. Adjust it if needed.');
+      setTrimMsg(frac === 0 ? 'Cropped tight to the ink. Adjust it if needed.' : 'Cropped to the ink with a margin. Adjust it if needed.');
     } catch {
       setTrimMsg('Automatic trimming is not available here. Drag the crop box by hand instead.');
     }
@@ -174,18 +188,39 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
             {state.natural ? `${formatDims(state.natural.width, state.natural.height)}, ` : ''}{formatSize(state.file.size)}
           </p>
           {state.previewUrl ? (
+            <>
             <CropEditor
               src={state.previewUrl}
               natural={state.natural}
               rect={crop}
               lockAspect={lockCrop}
               imgRef={cropImg}
-              onChange={(r) => { changeCrop(r); setDraft({}); }}
+              onChange={(r) => { changeCrop(r); setDraft({}); setShape('free'); }}
+              zoom={zoom}
             />
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <div>
+                <label htmlFor="crop-zoom" className={labelCls}>Zoom the picture: {Math.round(zoom * 100)}%</label>
+                <input id="crop-zoom" data-testid="crop-zoom" type="range" min={1} max={4} step={0.25} value={zoom} className="h-11 w-full accent-teal-700" onChange={(e) => setZoom(Number(e.currentTarget.value))} />
+              </div>
+              <div>
+                <label htmlFor="crop-shape" className={labelCls}>Crop shape</label>
+                <select id="crop-shape" data-testid="crop-shape" className={`${inputCls} mt-1`} value={shape} onChange={(e) => applyShape(e.currentTarget.value)}>
+                  {SHAPES.map(([k, l]) => <option key={k} value={k}>{l}</option>)}
+                </select>
+              </div>
+              <div>
+                <label htmlFor="crop-margin" className={labelCls}>Margin for Auto-trim</label>
+                <select id="crop-margin" data-testid="crop-margin" className={`${inputCls} mt-1`} value={String(margin)} onChange={(e) => { const m = Number(e.currentTarget.value); setMargin(m); if (trimMsg.startsWith('Cropped')) autoTrim(m); }}>
+                  {MARGINS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}
+                </select>
+              </div>
+            </div>
+            </>
           ) : (
             <p data-testid="no-preview" className="rounded-lg border border-slate-300 bg-slate-50 p-3 text-sm text-slate-800">{state.previewNote === 'failed' ? 'The preview could not be created; the file may be incomplete or damaged. You can still use the number fields and try Resize.' : 'This picture is too large to show here. Use the number fields to crop it.'}</p>
           )}
-          <p className={hintCls}>Drag the box or its handles. With the keyboard: focus the box, then arrow keys move it, Alt plus arrow keys resize it, and Shift makes bigger steps. Or type exact numbers below.</p>
+          <p className={hintCls}>Drag the box or its handles. Zoom in to place the edges precisely; when zoomed, drag outside the box to scroll the picture. With the keyboard: focus the box, then arrow keys move it, Alt plus arrow keys resize it, and Shift makes bigger steps. Or type exact numbers below.</p>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {CROP_FIELDS.map(([f, label]) => (
               <div key={f}>
@@ -210,7 +245,7 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
             <span>Keep the crop box’s shape when resizing it</span>
           </label>
           <div className="flex flex-col gap-2 sm:flex-row">
-            <button type="button" data-testid="auto-trim" className={btnSecondary} onClick={autoTrim} disabled={!crop || !state.previewUrl}>Auto-trim whitespace</button>
+            <button type="button" data-testid="auto-trim" className={btnSecondary} onClick={() => autoTrim()} disabled={!crop || !state.previewUrl}>Auto-trim whitespace</button>
             <button type="button" data-testid="crop-reset" className={btnSecondary} onClick={() => { if (state.natural) { changeCrop(fullRect(state.natural)); setDraft({}); setTrimMsg(''); } }} disabled={!crop}>Use the whole picture</button>
           </div>
           <p role="status" className={hintCls} data-testid="trim-status">{trimMsg}</p>
@@ -218,8 +253,8 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
         </fieldset>
       )}
 
-      <DimensionFields form={effective} errors={errors} update={update} basis={basis} showMax={false} legend="Output size in pixels (optional)" />
       <SizePicker form={effective} errors={errors} update={update} showQuality />
+      <DimensionFields form={effective} errors={errors} update={update} basis={basis} showMax={false} legend="Output size in pixels (optional)" />
       <FormatPicker
         form={effective}
         errors={errors}

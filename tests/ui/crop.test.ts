@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { aspectOf, clampRect, displayToSource, fullRect, isFullRect, moveRect, nudgeRect, padRect, pointToSource, rectToPercent, resizeRect, setRectField } from '../../src/components/tool/crop';
+import { aspectOf, clampRect, displayToSource, fullRect, isFullRect, moveRect, nudgeRect, padRect, pointToSource, rectToPercent, resizeRect, setRectField, fitAspect } from '../../src/components/tool/crop';
 import { findInkBounds, scaleRect } from '../../src/components/tool/trim';
 
 const B = { width: 1000, height: 500 };
@@ -166,5 +166,29 @@ describe('hasTransparentPixel', () => {
     expect(hasTransparentPixel(new Uint8ClampedArray([1, 2, 3, 255, 4, 5, 6, 255]))).toBe(false);
     expect(hasTransparentPixel(new Uint8ClampedArray([1, 2, 3, 255, 4, 5, 6, 254]))).toBe(true);
     expect(hasTransparentPixel(new Uint8ClampedArray([]))).toBe(false);
+  });
+});
+
+describe('fitAspect', () => {
+  const b = { width: 1200, height: 800 };
+  it('reshapes a crop to the ratio, centred, inside bounds', () => {
+    const r = fitAspect({ x: 100, y: 100, width: 600, height: 400 }, 3, b);
+    expect(r.width / r.height).toBeCloseTo(3, 1);
+    expect(r.x).toBeGreaterThanOrEqual(0);
+    expect(r.x + r.width).toBeLessThanOrEqual(1200);
+    expect(r.y + r.height).toBeLessThanOrEqual(800);
+    expect(r.x + r.width / 2).toBeCloseTo(400, -1);
+    expect(r.y + r.height / 2).toBeCloseTo(300, -1);
+  });
+  it('shrinks to fit when the ratio would leave the picture', () => {
+    const r = fitAspect({ x: 0, y: 0, width: 1200, height: 800 }, 4, b);
+    expect(r.width).toBeLessThanOrEqual(1200);
+    expect(r.height).toBeLessThanOrEqual(800);
+    expect(r.width / r.height).toBeCloseTo(4, 1);
+  });
+  it('shifts a box at the edge back inside', () => {
+    const r = fitAspect({ x: 1000, y: 700, width: 200, height: 100 }, 1, b);
+    expect(r.x + r.width).toBeLessThanOrEqual(1200);
+    expect(r.y + r.height).toBeLessThanOrEqual(800);
   });
 });

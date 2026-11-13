@@ -44,6 +44,53 @@ test.describe('signature tool', () => {
     await expect(page.getByTestId('signature-preview')).toHaveClass(/bg-white/);
   });
 
+  test('crop shape preset reshapes the box and the output', async ({ page }) => {
+    await openTool(page, URL);
+    await pick(page, sig());
+    await page.getByTestId('crop-shape').selectOption('3');
+    const c = await crop(page);
+    expect(Math.abs(c.w / c.h - 3)).toBeLessThan(0.05);
+    await expect(page.getByTestId('lock-crop')).toBeChecked();
+    await page.getByTestId('preset-20').click();
+    await resize(page);
+    const d = await downloaded(page, 'download');
+    expect(Math.abs(d.w / d.h - 3)).toBeLessThan(0.1);
+  });
+
+  test('zoom enlarges the picture inside a scrollable frame; crop still maps to source pixels', async ({ page }) => {
+    await openTool(page, URL);
+    await pick(page, sig());
+    const img = page.getByTestId('crop-image');
+    const before = (await img.boundingBox())!.width;
+    await page.getByTestId('crop-zoom').fill('3');
+    await expect.poll(async () => (await img.boundingBox())!.width).toBeGreaterThan(before * 1.5);
+    const box = page.getByTestId('crop-box');
+    await box.scrollIntoViewIfNeeded();
+    const b = (await box.boundingBox())!;
+    await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(b.x + b.width / 2 + 30, b.y + b.height / 2 + 5, { steps: 4 });
+    await page.mouse.up();
+    // box is the whole picture, so a move is clamped: crop must stay valid and inside the source
+    const c = await crop(page);
+    expect(c.x + c.w).toBeLessThanOrEqual(600);
+    expect(c.y + c.h).toBeLessThanOrEqual(200);
+  });
+
+  test('auto-trim margin setting changes the margin around the ink', async ({ page }) => {
+    await openTool(page, URL);
+    await pick(page, sig());
+    await page.getByTestId('crop-margin').selectOption('0');
+    await page.getByTestId('auto-trim').click();
+    await expect(page.getByTestId('trim-status')).toContainText('tight');
+    const tight = await crop(page);
+    await page.getByTestId('crop-margin').selectOption('0.1');
+    await expect(page.getByTestId('trim-status')).toContainText('margin');
+    const wide = await crop(page);
+    expect(wide.w).toBeGreaterThan(tight.w);
+    expect(wide.h).toBeGreaterThan(tight.h);
+  });
+
   test('keyboard: arrows move, Shift moves faster, Alt+arrows resize', async ({ page }) => {
     await openTool(page, URL);
     await pick(page, sig());

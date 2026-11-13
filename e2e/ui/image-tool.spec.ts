@@ -468,3 +468,33 @@ test.describe('image tool', () => {
     await expect(page.getByRole('alert')).toHaveCount(0);
   });
 });
+
+test.describe('audit sprint: compare zoom, link targets, worker CSP', () => {
+  test('compare zoom enlarges the picture inside a scrollable frame', async ({ page }) => {
+    await openTool(page, '/');
+    await pick(page, file('p.png', flatPng(600, 400)));
+    await resize(page);
+    const frame = page.getByTestId('compare-frame');
+    await expect(frame).toBeVisible();
+    const before = (await page.getByTestId('compare-before').boundingBox())!.width;
+    await page.getByTestId('compare-zoom-4').click();
+    await expect(page.getByTestId('compare-zoom-4')).toHaveAttribute('aria-pressed', 'true');
+    await expect.poll(async () => (await page.getByTestId('compare-before').boundingBox())!.width).toBeGreaterThan(before * 1.5);
+    expect(await frame.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(true);
+    await page.getByTestId('compare-zoom-1').click();
+    await expect.poll(async () => Math.abs((await page.getByTestId('compare-before').boundingBox())!.width - before)).toBeLessThan(2);
+  });
+
+  test('header and footer links are at least 24 px tall (target size)', async ({ page }) => {
+    await page.goto('/about/');
+    const small = await page.evaluate(() => [...document.querySelectorAll('header nav a, footer nav a')].map((a) => ({ t: a.textContent, h: a.getBoundingClientRect().height })).filter((x) => x.h < 24));
+    expect(small).toEqual([]);
+  });
+
+  test('worker script is served with a connect-src none CSP header', async ({ request }) => {
+    const name = fs.readdirSync('dist/_astro').find((f) => /compress\.worker.*\.js$/.test(f));
+    expect(name, 'built worker chunk').toBeTruthy();
+    const r = await request.get(`/_astro/${name}`);
+    expect(r.headers()['content-security-policy']).toContain("connect-src 'none'");
+  });
+});
