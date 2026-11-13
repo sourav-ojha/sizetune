@@ -44,7 +44,7 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
   const [lockCrop, setLockCrop] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [margin, setMargin] = useState(0.03);
-  const [shape, setShape] = useState('free');
+  const [pan, setPan] = useState(true);
   const [draft, setDraft] = useState<Partial<Record<RectField, string>>>({});
   const [trimMsg, setTrimMsg] = useState('');
   const webp = useWebpSupport();
@@ -55,7 +55,7 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
   const cap = getLimits().maxFileBytes;
 
   // New picture (natural is reset to null on every selection): the crop starts as the whole picture.
-  useEffect(() => { setCrop(state.natural ? fullRect(state.natural) : null); setDraft({}); setTrimMsg(''); setZoom(1); setShape('free'); }, [state.natural]);
+  useEffect(() => { setCrop(state.natural ? fullRect(state.natural) : null); setDraft({}); setTrimMsg(''); setZoom(1); setPan(true); }, [state.natural]);
 
   const hasAlpha = state.result?.data.source.hasAlpha ?? state.alpha;
   const format: OutputFormat = userFormat ?? (hasAlpha === true ? 'png' : 'jpeg'); // JPEG unless the picture has transparency
@@ -121,18 +121,22 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
     const pn = parseNumber(raw, 'px');
     if (pn.kind === 'ok' && Number.isInteger(pn.value)) {
       const next = setRectField(crop, f, pn.value, state.natural, lockCrop && (f === 'width' || f === 'height'));
-      changeCrop(next);
+      manualCrop(next);
       if (next[f] !== pn.value) setDraft((d) => ({ ...d, [f]: String(next[f]) })); // show the value that was actually applied
     }
   };
 
+  // any hand edit ends the 'auto-trimmed' state, so changing the margin later never overwrites it
+  const manualCrop = (r: Rect) => { setTrimMsg(''); changeCrop(r); };
   const SHAPES: Array<[string, string, number | null]> = [['free', 'Free', null], ['2', '2 : 1 (wide)', 2], ['3', '3 : 1 (wider)', 3], ['4', '4 : 1 (widest)', 4], ['1', '1 : 1 (square)', 1]];
   const MARGINS: Array<[string, string]> = [['0', 'None'], ['0.03', 'Small'], ['0.06', 'Medium'], ['0.1', 'Large']];
+  // shown shape is derived from the real crop, so it can never disagree with the box
+  const shape = crop ? (SHAPES.find(([, , r]) => r !== null && Math.abs(aspectOf(crop) / r - 1) < 0.015)?.[0] ?? 'free') : 'free';
   const applyShape = (key: string) => {
-    setShape(key);
     const ratio = SHAPES.find((x) => x[0] === key)?.[2];
-    if (!ratio || !crop || !state.natural) return;
-    changeCrop(fitAspect(crop, ratio, state.natural));
+    if (!ratio) { setLockCrop(false); return; }
+    if (!crop || !state.natural) return;
+    manualCrop(fitAspect(crop, ratio, state.natural));
     setDraft({});
     setLockCrop(true);
   };
@@ -195,13 +199,14 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
               rect={crop}
               lockAspect={lockCrop}
               imgRef={cropImg}
-              onChange={(r) => { changeCrop(r); setDraft({}); setShape('free'); }}
+              onChange={(r) => { manualCrop(r); setDraft({}); }}
               zoom={zoom}
+              pan={pan}
             />
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               <div>
-                <label htmlFor="crop-zoom" className={labelCls}>Zoom the picture: {Math.round(zoom * 100)}%</label>
-                <input id="crop-zoom" data-testid="crop-zoom" type="range" min={1} max={4} step={0.25} value={zoom} className="h-11 w-full accent-teal-700" onChange={(e) => setZoom(Number(e.currentTarget.value))} />
+                <label htmlFor="crop-zoom" className={labelCls}>Zoom the picture</label> <span aria-hidden="true" className="text-sm text-slate-700">{Math.round(zoom * 100)}%</span>
+                <input id="crop-zoom" data-testid="crop-zoom" type="range" min={1} max={4} step={0.25} value={zoom} aria-valuetext={`${Math.round(zoom * 100)} percent`} className="h-11 w-full accent-teal-700" onChange={(e) => setZoom(Number(e.currentTarget.value))} />
               </div>
               <div>
                 <label htmlFor="crop-shape" className={labelCls}>Crop shape</label>
@@ -216,11 +221,17 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
                 </select>
               </div>
             </div>
+            {zoom > 1 && (
+              <label className="flex min-h-11 items-center gap-2 text-sm text-slate-900">
+                <input type="checkbox" data-testid="crop-pan" className="size-5 accent-teal-700" checked={pan} onChange={(e) => setPan(e.currentTarget.checked)} />
+                <span>On a touch screen, a finger on the box scrolls the picture; use the round handles to resize it</span>
+              </label>
+            )}
             </>
           ) : (
             <p data-testid="no-preview" className="rounded-lg border border-slate-300 bg-slate-50 p-3 text-sm text-slate-800">{state.previewNote === 'failed' ? 'The preview could not be created; the file may be incomplete or damaged. You can still use the number fields and try Resize.' : 'This picture is too large to show here. Use the number fields to crop it.'}</p>
           )}
-          <p className={hintCls}>Drag the box or its handles. Zoom in to place the edges precisely; when zoomed, drag outside the box to scroll the picture. With the keyboard: focus the box, then arrow keys move it, Alt plus arrow keys resize it, and Shift makes bigger steps. Or type exact numbers below.</p>
+          <p className={hintCls}>Drag the box or its handles. Zoom in to place the edges precisely, then scroll the picture with the wheel, scrollbars or a finger. With the keyboard: focus the box, then arrow keys move it, Alt plus arrow keys resize it, and Shift makes bigger steps. Or type exact numbers below.</p>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {CROP_FIELDS.map(([f, label]) => (
               <div key={f}>

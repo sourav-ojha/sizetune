@@ -10,7 +10,7 @@
 - Header/footer links are 44 px tall (were 20-32 px). Signature output-size fieldset moved below the size picker.
 - Copy: quality-first, PNG->JPEG preselect exception, 1000/1024 caveat, "up to about 19.5 KB", no WebP claim on the signature page, fuller cookies/storage/hosting statement on `/privacy/`, typo "Kiran T..".
 ### Tests
-- +3 `fitAspect` unit tests, +6 e2e (shape, zoom, margin, compare zoom, link size, worker CSP header). `pnpm run verify` exit 0: 676 unit, 196 Chrome e2e.
+- +3 `fitAspect` unit tests, +6 e2e (shape, zoom, margin, compare zoom, link size, worker CSP header). `pnpm run verify` exit 0: 677 unit, 198 Chrome e2e (after independent-review fixes).
 ### Not changed
 - Engine (no defect found), legal text meaning, OG image, deploy config, markers.
 

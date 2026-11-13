@@ -172,19 +172,25 @@ describe('hasTransparentPixel', () => {
 describe('fitAspect', () => {
   const b = { width: 1200, height: 800 };
   it('reshapes a crop to the ratio, centred, inside bounds', () => {
-    const r = fitAspect({ x: 100, y: 100, width: 600, height: 400 }, 3, b);
+    const r = fitAspect({ x: 450, y: 300, width: 300, height: 200 }, 3, b);
     expect(r.width / r.height).toBeCloseTo(3, 1);
     expect(r.x).toBeGreaterThanOrEqual(0);
     expect(r.x + r.width).toBeLessThanOrEqual(1200);
     expect(r.y + r.height).toBeLessThanOrEqual(800);
-    expect(r.x + r.width / 2).toBeCloseTo(400, -1);
-    expect(r.y + r.height / 2).toBeCloseTo(300, -1);
+    expect(r.x + r.width / 2).toBeCloseTo(600, -1);
+    expect(r.y + r.height / 2).toBeCloseTo(400, -1);
   });
   it('shrinks to fit when the ratio would leave the picture', () => {
     const r = fitAspect({ x: 0, y: 0, width: 1200, height: 800 }, 4, b);
     expect(r.width).toBeLessThanOrEqual(1200);
     expect(r.height).toBeLessThanOrEqual(800);
     expect(r.width / r.height).toBeCloseTo(4, 1);
+  });
+  it('does not cut a tall crop: it grows to contain it when the picture allows', () => {
+    const r = fitAspect({ x: 400, y: 300, width: 300, height: 200 }, 4, b);
+    expect(r.height).toBeGreaterThanOrEqual(200);
+    expect(r.width / r.height).toBeCloseTo(4, 1);
+    expect(r.x + r.width).toBeLessThanOrEqual(1200);
   });
   it('shifts a box at the edge back inside', () => {
     const r = fitAspect({ x: 1000, y: 700, width: 200, height: 100 }, 1, b);

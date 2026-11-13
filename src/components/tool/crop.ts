@@ -147,7 +147,8 @@ export function padRect(r: Rect, fraction: number, b: Size, minPx = 2): Rect {
  */
 export function fitAspect(r: Rect, ratio: number, b: Size): Rect {
   const cx = r.x + r.width / 2, cy = r.y + r.height / 2;
-  let w = r.width, h = w / ratio;
+  // smallest box of this shape that still contains the current crop (never cut the signature), then shrink to fit the picture
+  let w = Math.max(r.width, r.height * ratio), h = w / ratio;
   const k = Math.min(1, b.width / w, b.height / h);
   w *= k; h *= k;
   w = Math.max(1, Math.round(w)); h = Math.max(1, Math.round(w / ratio));

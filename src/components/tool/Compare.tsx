@@ -14,14 +14,24 @@ export default function Compare({ beforeUrl, afterUrl, beforeLabel = 'Original',
   const box = useRef<HTMLDivElement>(null);
   const inner = useRef<HTMLDivElement>(null);
   useEffect(() => { box.current?.style.setProperty('--cmp', `${pos}%`); }, [pos]);
-  useEffect(() => { inner.current?.style.setProperty('--cz', `${zoom * 100}%`); }, [zoom]);
+  const fitW = useRef(0);
+  const before = useRef<HTMLImageElement>(null);
+  useEffect(() => {
+    const img = before.current;
+    if (zoom !== 1 || !img || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => { fitW.current = img.getBoundingClientRect().width; });
+    ro.observe(img);
+    fitW.current = img.getBoundingClientRect().width;
+    return () => ro.disconnect();
+  }, [zoom, beforeUrl]);
+  useEffect(() => { inner.current?.style.setProperty('--cz', fitW.current > 0 ? `${Math.round(fitW.current * zoom)}px` : `${zoom * 100}%`); }, [zoom]);
   const zoomed = zoom > 1;
   const text = pos <= 0 ? `Showing only the ${afterLabel.toLowerCase()}` : pos >= 100 ? `Showing only the ${beforeLabel.toLowerCase()}` : `${beforeLabel} on the left, ${afterLabel.toLowerCase()} on the right (split at ${pos}%)`;
   return (
     <div data-testid="compare" className="space-y-2">
       <div ref={box} data-testid="compare-frame" className={`mx-auto max-w-full rounded-lg border border-slate-300 bg-slate-100 ${zoomed ? 'max-h-[70vh] w-full overflow-auto' : 'w-fit overflow-hidden'}`}>
         <div ref={inner} className={zoomed ? 'relative w-[var(--cz)]' : 'relative w-fit max-w-full'}>
-        <img src={beforeUrl} alt={`${beforeLabel} image`} data-testid="compare-before" className={zoomed ? 'block h-auto w-full select-none' : 'block max-h-[70vh] max-w-full select-none'} draggable={false} />
+        <img ref={before} src={beforeUrl} alt={`${beforeLabel} image`} data-testid="compare-before" className={zoomed ? 'block h-auto w-full select-none' : 'block max-h-[70vh] max-w-full select-none'} draggable={false} />
         <img
           src={afterUrl}
           alt={`${afterLabel} image`}

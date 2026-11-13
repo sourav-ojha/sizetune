@@ -11,6 +11,8 @@ interface Props {
   onChange: (r: Rect) => void;
   /** 1 = fit the available width; larger values enlarge the picture inside a scrollable frame (drag outside the box to pan). */
   zoom?: number;
+  /** Zoomed + touch: a finger on the box scrolls the picture instead of moving the box (handles still resize). */
+  pan?: boolean;
 }
 
 const MIN_SIZE = 4; // source px
@@ -29,15 +31,25 @@ const HANDLES: Array<[Handle, string]> = [
 interface Drag { kind: 'move' | Handle; px: number; py: number; start: Rect; w: number; h: number }
 
 /** Crop box over the picture. Geometry lives in CSS variables set from JS; all maths is in ./crop (source pixels). */
-export default function CropEditor({ src, natural, rect, lockAspect, imgRef, onChange, zoom = 1 }: Props) {
+export default function CropEditor({ src, natural, rect, lockAspect, imgRef, onChange, zoom = 1, pan = false }: Props) {
   const wrap = useRef<HTMLDivElement>(null);
   const drag = useRef<Drag | null>(null);
   const zoomed = zoom > 1;
+  const fitW = useRef(0);
+  // remember the width the picture has at Fit, so 2x really is twice that
+  useEffect(() => {
+    const img = imgRef.current;
+    if (zoom !== 1 || !img || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => { fitW.current = img.getBoundingClientRect().width; });
+    ro.observe(img);
+    fitW.current = img.getBoundingClientRect().width;
+    return () => ro.disconnect();
+  }, [zoom, src, imgRef]);
 
   useEffect(() => {
     const el = wrap.current;
     if (!el || !rect || !natural) return;
-    el.style.setProperty('--zw', `${zoom * 100}%`);
+    el.style.setProperty('--zw', fitW.current > 0 ? `${Math.round(fitW.current * zoom)}px` : `${zoom * 100}%`);
     const p = rectToPercent(rect, natural);
     el.style.setProperty('--cx', `${p.left}%`);
     el.style.setProperty('--cy', `${p.top}%`);
@@ -93,7 +105,7 @@ export default function CropEditor({ src, natural, rect, lockAspect, imgRef, onC
           onPointerMove={move}
           onPointerUp={end}
           onPointerCancel={end}
-          className="absolute left-[var(--cx)] top-[var(--cy)] h-[var(--ch)] w-[var(--cw)] cursor-move touch-none border-2 border-white outline outline-1 outline-teal-900 shadow-[0_0_0_9999px_rgba(15,23,42,0.55)] focus-visible:outline-2 focus-visible:outline-yellow-300"
+          className={`absolute left-[var(--cx)] top-[var(--cy)] h-[var(--ch)] w-[var(--cw)] cursor-move ${pan && zoomed ? 'touch-pan-x touch-pan-y' : 'touch-none'} border-2 border-white outline outline-1 outline-teal-900 shadow-[0_0_0_9999px_rgba(15,23,42,0.55)] focus-visible:outline-2 focus-visible:outline-yellow-300`}
         >
           {HANDLES.map(([h, pos]) => (
             <div
