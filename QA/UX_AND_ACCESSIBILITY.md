@@ -25,3 +25,13 @@ Chrome 157, Playwright 1.65, desktop 1440 and mobile 375 contexts (touch for the
 - Focus after file pick remains on `body`; optionally announce "Image loaded". Low.
 - Compare zoom is limited by the 1024 px preview of the original. Low.
 - Screen-reader pass (VoiceOver, TalkBack, NVDA) is a human item (BLOCKERS H11). Manual contrast spot checks rely on axe (`color-contrast` passed).
+
+## Independent code review of the changes (2026-11-13)
+The reviewer found 5 issues, all fixed in commit `d842757` and covered by tests:
+1. A zoomed crop box swallowed touch scrolling. The box now allows touch panning when zoomed, with a "finger scrolls the picture" toggle; the handles still resize.
+2. `fitAspect` cut tall crops. It now grows to contain the current crop first.
+3. Changing the margin overwrote manual edits. Any hand edit now clears the auto-trim marker.
+4. The shape menu could disagree with the box. It is now derived from the real crop, and "Free" releases the lock.
+5. Zoom percentages were relative to the frame width. They are now multiples of the Fit width (ResizeObserver).
+
+The zoom drag test now asserts the exact source-pixel delta. The reviewer found no problems with the CSP, `_headers` or wording. Touch panning is verified by logic and CSS only, because Playwright mouse input cannot exercise `touch-action`. A real-phone check stays in H2.

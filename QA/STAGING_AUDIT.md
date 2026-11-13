@@ -4,7 +4,7 @@ Scope: https://sizetune-staging.subhamojha9.workers.dev/ (built from `4e46c1b`, 
 
 ## Environment and exact commands
 - Chrome 157.0.8103.52 (system, Playwright `channel: chrome`), Playwright 1.65.0; Firefox 159 / Playwright WebKit 27.2 from the previous sprint (`PW_ALL_BROWSERS=1`). Real Safari / real phones: **not tested** (deferred by owner).
-- `pnpm run verify` (check, build, 676 unit, verify:html, strict, privacy, 196 Chrome e2e): **exit 0** after the changes below.
+- `pnpm run verify` (check, build, 677 unit, verify:html, strict, privacy, 198 Chrome e2e): **exit 0** after the changes below.
 - Evidence capture: Playwright scripts against `astro preview`; `curl -sS -D -` against staging; 72 screenshots in `QA/screenshots/` (JPEG, 700 px wide): 8 routes × widths 320/375/390/768/1024/1440 plus tool states at 375.
 
 ## Routes reviewed
