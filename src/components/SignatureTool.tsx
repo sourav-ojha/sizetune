@@ -319,9 +319,18 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
         />
       )}
 
-      <p className="text-sm text-slate-700">
-        SizeTune processes your signature in your browser. It is not uploaded, and this page keeps nothing after you leave it.
-      </p>
+      <div className="text-sm text-slate-700">
+        <p>
+          SizeTune processes your signature in your browser. The site's code does not upload it, and SizeTune keeps no copy of it; your browser releases it when you close the tab. By using the tool you agree to the terms of use.
+        </p>
+        <p className="mt-1 flex flex-wrap gap-x-5">
+          {[['/terms/', 'Terms of use'], ['/privacy/', 'Privacy policy']].map(([href, label]) => (
+            <a key={href} href={href} target="_blank" rel="noopener" className="inline-flex min-h-11 items-center font-medium text-teal-800 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+              {label}<span className="sr-only"> (opens in a new tab)</span>
+            </a>
+          ))}
+        </p>
+      </div>
     </section>
   );
 }
