@@ -141,8 +141,6 @@ export default function ResultPanel({ view, originalName, original, preview, onR
         </div>
       )}
 
-      {preview}
-
       <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
         {keepOriginal && original && (
           <a data-testid="keep-original" href={original.url} download={original.name} className={btnSecondary}>
@@ -164,6 +162,7 @@ export default function ResultPanel({ view, originalName, original, preview, onR
         )}
         <button type="button" data-testid="reset" className={btnSecondary} onClick={onReset}>{resetLabel}</button>
       </div>
+      {preview}
       {pngShrunk && <p className="text-sm" data-testid="png-tip">PNG keeps every pixel exactly, so it had to shrink the picture to reach this size. For a photograph, JPEG usually keeps more detail at the same size.</p>}
       {!ok && <p className="text-sm" data-testid="not-success-note">This file does not meet your target. Download it only if you can still use it.</p>}
       <p className="text-xs" data-testid="kb-basis">KB figures on this page use 1 KB = 1,024 bytes; the exact byte counts are always shown.</p>
