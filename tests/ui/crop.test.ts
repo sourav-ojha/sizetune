@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { aspectOf, clampRect, displayToSource, fullRect, isFullRect, moveRect, nudgeRect, padRect, pointToSource, rectToPercent, resizeRect, setRectField, fitAspect } from '../../src/components/tool/crop';
+import { aspectOf, clampRect, displayToSource, fullRect, isFullRect, moveRect, nudgeRect, padRect, pointToSource, rectToPercent, resizeRect, setRectField, fitAspect, fitAspectKeeping } from '../../src/components/tool/crop';
 import { findInkBounds, scaleRect } from '../../src/components/tool/trim';
 
 const B = { width: 1000, height: 500 };
@@ -196,5 +196,27 @@ describe('fitAspect', () => {
     const r = fitAspect({ x: 1000, y: 700, width: 200, height: 100 }, 1, b);
     expect(r.x + r.width).toBeLessThanOrEqual(1200);
     expect(r.y + r.height).toBeLessThanOrEqual(800);
+  });
+});
+
+describe('fitAspectKeeping', () => {
+  const b = { width: 800, height: 400 };
+  it('returns null when the shape cannot hold the whole crop inside the picture (would cut ink)', () => {
+    expect(fitAspectKeeping({ x: 0, y: 40, width: 800, height: 330 }, 3, b)).toBeNull();
+    expect(fitAspectKeeping({ x: 0, y: 40, width: 800, height: 330 }, 1, b)).toBeNull();
+  });
+  it('returns a rect containing the crop when it fits', () => {
+    const crop = { x: 100, y: 100, width: 300, height: 100 };
+    const r = fitAspectKeeping(crop, 4, b)!;
+    expect(r).not.toBeNull();
+    expect(r.x).toBeLessThanOrEqual(crop.x);
+    expect(r.y).toBeLessThanOrEqual(crop.y);
+    expect(r.x + r.width).toBeGreaterThanOrEqual(crop.x + crop.width);
+    expect(r.y + r.height).toBeGreaterThanOrEqual(crop.y + crop.height);
+    expect(r.width / r.height).toBeCloseTo(4, 1);
+  });
+  it('still shrinks a full-picture crop (nothing trimmed yet, no ink known)', () => {
+    const r = fitAspectKeeping({ x: 0, y: 0, width: 800, height: 400 }, 3, b)!;
+    expect(r.width / r.height).toBeCloseTo(3, 1);
   });
 });

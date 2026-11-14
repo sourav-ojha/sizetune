@@ -157,3 +157,15 @@ export function fitAspect(r: Rect, ratio: number, b: Size): Rect {
   const y = Math.min(Math.max(0, Math.round(cy - h / 2)), b.height - h);
   return { x, y, width: w, height: h };
 }
+
+/**
+ * Like fitAspect, but never cuts what the user has already framed: returns null when a box of this shape that still
+ * contains the whole crop does not fit inside the picture. A crop that is the whole picture (nothing trimmed yet) is
+ * simply reshaped, since no ink position is known.
+ */
+export function fitAspectKeeping(r: Rect, ratio: number, b: Size): Rect | null {
+  const next = fitAspect(r, ratio, b);
+  if (isFullRect(r, b)) return next;
+  const holds = next.x <= r.x && next.y <= r.y && next.x + next.width >= r.x + r.width && next.y + next.height >= r.y + r.height;
+  return holds ? next : null;
+}
