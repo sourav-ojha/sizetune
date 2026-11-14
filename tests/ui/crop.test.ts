@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { aspectOf, clampRect, displayToSource, fullRect, isFullRect, moveRect, nudgeRect, padRect, pointToSource, rectToPercent, resizeRect, setRectField, fitAspect, fitAspectKeeping } from '../../src/components/tool/crop';
+import { aspectOf, clampRect, displayToSource, fullRect, isFullRect, moveRect, nudgeRect, padRect, pointToSource, rectToPercent, resizeRect, setRectField, fitAspect, fitAspectKeeping, coversMostOf } from '../../src/components/tool/crop';
 import { findInkBounds, scaleRect } from '../../src/components/tool/trim';
 
 const B = { width: 1000, height: 500 };
@@ -218,5 +218,16 @@ describe('fitAspectKeeping', () => {
   it('still shrinks a full-picture crop (nothing trimmed yet, no ink known)', () => {
     const r = fitAspectKeeping({ x: 0, y: 0, width: 800, height: 400 }, 3, b)!;
     expect(r.width / r.height).toBeCloseTo(3, 1);
+  });
+});
+
+describe('coversMostOf', () => {
+  const b = { width: 4000, height: 3000 };
+  it('is true for the whole picture and for a sliver-trimmed one', () => {
+    expect(coversMostOf({ x: 0, y: 0, width: 4000, height: 3000 }, b)).toBe(true);
+    expect(coversMostOf({ x: 10, y: 10, width: 3980, height: 2985 }, b)).toBe(true);
+  });
+  it('is false for a real trim', () => {
+    expect(coversMostOf({ x: 500, y: 800, width: 2000, height: 600 }, b)).toBe(false);
   });
 });

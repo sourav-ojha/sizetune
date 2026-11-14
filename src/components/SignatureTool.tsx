@@ -7,7 +7,7 @@ import FormatPicker from './tool/FormatPicker';
 import ProgressBar from './tool/Progress';
 import ResultPanel from './tool/ResultPanel';
 import SizePicker from './tool/SizePicker';
-import { aspectOf, fitAspectKeeping, fullRect, isFullRect, padRect, setRectField, type Rect, type RectField } from './tool/crop';
+import { aspectOf, coversMostOf, fitAspectKeeping, fullRect, isFullRect, padRect, setRectField, type Rect, type RectField } from './tool/crop';
 import { getLimits } from './tool/engine';
 import { formatCap, formatDims, formatSize } from './tool/format';
 import { ensureVisible, useForm, useScrollAnchor, useWebpSupport } from './tool/hooks';
@@ -161,8 +161,10 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
       ctx.drawImage(img, 0, 0, cw, ch);
       const ink = findInkBounds(ctx.getImageData(0, 0, cw, ch).data, cw, ch);
       if (!ink) { setTrimMsg('No signature was found to trim. Drag the crop box by hand instead.'); return; }
-      changeCrop(padRect(scaleRect(ink, nat.width / cw, nat.height / ch, nat), frac, nat, frac === 0 ? 0 : 2));
+      const trimmed = padRect(scaleRect(ink, nat.width / cw, nat.height / ch, nat), frac, nat, frac === 0 ? 0 : 2);
+      changeCrop(trimmed);
       setDraft({});
+      if (coversMostOf(trimmed, nat)) { setTrimMsg('Nothing could be trimmed automatically, so the whole picture is still selected. Drag the crop box around your signature by hand.'); return; }
       setTrimMsg(frac === 0 ? 'Cropped tight to the ink. Adjust it if needed.' : 'Cropped to the ink with a margin. Adjust it if needed.');
     } catch {
       setTrimMsg('Automatic trimming is not available here. Drag the crop box by hand instead.');

@@ -169,3 +169,8 @@ export function fitAspectKeeping(r: Rect, ratio: number, b: Size): Rect | null {
   const holds = next.x <= r.x && next.y <= r.y && next.x + next.width >= r.x + r.width && next.y + next.height >= r.y + r.height;
   return holds ? next : null;
 }
+
+/** True when a rect is (nearly) the whole picture: auto-trim found no edge worth cutting (a sliver under 2% of the area is not a trim). */
+export function coversMostOf(r: Rect, b: Size, share = 0.98): boolean {
+  return r.width * r.height >= b.width * b.height * share;
+}
