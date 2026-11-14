@@ -208,3 +208,18 @@ describe('plan: decode size', () => {
     expect(big.width).toBe(6000); // user asked for 27 MP: allowed above the 6 MP cap
   });
 });
+
+describe('runPipeline: pixel-reduction disclosure (UX-3)', () => {
+  it('says so when free dimensions shrank the picture to under half its size per side', async () => {
+    const r = await runPipeline(jpg(4000, 3000), { ...base, maxKb: 5 }, fakeEnv().env);
+    expect(r.status).toBe('ok');
+    expect(r.width).toBeLessThan(2000);
+    expect(r.notes.some((n) => /reduced from 4000×3000 px to \d+×\d+ px/i.test(n))).toBe(true);
+  });
+  it('stays quiet when the picture keeps most of its pixels, or the user chose the dimensions', async () => {
+    const a = await runPipeline(jpg(1000, 800), { ...base, maxKb: 900 }, fakeEnv().env);
+    expect(a.notes.some((n) => /reduced from/i.test(n))).toBe(false);
+    const b = await runPipeline(jpg(4000, 3000), { ...base, width: 400, height: 300 }, fakeEnv().env);
+    expect(b.notes.some((n) => /reduced from/i.test(n))).toBe(false);
+  });
+});
