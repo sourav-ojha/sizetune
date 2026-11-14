@@ -2,6 +2,7 @@
 
 ## Unreleased — staging audit sprint (2026-11-13, local commits `c8ec1ea`, `3220309`; not pushed, not deployed)
 ### Added
+- Tests: the keyboard-only flow test armed Playwright's file-chooser interception in parallel with the Enter keypress, so under load (about 10% of runs with 6 workers) the key could win the race and no `filechooser` event arrived (CI timeout on dev). It now arms the listener and round-trips to the page first (60/60 under the same load) and also waits for island hydration after the reload.
 - CI: Firefox project retries once on CI (`retries: process.env.CI ? 1 : 0`, Firefox only) after Firefox content-process "Page crashed" failures inside axe.run on three CI runs, on different tests each time, never reproducible locally. A deterministic failure still fails twice; Chrome and WebKit have no retry.
 - Signature crop editor: zoom slider (100-400%), crop shape presets (free, 2:1, 3:1, 4:1, 1:1 via `fitAspect()`), auto-trim margin menu.
 - Result compare: Fit / 2x / 4x zoom in a scrollable frame.

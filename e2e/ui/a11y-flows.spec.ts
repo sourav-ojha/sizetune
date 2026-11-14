@@ -24,9 +24,16 @@ test.describe('keyboard only', () => {
     await page.reload();
     await expect(page.getByTestId('tool')).toBeVisible();
     await page.waitForLoadState('networkidle');
+    // networkidle does not mean hydrated: Tabbing to the SSR'd input and then hydrating drops focus, so Enter opens no chooser
+    await page.waitForFunction(() => !document.querySelector('astro-island[ssr]'));
     await tabTo(page, 'file');
     expect(await focusVisible(page), 'file chooser shows a focus ring').toBe(true);
-    const [chooser] = await Promise.all([page.waitForEvent('filechooser'), page.keyboard.press('Enter')]);
+    // arm the chooser interception and round-trip to the page BEFORE the key: the listener enables interception asynchronously,
+    // and a keypress that wins that race opens the native (invisible) dialog, so no 'filechooser' event ever arrives
+    const chooserEvent = page.waitForEvent('filechooser');
+    await page.evaluate(() => undefined);
+    await page.keyboard.press('Enter');
+    const chooser = await chooserEvent;
     await chooser.setFiles(NOISE);
     await expect(page.getByTestId('file-info')).toContainText('noise.png');
     await tabTo(page, 'preset-20');
