@@ -1,0 +1,3 @@
+const L=require('./lib.cjs');(async()=>{const b=await L.launch();const page=await(await b.newContext({viewport:{width:900,height:900},deviceScaleFactor:2})).newPage();await page.goto(L.BASE+'/resize-signature/',{waitUntil:'networkidle'});await page.setInputFiles('[data-testid=file]',L.FIX+'/signature-1200x400.png');await page.waitForTimeout(800);await page.focus('[data-testid=crop-box]');await page.keyboard.press('Tab');await page.keyboard.press('Shift+Tab');
+const el=await page.$('[data-testid=crop-box]');const bb=await el.boundingBox();await page.screenshot({path:L.SHOTS+'/signature-crop-box-focus.png',clip:{x:bb.x-30,y:bb.y-30,width:bb.width+60,height:bb.height+60}});
+console.log(await page.evaluate(L.focusInfo));await b.close()})();

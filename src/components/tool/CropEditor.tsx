@@ -110,7 +110,7 @@ export default function CropEditor({ src, natural, rect, lockAspect, imgRef, onC
           onPointerMove={move}
           onPointerUp={end}
           onPointerCancel={end}
-          className={`absolute left-[var(--cx)] top-[var(--cy)] h-[var(--ch)] w-[var(--cw)] cursor-move ${pan && zoomed ? 'touch-pan-x touch-pan-y' : 'touch-none'} border-2 border-white outline outline-1 outline-teal-900 focus-visible:outline-2 focus-visible:outline-yellow-300`}
+          className={`absolute left-[var(--cx)] top-[var(--cy)] h-[var(--ch)] w-[var(--cw)] cursor-move ${pan && zoomed ? 'touch-pan-x touch-pan-y' : 'touch-none'} border-2 border-white outline outline-1 outline-teal-900 focus-visible:outline-[3px] focus-visible:outline-teal-900`}
         >
           {HANDLES.map(([h, pos]) => (
             <div

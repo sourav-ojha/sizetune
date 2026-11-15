@@ -119,6 +119,7 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
           <p className="min-w-0 text-sm text-slate-800" data-testid="file-info">
             <span className="block truncate font-medium">{state.file.name}</span>
             {state.natural ? `${formatDims(state.natural.width, state.natural.height)}, ` : ''}{formatSize(state.file.size)}
+            <span className="mt-1 block text-slate-700" data-testid="next-step">Next: choose a size below, then press Resize image.</span>
           </p>
         </div>
       )}
