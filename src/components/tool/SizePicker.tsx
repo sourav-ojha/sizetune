@@ -64,6 +64,11 @@ export default function SizePicker({ form, errors, update, showQuality = true, s
           </p>
         )}
       </div>
+      {form.noLimit && (
+        <p className={hintCls} data-testid="nolimit-note">
+          No limit keeps the original pixel size, except for very large photos (above about 12 megapixels, for example 4000 × 3000): those are still reduced to fit your browser's memory.
+        </p>
+      )}
       {qualityVisible && (
         <div>
           <label htmlFor={`${id}-q`} className={labelCls}>Quality: <span data-testid="quality-value">{form.quality}</span></label>
