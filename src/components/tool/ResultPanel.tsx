@@ -62,13 +62,14 @@ export default function ResultPanel({ view, originalName, original, preview, onR
   const { minBytes, maxBytes } = data.window;
   const over = maxBytes != null && data.bytes > maxBytes ? data.bytes - maxBytes : 0;
   const under = minBytes != null && data.bytes < minBytes ? minBytes - data.bytes : 0;
+  const typedW = options.width, typedH = options.height;
   const larger = data.bytes > data.source.bytes;
   const keepOriginal = larger && data.originalFits === true && !!original;
-  const good = ok && !larger;
+  const dimsMissed = !!(typedW && typedH && (data.width !== typedW || data.height !== typedH));
+  const good = ok && !larger && !dimsMissed;
   const frame = good ? 'border-emerald-700 bg-emerald-50 text-emerald-950' : 'border-amber-700 bg-amber-50 text-amber-950';
   const fmt = FORMAT_NAME[data.mime] ?? data.mime;
   const basis = describeWindow(data.window, options.minKb, options.maxKb);
-  const typedW = options.width, typedH = options.height;
   const notes = [...data.notes];
   if (typedW && typedH && (data.width !== typedW || data.height !== typedH)) {
     notes.push(`${options.lockAspect ? 'Aspect lock kept the shape' : 'The size was adjusted'}: the result is ${formatDims(data.width, data.height)}, not the ${formatDims(typedW, typedH)} you typed.`);
@@ -87,7 +88,7 @@ export default function ResultPanel({ view, originalName, original, preview, onR
       className={`space-y-4 rounded-xl border-2 p-4 sm:p-5 ${frame}`}
     >
       <h3 id="sizetune-result-heading" ref={headingRef} tabIndex={-1} className="text-lg font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700" data-testid="result-heading">
-        <span aria-hidden="true">{good ? '✓ ' : '⚠ '}</span>{larger && ok ? 'The result is larger than your original' : HEADING[data.status]}
+        <span aria-hidden="true">{good ? '✓ ' : '⚠ '}</span>{larger && ok ? 'The result is larger than your original' : ok && dimsMissed ? 'Resized, but not to the exact dimensions you typed' : HEADING[data.status]}
       </h3>
 
       {data.message && !plainOk && <p data-testid="result-message">{data.message}</p>}

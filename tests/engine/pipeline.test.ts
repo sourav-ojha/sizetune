@@ -223,3 +223,10 @@ describe('runPipeline: pixel-reduction disclosure (UX-3)', () => {
     expect(b.notes.some((n) => /reduced from/i.test(n))).toBe(false);
   });
 });
+
+describe('runPipeline: quality note (IMG-2)', () => {
+  it('does not claim quality "had to go down" when the user chose the quality', async () => {
+    const r = await runPipeline(jpg(1000, 800), { ...base, quality: 30 }, fakeEnv().env);
+    expect(r.notes.some((n) => /had to go down/i.test(n))).toBe(false);
+  });
+});

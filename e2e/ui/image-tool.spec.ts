@@ -376,6 +376,8 @@ test.describe('image tool', () => {
     await resize(page);
     await expect(page.getByTestId('result-notes')).toContainText('Aspect lock kept the shape');
     await expect(page.getByTestId('result-notes')).toContainText('133 × 100 px');
+    // IMG-1: a result that is not the typed size must not read as a plain success
+    await expect(page.getByTestId('result-heading')).toContainText('not to the exact dimensions you typed');
     await page.getByTestId('lock-aspect').uncheck();
     await expect(page.getByTestId('fit')).toBeVisible();
     await expect(page.getByTestId('fit')).toBeDisabled();

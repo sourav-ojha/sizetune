@@ -170,7 +170,7 @@ export async function runPipeline<I extends DecodedImage>(file: Blob, input: Pro
     if (strip && !isStructurallyValidJpeg(new Uint8Array(await ctx.race(blob.arrayBuffer())))) throw new EngineError('encode_unsupported', 'The browser produced an invalid JPEG.');
     if ((out.status === 'ok' || out.status === 'raised') && !(blob.size >= win.lo && blob.size <= win.hi)) throw new Error('internal: success outside window'); // unreachable by construction
 
-    if (lossy && best.quality !== null && best.quality < Q_MIN && (out.status === 'ok' || out.status === 'raised')) notes.push(NOTES.lowQuality(best.quality));
+    if (lossy && opts.quality == null && best.quality !== null && best.quality < Q_MIN && (out.status === 'ok' || out.status === 'raised')) notes.push(NOTES.lowQuality(best.quality));
     if (fmt.mime === 'image/png' && !hasAlpha && opts.format === 'auto' && hasSizeTarget(opts) && (best.scale < 0.999 || out.status === 'above_max' || out.status === 'above_max_fixed')) notes.push(NOTES.pngTryJpeg);
     // The pixels shrank a lot to hit the size target: say so, since a form may also have a minimum pixel size.
     if (!geom.fixed && (out.status === 'ok' || out.status === 'raised') && (best.width < srcW * 0.5 || best.height < srcH * 0.5)) notes.push(NOTES.shrunk(best.width, best.height, srcW, srcH));
