@@ -30,7 +30,8 @@ test.describe('audit remediation', () => {
     await popup.close();
     expect(type).toBe('image/png');
     const [dl] = await Promise.all([page.waitForEvent('download'), page.getByTestId('keep-original').click()]);
-    expect(dl.suggestedFilename()).toBe('polyglot.html');
+    // Chrome/WebKit keep the name; Firefox fixes a mismatching extension to the real type (polyglot.png). Either way the bytes are the original.
+    expect(dl.suggestedFilename()).toMatch(/^polyglot\.(html|png)$/);
     expect(Buffer.compare(fs.readFileSync(await dl.path()), tiny)).toBe(0);
   });
 
