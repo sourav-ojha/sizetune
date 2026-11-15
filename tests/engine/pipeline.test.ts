@@ -265,3 +265,15 @@ describe('runPipeline: reduction note names its real cause (ST-002)', () => {
     expect(sizeLimitNote(r.notes)).toBe(true);
   });
 });
+
+describe('runPipeline: failed enlarge message matches the downloadable file (ST-007)', () => {
+  it('reports the enlarged output size, not the 1x probe', async () => {
+    const r = await runPipeline(jpg(120, 80), { ...base, minKb: 20, allowEnlarge: true }, fakeEnv({ complexity: 0.02 }).env);
+    expect(r.status).toBe('below_min');
+    expect(r.width).toBeGreaterThan(120);
+    expect(r.message).toContain(`${r.width}×${r.height} px`);
+    expect(r.message).toContain(r.bytes.toLocaleString('en-US'));
+    expect(r.message).toMatch(/enlarg/i);
+    expect(r.message).not.toContain('120×80');
+  });
+});

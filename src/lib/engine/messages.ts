@@ -55,6 +55,8 @@ export function buildMessage(m: MessageInput): string {
         ? ' Check whether the portal really requires these exact dimensions; larger dimensions would give a bigger file.'
         : m.allowEnlarge ? ' Use a larger original image.' : ' Use a larger original image, or allow enlarging the image.';
       if (m.lossless) return `${fmt} is lossless, so its size depends only on the pixels: at ${px(b.width, b.height)} this image is ${sizeExact(b.bytes)}, below ${minText}.${hint}`;
+      // The downloadable file is `b`; when it was enlarged, describe that file (the 1x probe is a different, smaller image).
+      if (b.enlarged) return `Even after enlarging the image to ${px(b.width, b.height)}, the file is only ${sizeExact(b.bytes)} even at maximum quality, below ${minText}. Enlarging adds pixels, not detail. Use a larger original image.`;
       const p = m.maxProbe ?? b;
       return `At ${px(p.width, p.height)} this image is at most ${sizeExact(p.bytes)} even at maximum quality, so ${minText} cannot be met at these dimensions.${hint}`;
     }
