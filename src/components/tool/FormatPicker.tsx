@@ -1,6 +1,6 @@
 import { useId } from 'preact/hooks';
 import type { OutputFormat } from '../../lib/engine/types';
-import { backgroundFor, needsFlattenChoice, type BgChoice, type FieldErrors, type FormState } from './options';
+import { alphaUnchecked, backgroundFor, needsFlattenChoice, type BgChoice, type FieldErrors, type FormState } from './options';
 import { errCls, fieldsetCls, hintCls, inputCls, legendCls } from './ui';
 import { normalizeHex } from './format';
 
@@ -20,6 +20,8 @@ interface Props {
   webp: boolean | null;
   /** From the file header: true when the picture has transparent pixels. */
   hasAlpha: boolean | null;
+  /** A file is selected (used with `hasAlpha === null`: transparency could not be checked). */
+  hasFile?: boolean;
   /** Text shown above the choices explaining the default for this tool. */
   intro?: string;
   /** Shown when the selected format is a default chosen for the user (never a silent switch). */
@@ -28,9 +30,10 @@ interface Props {
 
 const optCls = 'flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-slate-500 bg-white px-3 py-2 text-base text-slate-900 has-[:checked]:border-teal-700 has-[:checked]:bg-teal-50 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-teal-700 has-[:disabled]:cursor-not-allowed has-[:disabled]:bg-slate-100 has-[:disabled]:text-slate-600';
 
-export default function FormatPicker({ form, errors, update, formats, webp, hasAlpha, intro, defaultNote }: Props) {
+export default function FormatPicker({ form, errors, update, formats, webp, hasAlpha, hasFile = false, intro, defaultNote }: Props) {
   const id = useId();
-  const flatten = needsFlattenChoice(form.format, hasAlpha);
+  const unchecked = form.format === 'jpeg' && alphaUnchecked(hasFile, hasAlpha);
+  const flatten = needsFlattenChoice(form.format, hasAlpha) || unchecked;
   const bgValue = normalizeHex(form.bgCustom) ?? '#ffffff';
   const bgOptions: Array<[BgChoice, string]> = [['white', 'White'], ['black', 'Black'], ['custom', 'Custom colour']];
   return (
@@ -101,6 +104,7 @@ export default function FormatPicker({ form, errors, update, formats, webp, hasA
             </div>
           )}
           {errors.bgCustom && <p className={errCls}>{errors.bgCustom}</p>}
+          {unchecked && <p className={hintCls} data-testid="alpha-unchecked">This image is too large to check for transparency. If it has any, those areas are filled with the colour you choose.</p>}
           <p className={hintCls}>
             Filling with {backgroundFor(form) ?? 'your colour'} changes how the picture looks. The result will state what was filled.
           </p>

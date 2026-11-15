@@ -125,7 +125,7 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
       )}
 
       <SizePicker form={effective} errors={errors} update={update} sourceKind={state.sniff?.kind ?? null} />
-      <FormatPicker form={effective} errors={errors} update={update} formats={['auto', 'jpeg', 'png', 'webp']} webp={webp} hasAlpha={hasAlpha} defaultNote={autoJpeg ? 'Your PNG will be saved as a JPEG: smaller files keep more detail. Choose PNG to keep the format.' : undefined} />
+      <FormatPicker form={effective} errors={errors} update={update} formats={['auto', 'jpeg', 'png', 'webp']} webp={webp} hasAlpha={hasAlpha} hasFile={!!state.file} defaultNote={autoJpeg ? 'Your PNG will be saved as a JPEG: smaller files keep more detail. Choose PNG to keep the format.' : undefined} />
 
       <AdvancedBlock forceOpen={advancedError}>
         <MinimumField form={effective} errors={errors} update={update} />

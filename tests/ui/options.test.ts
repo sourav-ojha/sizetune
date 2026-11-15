@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { activePreset, backgroundFor, buildOptions, defaultForm, derivedDimension, needsFlattenChoice, outputIsLossless, parseNumber } from '../../src/components/tool/options';
+import { activePreset, backgroundFor, buildOptions, defaultForm, derivedDimension, needsFlattenChoice, outputIsLossless, parseNumber, alphaUnchecked } from '../../src/components/tool/options';
 
 const ok = (r: ReturnType<typeof buildOptions>) => { if (!r.ok) throw new Error(JSON.stringify(r.errors)); return r.options; };
 
@@ -127,5 +127,14 @@ describe('outputIsLossless (ST-001: quality slider must hide when the real outpu
     expect(outputIsLossless('auto', null)).toBe(false);
     expect(outputIsLossless('jpeg', 'png')).toBe(false);
     expect(outputIsLossless('webp', 'png')).toBe(false);
+  });
+});
+
+describe('alphaUnchecked (ST-008)', () => {
+  it('only a selected file with unknown transparency', () => {
+    expect(alphaUnchecked(true, null)).toBe(true);
+    expect(alphaUnchecked(false, null)).toBe(false);
+    expect(alphaUnchecked(true, false)).toBe(false);
+    expect(alphaUnchecked(true, true)).toBe(false);
   });
 });
