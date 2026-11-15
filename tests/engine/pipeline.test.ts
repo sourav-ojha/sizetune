@@ -224,6 +224,14 @@ describe('runPipeline: pixel-reduction disclosure (UX-3)', () => {
   });
 });
 
+describe('runPipeline: shrunk note ignores a plain crop (review M1)', () => {
+  it('a crop that is output at its own size is not "reduced"', async () => {
+    const r = await runPipeline(jpg(4000, 3000), { ...base, crop: { x: 100, y: 100, width: 800, height: 300 } }, fakeEnv().env);
+    expect(r.status).toBe('ok');
+    expect(r.notes.some((n) => /reduced from/i.test(n))).toBe(false);
+  });
+});
+
 describe('runPipeline: quality note (IMG-2)', () => {
   it('does not claim quality "had to go down" when the user chose the quality', async () => {
     const r = await runPipeline(jpg(1000, 800), { ...base, quality: 30 }, fakeEnv().env);

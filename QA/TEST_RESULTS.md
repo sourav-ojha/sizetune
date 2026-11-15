@@ -50,7 +50,7 @@ Notes: the 188 include the engine browser specs (`e2e/engine`, 35 incl. `m6-ui-r
 
 ## 2026-11-14 addendum: latest-staging audit and fixes
 - Live staging audits (Playwright, real downloads decoded): image 119 cases (Chrome, WebKit, Firefox); signature 24 pixel-compared crop cases plus keyboard, touch emulation and layout; security with request capture and CSP violation probes (Chrome only); UX/axe on 7 routes (Chrome, Firefox, WebKit); SEO/content crawl of 7 routes. Details and numbers are in the five `QA/*_AUDIT.md` reports.
-- After the fixes (`6c6f6f3`..`7ad5f4b`): `CI=1 pnpm run verify` exit 0: `astro check` 0 errors; vitest **685 passed** (23 files); verify:html, STRICT=1 and verify:privacy OK; Chrome e2e **198 passed** (2.8 min).
+- After the fixes (`6c6f6f3`..`7ad5f4b`): `CI=1 pnpm run verify` exit 0: `astro check` 0 errors; vitest **687 passed** (23 files); verify:html, STRICT=1 and verify:privacy OK; Chrome e2e **198 passed** (2.8 min).
 - New unit tests: fitAspectKeeping (3), coversMostOf (2), pixel-reduction note (2), chosen-quality note (1). New e2e assertion: the typed-dimension mismatch heading (IMG-1).
 - Flake note: one run of `image-tool.spec.ts` (a 6.9 min run) failed "No limit shows a quality slider"; the test then passed 30 of 30 with `--repeat-each=10` three times and in the full verify. Not reproduced; likely load-related timeout.
 - Firefox and WebKit are run by CI on push; they were not re-run locally after these fixes.

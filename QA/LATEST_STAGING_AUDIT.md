@@ -64,7 +64,7 @@ Recommendations (UX-9..14, SEO-3/4/8, CNT-5/6, PERF-2, keyboard shortcut ideas) 
 VoiceOver, NVDA and TalkBack; physical phones or tablets (**Device**); pinch zoom; real Windows High Contrast (forced-colors emulated only); Lighthouse; Chrome-only for the security audit; the 60-second timeout and out-of-memory paths; drag and drop on staging; email delivery to hello@sizetune.com; production headers (domain does not resolve). The image audit could not confirm staging was serving `8f0b204` byte-for-byte; the CI deploy job reported success.
 
 ## 5. Fixes in this pass (local commits on `dev`, not pushed, not deployed)
-`6c6f6f3` SIG-1 · `3abe369` A11Y-1 · `5c49174` SIG-2 · `39371e5` UX-3 · `a765ed5` UX-1 and UX-2 · `7ad5f4b` IMG-1 and IMG-2. Each engine or crop change has a unit test that failed before the fix. The IMG-1 heading has an e2e assertion. Gate: `CI=1 pnpm run verify` exit 0, 685 unit and 198 Chrome e2e. An independent diff review is recorded in section 8.
+`6c6f6f3` SIG-1 · `3abe369` A11Y-1 · `5c49174` SIG-2 · `39371e5` UX-3 · `a765ed5` UX-1 and UX-2 · `7ad5f4b` IMG-1 and IMG-2. Each engine or crop change has a unit test that failed before the fix. The IMG-1 heading has an e2e assertion. Gate: `CI=1 pnpm run verify` exit 0, 687 unit and 198 Chrome e2e. An independent diff review is recorded in section 8.
 
 ## 6. Remaining technical limits
 Safari output sizes can differ from Chrome (engine verifies real bytes, so results stay honest). WebKit cannot encode WebP. Pinch zoom is not implemented in the signature tool. Compare zoom is limited by the 1,024 px preview. The CSP is a `<meta>` policy, so it cannot block anything before it in `<head>`.
@@ -77,4 +77,9 @@ Safari output sizes can differ from Chrome (engine verifies real bytes, so resul
 5. Confirm the hello@sizetune.com mailbox receives mail; approve the OG image.
 
 ## 8. Independent review
-Pending at the time of writing; the result is appended to `BUILD_STATUS.md` once it returns.
+A Sonnet reviewer read the real diffs and ran 687 unit and 140 Chrome UI e2e tests: **approve**, with one medium and four low notes.
+- M1 (fixed): the pixel-reduction note compared the output with the whole source, so a plain crop (4000x3000 cropped to 800x300) falsely said "reduced". It now compares with the crop. Test added.
+- L1 (hardened by a test): a crop that already has the target shape must not be refused because of rounding.
+- L3 (fixed): duplicated mismatch condition in the result panel now shares one variable.
+- L2, L4 (left): the shape-refusal message stays until the next crop edit; the "Next:" cue stays visible after a result. Both are cosmetic.
+- Not independently checked by the reviewer: 44 px targets and the content-spacing / verify-html constraints beyond what the suites cover.

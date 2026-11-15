@@ -71,7 +71,7 @@ export default function ResultPanel({ view, originalName, original, preview, onR
   const fmt = FORMAT_NAME[data.mime] ?? data.mime;
   const basis = describeWindow(data.window, options.minKb, options.maxKb);
   const notes = [...data.notes];
-  if (typedW && typedH && (data.width !== typedW || data.height !== typedH)) {
+  if (dimsMissed) {
     notes.push(`${options.lockAspect ? 'Aspect lock kept the shape' : 'The size was adjusted'}: the result is ${formatDims(data.width, data.height)}, not the ${formatDims(typedW, typedH)} you typed.`);
   }
   const dlLabel = !ok ? 'Download anyway' : larger ? 'Download the larger result anyway' : 'Download';

@@ -215,6 +215,10 @@ describe('fitAspectKeeping', () => {
     expect(r.y + r.height).toBeGreaterThanOrEqual(crop.y + crop.height);
     expect(r.width / r.height).toBeCloseTo(4, 1);
   });
+  it('accepts a crop that already has the target shape despite rounding (review L1)', () => {
+    const r = fitAspectKeeping({ x: 5, y: 5, width: 3, height: 11 }, 3 / 11, { width: 100, height: 100 });
+    expect(r).not.toBeNull();
+  });
   it('still shrinks a full-picture crop (nothing trimmed yet, no ink known)', () => {
     const r = fitAspectKeeping({ x: 0, y: 0, width: 800, height: 400 }, 3, b)!;
     expect(r.width / r.height).toBeCloseTo(3, 1);
