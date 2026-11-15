@@ -1,3 +1,4 @@
+import SelectBox, { selectCls } from './SelectBox';
 import type { ComponentChildren } from 'preact';
 import { useEffect, useId, useRef } from 'preact/hooks';
 import { derivedDimension, parseNumber, type FieldErrors, type FormState } from './options';
@@ -101,10 +102,11 @@ export function DimensionFields({ form, errors, update, basis, showMax, legend =
       {(both || !form.lockAspect) && (
         <div>
           <label htmlFor={`${id}-fit`} className={labelCls}>When the shape differs from the original</label>
+          <SelectBox>
           <select
             id={`${id}-fit`}
             data-testid="fit"
-            className={`${inputCls} mt-1`}
+            className={`${inputCls} ${selectCls}`}
             value={form.lockAspect ? form.fit : 'stretch'}
             disabled={!form.lockAspect}
             aria-describedby={`${id}-fit-hint`}
@@ -114,6 +116,7 @@ export function DimensionFields({ form, errors, update, basis, showMax, legend =
             <option value="cover">Fill the size (edges are cropped)</option>
             {!form.lockAspect && <option value="stretch">Stretch to exactly this size (may distort)</option>}
           </select>
+          </SelectBox>
           <p id={`${id}-fit-hint`} className={hintCls}>
             {form.lockAspect
               ? both ? 'With both sizes typed and the aspect ratio kept, the picture keeps its shape, so the result can be smaller than one of the sizes.' : 'Type both width and height to choose how the picture is fitted.'

@@ -1,9 +1,29 @@
 @import "tailwindcss";
 @import "@fontsource-variable/geist/wght.css";
 
+/* Metric-matched stand-in for the web font (Arial resized to Geist's width and line box), so the swap to Geist moves almost nothing (ST-013). */
+@font-face {
+  font-family: "Geist Fallback";
+  src: local("Arial");
+  font-weight: 100 599;
+  size-adjust: 101.86%;
+  ascent-override: 98.7%;
+  descent-override: 29%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Geist Fallback";
+  src: local("Arial Bold"), local("Arial-BoldMT");
+  font-weight: 600 900;
+  size-adjust: 100.49%;
+  ascent-override: 100%;
+  descent-override: 29.4%;
+  line-gap-override: 0%;
+}
+
 /* Design tokens. One accent (teal), one neutral family (slate). Fonts are self-hosted (no third-party origin). */
 @theme {
-  --font-sans: "Geist Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Geist Variable", "Geist Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --shadow-card: 0 1px 2px rgb(15 23 42 / 0.05), 0 12px 32px -12px rgb(15 79 74 / 0.22);
   --shadow-pop: 0 1px 2px rgb(15 23 42 / 0.06), 0 6px 16px -6px rgb(15 79 74 / 0.35);
   --animate-rise: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;

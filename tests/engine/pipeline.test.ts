@@ -238,3 +238,65 @@ describe('runPipeline: quality note (IMG-2)', () => {
     expect(r.notes.some((n) => /had to go down/i.test(n))).toBe(false);
   });
 });
+
+describe('runPipeline: reduction note names its real cause (ST-002)', () => {
+  const sizeLimitNote = (notes: string[]) => notes.some((n) => /to reach your size limit/i.test(n));
+  it('no limit on a huge photo: working-size note only, never "size limit"', async () => {
+    const r = await runPipeline(jpg(8000, 6000), { ...base }, fakeEnv().env);
+    expect(r.width).toBeLessThan(4000);
+    expect(sizeLimitNote(r.notes)).toBe(false);
+    expect(r.notes.some((n) => /opened at reduced size/i.test(n))).toBe(true);
+  });
+  it('huge PNG that fits the limit anyway: memory-cap note, not "size limit"', async () => {
+    const r = await runPipeline(png(7000, 6000), { ...base, maxKb: 30000 }, fakeEnv().env);
+    expect(r.width).toBeLessThan(3500);
+    expect(sizeLimitNote(r.notes)).toBe(false);
+    expect(r.notes.some((n) => /opened at reduced size/i.test(n))).toBe(true);
+  });
+  it('max width 400: says it was the maximum width/height', async () => {
+    const r = await runPipeline(jpg(4000, 3000), { ...base, maxWidth: 400 }, fakeEnv().env);
+    expect(r.width).toBe(400);
+    expect(sizeLimitNote(r.notes)).toBe(false);
+    expect(r.notes.some((n) => /maximum width\/height/i.test(n))).toBe(true);
+  });
+  it('a size target that really forced the scaling still gets the size-limit note', async () => {
+    const r = await runPipeline(jpg(3000, 2000), { ...base, maxKb: 30 }, fakeEnv({ complexity: 8 }).env);
+    expect(r.status).toBe('ok');
+    expect(sizeLimitNote(r.notes)).toBe(true);
+  });
+});
+
+describe('runPipeline: failed enlarge message matches the downloadable file (ST-007)', () => {
+  it('reports the enlarged output size, not the 1x probe', async () => {
+    const r = await runPipeline(jpg(120, 80), { ...base, minKb: 20, allowEnlarge: true }, fakeEnv({ complexity: 0.02 }).env);
+    expect(r.status).toBe('below_min');
+    expect(r.width).toBeGreaterThan(120);
+    expect(r.message).toContain(`${r.width}×${r.height} px`);
+    expect(r.message).toContain(r.bytes.toLocaleString('en-US'));
+    expect(r.message).toMatch(/enlarg/i);
+    expect(r.message).not.toContain('120×80');
+  });
+});
+
+describe('runPipeline: combined causes (ST-002 verifier follow-up)', () => {
+  it('max width + size target: max-dims note first, size-limit note measured from the post-cap size, no contradiction', async () => {
+    const r = await runPipeline(jpg(4000, 3000), { ...base, maxWidth: 800, maxKb: 8 }, fakeEnv({ complexity: 8 }).env);
+    const iMax = r.notes.findIndex((n) => /maximum width\/height/.test(n));
+    const iSize = r.notes.findIndex((n) => /to reach your size limit/.test(n));
+    expect(iMax).toBeGreaterThanOrEqual(0);
+    expect(iSize).toBeGreaterThan(iMax);
+    expect(r.notes[iSize]).toContain('from 800×600 px');
+  });
+  it('a memory-capped huge PNG that is also shrunk by the target still discloses the cap', async () => {
+    const r = await runPipeline(png(7000, 6000), { ...base, maxKb: 200 }, fakeEnv().env);
+    expect(r.notes.some((n) => /opened at reduced size/i.test(n))).toBe(true);
+  });
+});
+
+describe('runPipeline: max width on a huge photo (ST-002 re-verification)', () => {
+  it('names the maximum width even when the decode was also reduced', async () => {
+    const r = await runPipeline(jpg(8000, 6000), { ...base, maxWidth: 400 }, fakeEnv().env);
+    expect(r.width).toBe(400);
+    expect(r.notes.some((n) => /maximum width\/height/i.test(n))).toBe(true);
+  });
+});

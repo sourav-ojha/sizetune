@@ -16,4 +16,4 @@ https://:version.:subdomain.workers.dev/*
   X-Robots-Tag: noindex
 
 /_astro/*.js
-  Content-Security-Policy: connect-src 'none'
+  Content-Security-Policy: default-src 'none'; script-src 'self'; connect-src 'none'

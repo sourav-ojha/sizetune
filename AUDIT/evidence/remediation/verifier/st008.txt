@@ -1,0 +1,8 @@
+t42 bytes 1275078
+ST008 t42 {"preview":1,"auto":{"unchecked":0,"flatten":0,"alphaNote":0},"jpeg":{"unchecked":1,"flatten":1,"alphaNote":0},"txt":"This image is too large to check for transparency. If it has any, those areas are filled with the colour you choose.","flatTxt":"FILL TRANSPARENT AREAS WITH\nWhite\nBlack\nCustom colour\n\nThis image is too large to check for transparency. If it has any, those areas are filled with the colour you choose.\n\nFilling with white changes how the picture looks. The result will state what was filled.","info":{"status":"ok","heading":"✓ Your image is ready","message":null,"notes":"Please note Transparent areas were filled with black. This large photo was opened at reduced size (2646×2268 px of the original 7000×6000 px) to stay within browser memory limits, so the result can have less detail than the original.","size":"138 KB (141,714 bytes)"},"d":{"name":"t42-sizetune.jpg","bytes":141714,"sha":"a9f1a1d2f56a30c1","w":2646,"h":2268,"fmt":"jpeg"}}
+ST008 regression p800.jpg {"unchecked":0,"flatten":0,"alphaNote":0}
+ST008 regression noise.png {"unchecked":0,"flatten":0,"alphaNote":0}
+ST008 regression t.png {"unchecked":0,"flatten":1,"alphaNote":1}
+ST008 signature t42 jpeg {"unchecked":0,"flatten":0,"alphaNote":0}
+ST008 pixels left(transparent src) [0,0,0] right(opaque src) [218,82,128]
+sig formats ["format-picker:undefined","format-jpeg:true","format-png:false","format-help:undefined"] 0 0

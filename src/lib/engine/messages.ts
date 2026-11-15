@@ -55,6 +55,8 @@ export function buildMessage(m: MessageInput): string {
         ? ' Check whether the portal really requires these exact dimensions; larger dimensions would give a bigger file.'
         : m.allowEnlarge ? ' Use a larger original image.' : ' Use a larger original image, or allow enlarging the image.';
       if (m.lossless) return `${fmt} is lossless, so its size depends only on the pixels: at ${px(b.width, b.height)} this image is ${sizeExact(b.bytes)}, below ${minText}.${hint}`;
+      // The downloadable file is `b`; when it was enlarged, describe that file (the 1x probe is a different, smaller image).
+      if (b.enlarged) return `Even after enlarging the image to ${px(b.width, b.height)}, the file is only ${sizeExact(b.bytes)} even at maximum quality, below ${minText}. Enlarging adds pixels, not detail. Use a larger original image.`;
       const p = m.maxProbe ?? b;
       return `At ${px(p.width, p.height)} this image is at most ${sizeExact(p.bytes)} even at maximum quality, so ${minText} cannot be met at these dimensions.${hint}`;
     }
@@ -74,6 +76,7 @@ export const NOTES = {
   lowQuality: (q: number) => `Quality had to go down to ${q}% to fit, so the image may look blocky.`,
   reduced: (w: number, h: number, sw: number, sh: number) => `This large photo was opened at reduced size (${px(w, h)} of the original ${px(sw, sh)}) to stay within browser memory limits, so the result can have less detail than the original.`,
   shrunk: (w: number, h: number, sw: number, sh: number) => `The picture was reduced from ${px(sw, sh)} to ${px(w, h)} to reach your size limit. If your form also needs a minimum pixel size, check it.`,
+  maxDims: (sw: number, sh: number, w: number, h: number) => `The picture was reduced from ${px(sw, sh)} to ${px(w, h)} to fit your maximum width/height.`,
   webpFallback: (fmt: string) => `WebP can't be saved in this browser, so the result is ${fmt}.`,
   animated: 'Only the first frame of the animated image was used.',
   kbConflict: (minKb: number) => `Your minimum and maximum are too close to satisfy both ways of counting KB (1 KB = 1000 or 1024 bytes), so the minimum was treated as ${num(minKb)} × 1000 bytes.`,
