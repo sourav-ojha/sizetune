@@ -8,7 +8,7 @@ on:
     branches: [main, dev]
 permissions:
   contents: read
-# Only superseded PR runs are cancelled. A push run (which may be mid-deploy) is never cancelled by a newer push: it queues instead.
+# Only superseded PR runs are cancelled. A push run that is already running (possibly mid-deploy) is never cancelled by a newer push; GitHub keeps at most one waiting run per group, so a newer push replaces an older still-waiting one.
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
