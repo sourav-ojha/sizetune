@@ -1,5 +1,7 @@
 # BUILD_STATUS.md — SizeTune autonomous build sprint (2026-11-12)
 
+> **2026-11-14 latest-staging audit:** staging serves `dev` `8f0b204` (CI green). Five independent live audits found no critical defect; verified fixes are local commits `6c6f6f3`, `3abe369`, `5c49174`, `39371e5`, `a765ed5`, `7ad5f4b` (not pushed, not deployed). `CI=1 pnpm run verify` exit 0 (685 unit, 198 Chrome e2e). Report: `QA/LATEST_STAGING_AUDIT.md`. Open: SEC-1 HTTPS/HSTS, SIG-3 touch handles (device), legal wording (human).
+
 > **2026-11-13 audit sprint:** local commits `c8ec1ea` (wording, privacy statement, worker CSP header) and `3220309` (signature zoom/shape/margin, compare zoom, 44 px nav targets, tests, screenshots). `pnpm run verify` exit 0 (677 unit, 198 Chrome e2e). Not pushed/deployed; staging still shows the older design. Reports: `QA/STAGING_AUDIT.md` and the four sibling audit docs.
 
 Commit: local `main` (see `git log`; latest at time of writing `5283e60` + docs). **Not pushed, not deployed, no remote, no ads/analytics, no DNS change, nothing purchased.** Evidence: `QA/TEST_RESULTS.md`. Honest status vocabulary: **V** = implemented and verified by automated tests/evidence listed; **P** = implemented, not fully verified; **N** = not implemented; **H** = needs your device/approval.

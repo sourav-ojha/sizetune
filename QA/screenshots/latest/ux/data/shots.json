@@ -1,0 +1,2702 @@
+{
+ "/@320": {
+  "sw": 320,
+  "vw": 320,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 288,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 20,
+    "h": 20,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 13,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 13,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "A:Resize an image to 20 KB",
+    "w": 203,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:Resize a signature",
+    "w": 145,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:The photo size guide",
+    "w": 163,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo",
+   "H2.sr-only",
+   "SPAN.sr-only",
+   "SPAN.sr-only"
+  ],
+  "h": 8337,
+  "errs": []
+ },
+ "/resize-image-to-20kb/@320": {
+  "sw": 320,
+  "vw": 320,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 288,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 20,
+    "h": 20,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 13,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 13,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "A:signature page",
+    "w": 119,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:SizeTune home page",
+    "w": 163,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo",
+   "H2.sr-only",
+   "SPAN.sr-only",
+   "SPAN.sr-only"
+  ],
+  "h": 9061,
+  "errs": []
+ },
+ "/resize-signature/@320": {
+  "sw": 320,
+  "vw": 320,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 288,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 20,
+    "h": 20,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 13,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 13,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "A:20 KB page",
+    "w": 93,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:home page tool",
+    "w": 124,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo",
+   "H2.sr-only",
+   "SPAN.sr-only",
+   "SPAN.sr-only"
+  ],
+  "h": 8984,
+  "errs": []
+ },
+ "/guides/photo-size-for-online-forms/@320": {
+  "sw": 320,
+  "vw": 320,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 288,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:SizeTune image resizer",
+    "w": 182,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:20 KB page",
+    "w": 93,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:signature page",
+    "w": 119,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 9372,
+  "errs": []
+ },
+ "/about/@320": {
+  "sw": 320,
+  "vw": 320,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 288,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:photo size guide",
+    "w": 130,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:terms page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:home page",
+    "w": 88,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 2254,
+  "errs": []
+ },
+ "/privacy/@320": {
+  "sw": 320,
+  "vw": 320,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 288,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:terms of use",
+    "w": 100,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:home page",
+    "w": 88,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 7802,
+  "errs": []
+ },
+ "/terms/@320": {
+  "sw": 320,
+  "vw": 320,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 288,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:privacy policy",
+    "w": 109,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy policy",
+    "w": 109,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 5684,
+  "errs": []
+ },
+ "/@375": {
+  "sw": 375,
+  "vw": 375,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 343,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 20,
+    "h": 20,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 13,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 13,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "A:Resize an image to 20 KB",
+    "w": 203,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:Resize a signature",
+    "w": 145,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:The photo size guide",
+    "w": 163,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo",
+   "H2.sr-only",
+   "SPAN.sr-only",
+   "SPAN.sr-only"
+  ],
+  "h": 7513,
+  "errs": []
+ },
+ "/resize-image-to-20kb/@375": {
+  "sw": 375,
+  "vw": 375,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 343,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 20,
+    "h": 20,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 13,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 13,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "A:signature page",
+    "w": 119,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:photo size guide",
+    "w": 130,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:SizeTune home page",
+    "w": 163,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo",
+   "H2.sr-only",
+   "SPAN.sr-only",
+   "SPAN.sr-only"
+  ],
+  "h": 8012,
+  "errs": []
+ },
+ "/resize-signature/@375": {
+  "sw": 375,
+  "vw": 375,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 343,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 20,
+    "h": 20,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 13,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 13,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "A:20 KB page",
+    "w": 93,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:guide to photo sizes",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:home page tool",
+    "w": 124,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo",
+   "H2.sr-only",
+   "SPAN.sr-only",
+   "SPAN.sr-only"
+  ],
+  "h": 7688,
+  "errs": []
+ },
+ "/guides/photo-size-for-online-forms/@375": {
+  "sw": 375,
+  "vw": 375,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 343,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:20 KB page",
+    "w": 93,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 7993,
+  "errs": []
+ },
+ "/about/@375": {
+  "sw": 375,
+  "vw": 375,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 343,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:photo size guide",
+    "w": 130,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:terms page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:home page",
+    "w": 88,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 2089,
+  "errs": []
+ },
+ "/privacy/@375": {
+  "sw": 375,
+  "vw": 375,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 343,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:terms of use",
+    "w": 100,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:home page",
+    "w": 88,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 6937,
+  "errs": []
+ },
+ "/terms/@375": {
+  "sw": 375,
+  "vw": 375,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 343,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:privacy policy",
+    "w": 109,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy policy",
+    "w": 109,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 4989,
+  "errs": []
+ },
+ "/@390": {
+  "sw": 390,
+  "vw": 390,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 358,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 20,
+    "h": 20,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 13,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 13,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "A:Resize an image to 20 KB",
+    "w": 203,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:Resize a signature",
+    "w": 145,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:The photo size guide",
+    "w": 163,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo",
+   "H2.sr-only",
+   "SPAN.sr-only",
+   "SPAN.sr-only"
+  ],
+  "h": 7248,
+  "errs": []
+ },
+ "/resize-image-to-20kb/@390": {
+  "sw": 390,
+  "vw": 390,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 358,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 20,
+    "h": 20,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 13,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 13,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "A:signature page",
+    "w": 119,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:photo size guide",
+    "w": 130,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:SizeTune home page",
+    "w": 163,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo",
+   "H2.sr-only",
+   "SPAN.sr-only",
+   "SPAN.sr-only"
+  ],
+  "h": 7713,
+  "errs": []
+ },
+ "/resize-signature/@390": {
+  "sw": 390,
+  "vw": 390,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 358,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 20,
+    "h": 20,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 13,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 13,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "A:20 KB page",
+    "w": 93,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:guide to photo sizes",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:home page tool",
+    "w": 124,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo",
+   "H2.sr-only",
+   "SPAN.sr-only",
+   "SPAN.sr-only"
+  ],
+  "h": 7508,
+  "errs": []
+ },
+ "/guides/photo-size-for-online-forms/@390": {
+  "sw": 390,
+  "vw": 390,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 358,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:20 KB page",
+    "w": 93,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:signature page",
+    "w": 119,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 7799,
+  "errs": []
+ },
+ "/about/@390": {
+  "sw": 390,
+  "vw": 390,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 358,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:photo size guide",
+    "w": 130,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:home page",
+    "w": 88,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 2006,
+  "errs": []
+ },
+ "/privacy/@390": {
+  "sw": 390,
+  "vw": 390,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 358,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:terms of use",
+    "w": 100,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:home page",
+    "w": 88,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 6633,
+  "errs": []
+ },
+ "/terms/@390": {
+  "sw": 390,
+  "vw": 390,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 358,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:privacy policy",
+    "w": 109,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy policy",
+    "w": 109,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 4879,
+  "errs": []
+ },
+ "/@768": {
+  "sw": 768,
+  "vw": 768,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 20,
+    "h": 20,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "A:Resize an image to 20 KB",
+    "w": 203,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:Resize a signature",
+    "w": 145,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:The photo size guide",
+    "w": 163,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo",
+   "H2.sr-only",
+   "SPAN.sr-only",
+   "SPAN.sr-only"
+  ],
+  "h": 4937,
+  "errs": []
+ },
+ "/resize-image-to-20kb/@768": {
+  "sw": 768,
+  "vw": 768,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 20,
+    "h": 20,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "A:signature page",
+    "w": 119,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:photo size guide",
+    "w": 130,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:SizeTune home page",
+    "w": 163,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo",
+   "H2.sr-only",
+   "SPAN.sr-only",
+   "SPAN.sr-only"
+  ],
+  "h": 5324,
+  "errs": []
+ },
+ "/resize-signature/@768": {
+  "sw": 768,
+  "vw": 768,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 20,
+    "h": 20,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "A:20 KB page",
+    "w": 93,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:guide to photo sizes",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:home page tool",
+    "w": 124,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo",
+   "H2.sr-only",
+   "SPAN.sr-only",
+   "SPAN.sr-only"
+  ],
+  "h": 5335,
+  "errs": []
+ },
+ "/guides/photo-size-for-online-forms/@768": {
+  "sw": 768,
+  "vw": 768,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:SizeTune image resizer",
+    "w": 182,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:20 KB page",
+    "w": 93,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:signature page",
+    "w": 119,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 4680,
+  "errs": []
+ },
+ "/about/@768": {
+  "sw": 768,
+  "vw": 768,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:photo size guide",
+    "w": 130,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:terms page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:home page",
+    "w": 88,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 1372,
+  "errs": []
+ },
+ "/privacy/@768": {
+  "sw": 768,
+  "vw": 768,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:terms of use",
+    "w": 100,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:home page",
+    "w": 88,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 4195,
+  "errs": []
+ },
+ "/terms/@768": {
+  "sw": 768,
+  "vw": 768,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:privacy policy",
+    "w": 109,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy policy",
+    "w": 109,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 3214,
+  "errs": []
+ },
+ "/@1024": {
+  "sw": 1024,
+  "vw": 1024,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 20,
+    "h": 20,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "A:Resize an image to 20 KB",
+    "w": 203,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:Resize a signature",
+    "w": 145,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:The photo size guide",
+    "w": 163,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo",
+   "H2.sr-only",
+   "SPAN.sr-only",
+   "SPAN.sr-only"
+  ],
+  "h": 4921,
+  "errs": []
+ },
+ "/resize-image-to-20kb/@1024": {
+  "sw": 1024,
+  "vw": 1024,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 20,
+    "h": 20,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "A:signature page",
+    "w": 119,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:photo size guide",
+    "w": 130,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:SizeTune home page",
+    "w": 163,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo",
+   "H2.sr-only",
+   "SPAN.sr-only",
+   "SPAN.sr-only"
+  ],
+  "h": 5308,
+  "errs": []
+ },
+ "/resize-signature/@1024": {
+  "sw": 1024,
+  "vw": 1024,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 20,
+    "h": 20,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "A:20 KB page",
+    "w": 93,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:guide to photo sizes",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:home page tool",
+    "w": 124,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo",
+   "H2.sr-only",
+   "SPAN.sr-only",
+   "SPAN.sr-only"
+  ],
+  "h": 5319,
+  "errs": []
+ },
+ "/guides/photo-size-for-online-forms/@1024": {
+  "sw": 1024,
+  "vw": 1024,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:SizeTune image resizer",
+    "w": 182,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:20 KB page",
+    "w": 93,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:signature page",
+    "w": 119,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 4664,
+  "errs": []
+ },
+ "/about/@1024": {
+  "sw": 1024,
+  "vw": 1024,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:photo size guide",
+    "w": 130,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:terms page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:home page",
+    "w": 88,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 1356,
+  "errs": []
+ },
+ "/privacy/@1024": {
+  "sw": 1024,
+  "vw": 1024,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:terms of use",
+    "w": 100,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:home page",
+    "w": 88,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 4179,
+  "errs": []
+ },
+ "/terms/@1024": {
+  "sw": 1024,
+  "vw": 1024,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:privacy policy",
+    "w": 109,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy policy",
+    "w": 109,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 3198,
+  "errs": []
+ },
+ "/@1440": {
+  "sw": 1440,
+  "vw": 1440,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 20,
+    "h": 20,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "A:Resize an image to 20 KB",
+    "w": 203,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:Resize a signature",
+    "w": 145,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:The photo size guide",
+    "w": 163,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo",
+   "H2.sr-only",
+   "SPAN.sr-only",
+   "SPAN.sr-only"
+  ],
+  "h": 4921,
+  "errs": []
+ },
+ "/resize-image-to-20kb/@1440": {
+  "sw": 1440,
+  "vw": 1440,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 20,
+    "h": 20,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "A:signature page",
+    "w": 119,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:photo size guide",
+    "w": 130,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:SizeTune home page",
+    "w": 163,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo",
+   "H2.sr-only",
+   "SPAN.sr-only",
+   "SPAN.sr-only"
+  ],
+  "h": 5308,
+  "errs": []
+ },
+ "/resize-signature/@1440": {
+  "sw": 1440,
+  "vw": 1440,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 20,
+    "h": 20,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "INPUT:",
+    "w": 16,
+    "h": 16,
+    "inline": false
+   },
+   {
+    "t": "A:20 KB page",
+    "w": 93,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:guide to photo sizes",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:home page tool",
+    "w": 124,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo",
+   "H2.sr-only",
+   "SPAN.sr-only",
+   "SPAN.sr-only"
+  ],
+  "h": 5319,
+  "errs": []
+ },
+ "/guides/photo-size-for-online-forms/@1440": {
+  "sw": 1440,
+  "vw": 1440,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:SizeTune image resizer",
+    "w": 182,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:20 KB page",
+    "w": 93,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:signature page",
+    "w": 119,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 4664,
+  "errs": []
+ },
+ "/about/@1440": {
+  "sw": 1440,
+  "vw": 1440,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:privacy page",
+    "w": 102,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:photo size guide",
+    "w": 130,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:terms page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:home page",
+    "w": 88,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 1356,
+  "errs": []
+ },
+ "/privacy/@1440": {
+  "sw": 1440,
+  "vw": 1440,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:terms of use",
+    "w": 100,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:home page",
+    "w": 88,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 4179,
+  "errs": []
+ },
+ "/terms/@1440": {
+  "sw": 1440,
+  "vw": 1440,
+  "hscroll": false,
+  "over": [],
+  "small": [
+   {
+    "t": "A:SizeTune",
+    "w": 126,
+    "h": 32,
+    "inline": false
+   },
+   {
+    "t": "A:privacy policy",
+    "w": 109,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:privacy policy",
+    "w": 109,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:hello@sizetune.com",
+    "w": 160,
+    "h": 22,
+    "inline": true
+   },
+   {
+    "t": "A:about page",
+    "w": 90,
+    "h": 22,
+    "inline": true
+   }
+  ],
+  "clip": [
+   "A.sr-only focus:not-sr-only focus:fixed fo"
+  ],
+  "h": 3198,
+  "errs": []
+ }
+}

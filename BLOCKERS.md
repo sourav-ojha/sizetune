@@ -28,7 +28,15 @@ Nothing below has been done by an agent: no push, no deploy, no DNS change, no a
 | H15 | Confirm the public identity | About/Privacy/Terms publicly show the pseudonym "Kiran T." and hello@sizetune.com. Confirm both are intended to be public and that the mailbox receives mail (not verified by an agent). |
 | H16 | Point sizetune.com at the Worker | Domain does not resolve yet, so canonicals, OG image and sitemap target nothing. After launch: `curl -sI https://sizetune.com/ \| grep -i x-robots` must print nothing; add HSTS (H13). |
 | H17 | Approve an OG image | Draft recommendation in `QA/SEO_AUDIT.md`; nothing generated. |
-| H18 | Deploy staging | Staging still serves the pre-redesign build; the Firefox "Page crashed" in cross-browser CI blocked `deploy-staging` on `4e46c1b`. Re-run or push is the owner's call. |
+| H18 | Deploy staging | DONE 2026-11-14: `dev` at `8f0b204` deployed to staging, CI green (verify, cross-browser, deploy-staging). |
+
+## A3. Added by the 2026-11-14 latest-staging audit (see `QA/LATEST_STAGING_AUDIT.md`)
+| # | Action | Detail |
+|--|--|--|
+| H19 | HTTPS redirect and HSTS (SEC-1, MED) | Plain HTTP returns 200 with no redirect and no HSTS on any route. Cloudflare zone setting: Always Use HTTPS, then HSTS with a small max-age. The owner's call; no agent changed it. |
+| H20 | Real-device touch check (SIG-3, MED) | Short signature crop boxes: the 44 px handles cover the middle in touch emulation, so a drag may resize. Confirm on a phone before changing handle hit areas. |
+| H21 | Legal and identity wording (CNT-10..15) | Governing law, "Kiran T.", "based in India", grievance contact, minors, future-ads and Cloudflare statements stay human-approval gates. |
+| H22 | WebKit WebP fallback (IMG-3, MED) | Transparent WebP with Auto becomes a small PNG in WebKit with no pre-run warning. Decide whether to warn before the run. |
 
 ## B. Open technical risks
 | ID | Sev | Risk | Status / next |

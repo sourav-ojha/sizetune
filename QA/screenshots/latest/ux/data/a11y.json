@@ -1,0 +1,261 @@
+{
+ "axe": {
+  "/@1280/light": {
+   "v": [],
+   "inc": [
+    "color-contrastx60"
+   ]
+  },
+  "/resize-image-to-20kb/@1280/light": {
+   "v": [],
+   "inc": [
+    "color-contrastx71"
+   ]
+  },
+  "/resize-signature/@1280/light": {
+   "v": [],
+   "inc": [
+    "color-contrastx69"
+   ]
+  },
+  "/guides/photo-size-for-online-forms/@1280/light": {
+   "v": [],
+   "inc": [
+    "color-contrastx81"
+   ]
+  },
+  "/about/@1280/light": {
+   "v": [],
+   "inc": [
+    "color-contrastx31"
+   ]
+  },
+  "/privacy/@1280/light": {
+   "v": [],
+   "inc": [
+    "color-contrastx59"
+   ]
+  },
+  "/terms/@1280/light": {
+   "v": [],
+   "inc": [
+    "color-contrastx49"
+   ]
+  },
+  "/@390/light": {
+   "v": [],
+   "inc": [
+    "color-contrastx60"
+   ]
+  },
+  "/resize-image-to-20kb/@390/light": {
+   "v": [],
+   "inc": [
+    "color-contrastx71"
+   ]
+  },
+  "/resize-signature/@390/light": {
+   "v": [],
+   "inc": [
+    "color-contrastx69"
+   ]
+  },
+  "/guides/photo-size-for-online-forms/@390/light": {
+   "v": [],
+   "inc": [
+    "color-contrastx81"
+   ]
+  },
+  "/about/@390/light": {
+   "v": [],
+   "inc": [
+    "color-contrastx31"
+   ]
+  },
+  "/privacy/@390/light": {
+   "v": [],
+   "inc": [
+    "color-contrastx59"
+   ]
+  },
+  "/terms/@390/light": {
+   "v": [],
+   "inc": [
+    "color-contrastx49"
+   ]
+  },
+  "/@1280/dark": {
+   "v": [],
+   "inc": [
+    "color-contrastx60"
+   ]
+  },
+  "/resize-image-to-20kb/@1280/dark": {
+   "v": [],
+   "inc": [
+    "color-contrastx71"
+   ]
+  },
+  "/resize-signature/@1280/dark": {
+   "v": [],
+   "inc": [
+    "color-contrastx69"
+   ]
+  },
+  "/guides/photo-size-for-online-forms/@1280/dark": {
+   "v": [],
+   "inc": [
+    "color-contrastx81"
+   ]
+  },
+  "/about/@1280/dark": {
+   "v": [],
+   "inc": [
+    "color-contrastx31"
+   ]
+  },
+  "/privacy/@1280/dark": {
+   "v": [],
+   "inc": [
+    "color-contrastx59"
+   ]
+  },
+  "/terms/@1280/dark": {
+   "v": [],
+   "inc": [
+    "color-contrastx49"
+   ]
+  }
+ },
+ "zoom": {
+  "/@200%": {
+   "hs": false,
+   "sw": 640,
+   "cw": 640,
+   "headerH": 117,
+   "sticky": "relative"
+  },
+  "/resize-image-to-20kb/@200%": {
+   "hs": false,
+   "sw": 640,
+   "cw": 640,
+   "headerH": 117,
+   "sticky": "relative"
+  },
+  "/resize-signature/@200%": {
+   "hs": false,
+   "sw": 640,
+   "cw": 640,
+   "headerH": 117,
+   "sticky": "relative"
+  },
+  "/guides/photo-size-for-online-forms/@200%": {
+   "hs": false,
+   "sw": 640,
+   "cw": 640,
+   "headerH": 117,
+   "sticky": "relative"
+  },
+  "/about/@200%": {
+   "hs": false,
+   "sw": 640,
+   "cw": 640,
+   "headerH": 117,
+   "sticky": "relative"
+  },
+  "/privacy/@200%": {
+   "hs": false,
+   "sw": 640,
+   "cw": 640,
+   "headerH": 117,
+   "sticky": "relative"
+  },
+  "/terms/@200%": {
+   "hs": false,
+   "sw": 640,
+   "cw": 640,
+   "headerH": 117,
+   "sticky": "relative"
+  },
+  "/@400%": {
+   "hs": false,
+   "sw": 320,
+   "cw": 320,
+   "headerH": 157,
+   "sticky": "relative"
+  },
+  "/resize-image-to-20kb/@400%": {
+   "hs": false,
+   "sw": 320,
+   "cw": 320,
+   "headerH": 157,
+   "sticky": "relative"
+  },
+  "/resize-signature/@400%": {
+   "hs": false,
+   "sw": 320,
+   "cw": 320,
+   "headerH": 157,
+   "sticky": "relative"
+  },
+  "/guides/photo-size-for-online-forms/@400%": {
+   "hs": false,
+   "sw": 320,
+   "cw": 320,
+   "headerH": 157,
+   "sticky": "relative"
+  },
+  "/about/@400%": {
+   "hs": false,
+   "sw": 320,
+   "cw": 320,
+   "headerH": 157,
+   "sticky": "relative"
+  },
+  "/privacy/@400%": {
+   "hs": false,
+   "sw": 320,
+   "cw": 320,
+   "headerH": 157,
+   "sticky": "relative"
+  },
+  "/terms/@400%": {
+   "hs": false,
+   "sw": 320,
+   "cw": 320,
+   "headerH": 157,
+   "sticky": "relative"
+  }
+ },
+ "motion": {
+  "reduce": {
+   "n": 0,
+   "sample": [],
+   "scrollBehavior": "auto"
+  },
+  "normal": {
+   "animOrTransition": 16,
+   "hasReduceRule": true
+  }
+ },
+ "forced": {
+  "/": true,
+  "/resize-signature/": true
+ },
+ "unmet": {
+  "belowMin": {
+   "status": "below_min",
+   "text": "⚠ Minimum size not reached\n\nAt 140×60 px this image is at most 8.7 KB (8,862 bytes) even at maximum quality, so the 15 KB minimum (15,360 bytes) cannot be met at these dimensions. Use a larger original image, or allow enlarging the image.\n\nA small, simple signature holds very little data, and SizeTune will not pad a file with filler to reach a minimum. Crop less tightly, scan at a larger size, choose a larger output width and height, or lower the minimum.\n\nYour original (679 bytes) is already smaller than this result (8.7 KB, 8,862 bytes). Re-saving can make a small or already-compressed file bigger. Your original does not fit your limit either, so neither file meets it.\n\nOriginal\n140 × 60 px, 679 bytes\nResult (JPEG, quality 100)\n140 × 60 px, 8.7 KB (8,862 bytes)\nChange\n1205% larger than the original\nTarget\nAims below 30 × 1,000 = 30,000 bytes and above 15 × 1,024 = 15,360 bytes, so it passes whether a portal counts 1 KB as 1,000 or 1,024 bytes. Under by 6,498 bytes.\n\nPreview on white paper, at its real pixel size (reduced only if it does not fit the screen).\n\nDownload anyway\n: signature-140x60-sizetune.jpg\nProcess another signature\n\nThis file does not meet your target. Download it only if you can still use it.\n\nKB figures on this page use 1 KB = 1,024 bytes; the exact byte counts are always shown.\n\nSaved as signature-140x60-sizetune.jpg from “signature-140x60.png”.",
+   "live": "Finished, but your size target was not met. The result is 8.7 KB (8,862 bytes). At 140×60 px this image is at most 8.7 KB (8,862 bytes) even at maximum quality, so the 15 KB minimum (15,360 bytes) cannot be met at these dimensions. Use a larger original image, or allow enlarging the image.",
+   "focus": "result-heading"
+  },
+  "axeBelow": [],
+  "aboveMax": {
+   "status": "ok",
+   "text": "✓ Your image is ready\nOriginal\n256 × 256 px, 193 KB (197,301 bytes)\nResult (JPEG, quality 30)\n64 × 64 px, 996 bytes\nChange\nmore than 99% smaller than the original\nTarget\nAims below 1 × 1,000 = 1,000 bytes, so it passes whether a portal counts 1 KB as 1,000 or 1,024 bytes. Within the target.\nPlease note\nQuality had to go down to 30% to fit, so the image may look blocky.\nOriginal\nResult\nComparison slider: original on the left, result on the right\nZoom:\nFit\n2×\n4×\nShow original\nSplit view\nShow result\nDownload\n: noise-256-sizetune.jpg\nProcess another image\n\nKB figures on this page use 1 KB = 1,024 bytes; the exact byte counts are always shown.\n\nSaved as noise-256-sizetune.jpg from “noise-256.png”.",
+   "live": "Finished. The result is 996 bytes.",
+   "focus": "result-heading"
+  },
+  "axeAbove": []
+ }
+}
