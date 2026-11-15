@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+// Preload the Latin subset the page text uses, so the web font is usually there at first paint (less layout shift from the font swap).
+import geistLatin from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
 interface Props {
   title: string;
   description: string;
@@ -30,6 +32,7 @@ const navItems = [
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <link rel="preload" href={geistLatin} as="font" type="font/woff2" crossorigin />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
