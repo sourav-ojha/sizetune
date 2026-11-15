@@ -58,6 +58,8 @@ const EMPTY: SessionState = {
   phase: 'empty', file: null, previewUrl: null, originalUrl: null, gps: false, previewNote: null, sniff: null, alpha: null, natural: null, progress: null, result: null, error: null, notice: null, fileSerial: 0,
 };
 
+const SNIFF_MIME = { jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' } as const;
+
 const defaultReadHead = async (f: Blob): Promise<Uint8Array> => new Uint8Array(await f.slice(0, SNIFF_BYTES).arrayBuffer());
 
 /**
@@ -137,7 +139,8 @@ export class ToolSession {
       this.stopRun();
       this.dropResult();
       this.dropFileUrls();
-      const originalUrl = this.deps.createObjectURL(file);
+      // Type the blob from the sniffed bytes, never from the file name: a ".html" name must not give the URL a text/html type (it would run in the site origin if opened in a tab).
+      const originalUrl = this.deps.createObjectURL(new Blob([file], { type: SNIFF_MIME[sniff.kind] }));
       const previewUrl = thumb.kind === 'original' ? originalUrl : thumb.kind === 'thumb' ? this.deps.createObjectURL(thumb.blob) : null;
       this.set({
         ...EMPTY, fileSerial: this.state.fileSerial + 1, notice, phase: 'ready', file, sniff,

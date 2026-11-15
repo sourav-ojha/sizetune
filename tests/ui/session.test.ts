@@ -307,4 +307,13 @@ describe('ToolSession', () => {
     await s.run(opts);
     expect(eng.calls.length).toBe(0);
   });
+  it('ST-003: the "keep original" blob is typed from the sniffed bytes, not the file name', async () => {
+    const seen: Blob[] = [];
+    const { s: sess } = setup({ createObjectURL: (b) => { seen.push(b); return `blob:t/${seen.length}`; } });
+    const f = pngFile('polyglot.html');
+    await sess.selectFile(f);
+    expect(sess.getSnapshot().file).toBe(f);
+    expect(seen[0].type).toBe('image/png');
+    expect(seen[0].size).toBe(f.size);
+  });
 });
