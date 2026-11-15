@@ -15,7 +15,8 @@ import { buildOptions, parseNumber, type FormState } from './tool/options';
 import { findInkBounds, scaleRect } from './tool/trim';
 import { statusText, useIntake } from './tool/useIntake';
 import { useToolSession } from './tool/useSession';
-import { btnPrimary, btnSecondary, hintCls, inputCls, labelCls, legendCls, panelCls } from './tool/ui';
+import SelectBox, { selectCls } from './tool/SelectBox';
+import { btnPrimary, btnSecondary, errCls, hintCls, inputCls, labelCls, legendCls, panelCls } from './tool/ui';
 
 export interface SignatureToolProps {
   defaultMaxKb?: number;
@@ -126,6 +127,14 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
     }
   };
 
+  /** Message for a crop number field whose typed text is not a whole number of pixels (it is ignored, and the old value returns when the field loses focus). */
+  const cropFieldError = (f: RectField): string | null => {
+    const raw = draft[f];
+    if (raw === undefined) return null;
+    const pn = parseNumber(raw, 'px');
+    return pn.kind === 'empty' || (pn.kind === 'ok' && Number.isInteger(pn.value)) ? null : 'Enter a whole number of pixels, 0 or more. Other values are ignored.';
+  };
+
   // any hand edit ends the 'auto-trimmed' state, so changing the margin later never overwrites it
   const manualCrop = (r: Rect) => { setTrimMsg(''); changeCrop(r); };
   const SHAPES: Array<[string, string, number | null]> = [['free', 'Free', null], ['2', '2 : 1 (wide)', 2], ['3', '3 : 1 (wider)', 3], ['4', '4 : 1 (widest)', 4], ['1', '1 : 1 (square)', 1]];
@@ -218,15 +227,15 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
               </div>
               <div>
                 <label htmlFor="crop-shape" className={labelCls}>Crop shape</label>
-                <select id="crop-shape" data-testid="crop-shape" className={`${inputCls} mt-1`} value={shape} disabled={!crop} onChange={(e) => applyShape(e.currentTarget.value)}>
+                <SelectBox><select id="crop-shape" data-testid="crop-shape" className={`${inputCls} ${selectCls}`} value={shape} disabled={!crop} onChange={(e) => applyShape(e.currentTarget.value)}>
                   {SHAPES.map(([k, l]) => <option key={k} value={k}>{l}</option>)}
-                </select>
+                </select></SelectBox>
               </div>
               <div>
                 <label htmlFor="crop-margin" className={labelCls}>Margin for Auto-trim</label>
-                <select id="crop-margin" data-testid="crop-margin" className={`${inputCls} mt-1`} value={String(margin)} onChange={(e) => { const m = Number(e.currentTarget.value); setMargin(m); if (trimMsg.startsWith('Cropped')) autoTrim(m); }}>
+                <SelectBox><select id="crop-margin" data-testid="crop-margin" className={`${inputCls} ${selectCls}`} value={String(margin)} onChange={(e) => { const m = Number(e.currentTarget.value); setMargin(m); if (trimMsg.startsWith('Cropped')) autoTrim(m); }}>
                   {MARGINS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}
-                </select>
+                </select></SelectBox>
               </div>
             </div>
             {zoom > 1 && (
@@ -253,9 +262,12 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
                   className={`${inputCls} mt-1`}
                   value={draft[f] ?? (crop ? String(crop[f]) : '')}
                   disabled={!crop}
+                  aria-invalid={cropFieldError(f) ? true : undefined}
+                  aria-describedby={cropFieldError(f) ? `crop-${f}-err` : undefined}
                   onChange={(e) => editField(f, e.currentTarget.value)}
                   onBlur={() => setDraft((d) => { const { [f]: _gone, ...rest } = d; return rest; })}
                 />
+                {cropFieldError(f) && <p id={`crop-${f}-err`} role="alert" data-testid={`crop-${f}-error`} className={errCls}>{cropFieldError(f)}</p>}
               </div>
             ))}
           </div>
