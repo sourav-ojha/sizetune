@@ -277,3 +277,18 @@ describe('runPipeline: failed enlarge message matches the downloadable file (ST-
     expect(r.message).not.toContain('120×80');
   });
 });
+
+describe('runPipeline: combined causes (ST-002 verifier follow-up)', () => {
+  it('max width + size target: max-dims note first, size-limit note measured from the post-cap size, no contradiction', async () => {
+    const r = await runPipeline(jpg(4000, 3000), { ...base, maxWidth: 800, maxKb: 8 }, fakeEnv({ complexity: 8 }).env);
+    const iMax = r.notes.findIndex((n) => /maximum width\/height/.test(n));
+    const iSize = r.notes.findIndex((n) => /to reach your size limit/.test(n));
+    expect(iMax).toBeGreaterThanOrEqual(0);
+    expect(iSize).toBeGreaterThan(iMax);
+    expect(r.notes[iSize]).toContain('from 800×600 px');
+  });
+  it('a memory-capped huge PNG that is also shrunk by the target still discloses the cap', async () => {
+    const r = await runPipeline(png(7000, 6000), { ...base, maxKb: 200 }, fakeEnv().env);
+    expect(r.notes.some((n) => /opened at reduced size/i.test(n))).toBe(true);
+  });
+});

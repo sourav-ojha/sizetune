@@ -172,12 +172,12 @@ export async function runPipeline<I extends DecodedImage>(file: Blob, input: Pro
 
     if (lossy && opts.quality == null && best.quality !== null && best.quality < Q_MIN && (out.status === 'ok' || out.status === 'raised')) notes.push(NOTES.lowQuality(best.quality));
     if (fmt.mime === 'image/png' && !hasAlpha && opts.format === 'auto' && hasSizeTarget(opts) && (best.scale < 0.999 || out.status === 'above_max' || out.status === 'above_max_fixed')) notes.push(NOTES.pngTryJpeg);
-    // The size-target search itself (not the working-size cap or a maximum width/height) shrank the pixels a lot: say so, since a form may also have a minimum pixel size.
-    if (!geom.fixed && hasSizeTarget(opts) && best.scale < 0.999 && (out.status === 'ok' || out.status === 'raised') && (best.width < geom.src.width * 0.5 || best.height < geom.src.height * 0.5)) notes.push(NOTES.shrunk(best.width, best.height, Math.round(geom.src.width), Math.round(geom.src.height)));
     // A maximum width/height the user typed made the picture smaller than the source: say that, not "size limit".
     if (!geom.fixed && (opts.maxWidth !== undefined || opts.maxHeight !== undefined) && (baseW < geom.src.width * 0.5 || baseH < geom.src.height * 0.5) && !plan.reduced) notes.push(NOTES.maxDims(Math.round(geom.src.width), Math.round(geom.src.height), baseW, baseH));
+    // The size-target search itself (not the working-size cap or a maximum width/height) shrank the pixels a lot: say so, since a form may also have a minimum pixel size.
+    if (!geom.fixed && hasSizeTarget(opts) && best.scale < 0.999 && (out.status === 'ok' || out.status === 'raised') && (best.width < geom.src.width * 0.5 || best.height < geom.src.height * 0.5)) notes.push(NOTES.shrunk(best.width, best.height, baseW, baseH));
     // Disclose the reduced decode whenever it limited the detail available to the output (free or fixed dims, crops).
-    if (plan.reduced && (best.width > src.width * 0.98 || best.height > src.height * 0.98)) notes.push(NOTES.reduced(img.width, img.height, srcW, srcH));
+    if (plan.reduced) notes.push(NOTES.reduced(img.width, img.height, srcW, srcH));
 
     const message = buildMessage({
       status: out.status, reason: out.reason, mime: fmt.mime, lossless: !lossy, fixed: geom.fixed, allowEnlarge: !!opts.allowEnlarge,
