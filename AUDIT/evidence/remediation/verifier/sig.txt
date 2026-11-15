@@ -1,0 +1,1 @@
+SIG {"jpegQualityCount":1,"pngQualityCount":0,"cropX99999":{"err":0,"val":"799"},"afterBlur":{"val":"799","summary":"Crop: 1 × 600 px (shape 0.00 : 1)"},"result":"ok"}
