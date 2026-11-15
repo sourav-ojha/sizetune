@@ -137,7 +137,7 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
         <ProgressBar progress={state.progress} onCancel={() => { anchor.hold(); session.cancel(); }} />
       ) : (
         <div className="flex flex-col gap-2 sm:flex-row">
-          <button ref={runRef} type="button" data-testid="run" className={btnPrimary} disabled={!state.file || busy || !built.ok} onClick={() => run()}>
+          <button ref={runRef} type="button" data-testid="run" className={btnPrimary} disabled={!state.file || busy || state.inspecting || !built.ok} onClick={() => run()}>
             Resize image
           </button>
           {state.file && <button type="button" data-testid="start-over" className={btnSecondary} onClick={reset}>Start over</button>}

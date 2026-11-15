@@ -1,5 +1,5 @@
 import type { ProcessImage, ProcessOptions, ProcessResult } from '../../lib/engine/types';
-import { errorCodeOf, INTERRUPTED, toToolError, type ErrorContext, type ToolError } from './errors';
+import { EMPTY_FILE, errorCodeOf, INTERRUPTED, toToolError, type ErrorContext, type ToolError } from './errors';
 import type { Thumb } from './thumb';
 import { suggestFilename } from './format';
 import { sniffImage, SNIFF_BYTES, type Sniff } from './sniff';
@@ -37,6 +37,8 @@ export interface SessionState {
   result: ResultView | null;
   error: ToolError | null;
   notice: string | null;
+  /** A newly picked file is being inspected (header / preview). The current file and result stay shown meanwhile, but a run must wait: accepting the new file would cancel it silently. */
+  inspecting: boolean;
   /** Monotonic counter bumped on every file change/reset; lets the UI key state to a file. */
   fileSerial: number;
 }
@@ -55,7 +57,7 @@ export interface SessionDeps {
 }
 
 const EMPTY: SessionState = {
-  phase: 'empty', file: null, previewUrl: null, originalUrl: null, gps: false, previewNote: null, sniff: null, alpha: null, natural: null, progress: null, result: null, error: null, notice: null, fileSerial: 0,
+  phase: 'empty', file: null, previewUrl: null, originalUrl: null, gps: false, previewNote: null, sniff: null, alpha: null, natural: null, progress: null, result: null, error: null, notice: null, inspecting: false, fileSerial: 0,
 };
 
 const SNIFF_MIME = { jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' } as const;
@@ -110,9 +112,11 @@ export class ToolSession {
     const token = ++this.fileToken;
     if (file) {
       const ctx: ErrorContext = { maxFileBytes: this.deps.maxFileBytes, maxPixels: this.deps.maxPixels };
-      const reject = (e: unknown, extra: ErrorContext = {}) => this.set({ error: toToolError(e, { ...ctx, ...extra }), notice: null });
+      const reject = (e: unknown, extra: ErrorContext = {}) => this.set({ error: toToolError(e, { ...ctx, ...extra }), notice: null, inspecting: false });
       const code = (c: 'too_large_bytes' | 'corrupt' | 'unsupported_type' | 'too_many_pixels') => ({ name: 'EngineError', code: c });
       // 1. cheap checks that need no decode and create no object URL
+      if (file.size === 0) { this.set({ error: EMPTY_FILE, notice: null, inspecting: false }); return; }
+      this.set({ inspecting: true });
       if (this.deps.maxFileBytes && file.size > this.deps.maxFileBytes) return reject(code('too_large_bytes'));
       let head: Uint8Array;
       try { head = await (this.deps.readHead ?? defaultReadHead)(file); } catch { if (token === this.fileToken) reject(code('corrupt')); return; }
@@ -156,8 +160,8 @@ export class ToolSession {
 
   /** Runs the engine. Ignored unless a file is ready. A newer run/cancel/reset makes this one's result be dropped. */
   async run(options: ProcessOptions): Promise<void> {
-    const { file, phase } = this.state;
-    if (!file || phase === 'empty') return;
+    const { file, phase, inspecting } = this.state;
+    if (!file || phase === 'empty' || inspecting) return;
     this.stopRun();
     this.dropResult();
     const my = this.runId;
