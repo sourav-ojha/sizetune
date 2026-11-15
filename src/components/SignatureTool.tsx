@@ -292,7 +292,7 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
         update={update}
         formats={['jpeg', 'png']}
         webp={webp}
-        hasAlpha={hasAlpha}
+        hasAlpha={hasAlpha} hasFile={!!state.file}
         intro="JPEG is the usual choice for a signature upload. If your scan has transparent areas, PNG is preselected so they are not filled without asking."
       />
       <AdvancedBlock forceOpen={ADVANCED_FIELDS.some((k) => errors[k])}>
