@@ -1,5 +1,5 @@
 import { useId } from 'preact/hooks';
-import { activePreset, PRESETS_KB, type FieldErrors, type FormState } from './options';
+import { activePreset, outputIsLossless, PRESETS_KB, type FieldErrors, type FormState } from './options';
 import { btnToggleOff, btnToggleOn, errCls, fieldsetCls, hintCls, inputCls, labelCls, legendCls } from './ui';
 
 interface Props {
@@ -8,13 +8,15 @@ interface Props {
   update: (patch: Partial<FormState>) => void;
   /** Hide the quality slider (it only appears when there is no size target at all). */
   showQuality?: boolean;
+  /** Real format of the selected file (from its header); Auto keeps a PNG source as PNG, where quality does not apply. */
+  sourceKind?: 'jpeg' | 'png' | 'webp' | null;
 }
 
-export default function SizePicker({ form, errors, update, showQuality = true }: Props) {
+export default function SizePicker({ form, errors, update, showQuality = true, sourceKind = null }: Props) {
   const id = useId();
   const active = form.noLimit ? null : activePreset(form.maxKb);
   const errId = `${id}-err`;
-  const qualityVisible = showQuality && form.noLimit && form.minKb.trim() === '' && form.format !== 'png';
+  const qualityVisible = showQuality && form.noLimit && form.minKb.trim() === '' && !outputIsLossless(form.format, sourceKind);
   return (
     <fieldset className={fieldsetCls} data-testid="size-picker">
       <legend className={legendCls}>Maximum file size</legend>

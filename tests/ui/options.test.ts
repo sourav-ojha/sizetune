@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { activePreset, backgroundFor, buildOptions, defaultForm, derivedDimension, needsFlattenChoice, parseNumber } from '../../src/components/tool/options';
+import { activePreset, backgroundFor, buildOptions, defaultForm, derivedDimension, needsFlattenChoice, outputIsLossless, parseNumber } from '../../src/components/tool/options';
 
 const ok = (r: ReturnType<typeof buildOptions>) => { if (!r.ok) throw new Error(JSON.stringify(r.errors)); return r.options; };
 
@@ -114,5 +114,18 @@ describe('helpers', () => {
     expect(needsFlattenChoice('jpeg', null)).toBe(false);
     expect(needsFlattenChoice('auto', true)).toBe(false);
     expect(needsFlattenChoice('png', true)).toBe(false);
+  });
+});
+
+describe('outputIsLossless (ST-001: quality slider must hide when the real output is PNG)', () => {
+  it('is true for explicit PNG and for Auto on a PNG source only', () => {
+    expect(outputIsLossless('png', 'jpeg')).toBe(true);
+    expect(outputIsLossless('png', null)).toBe(true);
+    expect(outputIsLossless('auto', 'png')).toBe(true);
+    expect(outputIsLossless('auto', 'jpeg')).toBe(false);
+    expect(outputIsLossless('auto', 'webp')).toBe(false);
+    expect(outputIsLossless('auto', null)).toBe(false);
+    expect(outputIsLossless('jpeg', 'png')).toBe(false);
+    expect(outputIsLossless('webp', 'png')).toBe(false);
   });
 });

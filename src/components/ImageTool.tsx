@@ -124,7 +124,7 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
         </div>
       )}
 
-      <SizePicker form={effective} errors={errors} update={update} />
+      <SizePicker form={effective} errors={errors} update={update} sourceKind={state.sniff?.kind ?? null} />
       <FormatPicker form={effective} errors={errors} update={update} formats={['auto', 'jpeg', 'png', 'webp']} webp={webp} hasAlpha={hasAlpha} defaultNote={autoJpeg ? 'Your PNG will be saved as a JPEG: smaller files keep more detail. Choose PNG to keep the format.' : undefined} />
 
       <AdvancedBlock forceOpen={advancedError}>
