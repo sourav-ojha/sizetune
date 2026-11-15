@@ -292,3 +292,11 @@ describe('runPipeline: combined causes (ST-002 verifier follow-up)', () => {
     expect(r.notes.some((n) => /opened at reduced size/i.test(n))).toBe(true);
   });
 });
+
+describe('runPipeline: max width on a huge photo (ST-002 re-verification)', () => {
+  it('names the maximum width even when the decode was also reduced', async () => {
+    const r = await runPipeline(jpg(8000, 6000), { ...base, maxWidth: 400 }, fakeEnv().env);
+    expect(r.width).toBe(400);
+    expect(r.notes.some((n) => /maximum width\/height/i.test(n))).toBe(true);
+  });
+});
