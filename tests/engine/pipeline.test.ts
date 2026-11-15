@@ -238,3 +238,30 @@ describe('runPipeline: quality note (IMG-2)', () => {
     expect(r.notes.some((n) => /had to go down/i.test(n))).toBe(false);
   });
 });
+
+describe('runPipeline: reduction note names its real cause (ST-002)', () => {
+  const sizeLimitNote = (notes: string[]) => notes.some((n) => /to reach your size limit/i.test(n));
+  it('no limit on a huge photo: working-size note only, never "size limit"', async () => {
+    const r = await runPipeline(jpg(8000, 6000), { ...base }, fakeEnv().env);
+    expect(r.width).toBeLessThan(4000);
+    expect(sizeLimitNote(r.notes)).toBe(false);
+    expect(r.notes.some((n) => /opened at reduced size/i.test(n))).toBe(true);
+  });
+  it('huge PNG that fits the limit anyway: memory-cap note, not "size limit"', async () => {
+    const r = await runPipeline(png(7000, 6000), { ...base, maxKb: 30000 }, fakeEnv().env);
+    expect(r.width).toBeLessThan(3500);
+    expect(sizeLimitNote(r.notes)).toBe(false);
+    expect(r.notes.some((n) => /opened at reduced size/i.test(n))).toBe(true);
+  });
+  it('max width 400: says it was the maximum width/height', async () => {
+    const r = await runPipeline(jpg(4000, 3000), { ...base, maxWidth: 400 }, fakeEnv().env);
+    expect(r.width).toBe(400);
+    expect(sizeLimitNote(r.notes)).toBe(false);
+    expect(r.notes.some((n) => /maximum width\/height/i.test(n))).toBe(true);
+  });
+  it('a size target that really forced the scaling still gets the size-limit note', async () => {
+    const r = await runPipeline(jpg(3000, 2000), { ...base, maxKb: 30 }, fakeEnv({ complexity: 8 }).env);
+    expect(r.status).toBe('ok');
+    expect(sizeLimitNote(r.notes)).toBe(true);
+  });
+});
