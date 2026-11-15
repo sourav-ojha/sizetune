@@ -27,20 +27,33 @@ jobs:
         if: failure()
         with: { name: playwright-results, path: test-results/ }
   cross-browser:
-    # Firefox + WebKit (Playwright builds). Written on macOS, NOT yet run on Linux CI; treat the first run as a trial.
+    # Firefox + WebKit (Playwright builds), one job per browser shard. The suite is ~400 tests at workers: 1 (~9 min serial);
+    # install overhead is only ~1 min, so the win is parallelism, not caching/Docker. Firefox runs 2 shards and WebKit 3, so each job
+    # stays near the `verify` job's runtime and cross-browser stays off the critical path. Test files, projects, retries and env are unchanged.
+    name: cross-browser (${{ matrix.browser }} ${{ matrix.shard }}/${{ matrix.total }})
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false   # let every browser/shard finish so one failure doesn't hide others
+      matrix:
+        include:
+          - { browser: firefox, shard: 1, total: 2 }
+          - { browser: firefox, shard: 2, total: 2 }
+          # WebKit is ~2x slower than Firefox on the Linux runner, so it gets 3 shards (measured: 5.3 min for shard 1/2).
+          - { browser: webkit, shard: 1, total: 3 }
+          - { browser: webkit, shard: 2, total: 3 }
+          - { browser: webkit, shard: 3, total: 3 }
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with: { node-version-file: .nvmrc, cache: pnpm }
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps firefox webkit
-      - run: PW_ALL_BROWSERS=1 CI=1 pnpm exec playwright test --project=firefox --project=webkit
+      - run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
+      - run: PW_ALL_BROWSERS=1 CI=1 pnpm exec playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}/${{ matrix.total }}
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: failure()
-        with: { name: playwright-results-cross-browser, path: test-results/ }
+        with: { name: 'playwright-results-cross-browser-${{ matrix.browser }}-${{ matrix.shard }}', path: test-results/ }
 
   # ---- Deploys: only after BOTH quality jobs are green, only on push (never on pull_request). ----
   # dev -> Worker "sizetune-staging" (workers.dev). main -> Worker "sizetune" (sizetune.com).
