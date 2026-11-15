@@ -62,3 +62,28 @@
 3. ST-013 (concern): the fallback depends on a local Arial. It was verified only on macOS.
 4. ST-014: cross-browser green on CI is not verifiable here. The concurrency comment slightly overstates what queueing guarantees.
 5. ST-011 (note): out-of-range crop values are clamped silently. Outside the criterion.
+
+## Re-verification (follow-up commits aacc270, 17ab0ba, 5d4af38)
+
+Rebuilt with `pnpm run build`, served with `wrangler dev` on 127.0.0.1:8795 (stopped afterwards), system Chrome. `vitest run`: 703 tests passed. Output dimensions and pixels were read from the downloaded bytes with sharp. Logs: `verifier/rv008.txt`, `verifier/rv002.txt`. Script: `AUDIT/tmp-verifier/rv.mjs`.
+
+| Issue | Criterion | Result | Evidence |
+|---|---|---|---|
+| ST-008 | Signature tool, 42 MP half-transparent PNG, JPEG: fill choice and "too large to check" note shown | PASS | JPEG is preselected, and `flatten-choice` and `alpha-unchecked` are both present before and after selecting JPEG. Note: "This image is too large to check for transparency. If it has any, those areas are filled with the colour you choose." |
+| ST-008 | Downloaded pixel in the transparent half follows the chosen colour | PASS | Output 2646×2268 JPEG. At x = 10% (transparent half): Black gives [0,0,0], Custom #ff0000 gives [254,0,0], White gives [255,255,255]. At x = 90% (opaque half) the pixel is [197,93,128] every time. The result note names the colour each time |
+| ST-008 | No spurious fill choice on small signatures | PASS | Small transparent signature PNG: PNG preselected and the normal alpha note shown (genuine transparency); no unchecked note. Flattened opaque PNG and JPEG signatures: JPEG preselected, 0 fill choice and 0 unchecked note, before and after choosing JPEG. Image tool recheck: t42 1/1, JPEG 0/0, small transparent PNG gives the normal alpha note only |
+| ST-008 | Copy consistency | NOTE | The signature intro says "If your scan has transparent areas, PNG is preselected". When transparency is unknown (>36 MP), JPEG is preselected instead, with the fill choice visible. This is acceptable under the criterion, but the intro sentence does not cover this case |
+| ST-002 | 1200×900, max width 400, 10 KB | PASS | Download 202×151. Notes in order: "reduced from 1200×900 px to 400×300 px to fit your maximum width/height", then "reduced from 400×300 px to 202×151 px to reach your size limit". Correct order and no contradiction |
+| ST-002 | 42 MP PNG, explicit PNG, 200 KB: memory cap disclosed | PASS | Download 1453×1245 PNG. Notes: "reduced from 2646×2268 px to 1453×1245 px to reach your size limit", plus "opened at reduced size (2646×2268 px of the original 7000×6000 px) to stay within browser memory limits" |
+| ST-002 | Original repro: 48 MP, No limit | PASS | 2828×2121. Memory note only |
+| ST-002 | Original repro: 42 MP PNG, default format, 200 KB | PASS | 2646×2268 JPEG, 196,927 B. Memory note only |
+| ST-002 | Original repro: max width 400 (No limit and 100 KB) | PASS | 400×300. Max-dims note only |
+| ST-002 | Genuine size target | PASS | 1200×900 at 10 KB gives 205×154 with "reduced from 1200×900 px to 205×154 px to reach your size limit". 48 MP at 50 KB gives 577×433 with "reduced from 2113×1585 px to 577×433 px…" plus the memory note (2113×1585 of 8000×6000) |
+| ST-002 | No regression elsewhere | PASS | 24 MP No limit: memory note only (3000×2000). 800×600 at 100 KB: no notes |
+| ST-002 | Huge photo + max width or typed width | CONCERN | 48 MP with max width 400 (No limit) gives 400×300 with only "opened at reduced size (400×300 px …) to stay within browser memory limits, so the result can have less detail". The real cause is the user's max width, and the max-dims note is suppressed by `!plan.reduced`. The same happens with typed width 400 and with max width 2000 (2000×1500). By code reading this is not new: the old `> 98%` guard also passed in these cases, so the base build showed the same note. It was not rebuilt to confirm. It is still a wrong-cause note of the ST-002 kind. Also, for 48 MP at 50 KB the memory note reports a 2113×1585 decode, smaller than the 2828×2121 the memory cap gives with No limit, so part of that reduction is planned for the size target, not memory |
+| ST-014 | Comment-only change | PASS | The diff is one comment line: "…A push run that is already running (possibly mid-deploy) is never cancelled by a newer push; GitHub keeps at most one waiting run per group, so a newer push replaces an older still-waiting one." This is accurate. `concurrency` keys, jobs and pins are unchanged |
+
+### Re-verification summary
+- PASS: ST-008 Signature tool (fill choice, note, pixels match the chosen colour, no spurious fill choice); ST-002 all requested cases; ST-014 comment.
+- CONCERN (not in the requested cases): ST-002 huge photo combined with a max or typed width still blames "browser memory limits" and suppresses the max-dims note.
+- NOTE: the Signature intro copy does not mention the unknown-transparency case.
