@@ -8,10 +8,10 @@ The deployed text contains no placeholders and no claim that a lawyer reviewed i
 ## Decisions made without the owner (assumptions)
 | # | Decision | Reason | Owner can change by |
 |---|---|---|---|
-| A1 | Operator named as "Kiran T., an independent developer based in India" | Already public on the about page, supplied earlier by the owner | Editing the three pages |
+| A1 | Operator named as "Sourav, an independent developer based in India" | Already public on the about page, supplied earlier by the owner | Editing the three pages |
 | A2 | Governing law: laws of India; courts in India with jurisdiction under applicable law; **no city** | Conventional for an Indian operator; the city is the owner's choice | Adding a city to `terms.astro` |
 | A3 | No liability cap figure; the clause excludes loss from using the site (including indirect loss) "to the extent the law allows", with carve-outs for fraud, deliberate wrongdoing and non-excludable liability. A modest cap would be less exposed to an unconscionability challenge | A figure is a business decision | Adding a cap |
-| A4 | Grievance contact is hello@sizetune.com, handled by Kiran T.; target to resolve within one month (and within any time the law allows) | The reviewer reads SPDI r.5(9) as one month (not read from the primary text); DPDP Rule 14(3) maximum is 90 days | Changing the period |
+| A4 | Grievance contact is hello@sizetune.com, handled by Sourav; target to resolve within one month (and within any time the law allows) | The reviewer reads SPDI r.5(9) as one month (not read from the primary text); DPDP Rule 14(3) maximum is 90 days | Changing the period |
 | A5 | Email retention: "as long as needed or the law requires", no period | Owner has not set one; DPDP Rule 8(3) may require 1 year from 13 May 2027 | Setting a period |
 | A6 | Cloudflare retention not stated; "may keep records under its own policies" | No verified period exists (see technical audit) | After checking the dashboard |
 | A7 | Search Console described as "may use in future", not as in use | Not set up yet (BLOCKERS H13) | Update after DNS TXT verification |
@@ -28,7 +28,7 @@ The deployed text contains no placeholders and no claim that a lawyer reviewed i
 4. Email provider for hello@sizetune.com, retention, forwarding.
 5. Decide whether SizeTune will earn money (AdSense). This drives SPDI/"body corporate" and CERT-In treatment.
 6. Appoint a CERT-In point of contact and incident owner if run commercially (6-hour reporting).
-7. Whether a postal address must be published (reviewer's reading of SPDI r.5(3)(d); not verified against primary text) and whether the grievance contact must be a full legal name rather than "Kiran T." (technical reviewer M2, legal reviewer #3).
+7. Whether a postal address must be published (reviewer's reading of SPDI r.5(3)(d); not verified against primary text) and whether the grievance contact must be a full legal name rather than "Sourav" (technical reviewer M2, legal reviewer #3).
 8. Lawyer review (Indian counsel) of both pages, the under-18 wording and the liability clause.
 
 ## Law status as of 2026-11-13 (see LEGAL_REVIEW.md for sources)

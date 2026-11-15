@@ -152,7 +152,7 @@ The real issues are these:
 - **Status:** Verified working.
 - **Evidence:**
   - Tool notices on all three tool pages say the code does not upload the image, no copy is kept, and the browser releases it on tab close. This matches privacy ("code of this site does not upload", "browser releases the working data when you close the tab") and terms.
-  - Contact is `hello@sizetune.com` on about, privacy and terms. The name "Kiran T., an independent developer" is used identically in about, privacy and terms.
+  - Contact is `hello@sizetune.com` on about, privacy and terms. The name "Sourav, an independent developer" is used identically in about, privacy and terms.
   - Privacy and terms are dated 13 November 2026. The guide is 12 November 2026. About correctly states that privacy, terms and guide show their dates.
   - The 20 KB, signature and home pages agree on the 1,000 versus 1,024 explanation. The guide agrees with them.
   - "KB" appears 118 times and "kilobyte" 7 times. "kB" appears once, in a FAQ heading. There is no "KiB".
@@ -173,7 +173,7 @@ The real issues are these:
 - Home title "Resize Image to KB Online, Free | SizeTune" is slightly ungrammatical.
 - Alternative: "Resize an Image to a Size in KB | SizeTune".
 - Optionally add `lastmod` to the sitemap.
-- Guide `Article` JSON-LD has no `image`. The author is the Organization "SizeTune", not a person. Switching author to `Kiran T.` is an owner decision (see CNT-12).
+- Guide `Article` JSON-LD has no `image`. The author is the Organization "SizeTune", not a person. Switching author to `Sourav` is an owner decision (see CNT-12).
 
 ### CNT-5 (low): awkward meta descriptions
 - Home: "...The code here does not upload your image."
@@ -204,11 +204,11 @@ I did not rewrite or approve any of these. I did not invent names, addresses, ju
 
 ### CNT-11 (medium): grievance and contact details
 - `hello@sizetune.com` is the single contact for everything, including privacy requests, complaints and grievances. No postal address is given.
-- Privacy says "That address is also our grievance contact, and it is handled by Kiran T."
+- Privacy says "That address is also our grievance contact, and it is handled by Sourav"
 - **Action:** The owner and a lawyer must decide whether more (a postal address, a designated officer, a response-time promise) is required. Privacy promises resolution "within one month". Check this can be met.
 
 ### CNT-12 (medium): identity of the publisher and ownership wording
-- The publisher is an individual, "Kiran T." (the name the owner told me to use). JSON-LD uses `Organization` named "SizeTune" for publisher and Article author.
+- The publisher is an individual, "Sourav" (the name the owner told me to use). JSON-LD uses `Organization` named "SizeTune" for publisher and Article author.
 - Terms say content belongs to "SizeTune's owner" and there is no copyright notice or legal entity.
 - **Action:** Decide the legal name or trading name, whether `Organization` or `Person` markup is appropriate, and whether to add a copyright line.
 

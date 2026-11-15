@@ -47,7 +47,7 @@ Unknown without dashboard/edge access: zone security/bot settings, WAF/Analytics
 - Search Console: no verification meta tag or file in `dist/`; `BLOCKERS.md` H13 plans DNS TXT verification (Domain property) after launch. DNS TXT adds nothing to pages; if later switched to a meta tag/file it would still not load a script. Using GSC means Google receives Google-side search data, not visitor data from this site. **Not yet set up** (BUILD_STATUS lists it as not implemented).
 
 ## 6. Contact / analytics / ads / error reporting
-`hello@sizetune.com` is plain-text `mailto:` on /about/, /privacy/, /terms/ (1 each); public pseudonym "Kiran T.". No form, analytics, ads, Sentry-style reporting, or console logging. Mailbox existence/delivery not verified.
+`hello@sizetune.com` is plain-text `mailto:` on /about/, /privacy/, /terms/ (1 each); public first-name-only "Sourav". No form, analytics, ads, Sentry-style reporting, or console logging. Mailbox existence/delivery not verified.
 
 ## 7. Claims vs evidence
 | # | Claim (location) | Status | Evidence |
@@ -67,7 +67,7 @@ Unknown without dashboard/edge access: zone security/bot settings, WAF/Analytics
 | 13 | "The owner uses Google Search Console ..." (privacy:55-56) | **WRONG today / unresolved** | GSC not set up (BUILD_STATUS, BLOCKERS H13); `[[HUMAN]]` marker sits in the same paragraph |
 | 14 | "does not need any script on these pages" (privacy:56-57) | VERIFIED | DNS verification, no script |
 | 15 | "Because we hold no images, accounts or profiles..." (privacy:63) | VERIFIED for app; mail received at hello@ is personal data held |  contact path not mentioned in rights text |
-| 16 | "Questions ... hello@sizetune.com" / owner "Kiran T." (about:30-31, privacy:18-19) | UNVERIFIED mailbox/identity | not testable |
+| 16 | "Questions ... hello@sizetune.com" / owner "Sourav" (about:30-31, privacy:18-19) | UNVERIFIED mailbox/identity | not testable |
 | 17 | Hero "Stays in your browser" (Hero.astro:12); footer "processed in your browser" (Base.astro:78); tool notes "not uploaded, and this page keeps nothing after you leave it" (ImageTool.tsx:170, SignatureTool.tsx:323; Dropzone.tsx:72 "nothing is uploaded") | VERIFIED for code; absolute "nothing is uploaded"/"stays" is stronger than the host/extension caveats | |
 | 18 | "this page loads no advertising or analytics scripts" (index.astro:99-100) | VERIFIED locally | edge injection would be blocked by CSP |
 | 19 | Home/FAQ "Browser extensions or device backup ... outside the site's control" (index:120-121) | VERIFIED (true caveat) | |

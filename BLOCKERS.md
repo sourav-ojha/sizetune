@@ -6,7 +6,7 @@ Nothing below has been done by an agent: no push, no deploy, no DNS change, no a
 ## A. Decisions and actions only you can do (exact steps)
 | # | Action | Exact steps | Blocks |
 |--|--|--|--|
-| H1 | **Resolve the 4 remaining owner markers (5 filled 2026-11-13: pseudonym "Kiran T." + hello@sizetune.com)** | `grep -rn "\[\[HUMAN" src/pages` — about (2: owner name + one sentence, public contact email), privacy (4: legal-review-pending, owner name, contact email, "do you use Google Search Console — keep/delete sentence"), terms (3: legal-review-pending, governing law/jurisdiction line, contact email). Replace each `[[HUMAN: …]]` with real text or delete the sentence. Then `pnpm run build && pnpm run verify:html:final` must exit 0 (STRICT=2). | launch |
+| H1 | **Resolve the 4 remaining owner markers (5 filled 2026-11-13: first-name-only "Sourav" + hello@sizetune.com)** | `grep -rn "\[\[HUMAN" src/pages` — about (2: owner name + one sentence, public contact email), privacy (4: legal-review-pending, owner name, contact email, "do you use Google Search Console — keep/delete sentence"), terms (3: legal-review-pending, governing law/jurisdiction line, contact email). Replace each `[[HUMAN: …]]` with real text or delete the sentence. Then `pnpm run build && pnpm run verify:html:final` must exit 0 (STRICT=2). | launch |
 | H2 | **Real-device tests (DEFERRED by owner 2026-11-13, to do later)** | Follow `QA/REAL_DEVICE_TEST_PLAN.md` on ≥3 phones (iPhone ≤4 GB RAM, 2 Android ≤3 GB). Fixtures: `node scripts/gen-fixtures.mjs --device-pack`. Serve the build to your LAN: `pnpm run build && pnpm exec wrangler dev --ip 0.0.0.0 --port 8788`. Paste the result table back. A crash on R2/R3 → lower `MAX_SOURCE_PIXELS`/`MAX_OUTPUT_PIXELS` in `src/lib/engine/limits.ts` for that browser. | launch |
 | H3 | **Firefox + WebKit browser tests — DONE 2026-11-13** | Owner approved the browser install. `PW_ALL_BROWSERS=1 pnpm exec playwright test`: 562 passed across Chrome, Firefox 159, Playwright WebKit 27.2 (not Safari on a real iPhone). Chromium-only checks are tagged `@chromium-only` with a reason. See `QA/TEST_RESULTS.md` §Cross-browser. | closed |
 | H5 | **Staging deploy (non-prod)** | Config + docs ready on `dev` (`CLOUDFLARE_DEPLOYMENT.md` §Staging). Needs `wrangler login`, then deploy; no production deploy until approved. | before prod |
@@ -25,7 +25,7 @@ Nothing below has been done by an agent: no push, no deploy, no DNS change, no a
 | # | Action | Detail |
 |--|--|--|
 | H14 | Resolve legal markers; legal review stays pending | `/privacy/` (legal-review-pending, Search Console sentence) and `/terms/` (legal-review-pending, governing law/jurisdiction). Not guessed by an agent. Review by an Indian lawyer is still required; no compliance is claimed. |
-| H15 | Confirm the public identity | About/Privacy/Terms publicly show the pseudonym "Kiran T." and hello@sizetune.com. Confirm both are intended to be public and that the mailbox receives mail (not verified by an agent). |
+| H15 | Confirm the public identity | About/Privacy/Terms publicly show the first-name-only "Sourav" and hello@sizetune.com. Confirm both are intended to be public and that the mailbox receives mail (not verified by an agent). |
 | H16 | Point sizetune.com at the Worker | Domain does not resolve yet, so canonicals, OG image and sitemap target nothing. After launch: `curl -sI https://sizetune.com/ \| grep -i x-robots` must print nothing; add HSTS (H13). |
 | H17 | Approve an OG image | Draft recommendation in `QA/SEO_AUDIT.md`; nothing generated. |
 | H18 | Deploy staging | DONE 2026-11-14: `dev` at `8f0b204` deployed to staging, CI green (verify, cross-browser, deploy-staging). |
@@ -35,7 +35,7 @@ Nothing below has been done by an agent: no push, no deploy, no DNS change, no a
 |--|--|--|
 | H19 | HTTPS redirect and HSTS (SEC-1, MED) | Plain HTTP returns 200 with no redirect and no HSTS on any route. Cloudflare zone setting: Always Use HTTPS, then HSTS with a small max-age. The owner's call; no agent changed it. |
 | H20 | Real-device touch check (SIG-3, MED) | Short signature crop boxes: the 44 px handles cover the middle in touch emulation, so a drag may resize. Confirm on a phone before changing handle hit areas. |
-| H21 | Legal and identity wording (CNT-10..15) | Governing law, "Kiran T.", "based in India", grievance contact, minors, future-ads and Cloudflare statements stay human-approval gates. |
+| H21 | Legal and identity wording (CNT-10..15) | Governing law, "Sourav", "based in India", grievance contact, minors, future-ads and Cloudflare statements stay human-approval gates. |
 | H22 | WebKit WebP fallback (IMG-3, MED) | Transparent WebP with Auto becomes a small PNG in WebKit with no pre-run warning. Decide whether to warn before the run. |
 
 ## B. Open technical risks

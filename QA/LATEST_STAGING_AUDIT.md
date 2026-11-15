@@ -43,7 +43,7 @@ Status labels: **Verified defective**, **Fixed** (local commit, not pushed or de
 | IMG-5..8 | Low | Single-dimension stretch has no note; huge output rejected late with vague text; zero-byte file called "not an image"; min-only 100 KB gave a 2.66 MB file from 2.19 MB | Open |
 | UX-4, UX-5, A11Y-2, PERF-1 | Low | Amber heading when larger than original although the target is met; "allow enlarging" advice points to a collapsed control; header logo link 32 px tall; one 140 ms frame gap on file select | Open |
 | CNT-3, CNT-4 | Low | JPEG fill copy says "a solid colour" (default white, user-selectable); quality-first copy omits the quality floor | Open |
-| CNT-10..15 | n/a | Governing law, "Kiran T.", "based in India", grievance contact, minors and browsewrap, future-ads and Cloudflare statements | **Human** (not changed by any agent) |
+| CNT-10..15 | n/a | Governing law, "Sourav", "based in India", grievance contact, minors and browsewrap, future-ads and Cloudflare statements | **Human** (not changed by any agent) |
 
 Recommendations (UX-9..14, SEO-3/4/8, CNT-5/6, PERF-2, keyboard shortcut ideas) are in the individual reports.
 
@@ -70,7 +70,7 @@ VoiceOver, NVDA and TalkBack; physical phones or tablets (**Device**); pinch zoo
 Safari output sizes can differ from Chrome (engine verifies real bytes, so results stay honest). WebKit cannot encode WebP. Pinch zoom is not implemented in the signature tool. Compare zoom is limited by the 1,024 px preview. The CSP is a `<meta>` policy, so it cannot block anything before it in `<head>`.
 
 ## 7. Human decisions and device tests still required
-1. Legal review by an Indian lawyer of Privacy and Terms; owner confirmation of the public name "Kiran T.", whether a postal address is needed, the court city, and the grievance wording. Nothing was invented or approved by an agent.
+1. Legal review by an Indian lawyer of Privacy and Terms; owner confirmation of the public name "Sourav", whether a postal address is needed, the court city, and the grievance wording. Nothing was invented or approved by an agent.
 2. Cloudflare: redirect HTTP to HTTPS and enable HSTS (SEC-1); Workers Logs, Web Analytics, NEL settings (see `docs/legal/COMPLIANCE_CHECKLIST.md`).
 3. Point sizetune.com at the Worker, then re-test headers, canonicals and the "tested on a local copy" claims on the live edge.
 4. Real-device tests (`QA/REAL_DEVICE_TEST_PLAN.md`), including SIG-3 touch handles, and a screen-reader pass.

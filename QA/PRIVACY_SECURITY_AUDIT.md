@@ -143,7 +143,7 @@ Note: Cloudflare injects `nel`/`report-to`; browsers may send network-failure re
 
 ## Requires human approval (carried over, not decided by this audit)
 
-- Owner confirms that the displayed name "Kiran T.", the claim "based in India", the contact `hello@sizetune.com` and the Indian-law statements on `/about/`, `/privacy/` and `/terms/` are intended to be public and accurate. This audit does not assert or invent any legal identity; mailbox delivery was not verified.
+- Owner confirms that the displayed name "Sourav", the claim "based in India", the contact `hello@sizetune.com` and the Indian-law statements on `/about/`, `/privacy/` and `/terms/` are intended to be public and accurate. This audit does not assert or invent any legal identity; mailbox delivery was not verified.
 - Search Console wording on `/privacy/` ("We may use Google Search Console in future ...") versus "no analytics": owner decision.
 - HSTS and Always-Use-HTTPS on the custom domain (SEC-1): Cloudflare dashboard change, owner action.
 - Whether the custom domain also emits NEL/`report-to` headers: confirm after the domain is live.
