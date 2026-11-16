@@ -3,11 +3,12 @@ import { NOISE, bombPng, unreadablePng, file, flatPng, openTool, pick, resize, s
 import { format, runAxe, unexpected } from './axe-helper';
 
 /** Fails on ANY axe violation (all impacts) not in the justified ALLOW list (e2e/ui/axe-helper.ts). */
-async function expectClean(page: Page, label: string) {
-  const bad = unexpected(await runAxe(page));
+async function expectClean(page: Page, label: string, scope?: string) {
+  const bad = unexpected(await runAxe(page, scope));
   expect(bad, `${label}\n${format(bad)}`).toEqual([]);
 }
 
+const expectCleanIn = expectClean;
 const PAGES = ['/', '/resize-image-to-20kb/', '/resize-signature/', '/guides/photo-size-for-online-forms/', '/privacy/', '/about/', '/terms/', '/definitely-missing/'];
 const VIEWPORTS = [{ name: 'desktop', width: 1280, height: 800 }, { name: 'mobile 375', width: 375, height: 800 }];
 
@@ -27,6 +28,9 @@ for (const vp of VIEWPORTS) {
 for (const vp of VIEWPORTS) {
   test.describe(`axe: image tool states, ${vp.name}`, () => {
     test.use({ viewport: { width: vp.width, height: vp.height } });
+    // Audit the tool itself: the surrounding page is covered by the launch-page tests above, and auditing the whole long home page
+    // with a loaded image crashed Firefox's content process inside axe.run (SIGSEGV, reproducible locally).
+    const expectClean = (page: Page, label: string) => expectCleanIn(page, label, '[data-testid=tool]');
 
     test('initial, file loaded, Advanced open', async ({ page }) => {
       await page.goto('/');
@@ -58,8 +62,7 @@ for (const vp of VIEWPORTS) {
       const gate = new Promise<void>((r) => (release = r));
       await page.route('**/_astro/*worker*.js', async (route) => { await gate; await route.continue(); });
       await openTool(page);
-      await pick(page, NOISE);
-      await page.getByTestId('run').click();
+      await pick(page, NOISE); // the run starts by itself
       await expect(page.getByTestId('progress')).toBeVisible();
       await expectClean(page, 'processing');
       release();
@@ -107,8 +110,7 @@ for (const vp of VIEWPORTS) {
       await page.getByTestId('file').setInputFiles(file('broken.png', flatPng(200, 200).subarray(0, 60)));
       await expect(page.getByRole('alert')).toContainText(/incomplete or damaged/);
       await expectClean(page, 'truncated file alert');
-      await pick(page, file('ok.png', flatPng(100, 100)));
-      await page.getByTestId('run').click();
+      await pick(page, file('ok.png', flatPng(100, 100))); // the automatic run fails
       await expect(page.getByRole('alert')).toBeVisible({ timeout: 20_000 });
       await expectClean(page, 'run error');
     });

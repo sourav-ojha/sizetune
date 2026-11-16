@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import fs from 'node:fs';
-import { NOISE, bombPng, browserRssMb, exifTiff, flatPng, isChromium, bytesOf, file, openTool, pick, pngWithExif, resize, writeBigPng } from './helpers';
+import { cancelRunInSameTask, NOISE, bombPng, browserRssMb, exifTiff, flatPng, isChromium, bytesOf, file, openTool, pick, pngWithExif, resize, writeBigPng } from './helpers';
 
 test.describe('previews never undo the engine’s memory-safe decode (F1)', () => {
   test('a 9000x9000 RGBA PNG (81 MP) is accepted from its header: no decode on the main thread, bounded memory', async ({ page }) => {
@@ -9,10 +9,11 @@ test.describe('previews never undo the engine’s memory-safe decode (F1)', () =
     try {
       await openTool(page);
       await page.evaluate(() => { (window as any).__urls = 0; const o = URL.createObjectURL.bind(URL); URL.createObjectURL = (b: any) => { (window as any).__urls++; return o(b); }; });
+      await page.getByTestId('target').fill(''); // no valid size yet: nothing resizes by itself, so only the pick is measured
       const before = await browserRssMb(page);
       await page.getByTestId('file').setInputFiles(big);
       await expect(page.getByTestId('file-info')).toContainText('9,000 × 9,000 px', { timeout: 30_000 });
-      await expect(page.getByTestId('run')).toBeEnabled();
+      await expect(page.getByTestId('form-invalid')).toBeVisible();
       await expect(page.getByTestId('no-preview')).toBeVisible(); // beyond the preview decode limit: no preview at all
       await page.waitForTimeout(1500);
       const delta = (await browserRssMb(page)) - before;
@@ -58,7 +59,7 @@ test.describe('previews never undo the engine’s memory-safe decode (F1)', () =
     await expect(alert).toContainText('20,000 × 20,000 px');
     await expect(alert).toContainText('400 megapixels');
     await expect(page.getByTestId('preview')).toHaveCount(0);
-    await expect(page.getByTestId('run')).toBeDisabled();
+    await expect(page.getByTestId('run')).toHaveCount(0);
     expect(await page.evaluate(() => (window as any).__urls)).toBe(before);
   });
 
@@ -105,7 +106,7 @@ test.describe('A4: truncated files', () => {
     await expect(alert).not.toContainText('very large');
     await expect(page.getByTestId('preview')).toHaveCount(0);
     await expect(page.getByTestId('no-preview')).toHaveCount(0);
-    await expect(page.getByTestId('run')).toBeDisabled();
+    await expect(page.getByTestId('run')).toHaveCount(0);
   });
 
   test('the "very large image" note appears only above the preview limit (here 45 MP, header only)', async ({ page }) => {
@@ -173,8 +174,7 @@ test.describe('layout, scroll and cold-start robustness (D1, D5-D8)', () => {
     const top = () => page.getByTestId('tool').evaluate((el) => Math.round(el.getBoundingClientRect().top));
     // (clicks are dispatched from the page: Playwright's own scroll-into-view before a click would move the page and hide what we measure)
     const click = (id: string) => page.evaluate((t) => (document.querySelector(`[data-testid=${t}]`) as HTMLElement).click(), id);
-    await click('preset-10');
-    await click('run');
+    await click('preset-10'); // resizes by itself
     await expect(page.getByTestId('result')).toBeVisible({ timeout: 30_000 });
     // when the result appears off-screen the page may (by design) scroll it into view; measure from the settled position
     await page.waitForTimeout(300);
@@ -188,11 +188,8 @@ test.describe('layout, scroll and cold-start robustness (D1, D5-D8)', () => {
     await openTool(page);
     await pick(page, NOISE);
     await page.getByTestId('preset-30').click();
-    await page.evaluate(async () => {
-      (document.querySelector('[data-testid=run]') as HTMLButtonElement).click();
-      await Promise.resolve();
-      (document.querySelector('[data-testid=cancel]') as HTMLButtonElement).click();
-    });
+    // cancel in the same task in which the Cancel button appears (the run starts by itself)
+    await cancelRunInSameTask(page);
     await page.waitForTimeout(1500);
     await expect(page.getByTestId('file-info')).toContainText('noise.png');
     await expect(page.getByTestId('preview')).toBeVisible();
@@ -202,27 +199,23 @@ test.describe('layout, scroll and cold-start robustness (D1, D5-D8)', () => {
     expect(await bytesOf(page)).toBeLessThanOrEqual(30_000);
   });
 
-  test('D8: clicking Resize immediately after hydration never ends idle without a result or an error', async ({ page }) => {
+  test('D8: a file picked right after hydration never ends idle without a result or an error', async ({ page }) => {
     test.setTimeout(120_000);
     for (let i = 0; i < 6; i++) {
       await page.goto(i % 2 ? '/resize-image-to-20kb/' : '/');
       await page.getByTestId('file').setInputFiles(NOISE);   // possibly before hydration
-      await expect(page.getByTestId('run')).toBeEnabled({ timeout: 20_000 });
-      await page.getByTestId('run').click();                  // immediately
       await expect.poll(async () => (await page.getByTestId('result').count()) + (await page.getByRole('alert').count()), { timeout: 40_000, message: `run ${i} ended idle` }).toBeGreaterThan(0);
       await expect(page.getByTestId('progress')).toHaveCount(0);
     }
   });
 
-  test('D8: a file picked while the page is still loading, then Resize, still gives a result', async ({ page }) => {
+  test('D8: a file picked while the page is still loading still gives a result', async ({ page }) => {
     let release!: () => void;
     const gate = new Promise<void>((r) => (release = r));
     await page.route('**/_astro/*.js', async (route) => { await gate; await route.continue(); });
     await page.goto('/', { waitUntil: 'commit' });
     await page.getByTestId('file').setInputFiles(NOISE);
     release();
-    await expect(page.getByTestId('run')).toBeEnabled({ timeout: 20_000 });
-    await page.getByTestId('run').click();
     await expect.poll(async () => (await page.getByTestId('result').count()) + (await page.getByRole('alert').count()), { timeout: 40_000 }).toBeGreaterThan(0);
     await expect(page.getByRole('alert')).toHaveCount(0);
   });

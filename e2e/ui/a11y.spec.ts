@@ -55,11 +55,9 @@ test('keyboard-only main flow and focus management', async ({ page }) => {
   await page.getByTestId('preset-20').focus();
   await page.keyboard.press('Enter');
   await expect(page.getByTestId('preset-20')).toHaveAttribute('aria-pressed', 'true');
-  await page.getByTestId('run').focus();
-  await expect(page.getByTestId('run')).toBeFocused();
-  await page.keyboard.press('Space');
+  // changing the setting resizes by itself; focus stays on the control the user is using
   await expect(page.getByTestId('result')).toBeVisible({ timeout: 60_000 });
-  await expect(page.getByTestId('result-heading')).toBeFocused();
+  await expect(page.getByTestId('preset-20')).toBeFocused();
   await expect(page.getByTestId('status')).toContainText(/Finished/);
   // Tab reaches the download link, then Enter on Reset returns focus to the file chooser
   await tab(page);

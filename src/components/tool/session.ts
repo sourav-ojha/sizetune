@@ -158,8 +158,8 @@ export class ToolSession {
     this.set({ ...EMPTY, fileSerial: this.state.fileSerial + 1, notice });
   }
 
-  /** Runs the engine. Ignored unless a file is ready. A newer run/cancel/reset makes this one's result be dropped. */
-  async run(options: ProcessOptions): Promise<void> {
+  /** Runs the engine (`keepNotice`: an automatic run must not wipe a notice about the file just picked). Ignored unless a file is ready. A newer run/cancel/reset makes this one's result be dropped. */
+  async run(options: ProcessOptions, opts: { keepNotice?: boolean } = {}): Promise<void> {
     const { file, phase, inspecting } = this.state;
     if (!file || phase === 'empty' || inspecting) return;
     this.stopRun();
@@ -167,7 +167,7 @@ export class ToolSession {
     const my = this.runId;
     const ctrl = new AbortController();
     this.abort = ctrl;
-    this.set({ phase: 'processing', result: null, error: null, notice: null, progress: { stage: 'reading' } });
+    this.set({ phase: 'processing', result: null, error: null, notice: opts.keepNotice ? this.state.notice : null, progress: { stage: 'reading' } });
     try {
       const data = await this.deps.process(file, options, {
         signal: ctrl.signal,
@@ -198,10 +198,10 @@ export class ToolSession {
   }
 
   /** Drop the result (e.g. settings changed) and go back to ready. */
-  clearResult(): void {
+  clearResult(cancelNotice: string | null = 'Settings changed, so the run was cancelled. Press the button to run again.'): void {
     if (this.state.phase === 'processing') {
       this.stopRun();
-      this.set({ phase: 'ready', progress: null, notice: 'Settings changed, so the run was cancelled. Press the button to run again.' });
+      this.set({ phase: 'ready', progress: null, notice: cancelNotice });
     } else if (this.state.result) {
       this.dropResult();
       this.set({ result: null, phase: 'ready', progress: null });

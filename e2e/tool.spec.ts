@@ -6,9 +6,8 @@ import fs from 'node:fs';
 const IMG = path.join(import.meta.dirname, 'noise.png');
 
 async function compress(page: import('@playwright/test').Page, kb = '50') {
+  await page.getByTestId('target').fill(kb); // settings first: the run starts by itself once the file is accepted
   await page.getByTestId('file').setInputFiles(IMG);
-  await page.getByTestId('target').fill(kb);
-  await page.getByTestId('run').click();
   const size = page.getByTestId('result-size');
   await expect(size).toBeVisible({ timeout: 30_000 });
   return size;
@@ -106,7 +105,8 @@ test('file picked BEFORE hydration is not lost (image tool and signature tool)',
     await page.getByTestId('file').setInputFiles(IMG);
     release();
     await expect(page.getByTestId(extra)).toBeVisible({ timeout: 20_000 });
-    await expect(page.getByTestId('run')).toBeEnabled();
+    if (url === '/') await expect(page.getByTestId('result')).toBeVisible({ timeout: 30_000 }); // the image tool resizes by itself
+    else await expect(page.getByTestId('run')).toBeEnabled();
     await page.unroute('**/_astro/*.js');
   }
 });
@@ -114,40 +114,45 @@ test('file picked BEFORE hydration is not lost (image tool and signature tool)',
 test('stale result from a superseded run is dropped', async ({ page }) => {
   await page.goto('/');
   await page.getByTestId('preset-100').click();
-  await page.getByTestId('file').setInputFiles(IMG);
-  await expect(page.getByTestId('run')).toBeEnabled();
-  // Run, then pick another file in the same task (before the engine can answer).
+  // Pick a file, then another one in the same task (before the engine can answer for the first).
   await page.evaluate(async (b64) => {
-    (document.querySelector('[data-testid=run]') as HTMLButtonElement).click();
     const bin = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
     const input = document.querySelector('[data-testid=file]') as HTMLInputElement;
-    const dt = new DataTransfer();
-    dt.items.add(new File([bin], 'other.png', { type: 'image/png' }));
-    input.files = dt.files;
-    input.dispatchEvent(new Event('change', { bubbles: true }));
+    for (const name of ['first.png', 'other.png']) {
+      const dt = new DataTransfer();
+      dt.items.add(new File([bin], name, { type: 'image/png' }));
+      input.files = dt.files;
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
   }, fs.readFileSync(IMG).toString('base64'));
   await expect(page.getByTestId('file-info')).toContainText('other.png');
-  await page.waitForTimeout(2500);
-  await expect(page.getByTestId('result-size')).toHaveCount(0);
-  await expect(page.getByTestId('progress')).toHaveCount(0);
+  await expect(page.getByTestId('result')).toBeVisible({ timeout: 30_000 });
+  await page.waitForTimeout(1500);
+  await expect(page.getByTestId('result-size')).toHaveCount(1);
+  await expect(page.getByTestId('download-name')).toHaveText(/^other-sizetune\.(jpg|png)$/);
+  await expect(page.getByTestId('result')).toContainText('from “other.png”');
 });
 
 test('non-image content is rejected by magic-byte check', async ({ page }) => {
   await page.goto('/');
   await page.getByTestId('file').setInputFiles({ name: 'evil.png', mimeType: 'image/png', buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"></svg>') });
   await expect(page.getByRole('alert')).toContainText('JPEG, PNG or WebP');
-  await expect(page.getByTestId('run')).toBeDisabled();
+  await expect(page.getByTestId('run')).toHaveCount(0);
 });
 
-test('invalid target disables the button', async ({ page }) => {
+test('an invalid target stops the automatic run and says so', async ({ page }) => {
   await page.goto('/');
   await page.getByTestId('preset-100').click(); // wait for hydration
   await page.getByTestId('file').setInputFiles(IMG);
-  await expect(page.getByTestId('run')).toBeEnabled();
+  await expect(page.getByTestId('result')).toBeVisible({ timeout: 30_000 });
   await page.getByTestId('target').fill('0');
-  await expect(page.getByTestId('run')).toBeDisabled();
+  await expect(page.getByTestId('form-invalid')).toBeVisible();
+  await expect(page.getByTestId('result')).toHaveCount(0);
+  await expect(page.getByTestId('run')).toHaveCount(0);
   await page.getByTestId('target').fill('');
-  await expect(page.getByTestId('run')).toBeDisabled();
+  await expect(page.getByTestId('form-invalid')).toBeVisible();
+  await page.getByTestId('target').fill('60'); // a valid size resizes again by itself
+  await expect(page.getByTestId('result')).toBeVisible({ timeout: 30_000 });
 });
 
 // @chromium-only: Firefox and WebKit decode a PNG with a corrupt IDAT leniently (they return an image), so no decode error exists to assert there.
@@ -158,10 +163,8 @@ test('undecodable file shows an error, no crash (complete structure, unreadable 
   // valid PNG structure (signature, IHDR 100x100, IDAT, IEND) whose IDAT is not a valid zlib stream: every decoder rejects it
   const bad = unreadablePng(100, 100);
   await page.getByTestId('file').setInputFiles({ name: 'bad.png', mimeType: 'image/png', buffer: bad });
-  await expect(page.getByTestId('run')).toBeEnabled();
-  await page.getByTestId('run').click();
-  await expect(page.getByRole('alert')).toBeVisible({ timeout: 20_000 });
-  await expect(page.getByTestId('run')).toBeEnabled();
+  await expect(page.getByRole('alert')).toBeVisible({ timeout: 20_000 }); // the automatic run fails
+  await expect(page.getByTestId('run')).toBeEnabled();                    // and Resize is offered again
 });
 
 test('a truncated file is rejected at pick with a friendly message, and a good file recovers', async ({ page }) => {
@@ -169,10 +172,10 @@ test('a truncated file is rejected at pick with a friendly message, and a good f
   await page.getByTestId('preset-100').click();
   await page.getByTestId('file').setInputFiles({ name: 'cut.png', mimeType: 'image/png', buffer: fs.readFileSync(IMG).subarray(0, 200) });
   await expect(page.getByRole('alert')).toContainText(/incomplete or damaged/);
-  await expect(page.getByTestId('run')).toBeDisabled();
+  await expect(page.getByTestId('run')).toHaveCount(0);
   await page.getByTestId('file').setInputFiles(IMG);
   await expect(page.getByRole('alert')).toHaveCount(0);
-  await expect(page.getByTestId('run')).toBeEnabled();
+  await expect(page.getByTestId('result')).toBeVisible({ timeout: 30_000 });
 });
 
 test('SEO content is present with JavaScript disabled', async ({ browser, baseURL }) => {

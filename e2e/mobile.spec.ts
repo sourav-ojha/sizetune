@@ -26,7 +26,7 @@ for (const url of ['/', '/resize-image-to-20kb/', '/resize-signature/']) {
 test('mobile: primary controls are at least 44px tall', async ({ page }) => {
   await openTool(page);
   await pick(page, NOISE);
-  for (const id of ['preset-10', 'preset-200', 'run', 'target', 'start-over']) {
+  for (const id of ['preset-10', 'preset-200', 'target', 'start-over']) {
     const b = (await page.getByTestId(id).boundingBox())!;
     expect(b.height, id).toBeGreaterThanOrEqual(43.5);
   }
