@@ -140,3 +140,37 @@ export function padRect(r: Rect, fraction: number, b: Size, minPx = 2): Rect {
   const right = Math.min(b.width, r.x + r.width + px), bottom = Math.min(b.height, r.y + r.height + px);
   return { x, y, width: right - x, height: bottom - y };
 }
+
+/**
+ * Reshape a crop to width:height = ratio, keeping its centre where possible. The box keeps its area's scale (width first),
+ * shrinks if the ratio would leave the picture, and is shifted back inside the bounds. Integer source pixels.
+ */
+export function fitAspect(r: Rect, ratio: number, b: Size): Rect {
+  const cx = r.x + r.width / 2, cy = r.y + r.height / 2;
+  // smallest box of this shape that still contains the current crop (never cut the signature), then shrink to fit the picture
+  let w = Math.max(r.width, r.height * ratio), h = w / ratio;
+  const k = Math.min(1, b.width / w, b.height / h);
+  w *= k; h *= k;
+  w = Math.max(1, Math.round(w)); h = Math.max(1, Math.round(w / ratio));
+  if (h > b.height) { h = b.height; w = Math.max(1, Math.round(h * ratio)); }
+  const x = Math.min(Math.max(0, Math.round(cx - w / 2)), b.width - w);
+  const y = Math.min(Math.max(0, Math.round(cy - h / 2)), b.height - h);
+  return { x, y, width: w, height: h };
+}
+
+/**
+ * Like fitAspect, but never cuts what the user has already framed: returns null when a box of this shape that still
+ * contains the whole crop does not fit inside the picture. A crop that is the whole picture (nothing trimmed yet) is
+ * simply reshaped, since no ink position is known.
+ */
+export function fitAspectKeeping(r: Rect, ratio: number, b: Size): Rect | null {
+  const next = fitAspect(r, ratio, b);
+  if (isFullRect(r, b)) return next;
+  const holds = next.x <= r.x && next.y <= r.y && next.x + next.width >= r.x + r.width && next.y + next.height >= r.y + r.height;
+  return holds ? next : null;
+}
+
+/** True when a rect is (nearly) the whole picture: auto-trim found no edge worth cutting (a sliver under 2% of the area is not a trim). */
+export function coversMostOf(r: Rect, b: Size, share = 0.98): boolean {
+  return r.width * r.height >= b.width * b.height * share;
+}

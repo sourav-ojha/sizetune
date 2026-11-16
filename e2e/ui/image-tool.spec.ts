@@ -376,6 +376,8 @@ test.describe('image tool', () => {
     await resize(page);
     await expect(page.getByTestId('result-notes')).toContainText('Aspect lock kept the shape');
     await expect(page.getByTestId('result-notes')).toContainText('133 × 100 px');
+    // IMG-1: a result that is not the typed size must not read as a plain success
+    await expect(page.getByTestId('result-heading')).toContainText('not to the exact dimensions you typed');
     await page.getByTestId('lock-aspect').uncheck();
     await expect(page.getByTestId('fit')).toBeVisible();
     await expect(page.getByTestId('fit')).toBeDisabled();
@@ -466,5 +468,35 @@ test.describe('image tool', () => {
     await page.getByTestId('retry').click();
     await expect(page.getByTestId('result')).toBeVisible({ timeout: 60_000 });
     await expect(page.getByRole('alert')).toHaveCount(0);
+  });
+});
+
+test.describe('audit sprint: compare zoom, link targets, worker CSP', () => {
+  test('compare zoom enlarges the picture inside a scrollable frame', async ({ page }) => {
+    await openTool(page, '/');
+    await pick(page, file('p.png', flatPng(600, 400)));
+    await resize(page);
+    const frame = page.getByTestId('compare-frame');
+    await expect(frame).toBeVisible();
+    const before = (await page.getByTestId('compare-before').boundingBox())!.width;
+    await page.getByTestId('compare-zoom-4').click();
+    await expect(page.getByTestId('compare-zoom-4')).toHaveAttribute('aria-pressed', 'true');
+    await expect.poll(async () => (await page.getByTestId('compare-before').boundingBox())!.width).toBeGreaterThan(before * 1.5);
+    expect(await frame.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(true);
+    await page.getByTestId('compare-zoom-1').click();
+    await expect.poll(async () => Math.abs((await page.getByTestId('compare-before').boundingBox())!.width - before)).toBeLessThan(2);
+  });
+
+  test('header and footer links are at least 24 px tall (target size)', async ({ page }) => {
+    await page.goto('/about/');
+    const small = await page.evaluate(() => [...document.querySelectorAll('header nav a, footer nav a')].map((a) => ({ t: a.textContent, h: a.getBoundingClientRect().height })).filter((x) => x.h < 24));
+    expect(small).toEqual([]);
+  });
+
+  test('worker script is served with a connect-src none CSP header', async ({ request }) => {
+    const name = fs.readdirSync('dist/_astro').find((f) => /compress\.worker.*\.js$/.test(f));
+    expect(name, 'built worker chunk').toBeTruthy();
+    const r = await request.get(`/_astro/${name}`);
+    expect(r.headers()['content-security-policy']).toContain("connect-src 'none'");
   });
 });

@@ -307,4 +307,50 @@ describe('ToolSession', () => {
     await s.run(opts);
     expect(eng.calls.length).toBe(0);
   });
+  it('ST-003: the "keep original" blob is typed from the sniffed bytes, not the file name', async () => {
+    const seen: Blob[] = [];
+    const { s: sess } = setup({ createObjectURL: (b) => { seen.push(b); return `blob:t/${seen.length}`; } });
+    const f = pngFile('polyglot.html');
+    await sess.selectFile(f);
+    expect(sess.getSnapshot().file).toBe(f);
+    expect(seen[0].type).toBe('image/png');
+    expect(seen[0].size).toBe(f.size);
+  });
+  it('ST-009: while a replacement file is inspected, `inspecting` is true and run() is ignored', async () => {
+    let release!: () => void;
+    const gate = new Promise<void>((r) => { release = r; });
+    let first = true;
+    const { s: sess, eng } = setup({ inspect: async () => { if (!first) await gate; first = false; return { width: 100, height: 100 }; } });
+    await sess.selectFile(pngFile('a.png'));
+    const firstRun = sess.run(opts);
+    eng.calls[0].resolve(makeResult());
+    await firstRun;
+    await tick();
+    expect(sess.getSnapshot().phase).toBe('done');
+    const pending = sess.selectFile(pngFile('b.png'));
+    await tick();
+    expect(sess.getSnapshot().inspecting).toBe(true);
+    await sess.run(opts); // would have been silently killed by the replacement
+    expect(eng.calls.length).toBe(1);
+    release();
+    await pending;
+    const st = sess.getSnapshot();
+    expect(st.inspecting).toBe(false);
+    expect(st.file?.name).toBe('b.png');
+    expect(st.phase).toBe('ready');
+  });
+  it('ST-009: a rejected replacement clears `inspecting`', async () => {
+    const { s: sess } = setup({ maxFileBytes: 10 });
+    await sess.selectFile(pngFile('a.png'));
+    expect(sess.getSnapshot().inspecting).toBe(false);
+  });
+  it('ST-012: a 0-byte file gets an empty-file message, not a format error', async () => {
+    const { s: sess } = setup();
+    await sess.selectFile(new File([], 'empty.jpg', { type: 'image/jpeg' }));
+    const st = sess.getSnapshot();
+    expect(st.error?.message).toMatch(/empty/i);
+    expect(st.error?.message).not.toMatch(/not a JPEG/i);
+    expect(st.file).toBeNull();
+    expect(st.inspecting).toBe(false);
+  });
 });

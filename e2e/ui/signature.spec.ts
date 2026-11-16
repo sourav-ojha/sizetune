@@ -44,6 +44,86 @@ test.describe('signature tool', () => {
     await expect(page.getByTestId('signature-preview')).toHaveClass(/bg-white/);
   });
 
+  test('crop shape preset reshapes the box and the output', async ({ page }) => {
+    await openTool(page, URL);
+    await pick(page, sig());
+    await crop(page); // crop initialised (pick only waits for Resize to be enabled)
+    await expect(page.getByTestId('crop-shape')).toBeEnabled();
+    await page.getByTestId('crop-shape').selectOption('4'); // the fixture is already 3:1, so 3 would not change the menu
+    await expect(page.getByTestId('lock-crop')).toBeChecked();
+    const c = await crop(page);
+    expect(Math.abs(c.w / c.h - 4)).toBeLessThan(0.05);
+    await expect(page.getByTestId('lock-crop')).toBeChecked();
+    await page.getByTestId('preset-20').click();
+    await resize(page);
+    const d = await downloaded(page, 'download');
+    expect(Math.abs(d.w / d.h - 4)).toBeLessThan(0.1);
+  });
+
+  test('zoom enlarges the picture inside a scrollable frame; crop still maps to source pixels', async ({ page }) => {
+    await openTool(page, URL);
+    await pick(page, sig());
+    const img = page.getByTestId('crop-image');
+    const before = (await img.boundingBox())!.width;
+    await page.getByTestId('crop-zoom').fill('3');
+    await expect.poll(async () => (await img.boundingBox())!.width).toBeGreaterThan(before * 1.5);
+    // a small box in the middle, so a drag actually moves it
+    await page.getByTestId('crop-width').fill('200');
+    await page.getByTestId('crop-height').fill('100');
+    await page.getByTestId('crop-x').fill('50');
+    await page.getByTestId('crop-y').fill('50');
+    const box = page.getByTestId('crop-box');
+    await box.scrollIntoViewIfNeeded();
+    const b = (await box.boundingBox())!;
+    const shown = (await img.boundingBox())!.width; // zoomed display width of the 600 px source
+    const startX = (await crop(page)).x;
+    await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(b.x + b.width / 2 + 30, b.y + b.height / 2, { steps: 4 });
+    await page.mouse.up();
+    const moved = (await crop(page)).x - startX;
+    expect(Math.abs(moved - (30 * 600) / shown)).toBeLessThanOrEqual(2); // 30 CSS px at this zoom = 30*600/shown source px
+  });
+
+  test('changing the margin after a manual edit keeps the manual crop', async ({ page }) => {
+    await openTool(page, URL);
+    await pick(page, sig());
+    await page.getByTestId('auto-trim').click();
+    await expect(page.getByTestId('trim-status')).toContainText('Cropped');
+    await page.getByTestId('crop-width').fill('210');
+    const edited = await crop(page);
+    await page.getByTestId('crop-margin').selectOption('0.1');
+    expect(await crop(page)).toEqual(edited);
+  });
+
+  test('crop shape menu follows the real crop and Free releases the lock', async ({ page }) => {
+    await openTool(page, URL);
+    await pick(page, sig());
+    await crop(page);
+    await expect(page.getByTestId('crop-shape')).toBeEnabled();
+    await page.getByTestId('crop-shape').selectOption('2');
+    await expect(page.getByTestId('crop-shape')).toHaveValue('2');
+    await expect(page.getByTestId('lock-crop')).toBeChecked();
+    await page.getByTestId('crop-width').fill('100'); // lock keeps 2:1, still 2:1
+    await expect(page.getByTestId('crop-shape')).toHaveValue('2');
+    await page.getByTestId('crop-shape').selectOption('free');
+    await expect(page.getByTestId('lock-crop')).not.toBeChecked();
+  });
+
+  test('auto-trim margin setting changes the margin around the ink', async ({ page }) => {
+    await openTool(page, URL);
+    await pick(page, sig());
+    await page.getByTestId('crop-margin').selectOption('0');
+    await page.getByTestId('auto-trim').click();
+    await expect(page.getByTestId('trim-status')).toContainText('tight');
+    const tight = await crop(page);
+    await page.getByTestId('crop-margin').selectOption('0.1');
+    await expect(page.getByTestId('trim-status')).toContainText('margin');
+    const wide = await crop(page);
+    expect(wide.w).toBeGreaterThan(tight.w);
+    expect(wide.h).toBeGreaterThan(tight.h);
+  });
+
   test('keyboard: arrows move, Shift moves faster, Alt+arrows resize', async ({ page }) => {
     await openTool(page, URL);
     await pick(page, sig());
@@ -70,6 +150,8 @@ test.describe('signature tool', () => {
     await page.getByTestId('crop-width').fill('300');
     await page.getByTestId('crop-height').fill('100');
     await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))); // let any layout/scroll compensation settle before measuring
+    await page.getByTestId('crop-box').scrollIntoViewIfNeeded(); // mouse coordinates are viewport-relative: the crop box must be on screen
+    await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
     const img = (await page.getByTestId('crop-image').boundingBox())!;
     const scale = 600 / img.width; // source px per CSS px
     const box = (await page.getByTestId('crop-box').boundingBox())!;

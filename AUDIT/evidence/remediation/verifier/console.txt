@@ -1,0 +1,14 @@
+chrome / 200 {"violations":[],"msgs":[]}
+chrome /about/ 200 {"violations":[],"msgs":[]}
+chrome /privacy/ 200 {"violations":[],"msgs":[]}
+chrome /terms/ 200 {"violations":[],"msgs":[]}
+chrome /resize-image-to-20kb/ 200 {"violations":[],"msgs":[]}
+chrome /resize-signature/ 200 {"violations":[],"msgs":[]}
+chrome /nope/ 404 {"violations":[],"msgs":["error: Failed to load resource: the server responded with a status of 404 (Not Found)"]}
+webkit / 200 {"violations":[],"msgs":["warning: This document is not cross-origin isolated because the Cross-Origin-Embedder-Policy header is missing (it must be 'require-corp'). window.crossOriginIsolated is false and SharedArrayBuffer is unavaila"]}
+webkit /about/ 200 {"violations":[],"msgs":[]}
+webkit /privacy/ 200 {"violations":[],"msgs":[]}
+webkit /terms/ 200 {"violations":[],"msgs":[]}
+webkit /resize-image-to-20kb/ 200 {"violations":[],"msgs":[]}
+webkit /resize-signature/ 200 {"violations":[],"msgs":["warning: This document is not cross-origin isolated because the Cross-Origin-Embedder-Policy header is missing (it must be 'require-corp'). window.crossOriginIsolated is false and SharedArrayBuffer is unavaila"]}
+webkit /nope/ 404 {"violations":[],"msgs":[]}

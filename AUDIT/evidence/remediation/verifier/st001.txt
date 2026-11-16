@@ -1,0 +1,12 @@
+ST001 noise.png preset100 format default checked: format-jpeg
+ST001 PNG+NoLimit+Auto quality count 0 checked format-auto
+ST001 PNG+NoLimit+Auto download {"name":"noise-sizetune.png","bytes":1652495,"sha":"888349243fbcae9f","w":800,"h":600,"fmt":"png"} {"status":"ok","heading":"⚠ The result is larger than your original","message":null,"notes":null,"size":"1.58 MB (1,652,495 bytes)"}
+ST001 PNG+NoLimit+explicit PNG quality count 0
+ST001 explicit PNG download {"name":"noise-sizetune.png","bytes":1652495,"sha":"888349243fbcae9f","w":800,"h":600,"fmt":"png"}
+ST001 PNG+NoLimit+JPEG quality visible true
+ST001 JPEG q5 vs q100 {"name":"noise-sizetune.jpg","bytes":19323,"sha":"38b3a5e3d7725072","w":800,"h":600,"fmt":"jpeg"} {"name":"noise-sizetune.jpg","bytes":1402414,"sha":"b2082c77606b34a0","w":800,"h":600,"fmt":"jpeg"}
+ST001 back to auto quality count 0
+ST001 webp quality count 1
+ST001 regression p800.jpg NoLimit+Auto quality count 1
+ST001 regression p800.webp NoLimit+Auto quality count 1
+ST001 regression t.png NoLimit+Auto quality count 0

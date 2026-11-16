@@ -208,3 +208,182 @@ describe('plan: decode size', () => {
     expect(big.width).toBe(6000); // user asked for 27 MP: allowed above the 6 MP cap
   });
 });
+
+describe('runPipeline: pixel-reduction disclosure (UX-3)', () => {
+  it('says so when free dimensions shrank the picture to under half its size per side', async () => {
+    const r = await runPipeline(jpg(4000, 3000), { ...base, maxKb: 5 }, fakeEnv().env);
+    expect(r.status).toBe('ok');
+    expect(r.width).toBeLessThan(2000);
+    expect(r.notes.some((n) => /reduced from 4000×3000 px to \d+×\d+ px/i.test(n))).toBe(true);
+  });
+  it('stays quiet when the picture keeps most of its pixels, or the user chose the dimensions', async () => {
+    const a = await runPipeline(jpg(1000, 800), { ...base, maxKb: 900 }, fakeEnv().env);
+    expect(a.notes.some((n) => /reduced from/i.test(n))).toBe(false);
+    const b = await runPipeline(jpg(4000, 3000), { ...base, width: 400, height: 300 }, fakeEnv().env);
+    expect(b.notes.some((n) => /reduced from/i.test(n))).toBe(false);
+  });
+});
+
+describe('runPipeline: shrunk note ignores a plain crop (review M1)', () => {
+  it('a crop that is output at its own size is not "reduced"', async () => {
+    const r = await runPipeline(jpg(4000, 3000), { ...base, crop: { x: 100, y: 100, width: 800, height: 300 } }, fakeEnv().env);
+    expect(r.status).toBe('ok');
+    expect(r.notes.some((n) => /reduced from/i.test(n))).toBe(false);
+  });
+});
+
+describe('runPipeline: quality note (IMG-2)', () => {
+  it('does not claim quality "had to go down" when the user chose the quality', async () => {
+    const r = await runPipeline(jpg(1000, 800), { ...base, quality: 30 }, fakeEnv().env);
+    expect(r.notes.some((n) => /had to go down/i.test(n))).toBe(false);
+  });
+});
+
+describe('runPipeline: reduction note names its real cause (ST-002)', () => {
+  const sizeLimitNote = (notes: string[]) => notes.some((n) => /to reach your size limit/i.test(n));
+  it('no limit on a huge photo: working-size note only, never "size limit"', async () => {
+    const r = await runPipeline(jpg(8000, 6000), { ...base }, fakeEnv().env);
+    expect(r.width).toBeLessThan(4000);
+    expect(sizeLimitNote(r.notes)).toBe(false);
+    expect(r.notes.some((n) => /opened at reduced size/i.test(n))).toBe(true);
+  });
+  it('huge PNG that fits the limit anyway: memory-cap note, not "size limit"', async () => {
+    const r = await runPipeline(png(7000, 6000), { ...base, maxKb: 30000 }, fakeEnv().env);
+    expect(r.width).toBeLessThan(3500);
+    expect(sizeLimitNote(r.notes)).toBe(false);
+    expect(r.notes.some((n) => /opened at reduced size/i.test(n))).toBe(true);
+  });
+  it('max width 400: says it was the maximum width/height', async () => {
+    const r = await runPipeline(jpg(4000, 3000), { ...base, maxWidth: 400 }, fakeEnv().env);
+    expect(r.width).toBe(400);
+    expect(sizeLimitNote(r.notes)).toBe(false);
+    expect(r.notes.some((n) => /maximum width\/height/i.test(n))).toBe(true);
+  });
+  it('a size target that really forced the scaling still gets the size-limit note', async () => {
+    const r = await runPipeline(jpg(3000, 2000), { ...base, maxKb: 30 }, fakeEnv({ complexity: 8 }).env);
+    expect(r.status).toBe('ok');
+    expect(sizeLimitNote(r.notes)).toBe(true);
+  });
+});
+
+describe('runPipeline: failed enlarge message matches the downloadable file (ST-007)', () => {
+  it('reports the enlarged output size, not the 1x probe', async () => {
+    const r = await runPipeline(jpg(120, 80), { ...base, minKb: 20, allowEnlarge: true }, fakeEnv({ complexity: 0.02 }).env);
+    expect(r.status).toBe('below_min');
+    expect(r.width).toBeGreaterThan(120);
+    expect(r.message).toContain(`${r.width}×${r.height} px`);
+    expect(r.message).toContain(r.bytes.toLocaleString('en-US'));
+    expect(r.message).toMatch(/enlarg/i);
+    expect(r.message).not.toContain('120×80');
+  });
+});
+
+describe('runPipeline: combined causes (ST-002 verifier follow-up)', () => {
+  it('max width + size target: max-dims note first, size-limit note measured from the post-cap size, no contradiction', async () => {
+    const r = await runPipeline(jpg(4000, 3000), { ...base, maxWidth: 800, maxKb: 8 }, fakeEnv({ complexity: 8 }).env);
+    const iMax = r.notes.findIndex((n) => /maximum width\/height/.test(n));
+    const iSize = r.notes.findIndex((n) => /to reach your size limit/.test(n));
+    expect(iMax).toBeGreaterThanOrEqual(0);
+    expect(iSize).toBeGreaterThan(iMax);
+    expect(r.notes[iSize]).toContain('from 800×600 px');
+  });
+  it('a huge PNG shrunk far below the working size by the target: size-limit note quotes the original, no memory note (ST-016)', async () => {
+    const r = await runPipeline(png(7000, 6000), { ...base, maxKb: 200 }, fakeEnv().env);
+    expect(r.notes.some((n) => /opened at reduced size/i.test(n))).toBe(false);
+    expect(r.notes.some((n) => /reduced from 7000×6000 px/i.test(n))).toBe(true);
+  });
+});
+
+describe('runPipeline: max width on a huge photo (ST-002 re-verification)', () => {
+  it('names the maximum width even when the decode was also reduced', async () => {
+    const r = await runPipeline(jpg(8000, 6000), { ...base, maxWidth: 400 }, fakeEnv().env);
+    expect(r.width).toBe(400);
+    expect(r.notes.some((n) => /maximum width\/height/i.test(n))).toBe(true);
+  });
+});
+
+describe('runPipeline: failed enlarge message for lossless output (ST-007 re-verification)', () => {
+  it('PNG: reports actual dimensions and bytes AND says it was enlarged', async () => {
+    const r = await runPipeline(png(120, 80), { ...base, format: 'png', minKb: 20, allowEnlarge: true }, fakeEnv({ complexity: 0.02 }).env);
+    expect(r.status).toBe('below_min');
+    expect(r.mime).toBe('image/png');
+    expect(r.width).toBeGreaterThan(120);
+    expect(r.message).toContain(`${r.width}×${r.height} px`);
+    expect(r.message).toContain(r.bytes.toLocaleString('en-US'));
+    expect(r.message).toMatch(/enlarg/i);
+    expect(r.message).not.toContain('120×80');
+  });
+  it('PNG without enlarging: message unchanged (no enlarge wording, hint kept)', async () => {
+    const r = await runPipeline(png(120, 80), { ...base, format: 'png', minKb: 20 }, fakeEnv({ complexity: 0.02 }).env);
+    expect(r.status).toBe('below_min');
+    expect(r.message).toMatch(/is lossless, so its size depends only on the pixels: at 120×80 px/);
+    expect(r.message).toMatch(/allow enlarging/);
+    expect(r.message).not.toMatch(/Even after enlarging/);
+  });
+  it('JPEG without enlarging: message unchanged', async () => {
+    const r = await runPipeline(jpg(120, 80), { ...base, minKb: 20 }, fakeEnv({ complexity: 0.02 }).env);
+    expect(r.message).toMatch(/at most .* even at maximum quality/);
+    expect(r.message).not.toMatch(/enlarg(ed|ing the image to)/);
+  });
+});
+
+describe('runPipeline: memory note only when the cap limited the output (ST-016)', () => {
+  const reducedNote = (n: string[]) => n.some((x) => /opened at reduced size/i.test(x));
+  it('8000x6000 JPEG, max width 400: maximum-width note, no memory note', async () => {
+    const r = await runPipeline(jpg(8000, 6000), { ...base, maxWidth: 400, maxKb: 200 }, fakeEnv().env);
+    expect(r.width).toBe(400);
+    expect(r.notes.some((n) => /maximum width\/height/i.test(n))).toBe(true);
+    expect(r.notes.some((n) => /reduced from 8000×6000 px to 400×300 px/i.test(n))).toBe(true);
+    expect(reducedNote(r.notes)).toBe(false);
+  });
+  it('6000x4000 at 50 KB: size-limit note quotes the original, no memory note', async () => {
+    const r = await runPipeline(jpg(6000, 4000), { ...base, maxKb: 50 }, fakeEnv({ complexity: 8 }).env);
+    expect(r.status).toBe('ok');
+    const n = r.notes.find((x) => /to reach your size limit/i.test(x));
+    expect(n).toContain('reduced from 6000×4000 px');
+    expect(reducedNote(r.notes)).toBe(false);
+  });
+  it('8000x6000 No limit: memory note present', async () => {
+    const r = await runPipeline(jpg(8000, 6000), { ...base }, fakeEnv().env);
+    expect(reducedNote(r.notes)).toBe(true);
+    expect(r.notes.find((x) => /opened at reduced size/i.test(x))).toContain('original 8000×6000 px');
+  });
+  it('7000x6000 PNG at 200 KB where the output equals the decode size: memory note present', async () => {
+    const r = await runPipeline(png(7000, 6000), { ...base, format: 'png', maxKb: 200 }, fakeEnv({ complexity: 0.01 }).env);
+    expect(r.status).toBe('ok');
+    expect(r.width * r.height).toBeGreaterThan(5_000_000);
+    expect(reducedNote(r.notes)).toBe(true);
+  });
+});
+
+describe('runPipeline: WebP below minimum, q100 is lossless and smaller than q95 (ST-017)', () => {
+  const webpOpts = { ...base, format: 'webp' as const, minKb: 20 };
+  // Flat image model: q1.0 is lossless and size-independent (520 B); lossy sizes grow with pixels (558 B at 120x80).
+  const flatWebp = (n: number, w: number, h: number, q: number | undefined, mime: string) => {
+    const size = q === 1 ? 520 : 400 + Math.round(w * h * 0.0165);
+    const bytes = new Uint8Array(size);
+    bytes.set([...asciiBytes('RIFF'), 0, 0, 0, 0, ...asciiBytes('WEBP')]);
+    return new Blob([bytes], { type: mime });
+  };
+  const env = () => fakeEnv({ webp: true, renderHook: (i) => flatWebp(i.n, i.w, i.h, i.q, i.mime) });
+  const webp = (w: number, h: number) => new Blob([webpVp8(w, h) as BlobPart], { type: 'image/webp' });
+
+  it('without enlarge: message quotes the downloaded bytes, not the q100 probe', async () => {
+    const r = await runPipeline(webp(120, 80), webpOpts, env().env);
+    expect(r.status).toBe('below_min');
+    expect([r.width, r.height, r.bytes]).toEqual([120, 80, 558]);
+    expect(r.message).toContain('558 bytes');
+    expect(r.message).not.toContain('520');
+    expect(r.message).toContain('120×80 px');
+    expect(r.message).not.toMatch(/even at maximum quality/);
+  });
+  it('with enlarge: enlarges at the quality used and the message describes the downloaded file', async () => {
+    const r = await runPipeline(webp(120, 80), { ...webpOpts, allowEnlarge: true }, env().env);
+    expect(r.status).toBe('below_min');
+    expect(r.width).toBeGreaterThan(120);
+    expect(r.message).toContain(`${r.width}×${r.height} px`);
+    expect(r.message).toContain(r.bytes.toLocaleString('en-US'));
+    expect(r.message).toMatch(/enlarging/i);
+    expect(r.message).not.toContain('520');
+  });
+});
