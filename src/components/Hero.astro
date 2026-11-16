@@ -1,0 +1,16 @@
+---
+interface Props {
+  title: string;
+  /** Sits under the h1; plain text only (it is also read by the page checks). */
+  lead: string;
+}
+const { title, lead } = Astro.props;
+---
+<section class="mb-8 text-center sm:mb-10">
+  <p class="mb-3 inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-sm font-medium text-teal-900">
+    <span aria-hidden="true" class="size-1.5 rounded-full bg-teal-600"></span>
+    Free · Stays in your browser · No sign-up
+  </p>
+  <h1 class="mx-auto max-w-2xl text-3xl font-bold leading-[1.12] tracking-tight text-slate-950 sm:text-5xl">{title}</h1>
+  <p class="mx-auto mt-3 max-w-xl text-base leading-relaxed sm:mt-4 sm:text-lg text-slate-600">{lead}</p>
+</section>

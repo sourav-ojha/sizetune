@@ -21,7 +21,7 @@ export default function ProgressBar({ progress, onCancel }: { progress: P | null
     <div data-testid="progress" className="space-y-2 rounded-xl border border-slate-300 bg-slate-50 p-4">
       <p className="text-sm font-medium text-slate-900" data-testid="progress-text">{progressText(progress)}</p>
       <progress
-        className="h-3 w-full accent-indigo-800"
+        className="h-3 w-full accent-teal-700"
         aria-label="Processing progress"
         max={determinate ? progress!.total : undefined}
         value={determinate ? progress!.attempt : undefined}

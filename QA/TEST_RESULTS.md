@@ -10,9 +10,9 @@ Chain: `astro check` → `build` → `vitest run` → `verify:html` → `verify:
 | `pnpm exec astro check` | 95 files · 0 errors · 0 warnings · 3 hints |
 | `pnpm run build` | 8 pages built; sitemap-index + sitemap-0 written |
 | `pnpm exec vitest run` | **23 files, 672 tests passed** (per-folder counts in §2 notes) |
-| `node scripts/verify-html.mjs` | `verify:html OK`; reports 9 `[[HUMAN: …]]` placeholders as pending |
+| `node scripts/verify-html.mjs` | `verify:html OK`; reports 4 `[[HUMAN: …]]` placeholders (9 before 2026-11-13) as pending |
 | `STRICT=1 node scripts/verify-html.mjs` | `verify:html OK (STRICT=1)` (no unmet launch rules; placeholders listed) |
-| `STRICT=2 node scripts/verify-html.mjs` (`pnpm run verify:html:final`) | **FAILS by design** while the 9 owner markers remain (about 2, privacy 4, terms 3) — the pre-launch gate |
+| `STRICT=2 node scripts/verify-html.mjs` (`pnpm run verify:html:final`) | **FAILS by design** while the 4 owner markers remain (privacy 2, terms 2) — the pre-launch gate |
 | `node scripts/verify-privacy.mjs` | `verify:privacy OK` (no third-party origins/trackers; JS network-primitive scan clean; allow-list external-url ≤ 6 namespace URLs in the Preact core chunk, dyn-import ≤ 1 proven literal) |
 | `pnpm exec playwright test` (chrome project) | **188 passed, 0 failed** (~2.6 min) |
 
@@ -46,3 +46,11 @@ Notes: the 188 include the engine browser specs (`e2e/engine`, 35 incl. `m6-ui-r
 - Firefox WebP download byte check skipped (Playwright Firefox opens the blob in a new tab); confirm on real Firefox.
 - WebKit: no WebP encode (→ `encode_unsupported`); Exif stub in output (no camera make/model/GPS); rejects stray-byte JPEGs Chrome accepts; encoders produce larger files at the same quality (engine verifies real bytes).
 - Real bug found: doubled bytes number in result text for tiny files (fixed in `ResultPanel.tsx`).
+
+
+## 2026-11-14 addendum: latest-staging audit and fixes
+- Live staging audits (Playwright, real downloads decoded): image 119 cases (Chrome, WebKit, Firefox); signature 24 pixel-compared crop cases plus keyboard, touch emulation and layout; security with request capture and CSP violation probes (Chrome only); UX/axe on 7 routes (Chrome, Firefox, WebKit); SEO/content crawl of 7 routes. Details and numbers are in the five `QA/*_AUDIT.md` reports.
+- After the fixes (`6c6f6f3`..`7ad5f4b`): `CI=1 pnpm run verify` exit 0: `astro check` 0 errors; vitest **687 passed** (23 files); verify:html, STRICT=1 and verify:privacy OK; Chrome e2e **198 passed** (2.8 min).
+- New unit tests: fitAspectKeeping (3), coversMostOf (2), pixel-reduction note (2), chosen-quality note (1). New e2e assertion: the typed-dimension mismatch heading (IMG-1).
+- Flake note: one run of `image-tool.spec.ts` (a 6.9 min run) failed "No limit shows a quality slider"; the test then passed 30 of 30 with `--repeat-each=10` three times and in the full verify. Not reproduced; likely load-related timeout.
+- Firefox and WebKit are run by CI on push; they were not re-run locally after these fixes.

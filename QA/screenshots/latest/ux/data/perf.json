@@ -1,0 +1,591 @@
+{
+ "load": {
+  "/": {
+   "reqs": 9,
+   "js": [
+    44856,
+    110008
+   ],
+   "css": [
+    8891,
+    36995
+   ],
+   "font": [
+    30120,
+    29400
+   ],
+   "doc": [
+    10916,
+    38092
+   ],
+   "img": [
+    0,
+    0
+   ],
+   "all": [
+    95614,
+    214696
+   ],
+   "third": 0,
+   "files": [
+    "/ 10916/38092 zstd",
+    "/_astro/_seo.DcnxobNQ.css 8891/36995 zstd",
+    "/_astro/geist-latin-wght-normal.BgDaEnEv.woff2 30120/29400 ",
+    "/_astro/client.0RmIeMV8.js 2284/3115 zstd",
+    "/_astro/ImageTool.CO9dXJ5u.js 4481/9874 zstd",
+    "/favicon.svg 831/201 zstd",
+    "/_astro/hooks.CGazEXbK.js 2052/2899 zstd",
+    "/_astro/preact.CFbc87aE.js 5610/10890 zstd",
+    "/_astro/useSession.DgNVXYUF.js 30429/83230 zstd"
+   ],
+   "ttfb": 406,
+   "dcl": 596,
+   "load": 707,
+   "fcp": 604,
+   "lcp": {
+    "t": 604,
+    "el": "P.mx-auto mt-3 max-w-xl text-base leading-",
+    "size": 42456
+   },
+   "cls": 0.0006,
+   "lt": [],
+   "tbt": 0
+  },
+  "/resize-image-to-20kb/": {
+   "reqs": 9,
+   "js": [
+    44869,
+    110008
+   ],
+   "css": [
+    9194,
+    36995
+   ],
+   "font": [
+    30082,
+    29400
+   ],
+   "doc": [
+    11173,
+    37893
+   ],
+   "img": [
+    0,
+    0
+   ],
+   "all": [
+    96148,
+    214497
+   ],
+   "third": 0,
+   "files": [
+    "/resize-image-to-20kb/ 11173/37893 zstd",
+    "/_astro/_seo.DcnxobNQ.css 9194/36995 zstd",
+    "/_astro/geist-latin-wght-normal.BgDaEnEv.woff2 30082/29400 ",
+    "/_astro/client.0RmIeMV8.js 2287/3115 zstd",
+    "/_astro/ImageTool.CO9dXJ5u.js 4481/9874 zstd",
+    "/favicon.svg 830/201 zstd",
+    "/_astro/hooks.CGazEXbK.js 2055/2899 zstd",
+    "/_astro/preact.CFbc87aE.js 5668/10890 zstd",
+    "/_astro/useSession.DgNVXYUF.js 30378/83230 zstd"
+   ],
+   "ttfb": 271,
+   "dcl": 441,
+   "load": 559,
+   "fcp": 440,
+   "lcp": {
+    "t": 440,
+    "el": "P.mx-auto mt-3 max-w-xl text-base leading-",
+    "size": 39772
+   },
+   "cls": 0.0005,
+   "lt": [],
+   "tbt": 0
+  },
+  "/resize-signature/": {
+   "reqs": 9,
+   "js": [
+    49090,
+    122055
+   ],
+   "css": [
+    9191,
+    36995
+   ],
+   "font": [
+    30074,
+    29400
+   ],
+   "doc": [
+    10952,
+    35851
+   ],
+   "img": [
+    0,
+    0
+   ],
+   "all": [
+    100134,
+    224502
+   ],
+   "third": 0,
+   "files": [
+    "/resize-signature/ 10952/35851 zstd",
+    "/_astro/_seo.DcnxobNQ.css 9191/36995 zstd",
+    "/_astro/geist-latin-wght-normal.BgDaEnEv.woff2 30074/29400 ",
+    "/_astro/SignatureTool.C7wZGCzx.js 8771/21921 zstd",
+    "/_astro/client.0RmIeMV8.js 2290/3115 zstd",
+    "/favicon.svg 827/201 zstd",
+    "/_astro/hooks.CGazEXbK.js 2054/2899 zstd",
+    "/_astro/preact.CFbc87aE.js 5609/10890 zstd",
+    "/_astro/useSession.DgNVXYUF.js 30366/83230 zstd"
+   ],
+   "ttfb": 279,
+   "dcl": 444,
+   "load": 563,
+   "fcp": 444,
+   "lcp": {
+    "t": 444,
+    "el": "P.mx-auto mt-3 max-w-xl text-base leading-",
+    "size": 33216
+   },
+   "cls": 0.0005,
+   "lt": [],
+   "tbt": 0
+  },
+  "/guides/photo-size-for-online-forms/": {
+   "reqs": 4,
+   "js": [
+    0,
+    0
+   ],
+   "css": [
+    9183,
+    36995
+   ],
+   "font": [
+    30082,
+    29400
+   ],
+   "doc": [
+    7444,
+    20241
+   ],
+   "img": [
+    0,
+    0
+   ],
+   "all": [
+    47541,
+    86837
+   ],
+   "third": 0,
+   "files": [
+    "/guides/photo-size-for-online-forms/ 7444/20241 zstd",
+    "/_astro/_seo.DcnxobNQ.css 9183/36995 zstd",
+    "/_astro/geist-latin-wght-normal.BgDaEnEv.woff2 30082/29400 ",
+    "/favicon.svg 832/201 zstd"
+   ],
+   "ttfb": 312,
+   "dcl": 323,
+   "load": 629,
+   "fcp": 500,
+   "lcp": {
+    "t": 500,
+    "el": "P.",
+    "size": 96302
+   },
+   "cls": 0.0068,
+   "lt": [],
+   "tbt": 0
+  },
+  "/about/": {
+   "reqs": 4,
+   "js": [
+    0,
+    0
+   ],
+   "css": [
+    9196,
+    36995
+   ],
+   "font": [
+    30089,
+    29400
+   ],
+   "doc": [
+    3708,
+    11298
+   ],
+   "img": [
+    0,
+    0
+   ],
+   "all": [
+    43822,
+    77894
+   ],
+   "third": 0,
+   "files": [
+    "/about/ 3708/11298 zstd",
+    "/_astro/_seo.DcnxobNQ.css 9196/36995 zstd",
+    "/_astro/geist-latin-wght-normal.BgDaEnEv.woff2 30089/29400 ",
+    "/favicon.svg 829/201 zstd"
+   ],
+   "ttfb": 269,
+   "dcl": 277,
+   "load": 414,
+   "fcp": 444,
+   "lcp": {
+    "t": 444,
+    "el": "P.",
+    "size": 66402
+   },
+   "cls": 0.016,
+   "lt": [],
+   "tbt": 0
+  },
+  "/privacy/": {
+   "reqs": 4,
+   "js": [
+    0,
+    0
+   ],
+   "css": [
+    9184,
+    36995
+   ],
+   "font": [
+    30080,
+    29400
+   ],
+   "doc": [
+    5829,
+    16729
+   ],
+   "img": [
+    0,
+    0
+   ],
+   "all": [
+    45918,
+    83325
+   ],
+   "third": 0,
+   "files": [
+    "/privacy/ 5829/16729 zstd",
+    "/_astro/_seo.DcnxobNQ.css 9184/36995 zstd",
+    "/_astro/geist-latin-wght-normal.BgDaEnEv.woff2 30080/29400 ",
+    "/favicon.svg 825/201 zstd"
+   ],
+   "ttfb": 297,
+   "dcl": 306,
+   "load": 450,
+   "fcp": 504,
+   "lcp": {
+    "t": 504,
+    "el": "P.",
+    "size": 33990
+   },
+   "cls": 0,
+   "lt": [],
+   "tbt": 0
+  },
+  "/terms/": {
+   "reqs": 4,
+   "js": [
+    0,
+    0
+   ],
+   "css": [
+    8948,
+    36995
+   ],
+   "font": [
+    30083,
+    29400
+   ],
+   "doc": [
+    5065,
+    14516
+   ],
+   "img": [
+    0,
+    0
+   ],
+   "all": [
+    44960,
+    81112
+   ],
+   "third": 0,
+   "files": [
+    "/terms/ 5065/14516 zstd",
+    "/_astro/_seo.DcnxobNQ.css 8948/36995 zstd",
+    "/favicon.svg 864/201 zstd",
+    "/_astro/geist-latin-wght-normal.BgDaEnEv.woff2 30083/29400 "
+   ],
+   "ttfb": 407,
+   "dcl": 426,
+   "load": 555,
+   "fcp": 596,
+   "lcp": {
+    "t": 596,
+    "el": "P.",
+    "size": 82663
+   },
+   "cls": 0.0122,
+   "lt": [],
+   "tbt": 0
+  }
+ },
+ "proc": {
+  "12MP@cpu1": {
+   "selectMs": 119,
+   "runMs": 463,
+   "heapMB": {
+    "start": 1,
+    "afterSelect": 3,
+    "afterResult": 4,
+    "afterReset": 3
+   },
+   "workersDuring": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    0
+   ],
+   "workersAfterResult": 0,
+   "workersAfterReset": 0,
+   "ltRun": [],
+   "gapsRun": [],
+   "ltTotalMs": 0,
+   "tbt": 0,
+   "selectLT": 0,
+   "selectGaps": [
+    {
+     "s": 563,
+     "g": 139
+    }
+   ]
+  },
+  "12MP@cpu4": {
+   "selectMs": 256,
+   "runMs": 423,
+   "heapMB": {
+    "start": 1,
+    "afterSelect": 3,
+    "afterResult": 4,
+    "afterReset": 3
+   },
+   "workersDuring": [
+    0,
+    0,
+    1,
+    1,
+    1,
+    0
+   ],
+   "workersAfterResult": 0,
+   "workersAfterReset": 0,
+   "ltRun": [],
+   "gapsRun": [],
+   "ltTotalMs": 0,
+   "tbt": 0,
+   "selectLT": 1,
+   "selectGaps": [
+    {
+     "s": 574,
+     "g": 147
+    }
+   ]
+  },
+  "36MP@cpu1": {
+   "selectMs": 245,
+   "runMs": 403,
+   "heapMB": {
+    "start": 1,
+    "afterSelect": 3,
+    "afterResult": 4,
+    "afterReset": 3
+   },
+   "workersDuring": [
+    0,
+    0,
+    1,
+    1,
+    1,
+    0
+   ],
+   "workersAfterResult": 0,
+   "workersAfterReset": 0,
+   "ltRun": [],
+   "gapsRun": [],
+   "ltTotalMs": 0,
+   "tbt": 0,
+   "selectLT": 0,
+   "selectGaps": [
+    {
+     "s": 450,
+     "g": 139
+    }
+   ]
+  },
+  "36MP@cpu4": {
+   "selectMs": 337,
+   "runMs": 421,
+   "heapMB": {
+    "start": 1,
+    "afterSelect": 3,
+    "afterResult": 4,
+    "afterReset": 3
+   },
+   "workersDuring": [
+    0,
+    0,
+    1,
+    1,
+    0,
+    0
+   ],
+   "workersAfterResult": 0,
+   "workersAfterReset": 0,
+   "ltRun": [],
+   "gapsRun": [],
+   "ltTotalMs": 0,
+   "tbt": 0,
+   "selectLT": 1,
+   "selectGaps": [
+    {
+     "s": 467,
+     "g": 145
+    }
+   ]
+  },
+  "48MP@cpu1": {
+   "selectMs": 39,
+   "runMs": 419,
+   "heapMB": {
+    "start": 1,
+    "afterSelect": 3,
+    "afterResult": 4,
+    "afterReset": 3
+   },
+   "workersDuring": [
+    0,
+    0,
+    1,
+    1,
+    1,
+    0
+   ],
+   "workersAfterResult": 0,
+   "workersAfterReset": 0,
+   "ltRun": [],
+   "gapsRun": [],
+   "ltTotalMs": 0,
+   "tbt": 0,
+   "selectLT": 0,
+   "selectGaps": [
+    {
+     "s": 429,
+     "g": 139
+    }
+   ]
+  },
+  "48MP@cpu4": {
+   "selectMs": 83,
+   "runMs": 459,
+   "heapMB": {
+    "start": 1,
+    "afterSelect": 3,
+    "afterResult": 4,
+    "afterReset": 3
+   },
+   "workersDuring": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    0
+   ],
+   "workersAfterResult": 0,
+   "workersAfterReset": 0,
+   "ltRun": [],
+   "gapsRun": [],
+   "ltTotalMs": 0,
+   "tbt": 0,
+   "selectLT": 0,
+   "selectGaps": [
+    {
+     "s": 435,
+     "g": 141
+    }
+   ]
+  },
+  "12MP-sig@cpu1": {
+   "selectMs": 102,
+   "runMs": 494,
+   "heapMB": {
+    "start": 2,
+    "afterSelect": 3,
+    "afterResult": 4,
+    "afterReset": 3
+   },
+   "workersDuring": [
+    0,
+    0,
+    1,
+    1,
+    1,
+    1
+   ],
+   "workersAfterResult": 0,
+   "workersAfterReset": 0,
+   "ltRun": [],
+   "gapsRun": [],
+   "ltTotalMs": 0,
+   "tbt": 0,
+   "selectLT": 0,
+   "selectGaps": [
+    {
+     "s": 427,
+     "g": 138
+    }
+   ]
+  },
+  "12MP-sig@cpu4": {
+   "selectMs": 275,
+   "runMs": 466,
+   "heapMB": {
+    "start": 2,
+    "afterSelect": 3,
+    "afterResult": 4,
+    "afterReset": 3
+   },
+   "workersDuring": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    0
+   ],
+   "workersAfterResult": 0,
+   "workersAfterReset": 0,
+   "ltRun": [],
+   "gapsRun": [],
+   "ltTotalMs": 0,
+   "tbt": 0,
+   "selectLT": 1,
+   "selectGaps": [
+    {
+     "s": 431,
+     "g": 140
+    }
+   ]
+  }
+ }
+}

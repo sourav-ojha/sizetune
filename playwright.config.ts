@@ -15,7 +15,10 @@ export default defineConfig({
   projects: [
     { name: 'chrome', use: { ...devices['Desktop Chrome'], channel: 'chrome' } },
     ...(ALL ? [
-      { name: 'firefox', use: { ...devices['Desktop Firefox'] }, grepInvert: /@chromium-only/ },
+      // One CI retry for Firefox only: its content process has crashed inside axe.run ("Page crashed") on a different test
+      // in several CI runs (never locally, 222/222 passes). A real regression fails twice and still fails; a one-off crash is
+      // reported as "flaky" in the run output instead of blocking the deploy. Chrome and WebKit get no retries.
+      { name: 'firefox', use: { ...devices['Desktop Firefox'] }, grepInvert: /@chromium-only/, retries: process.env.CI ? 1 : 0 },
       { name: 'webkit', use: { ...devices['Desktop Safari'] }, grepInvert: /@chromium-only/ },
     ] : []),
   ],

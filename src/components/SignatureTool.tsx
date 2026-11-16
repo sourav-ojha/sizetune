@@ -7,7 +7,7 @@ import FormatPicker from './tool/FormatPicker';
 import ProgressBar from './tool/Progress';
 import ResultPanel from './tool/ResultPanel';
 import SizePicker from './tool/SizePicker';
-import { aspectOf, fullRect, isFullRect, padRect, setRectField, type Rect, type RectField } from './tool/crop';
+import { aspectOf, coversMostOf, fitAspectKeeping, fullRect, isFullRect, padRect, setRectField, type Rect, type RectField } from './tool/crop';
 import { getLimits } from './tool/engine';
 import { formatCap, formatDims, formatSize } from './tool/format';
 import { ensureVisible, useForm, useScrollAnchor, useWebpSupport } from './tool/hooks';
@@ -15,7 +15,8 @@ import { buildOptions, parseNumber, type FormState } from './tool/options';
 import { findInkBounds, scaleRect } from './tool/trim';
 import { statusText, useIntake } from './tool/useIntake';
 import { useToolSession } from './tool/useSession';
-import { btnPrimary, btnSecondary, hintCls, inputCls, labelCls, legendCls, panelCls } from './tool/ui';
+import SelectBox, { selectCls } from './tool/SelectBox';
+import { btnPrimary, btnSecondary, errCls, hintCls, inputCls, labelCls, legendCls, panelCls } from './tool/ui';
 
 export interface SignatureToolProps {
   defaultMaxKb?: number;
@@ -42,6 +43,9 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
   const [userFormat, setUserFormat] = useState<OutputFormat | null>(null);
   const [crop, setCrop] = useState<Rect | null>(null);
   const [lockCrop, setLockCrop] = useState(false);
+  const [zoom, setZoom] = useState(1);
+  const [margin, setMargin] = useState(0.03);
+  const [pan, setPan] = useState(true);
   const [draft, setDraft] = useState<Partial<Record<RectField, string>>>({});
   const [trimMsg, setTrimMsg] = useState('');
   const webp = useWebpSupport();
@@ -52,7 +56,7 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
   const cap = getLimits().maxFileBytes;
 
   // New picture (natural is reset to null on every selection): the crop starts as the whole picture.
-  useEffect(() => { setCrop(state.natural ? fullRect(state.natural) : null); setDraft({}); setTrimMsg(''); }, [state.natural]);
+  useEffect(() => { setCrop(state.natural ? fullRect(state.natural) : null); setDraft({}); setTrimMsg(''); setZoom(1); setPan(true); }, [state.natural]);
 
   const hasAlpha = state.result?.data.source.hasAlpha ?? state.alpha;
   const format: OutputFormat = userFormat ?? (hasAlpha === true ? 'png' : 'jpeg'); // JPEG unless the picture has transparency
@@ -118,12 +122,41 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
     const pn = parseNumber(raw, 'px');
     if (pn.kind === 'ok' && Number.isInteger(pn.value)) {
       const next = setRectField(crop, f, pn.value, state.natural, lockCrop && (f === 'width' || f === 'height'));
-      changeCrop(next);
+      manualCrop(next);
       if (next[f] !== pn.value) setDraft((d) => ({ ...d, [f]: String(next[f]) })); // show the value that was actually applied
     }
   };
 
-  const autoTrim = () => {
+  /** Message for a crop number field whose typed text is not a whole number of pixels (it is ignored, and the old value returns when the field loses focus). */
+  const cropFieldError = (f: RectField): string | null => {
+    const raw = draft[f];
+    if (raw === undefined) return null;
+    const pn = parseNumber(raw, 'px');
+    return pn.kind === 'empty' || (pn.kind === 'ok' && Number.isInteger(pn.value)) ? null : 'Enter a whole number of pixels, 0 or more. Other values are ignored.';
+  };
+
+  // any hand edit ends the 'auto-trimmed' state, so changing the margin later never overwrites it
+  const manualCrop = (r: Rect) => { setTrimMsg(''); changeCrop(r); };
+  const SHAPES: Array<[string, string, number | null]> = [['free', 'Free', null], ['2', '2 : 1 (wide)', 2], ['3', '3 : 1 (wider)', 3], ['4', '4 : 1 (widest)', 4], ['1', '1 : 1 (square)', 1]];
+  const MARGINS: Array<[string, string]> = [['0', 'None'], ['0.03', 'Small'], ['0.06', 'Medium'], ['0.1', 'Large']];
+  // shown shape is derived from the real crop, so it can never disagree with the box
+  const shape = crop ? (SHAPES.find(([, , r]) => r !== null && Math.abs(aspectOf(crop) / r - 1) < 0.015)?.[0] ?? 'free') : 'free';
+  const applyShape = (key: string) => {
+    const ratio = SHAPES.find((x) => x[0] === key)?.[2];
+    if (!ratio) { setLockCrop(false); return; }
+    if (!crop || !state.natural) return;
+    const fitted = fitAspectKeeping(crop, ratio, state.natural);
+    if (!fitted) {
+      // this shape would cut part of the crop: leave the box alone and say why
+      setTrimMsg('That shape would cut off part of your signature. Choose a different shape, or leave it on Free.');
+      return;
+    }
+    manualCrop(fitted);
+    setDraft({});
+    setLockCrop(true);
+  };
+
+  const autoTrim = (frac: number = margin) => {
     const img = cropImg.current;
     const nat = state.natural;
     if (!img || !nat) return;
@@ -137,9 +170,11 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
       ctx.drawImage(img, 0, 0, cw, ch);
       const ink = findInkBounds(ctx.getImageData(0, 0, cw, ch).data, cw, ch);
       if (!ink) { setTrimMsg('No signature was found to trim. Drag the crop box by hand instead.'); return; }
-      changeCrop(padRect(scaleRect(ink, nat.width / cw, nat.height / ch, nat), 0.03, nat));
+      const trimmed = padRect(scaleRect(ink, nat.width / cw, nat.height / ch, nat), frac, nat, frac === 0 ? 0 : 2);
+      changeCrop(trimmed);
       setDraft({});
-      setTrimMsg('Cropped to the ink with a small margin. Adjust it if needed.');
+      if (coversMostOf(trimmed, nat)) { setTrimMsg('Nothing could be trimmed automatically, so the whole picture is still selected. Drag the crop box around your signature by hand.'); return; }
+      setTrimMsg(frac === 0 ? 'Cropped tight to the ink. Adjust it if needed.' : 'Cropped to the ink with a margin. Adjust it if needed.');
     } catch {
       setTrimMsg('Automatic trimming is not available here. Drag the crop box by hand instead.');
     }
@@ -174,18 +209,46 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
             {state.natural ? `${formatDims(state.natural.width, state.natural.height)}, ` : ''}{formatSize(state.file.size)}
           </p>
           {state.previewUrl ? (
+            <>
             <CropEditor
               src={state.previewUrl}
               natural={state.natural}
               rect={crop}
               lockAspect={lockCrop}
               imgRef={cropImg}
-              onChange={(r) => { changeCrop(r); setDraft({}); }}
+              onChange={(r) => { manualCrop(r); setDraft({}); }}
+              zoom={zoom}
+              pan={pan}
             />
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <div>
+                <label htmlFor="crop-zoom" className={labelCls}>Zoom the picture</label> <span aria-hidden="true" className="text-sm text-slate-700">{Math.round(zoom * 100)}%</span>
+                <input id="crop-zoom" data-testid="crop-zoom" type="range" min={1} max={4} step={0.25} value={zoom} aria-valuetext={`${Math.round(zoom * 100)} percent`} className="h-11 w-full accent-teal-700" onChange={(e) => setZoom(Number(e.currentTarget.value))} />
+              </div>
+              <div>
+                <label htmlFor="crop-shape" className={labelCls}>Crop shape</label>
+                <SelectBox><select id="crop-shape" data-testid="crop-shape" className={`${inputCls} ${selectCls}`} value={shape} disabled={!crop} onChange={(e) => applyShape(e.currentTarget.value)}>
+                  {SHAPES.map(([k, l]) => <option key={k} value={k}>{l}</option>)}
+                </select></SelectBox>
+              </div>
+              <div>
+                <label htmlFor="crop-margin" className={labelCls}>Margin for Auto-trim</label>
+                <SelectBox><select id="crop-margin" data-testid="crop-margin" className={`${inputCls} ${selectCls}`} value={String(margin)} onChange={(e) => { const m = Number(e.currentTarget.value); setMargin(m); if (trimMsg.startsWith('Cropped')) autoTrim(m); }}>
+                  {MARGINS.map(([k, l]) => <option key={k} value={k}>{l}</option>)}
+                </select></SelectBox>
+              </div>
+            </div>
+            {zoom > 1 && (
+              <label className="flex min-h-11 items-center gap-2 text-sm text-slate-900">
+                <input type="checkbox" data-testid="crop-pan" className="size-5 accent-teal-700" checked={pan} onChange={(e) => setPan(e.currentTarget.checked)} />
+                <span>On a touch screen, a finger on the box scrolls the picture; use the round handles to resize it</span>
+              </label>
+            )}
+            </>
           ) : (
             <p data-testid="no-preview" className="rounded-lg border border-slate-300 bg-slate-50 p-3 text-sm text-slate-800">{state.previewNote === 'failed' ? 'The preview could not be created; the file may be incomplete or damaged. You can still use the number fields and try Resize.' : 'This picture is too large to show here. Use the number fields to crop it.'}</p>
           )}
-          <p className={hintCls}>Drag the box or its handles. With the keyboard: focus the box, then arrow keys move it, Alt plus arrow keys resize it, and Shift makes bigger steps. Or type exact numbers below.</p>
+          <p className={hintCls}>Drag the box or its handles. Zoom in to place the edges precisely, then scroll the picture with the wheel, scrollbars or a finger. With the keyboard: focus the box, then arrow keys move it, Alt plus arrow keys resize it, and Shift makes bigger steps. Or type exact numbers below.</p>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {CROP_FIELDS.map(([f, label]) => (
               <div key={f}>
@@ -199,18 +262,21 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
                   className={`${inputCls} mt-1`}
                   value={draft[f] ?? (crop ? String(crop[f]) : '')}
                   disabled={!crop}
+                  aria-invalid={cropFieldError(f) ? true : undefined}
+                  aria-describedby={cropFieldError(f) ? `crop-${f}-err` : undefined}
                   onChange={(e) => editField(f, e.currentTarget.value)}
                   onBlur={() => setDraft((d) => { const { [f]: _gone, ...rest } = d; return rest; })}
                 />
+                {cropFieldError(f) && <p id={`crop-${f}-err`} role="alert" data-testid={`crop-${f}-error`} className={errCls}>{cropFieldError(f)}</p>}
               </div>
             ))}
           </div>
           <label className="flex min-h-11 items-center gap-2 text-sm text-slate-900">
-            <input type="checkbox" data-testid="lock-crop" className="size-5 accent-indigo-800" checked={lockCrop} onChange={(e) => setLockCrop(e.currentTarget.checked)} />
+            <input type="checkbox" data-testid="lock-crop" className="size-5 accent-teal-700" checked={lockCrop} onChange={(e) => setLockCrop(e.currentTarget.checked)} />
             <span>Keep the crop box’s shape when resizing it</span>
           </label>
           <div className="flex flex-col gap-2 sm:flex-row">
-            <button type="button" data-testid="auto-trim" className={btnSecondary} onClick={autoTrim} disabled={!crop || !state.previewUrl}>Auto-trim whitespace</button>
+            <button type="button" data-testid="auto-trim" className={btnSecondary} onClick={() => autoTrim()} disabled={!crop || !state.previewUrl}>Auto-trim whitespace</button>
             <button type="button" data-testid="crop-reset" className={btnSecondary} onClick={() => { if (state.natural) { changeCrop(fullRect(state.natural)); setDraft({}); setTrimMsg(''); } }} disabled={!crop}>Use the whole picture</button>
           </div>
           <p role="status" className={hintCls} data-testid="trim-status">{trimMsg}</p>
@@ -218,15 +284,15 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
         </fieldset>
       )}
 
-      <DimensionFields form={effective} errors={errors} update={update} basis={basis} showMax={false} legend="Output size in pixels (optional)" />
       <SizePicker form={effective} errors={errors} update={update} showQuality />
+      <DimensionFields form={effective} errors={errors} update={update} basis={basis} showMax={false} legend="Output size in pixels (optional)" />
       <FormatPicker
         form={effective}
         errors={errors}
         update={update}
         formats={['jpeg', 'png']}
         webp={webp}
-        hasAlpha={hasAlpha}
+        hasAlpha={hasAlpha} hasFile={!!state.file}
         intro="JPEG is the usual choice for a signature upload. If your scan has transparent areas, PNG is preselected so they are not filled without asking."
       />
       <AdvancedBlock forceOpen={ADVANCED_FIELDS.some((k) => errors[k])}>
@@ -238,7 +304,7 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
         <ProgressBar progress={state.progress} onCancel={() => { anchor.hold(); session.cancel(); }} />
       ) : (
         <div className="flex flex-col gap-2 sm:flex-row">
-          <button ref={runRef} type="button" data-testid="run" className={btnPrimary} disabled={!state.file || busy || !built.ok} onClick={() => run()}>
+          <button ref={runRef} type="button" data-testid="run" className={btnPrimary} disabled={!state.file || busy || state.inspecting || !built.ok} onClick={() => run()}>
             Resize signature
           </button>
           {state.file && <button type="button" data-testid="start-over" className={btnSecondary} onClick={reset}>Start over</button>}
@@ -273,9 +339,18 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
         />
       )}
 
-      <p className="text-sm text-slate-700">
-        SizeTune processes your signature in your browser. It is not uploaded, and this page keeps nothing after you leave it.
-      </p>
+      <div className="text-sm text-slate-700">
+        <p>
+          SizeTune processes your signature in your browser. The site's code does not upload it, and SizeTune keeps no copy of it; your browser releases it when you close the tab. By using the tool you agree to the terms of use.
+        </p>
+        <p className="mt-1 flex flex-wrap gap-x-5">
+          {[['/terms/', 'Terms of use'], ['/privacy/', 'Privacy policy']].map(([href, label]) => (
+            <a key={href} href={href} target="_blank" rel="noopener" className="inline-flex min-h-11 items-center font-medium text-teal-800 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+              {label}<span className="sr-only"> (opens in a new tab)</span>
+            </a>
+          ))}
+        </p>
+      </div>
     </section>
   );
 }

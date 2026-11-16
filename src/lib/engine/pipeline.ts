@@ -170,10 +170,18 @@ export async function runPipeline<I extends DecodedImage>(file: Blob, input: Pro
     if (strip && !isStructurallyValidJpeg(new Uint8Array(await ctx.race(blob.arrayBuffer())))) throw new EngineError('encode_unsupported', 'The browser produced an invalid JPEG.');
     if ((out.status === 'ok' || out.status === 'raised') && !(blob.size >= win.lo && blob.size <= win.hi)) throw new Error('internal: success outside window'); // unreachable by construction
 
-    if (lossy && best.quality !== null && best.quality < Q_MIN && (out.status === 'ok' || out.status === 'raised')) notes.push(NOTES.lowQuality(best.quality));
+    if (lossy && opts.quality == null && best.quality !== null && best.quality < Q_MIN && (out.status === 'ok' || out.status === 'raised')) notes.push(NOTES.lowQuality(best.quality));
     if (fmt.mime === 'image/png' && !hasAlpha && opts.format === 'auto' && hasSizeTarget(opts) && (best.scale < 0.999 || out.status === 'above_max' || out.status === 'above_max_fixed')) notes.push(NOTES.pngTryJpeg);
-    // Disclose the reduced decode whenever it limited the detail available to the output (free or fixed dims, crops).
-    if (plan.reduced && (best.width > src.width * 0.98 || best.height > src.height * 0.98)) notes.push(NOTES.reduced(img.width, img.height, srcW, srcH));
+    // A maximum width/height the user typed made the picture smaller than the source: say that, not "size limit".
+    if (!geom.fixed && (opts.maxWidth !== undefined || opts.maxHeight !== undefined) && (geom.baseWidth < geom.src.width * 0.5 || geom.baseHeight < geom.src.height * 0.5)) notes.push(NOTES.maxDims(Math.round(geom.src.width), Math.round(geom.src.height), Math.round(geom.baseWidth), Math.round(geom.baseHeight)));
+    // The size-target search itself (not the working-size cap or a maximum width/height) shrank the pixels a lot: say so, since a form may also have a minimum pixel size.
+    if (!geom.fixed && hasSizeTarget(opts) && best.scale < 0.999 && (out.status === 'ok' || out.status === 'raised') && (best.width < geom.src.width * 0.5 || best.height < geom.src.height * 0.5)) notes.push(NOTES.shrunk(best.width, best.height, Math.round(geom.baseWidth), Math.round(geom.baseHeight)));
+    // Disclose the reduced decode only when the memory cap actually limited the output: the output was asked to be bigger
+    // than the working bitmap AND the result is as large as that bitmap. (A maximum width/height or a size-limit shrink
+    // below the working size has its own note above; the cap changed nothing there.)
+    const capRequested = geom.baseWidth > src.width + 0.5 || geom.baseHeight > src.height + 0.5;
+    const capReached = best.width >= Math.round(src.width) - 1 || best.height >= Math.round(src.height) - 1;
+    if (plan.reduced && capRequested && capReached) notes.push(NOTES.reduced(img.width, img.height, srcW, srcH));
 
     const message = buildMessage({
       status: out.status, reason: out.reason, mime: fmt.mime, lossless: !lossy, fixed: geom.fixed, allowEnlarge: !!opts.allowEnlarge,

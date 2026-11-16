@@ -1,5 +1,5 @@
 import { useId } from 'preact/hooks';
-import { activePreset, PRESETS_KB, type FieldErrors, type FormState } from './options';
+import { activePreset, outputIsLossless, PRESETS_KB, type FieldErrors, type FormState } from './options';
 import { btnToggleOff, btnToggleOn, errCls, fieldsetCls, hintCls, inputCls, labelCls, legendCls } from './ui';
 
 interface Props {
@@ -8,13 +8,15 @@ interface Props {
   update: (patch: Partial<FormState>) => void;
   /** Hide the quality slider (it only appears when there is no size target at all). */
   showQuality?: boolean;
+  /** Real format of the selected file (from its header); Auto keeps a PNG source as PNG, where quality does not apply. */
+  sourceKind?: 'jpeg' | 'png' | 'webp' | null;
 }
 
-export default function SizePicker({ form, errors, update, showQuality = true }: Props) {
+export default function SizePicker({ form, errors, update, showQuality = true, sourceKind = null }: Props) {
   const id = useId();
   const active = form.noLimit ? null : activePreset(form.maxKb);
   const errId = `${id}-err`;
-  const qualityVisible = showQuality && form.noLimit && form.minKb.trim() === '' && form.format !== 'png';
+  const qualityVisible = showQuality && form.noLimit && form.minKb.trim() === '' && !outputIsLossless(form.format, sourceKind);
   return (
     <fieldset className={fieldsetCls} data-testid="size-picker">
       <legend className={legendCls}>Maximum file size</legend>
@@ -62,6 +64,11 @@ export default function SizePicker({ form, errors, update, showQuality = true }:
           </p>
         )}
       </div>
+      {form.noLimit && (
+        <p className={hintCls} data-testid="nolimit-note">
+          No limit keeps the original pixel size, except for very large photos (above about 12 megapixels, for example 4000 × 3000): those are still reduced to fit your browser's memory.
+        </p>
+      )}
       {qualityVisible && (
         <div>
           <label htmlFor={`${id}-q`} className={labelCls}>Quality: <span data-testid="quality-value">{form.quality}</span></label>
@@ -73,7 +80,7 @@ export default function SizePicker({ form, errors, update, showQuality = true }:
             max={100}
             step={1}
             value={form.quality}
-            className="mt-1 h-11 w-full accent-indigo-800"
+            className="mt-1 h-11 w-full accent-teal-700"
             onChange={(e) => update({ quality: Number(e.currentTarget.value) })}
           />
           <p className={hintCls}>Without a size limit the image is saved at this fixed quality. Higher quality means a larger file.</p>
