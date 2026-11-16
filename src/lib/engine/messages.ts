@@ -26,7 +26,7 @@ export interface MessageInput {
   maxEncodes: number;
   best: { bytes: number; width: number; height: number; quality: number | null; enlarged: boolean; scale: number };
   gapAbove?: { bytes: number };
-  maxProbe?: { bytes: number; width: number; height: number };
+  maxProbe?: { bytes: number; width: number; height: number; quality?: number | null };
 }
 
 export function buildMessage(m: MessageInput): string {
@@ -57,9 +57,10 @@ export function buildMessage(m: MessageInput): string {
       if (m.lossless && b.enlarged) return `Even after enlarging the image to ${px(b.width, b.height)}, the ${fmt} file is only ${sizeExact(b.bytes)}, below ${minText}. ${fmt} is lossless, so its size depends only on the pixels, and enlarging adds pixels, not detail. Use a larger original image.`;
       if (m.lossless) return `${fmt} is lossless, so its size depends only on the pixels: at ${px(b.width, b.height)} this image is ${sizeExact(b.bytes)}, below ${minText}.${hint}`;
       // The downloadable file is `b`; when it was enlarged, describe that file (the 1x probe is a different, smaller image).
-      if (b.enlarged) return `Even after enlarging the image to ${px(b.width, b.height)}, the file is only ${sizeExact(b.bytes)} even at maximum quality, below ${minText}. Enlarging adds pixels, not detail. Use a larger original image.`;
+      const qText = (q: number | null | undefined) => (q === undefined || q === null || q >= 100 ? 'even at maximum quality' : `even at quality ${q}% (the highest setting that gave a larger file)`);
+      if (b.enlarged) return `Even after enlarging the image to ${px(b.width, b.height)}, the file is only ${sizeExact(b.bytes)} ${qText(b.quality)}, below ${minText}. Enlarging adds pixels, not detail. Use a larger original image.`;
       const p = m.maxProbe ?? b;
-      return `At ${px(p.width, p.height)} this image is at most ${sizeExact(p.bytes)} even at maximum quality, so ${minText} cannot be met at these dimensions.${hint}`;
+      return `At ${px(p.width, p.height)} this image is at most ${sizeExact(p.bytes)} ${qText(p.quality)}, so ${minText} cannot be met at these dimensions.${hint}`;
     }
     case 'above_max':
       if (m.reason === 'budget_exhausted') return `Could not get under ${maxText} within ${m.maxEncodes} attempts; the smallest result is ${sizeExact(b.bytes)}.`;
