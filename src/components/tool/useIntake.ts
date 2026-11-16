@@ -26,7 +26,8 @@ export function useIntake(session: ToolSession) {
 }
 
 /** Plain-language status for the polite live region. Never contains file names. */
-export function statusText(s: SessionState): string {
+/** `auto`: the tool resizes by itself when a file or a setting changes (so there is no "then resize" step to announce). */
+export function statusText(s: SessionState, auto = false): string {
   if (s.phase === 'processing') return 'Processing your image.';
   if (s.inspecting) return 'Checking your image.';
   if (s.result) {
@@ -39,6 +40,6 @@ export function statusText(s: SessionState): string {
     return `Finished, but your size target was not met. The result is ${formatSize(d.bytes)}. ${d.message}`;
   }
   if (s.error?.message) return '';
-  if (s.file) return 'Image ready. Choose your settings, then resize.';
+  if (s.file) return auto ? 'Image ready.' : 'Image ready. Choose your settings, then resize.';
   return '';
 }

@@ -3,10 +3,10 @@ import fs from 'node:fs';
 import { NOISE, bombPng, unreadablePng, tab, file, flatPng, isJpeg, openTool, pick, resize, signaturePng } from './helpers';
 
 /** Presses Tab until the element with this data-testid has focus (fails if it takes more than `max` presses = unreachable by keyboard). */
-async function tabTo(page: Page, testId: string, max = 120) {
+async function tabTo(page: Page, testId: string, max = 120, back = false) {
   for (let i = 0; i < max; i++) {
     if (await page.evaluate((id) => document.activeElement?.getAttribute('data-testid') === id, testId)) return i;
-    await tab(page);
+    await tab(page, back);
   }
   throw new Error(`"${testId}" not reachable by Tab within ${max} presses`);
 }
@@ -18,7 +18,7 @@ const focusVisible = (page: Page) => page.evaluate(() => {
 });
 
 test.describe('keyboard only', () => {
-  test('pick (file chooser opened from the keyboard) -> preset -> run -> download, without a mouse', async ({ page }) => {
+  test('pick (file chooser opened from the keyboard) -> preset (resizes by itself) -> download, without a mouse', async ({ page }) => {
     await page.goto('/');
     await page.getByTestId('preset-100').click(); // hydration barrier only (the mouse is not used afterwards)
     await page.reload();
@@ -40,11 +40,11 @@ test.describe('keyboard only', () => {
     expect(await focusVisible(page)).toBe(true);
     await page.keyboard.press('Space');
     await expect(page.getByTestId('preset-20')).toHaveAttribute('aria-pressed', 'true');
-    await tabTo(page, 'run');
-    await page.keyboard.press('Enter');
+    // the change resizes by itself; focus stays on the setting the keyboard user just changed (it is not pulled to the result)
     await expect(page.getByTestId('result')).toBeVisible({ timeout: 60_000 });
-    await expect(page.getByTestId('result-heading')).toBeFocused();
-    await tabTo(page, 'download');
+    await expect(page.getByTestId('preset-20')).toBeFocused();
+    await expect(page.getByTestId('status')).toContainText(/Finished/);
+    await tabTo(page, 'download', 120, true);
     expect(await focusVisible(page)).toBe(true);
     const [dl] = await Promise.all([page.waitForEvent('download'), page.keyboard.press('Enter')]);
     expect(isJpeg(fsRead(await dl.path()))).toBe(true);
@@ -55,22 +55,27 @@ test.describe('keyboard only', () => {
   });
 
   const TOOLS = [
-    { name: 'image tool', url: '/', pickFile: () => NOISE as string | { name: string; mimeType: string; buffer: Buffer } },
-    { name: 'signature tool', url: '/resize-signature/', pickFile: () => file('sig.png', signaturePng()) },
+    { name: 'image tool', url: '/', auto: true, pickFile: () => NOISE as string | { name: string; mimeType: string; buffer: Buffer } },
+    { name: 'signature tool', url: '/resize-signature/', auto: false, pickFile: () => file('sig.png', signaturePng()) },
   ];
   for (const tool of TOOLS) {
-    for (const how of ['mouse click on Resize', 'Enter on Resize', 'Space on Resize'] as const) {
+    // the image tool starts by itself, so there is no click to vary; the signature tool still starts from its Resize button
+    for (const how of (tool.auto ? ['the automatic run'] : ['mouse click on Resize', 'Enter on Resize', 'Space on Resize']) as string[]) {
       test(`${tool.name}: Escape cancels a run started by ${how} (no need to focus Cancel first); focus is on Cancel, then back on Resize`, async ({ page }) => {
         let release!: () => void;
         const gate = new Promise<void>((r) => (release = r));
         await page.route('**/_astro/*worker*.js', async (route) => { await gate; await route.continue(); });
         await openTool(page, tool.url);
-        await pick(page, tool.pickFile());
-        await page.getByTestId('preset-30').click();
-        if (how === 'mouse click on Resize') await page.getByTestId('run').click();
-        else { await page.getByTestId('run').focus(); await page.keyboard.press(how === 'Enter on Resize' ? 'Enter' : 'Space'); }
+        if (tool.auto) { await page.getByTestId('preset-30').click(); await pick(page, tool.pickFile()); }
+        else {
+          await pick(page, tool.pickFile());
+          await page.getByTestId('preset-30').click();
+          if (how === 'mouse click on Resize') await page.getByTestId('run').click();
+          else { await page.getByTestId('run').focus(); await page.keyboard.press(how === 'Enter on Resize' ? 'Enter' : 'Space'); }
+        }
         await expect(page.getByTestId('progress')).toBeVisible();
-        await expect(page.getByTestId('cancel'), 'focus moves to Cancel when the run starts (the Resize button unmounted)').toBeFocused();
+        // signature tool: focus moves to Cancel when its Resize button unmounts. Automatic runs leave focus where the user is (a setting, the file chooser).
+        if (!tool.auto) await expect(page.getByTestId('cancel'), 'focus moves to Cancel when the run starts (the Resize button unmounted)').toBeFocused();
         await page.evaluate(() => (document.activeElement as HTMLElement).blur()); // worst case: focus lost to <body>
         expect(await page.evaluate(() => document.activeElement === document.body)).toBe(true);
         await page.keyboard.press('Escape');
@@ -90,9 +95,10 @@ test.describe('keyboard only', () => {
       await page.route('**/_astro/*worker*.js', async (route) => { await gate; await route.continue(); });
       await openTool(page, tool.url);
       await pick(page, tool.pickFile());
-      await page.getByTestId('run').click();
+      if (!tool.auto) await page.getByTestId('run').click();
       await expect(page.getByTestId('progress')).toBeVisible();
-      await expect(page.getByTestId('cancel')).toBeFocused(); // focus was moved to it when the run started
+      if (tool.auto) await page.getByTestId('cancel').focus(); // reached by Tab in real use; automatic runs do not move focus
+      await expect(page.getByTestId('cancel')).toBeFocused();
       await page.keyboard.press('Enter');
       await expect(page.getByTestId('progress')).toHaveCount(0);
       await expect(page.getByTestId('run')).toBeFocused();
@@ -104,7 +110,7 @@ test.describe('keyboard only', () => {
       await page.route('**/_astro/*worker*.js', async (route) => { await gate; await route.continue(); });
       await openTool(page, tool.url);
       await pick(page, tool.pickFile());
-      await page.getByTestId('run').click();
+      if (tool.auto) await expect(page.getByTestId('progress')).toBeVisible(); else await page.getByTestId('run').click();
       await page.keyboard.press('Escape'); // immediately: nothing awaited in between
       await expect(page.getByTestId('progress')).toHaveCount(0);
       await expect(page.getByTestId('run')).toBeEnabled();
@@ -113,7 +119,7 @@ test.describe('keyboard only', () => {
       await expect(page.getByTestId('result')).toHaveCount(0);
       await expect(page.getByRole('alert')).toHaveCount(0);
     });
-    test(`${tool.name}: Escape in the SAME task as the click (0 ms) still cancels`, async ({ page }) => {
+    if (!tool.auto) test(`${tool.name}: Escape in the SAME task as the click (0 ms) still cancels`, async ({ page }) => {
       await openTool(page, tool.url);
       await pick(page, tool.pickFile());
       await page.evaluate(() => {
@@ -129,9 +135,10 @@ test.describe('keyboard only', () => {
     test(`${tool.name}: Escape does nothing when no run is in progress`, async ({ page }) => {
       await openTool(page, tool.url);
       await pick(page, tool.pickFile());
+      if (tool.auto) await expect(page.getByTestId('result')).toBeVisible({ timeout: 60_000 });
       await page.keyboard.press('Escape');
       await expect(page.getByTestId('file-info')).toBeVisible();
-      await expect(page.getByTestId('run')).toBeEnabled();
+      if (tool.auto) await expect(page.getByTestId('result')).toBeVisible(); else await expect(page.getByTestId('run')).toBeEnabled();
     });
   }
 
@@ -162,7 +169,7 @@ test.describe('keyboard only', () => {
     await page.getByTestId('width').fill('300');
     await page.getByTestId('height').fill('100');
     await resize(page);
-    await expect(page.getByTestId('result-heading')).toBeFocused(); // wait for the automatic focus move before starting from the top
+    await expect(page.getByTestId('result-heading')).not.toBeFocused(); // the user is typing in a setting: an automatic run never takes focus away
     await page.getByTestId('file').focus();
     const seen = new Set<string>();
     const missing: string[] = [];
@@ -282,8 +289,7 @@ test.describe('screen-reader semantics (accessibility tree)', () => {
     await page.getByTestId('file').setInputFiles(file('x.svg', Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"></svg>'), 'image/svg+xml'));
     await expect(page.getByRole('alert')).toHaveCount(1);
     expect((await page.getByRole('status').textContent())!.trim()).toBe('');
-    await pick(page, file('ok.png', flatPng(100, 100)));
-    await page.getByTestId('run').click();
+    await pick(page, file('ok.png', flatPng(100, 100))); // the automatic run fails (worker blocked)
     await expect(page.getByRole('alert')).toHaveCount(1, { timeout: 20_000 });
     expect((await page.getByRole('status').textContent())!.trim()).toBe('');
   });

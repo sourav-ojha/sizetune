@@ -198,10 +198,10 @@ export class ToolSession {
   }
 
   /** Drop the result (e.g. settings changed) and go back to ready. */
-  clearResult(): void {
+  clearResult(cancelNotice: string | null = 'Settings changed, so the run was cancelled. Press the button to run again.'): void {
     if (this.state.phase === 'processing') {
       this.stopRun();
-      this.set({ phase: 'ready', progress: null, notice: 'Settings changed, so the run was cancelled. Press the button to run again.' });
+      this.set({ phase: 'ready', progress: null, notice: cancelNotice });
     } else if (this.state.result) {
       this.dropResult();
       this.set({ result: null, phase: 'ready', progress: null });

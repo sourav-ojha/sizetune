@@ -58,8 +58,7 @@ for (const vp of VIEWPORTS) {
       const gate = new Promise<void>((r) => (release = r));
       await page.route('**/_astro/*worker*.js', async (route) => { await gate; await route.continue(); });
       await openTool(page);
-      await pick(page, NOISE);
-      await page.getByTestId('run').click();
+      await pick(page, NOISE); // the run starts by itself
       await expect(page.getByTestId('progress')).toBeVisible();
       await expectClean(page, 'processing');
       release();
@@ -107,8 +106,7 @@ for (const vp of VIEWPORTS) {
       await page.getByTestId('file').setInputFiles(file('broken.png', flatPng(200, 200).subarray(0, 60)));
       await expect(page.getByRole('alert')).toContainText(/incomplete or damaged/);
       await expectClean(page, 'truncated file alert');
-      await pick(page, file('ok.png', flatPng(100, 100)));
-      await page.getByTestId('run').click();
+      await pick(page, file('ok.png', flatPng(100, 100))); // the automatic run fails
       await expect(page.getByRole('alert')).toBeVisible({ timeout: 20_000 });
       await expectClean(page, 'run error');
     });

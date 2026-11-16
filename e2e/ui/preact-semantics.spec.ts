@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { NOISE, downloaded, file, openTool, pick, resize, signaturePng } from './helpers';
+import { cancelRunInSameTask, NOISE, downloaded, file, openTool, pick, resize, signaturePng } from './helpers';
 
 // Regression tests for the places where Preact (compat) and React differ and the existing suite was silent:
 // per-keystroke input events, controlled radio/select/checkbox state, SSR -> hydration id stability, unmount cleanup.
@@ -12,10 +12,10 @@ test.describe('Preact semantics', () => {
     await target.fill('');
     await target.pressSequentially('1x', { delay: 20 }); // no Tab/blur: only input events
     await expect(target).toHaveAttribute('aria-invalid', 'true');
-    await expect(page.getByTestId('run')).toBeDisabled();
+    await expect(page.getByTestId('form-invalid')).toBeVisible();
     await target.press('Backspace');
     await expect(target).not.toHaveAttribute('aria-invalid', 'true');
-    await expect(page.getByTestId('run')).toBeEnabled();
+    await expect(page.getByTestId('form-invalid')).toHaveCount(0);
     await target.pressSequentially('5');
     await expect(target).toHaveValue('15');
   });
@@ -131,27 +131,23 @@ test.describe('Preact semantics', () => {
 
   test('stale run: a result that arrives after Cancel, or after a settings change mid-run, is dropped and leaves no URL behind', async ({ page }) => {
     await openTool(page);
-    await pick(page, NOISE);
-    // Start the run and cancel in the SAME task: the engine has been called, its (late) reply arrives after the cancel.
-    // (Waiting for the Cancel button first is a race: a fast browser can finish the run before the click lands.)
-    await page.evaluate(async () => {
-      (document.querySelector('[data-testid=run]') as HTMLButtonElement).click();
-      await Promise.resolve();
-      (document.querySelector('[data-testid=cancel]') as HTMLButtonElement).click();
-    });
+    await pick(page, NOISE); // the run starts by itself
+    // Cancel in the same task in which the Cancel button appears: the engine has been called, its (late) reply arrives after the cancel.
+    await cancelRunInSameTask(page);
     await expect(page.getByTestId('result')).toHaveCount(0);
     await page.waitForTimeout(1500); // a late worker reply must not resurrect a result
     await expect(page.getByTestId('result')).toHaveCount(0);
     await expect(page.getByTestId('run')).toBeFocused(); // focus moved to a live control when Cancel disappeared
-    // a settings change while a run is in flight must supersede it too
+    // a settings change while a run is in flight must supersede it too: only the run for the new setting delivers a result
     await page.evaluate(async () => {
       (document.querySelector('[data-testid=run]') as HTMLButtonElement).click();
       await Promise.resolve();
       (document.querySelector('[data-testid=preset-30]') as HTMLButtonElement).click();
     });
-    await expect(page.getByTestId('cancel')).toHaveCount(0);
-    await page.waitForTimeout(1500);
-    await expect(page.getByTestId('result')).toHaveCount(0);
+    await expect(page.getByTestId('result')).toBeVisible({ timeout: 30_000 });
+    await page.waitForTimeout(1000);
+    await expect(page.getByTestId('result-size')).toHaveCount(1);
+    expect(Number(await page.getByTestId('result-size').getAttribute('data-bytes'))).toBeLessThanOrEqual(30_000);
     await expect(page.getByTestId('target')).toHaveValue('30');
   });
 });
