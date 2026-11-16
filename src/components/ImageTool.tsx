@@ -75,7 +75,7 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
     if (ranFor.current === token) return;
     const fresh = lastSerial.current !== state.fileSerial; // a new file starts at once; typed settings wait for a pause
     lastSerial.current = state.fileSerial;
-    const t = setTimeout(() => { ranFor.current = token; anchor.hold(); if (optsRef.current) void session.run(optsRef.current); }, fresh ? 0 : 350);
+    const t = setTimeout(() => { ranFor.current = token; anchor.hold(); if (optsRef.current) void session.run(optsRef.current, { keepNotice: true }); }, fresh ? 0 : 350);
     return () => clearTimeout(t);
   }, [state.file, state.fileSerial, state.inspecting, settingsKey, rev, session, anchor.hold]);
 

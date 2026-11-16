@@ -3,11 +3,12 @@ import { NOISE, bombPng, unreadablePng, file, flatPng, openTool, pick, resize, s
 import { format, runAxe, unexpected } from './axe-helper';
 
 /** Fails on ANY axe violation (all impacts) not in the justified ALLOW list (e2e/ui/axe-helper.ts). */
-async function expectClean(page: Page, label: string) {
-  const bad = unexpected(await runAxe(page));
+async function expectClean(page: Page, label: string, scope?: string) {
+  const bad = unexpected(await runAxe(page, scope));
   expect(bad, `${label}\n${format(bad)}`).toEqual([]);
 }
 
+const expectCleanIn = expectClean;
 const PAGES = ['/', '/resize-image-to-20kb/', '/resize-signature/', '/guides/photo-size-for-online-forms/', '/privacy/', '/about/', '/terms/', '/definitely-missing/'];
 const VIEWPORTS = [{ name: 'desktop', width: 1280, height: 800 }, { name: 'mobile 375', width: 375, height: 800 }];
 
@@ -27,6 +28,9 @@ for (const vp of VIEWPORTS) {
 for (const vp of VIEWPORTS) {
   test.describe(`axe: image tool states, ${vp.name}`, () => {
     test.use({ viewport: { width: vp.width, height: vp.height } });
+    // Audit the tool itself: the surrounding page is covered by the launch-page tests above, and auditing the whole long home page
+    // with a loaded image crashed Firefox's content process inside axe.run (SIGSEGV, reproducible locally).
+    const expectClean = (page: Page, label: string) => expectCleanIn(page, label, '[data-testid=tool]');
 
     test('initial, file loaded, Advanced open', async ({ page }) => {
       await page.goto('/');
