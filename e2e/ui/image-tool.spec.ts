@@ -266,8 +266,8 @@ test.describe('image tool', () => {
     await expect(page.getByRole('alert')).not.toContainText(/undefined|Error:/);
     await expect(page.getByTestId('run')).toBeEnabled();
     await expect(page.getByTestId('run'), 'N3: focus is not lost after a failed run').toBeFocused();
-    await pick(page, file('ok.png', flatPng(200, 200)));
-    await resize(page);
+    await pick(page, file('ok.png', flatPng(200, 200))); // a new file resizes by itself
+    await expect(page.getByTestId('result')).toBeVisible({ timeout: 60_000 });
     await expect(page.getByRole('alert')).toHaveCount(0);
   });
 

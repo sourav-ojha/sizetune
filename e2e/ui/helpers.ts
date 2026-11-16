@@ -59,7 +59,8 @@ export async function pick(page: Page, f: string | { name: string; mimeType: str
 /** Waits for the result. The image tool resizes by itself; where a Resize button is offered (signature tool, or after Cancel) it is pressed. */
 export async function resize(page: Page) {
   const run = page.getByTestId('run');
-  if (await run.isVisible()) { await expect(run).toBeEnabled({ timeout: 15_000 }); await run.click(); }
+  // The button can disappear while we look (an automatic run starting): then there is nothing to press.
+  if (await run.isVisible()) await run.click({ timeout: 2_000 }).catch(() => undefined);
   await expect(page.getByTestId('result')).toBeVisible({ timeout: 60_000 });
 }
 
