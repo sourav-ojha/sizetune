@@ -40,9 +40,6 @@ const isLarge = (ctx: ErrorContext): boolean => !!ctx.width && !!ctx.height && c
 /** The engine reported 'cancelled' but the user did not ask for it (worker lost, superseded internally): never swallow that silently. */
 export const INTERRUPTED: ToolError = { code: 'unknown', message: 'The run was interrupted before it finished, so there is no result. Please try again.', action: 'retry' };
 
-/** A 0-byte file: not a bad format, there is simply nothing in it. */
-export const EMPTY_FILE: ToolError = { code: 'corrupt', message: 'This file is empty (0 bytes). Choose a different file.' };
-
 /** Friendly, privacy-safe copy per engine error code. 'cancelled' is silent (message is empty). */
 export function toToolError(e: unknown, ctx: ErrorContext = {}): ToolError {
   const code = errorCodeOf(e);
@@ -79,7 +76,7 @@ export function toToolError(e: unknown, ctx: ErrorContext = {}): ToolError {
       if (isLarge(ctx)) return { code, message: 'The image processor stopped while working on this very large image. Try a smaller image (for example a lower-resolution copy) instead of retrying the same one.' };
       return { code, message: 'The image processor could not start or stopped unexpectedly. This is not a problem with your image. Please try again, or reload the page if it keeps happening.', action: 'retry' };
     default:
-      return { code: 'unknown', message: 'Something went wrong while processing this image. This site did not upload it. Try again or choose another image.' };
+      return { code: 'unknown', message: 'Something went wrong while processing this image. Nothing was uploaded. Try again or choose another image.' };
   }
 }
 

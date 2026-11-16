@@ -6,10 +6,9 @@ Nothing below has been done by an agent: no push, no deploy, no DNS change, no a
 ## A. Decisions and actions only you can do (exact steps)
 | # | Action | Exact steps | Blocks |
 |--|--|--|--|
-| H1 | **Resolve the 4 remaining owner markers (5 filled 2026-11-13: first-name-only "Sourav" + hello@sizetune.com)** | `grep -rn "\[\[HUMAN" src/pages` — about (2: owner name + one sentence, public contact email), privacy (4: legal-review-pending, owner name, contact email, "do you use Google Search Console — keep/delete sentence"), terms (3: legal-review-pending, governing law/jurisdiction line, contact email). Replace each `[[HUMAN: …]]` with real text or delete the sentence. Then `pnpm run build && pnpm run verify:html:final` must exit 0 (STRICT=2). | launch |
+| H1 | **Fill the 9 owner markers** | `grep -rn "\[\[HUMAN" src/pages` — about (2: owner name + one sentence, public contact email), privacy (4: legal-review-pending, owner name, contact email, "do you use Google Search Console — keep/delete sentence"), terms (3: legal-review-pending, governing law/jurisdiction line, contact email). Replace each `[[HUMAN: …]]` with real text or delete the sentence. Then `pnpm run build && pnpm run verify:html:final` must exit 0 (STRICT=2). | launch |
 | H2 | **Real-device tests (DEFERRED by owner 2026-11-13, to do later)** | Follow `QA/REAL_DEVICE_TEST_PLAN.md` on ≥3 phones (iPhone ≤4 GB RAM, 2 Android ≤3 GB). Fixtures: `node scripts/gen-fixtures.mjs --device-pack`. Serve the build to your LAN: `pnpm run build && pnpm exec wrangler dev --ip 0.0.0.0 --port 8788`. Paste the result table back. A crash on R2/R3 → lower `MAX_SOURCE_PIXELS`/`MAX_OUTPUT_PIXELS` in `src/lib/engine/limits.ts` for that browser. | launch |
 | H3 | **Firefox + WebKit browser tests — DONE 2026-11-13** | Owner approved the browser install. `PW_ALL_BROWSERS=1 pnpm exec playwright test`: 562 passed across Chrome, Firefox 159, Playwright WebKit 27.2 (not Safari on a real iPhone). Chromium-only checks are tagged `@chromium-only` with a reason. See `QA/TEST_RESULTS.md` §Cross-browser. | closed |
-| H5 | **Staging deploy (non-prod)** | Config + docs ready on `dev` (`CLOUDFLARE_DEPLOYMENT.md` §Staging). Needs `wrangler login`, then deploy; no production deploy until approved. | before prod |
 | H4 | **Trademark + legal (owned by the owner, reviewing)** | IP India public search for "SizeTune" (classes 9, 42, 35) and a USPTO check (my exact-wordmark search found no hits on 2026-11-12 — screening only, no clearance); lawyer review of `/privacy/` and `/terms/` (DPDP/GDPR applicability is a counsel question). | launch |
 | H5 | **Repo + CI + ruleset** | Create a GitHub repo; `git remote add origin <url> && git push -u origin main` (local `main` has all commits; `experiment/preact` is merged and can be deleted); authorise the Cloudflare GitHub app for that repo only; ruleset on `main`: require PR + check `verify`, block force-push, no bypass **before** connecting Cloudflare. Rulesets on private repos may need a paid plan (unverified). First CI run confirms Node 24 on `ubuntu-24.04` + Chrome. | deploy |
 | H6 | **Staging story / first deploy = production** | With `workers_dev:false`, `preview_urls:false` and the custom-domain route, the first deploy (manual `wrangler deploy` or first push to `main` after connecting Workers Builds) **publishes sizetune.com**. Don't connect Builds until launch-ready, or deliberately use a throwaway branch with `workers_dev:true` and no `routes` for a private workers.dev look. See `CLOUDFLARE_DEPLOYMENT.md`. | launch |
@@ -20,23 +19,6 @@ Nothing below has been done by an agent: no push, no deploy, no DNS change, no a
 | H11 | Screen-reader pass (VoiceOver iOS/macOS, TalkBack, NVDA) per `QA/ACCESSIBILITY.md`. | launch |
 | H12 | AdSense strategy (ads only on content pages, never tool pages — policy D6; consent tool for EEA/UK/CH). **Nothing is enabled.** Analytics: none at launch. | ads |
 | H13 | After 1–2 stable weeks live: HSTS (zone setting, small max-age), Search Console DNS verification + sitemap `https://sizetune.com/sitemap-index.xml`, Bing optional. | post-launch |
-
-## A2. Added by the 2026-11-13 audit (human decisions that still block launch)
-| # | Action | Detail |
-|--|--|--|
-| H14 | Resolve legal markers; legal review stays pending | `/privacy/` (legal-review-pending, Search Console sentence) and `/terms/` (legal-review-pending, governing law/jurisdiction). Not guessed by an agent. Review by an Indian lawyer is still required; no compliance is claimed. |
-| H15 | Confirm the public identity | About/Privacy/Terms publicly show the first-name-only "Sourav" and hello@sizetune.com. Confirm both are intended to be public and that the mailbox receives mail (not verified by an agent). |
-| H16 | Point sizetune.com at the Worker | Domain does not resolve yet, so canonicals, OG image and sitemap target nothing. After launch: `curl -sI https://sizetune.com/ \| grep -i x-robots` must print nothing; add HSTS (H13). |
-| H17 | Approve an OG image | Draft recommendation in `QA/SEO_AUDIT.md`; nothing generated. |
-| H18 | Deploy staging | DONE 2026-11-14: `dev` at `8f0b204` deployed to staging, CI green (verify, cross-browser, deploy-staging). |
-
-## A3. Added by the 2026-11-14 latest-staging audit (see `QA/LATEST_STAGING_AUDIT.md`)
-| # | Action | Detail |
-|--|--|--|
-| H19 | HTTPS redirect and HSTS (SEC-1, MED) | Plain HTTP returns 200 with no redirect and no HSTS on any route. Cloudflare zone setting: Always Use HTTPS, then HSTS with a small max-age. The owner's call; no agent changed it. |
-| H20 | Real-device touch check (SIG-3, MED) | Short signature crop boxes: the 44 px handles cover the middle in touch emulation, so a drag may resize. Confirm on a phone before changing handle hit areas. |
-| H21 | Legal and identity wording (CNT-10..15) | Governing law, "Sourav", "based in India", grievance contact, minors, future-ads and Cloudflare statements stay human-approval gates. |
-| H22 | WebKit WebP fallback (IMG-3, MED) | Transparent WebP with Auto becomes a small PNG in WebKit with no pre-run warning. Decide whether to warn before the run. |
 
 ## B. Open technical risks
 | ID | Sev | Risk | Status / next |
@@ -54,7 +36,6 @@ Nothing below has been done by an agent: no push, no deploy, no DNS change, no a
 | B11 | MED | Very large sources (>36 MP) get no preview by design; sources >100 MP refused; 16 MP output cap. Message copy is honest but may frustrate users with 108/200 MP phones. | revisit after H2 |
 | B12 | LOW | Hydration glitch from the simulator (smoke report D5: first tap ignored before hydration) cannot be fixed in UI; `client:load` vs `client:idle` not re-evaluated. | monitor |
 | B13 | LOW | Dependency hygiene: TypeScript held at 6.0.3 by `@astrojs/check`; install scripts (esbuild, workerd, fsevents, sharp); Actions pinned by tag not SHA; `axe-core`, `sharp` test/dev-only pinned. | monthly |
-| B15 | MED | Signature: no live crop preview, no two-finger pinch (zoom is a slider); compare zoom limited by the 1024 px preview. 24 MP and 48 MP not individually tested. | follow-up |
 | B14 | LOW | 307 (not 301) trailing-slash redirects by Cloudflare default; internal links are canonical; canonical tags are the backstop. | accepted |
 
 ## C. Closed in this sprint (was open before)

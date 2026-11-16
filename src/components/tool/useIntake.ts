@@ -28,7 +28,6 @@ export function useIntake(session: ToolSession) {
 /** Plain-language status for the polite live region. Never contains file names. */
 export function statusText(s: SessionState): string {
   if (s.phase === 'processing') return 'Processing your image.';
-  if (s.inspecting) return 'Checking your image.';
   if (s.result) {
     const d = s.result.data;
     if (d.status === 'ok' || d.status === 'raised') {

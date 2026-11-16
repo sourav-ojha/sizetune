@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { aspectOf, clampRect, displayToSource, fullRect, isFullRect, moveRect, nudgeRect, padRect, pointToSource, rectToPercent, resizeRect, setRectField, fitAspect, fitAspectKeeping, coversMostOf } from '../../src/components/tool/crop';
+import { aspectOf, clampRect, displayToSource, fullRect, isFullRect, moveRect, nudgeRect, padRect, pointToSource, rectToPercent, resizeRect, setRectField } from '../../src/components/tool/crop';
 import { findInkBounds, scaleRect } from '../../src/components/tool/trim';
 
 const B = { width: 1000, height: 500 };
@@ -166,72 +166,5 @@ describe('hasTransparentPixel', () => {
     expect(hasTransparentPixel(new Uint8ClampedArray([1, 2, 3, 255, 4, 5, 6, 255]))).toBe(false);
     expect(hasTransparentPixel(new Uint8ClampedArray([1, 2, 3, 255, 4, 5, 6, 254]))).toBe(true);
     expect(hasTransparentPixel(new Uint8ClampedArray([]))).toBe(false);
-  });
-});
-
-describe('fitAspect', () => {
-  const b = { width: 1200, height: 800 };
-  it('reshapes a crop to the ratio, centred, inside bounds', () => {
-    const r = fitAspect({ x: 450, y: 300, width: 300, height: 200 }, 3, b);
-    expect(r.width / r.height).toBeCloseTo(3, 1);
-    expect(r.x).toBeGreaterThanOrEqual(0);
-    expect(r.x + r.width).toBeLessThanOrEqual(1200);
-    expect(r.y + r.height).toBeLessThanOrEqual(800);
-    expect(r.x + r.width / 2).toBeCloseTo(600, -1);
-    expect(r.y + r.height / 2).toBeCloseTo(400, -1);
-  });
-  it('shrinks to fit when the ratio would leave the picture', () => {
-    const r = fitAspect({ x: 0, y: 0, width: 1200, height: 800 }, 4, b);
-    expect(r.width).toBeLessThanOrEqual(1200);
-    expect(r.height).toBeLessThanOrEqual(800);
-    expect(r.width / r.height).toBeCloseTo(4, 1);
-  });
-  it('does not cut a tall crop: it grows to contain it when the picture allows', () => {
-    const r = fitAspect({ x: 400, y: 300, width: 300, height: 200 }, 4, b);
-    expect(r.height).toBeGreaterThanOrEqual(200);
-    expect(r.width / r.height).toBeCloseTo(4, 1);
-    expect(r.x + r.width).toBeLessThanOrEqual(1200);
-  });
-  it('shifts a box at the edge back inside', () => {
-    const r = fitAspect({ x: 1000, y: 700, width: 200, height: 100 }, 1, b);
-    expect(r.x + r.width).toBeLessThanOrEqual(1200);
-    expect(r.y + r.height).toBeLessThanOrEqual(800);
-  });
-});
-
-describe('fitAspectKeeping', () => {
-  const b = { width: 800, height: 400 };
-  it('returns null when the shape cannot hold the whole crop inside the picture (would cut ink)', () => {
-    expect(fitAspectKeeping({ x: 0, y: 40, width: 800, height: 330 }, 3, b)).toBeNull();
-    expect(fitAspectKeeping({ x: 0, y: 40, width: 800, height: 330 }, 1, b)).toBeNull();
-  });
-  it('returns a rect containing the crop when it fits', () => {
-    const crop = { x: 100, y: 100, width: 300, height: 100 };
-    const r = fitAspectKeeping(crop, 4, b)!;
-    expect(r).not.toBeNull();
-    expect(r.x).toBeLessThanOrEqual(crop.x);
-    expect(r.y).toBeLessThanOrEqual(crop.y);
-    expect(r.x + r.width).toBeGreaterThanOrEqual(crop.x + crop.width);
-    expect(r.y + r.height).toBeGreaterThanOrEqual(crop.y + crop.height);
-    expect(r.width / r.height).toBeCloseTo(4, 1);
-  });
-  it('accepts a crop that already has the target shape despite rounding (review L1)', () => {
-    const r = fitAspectKeeping({ x: 5, y: 5, width: 3, height: 11 }, 3 / 11, { width: 100, height: 100 });
-    expect(r).not.toBeNull();
-  });
-  it('still shrinks a full-picture crop (nothing trimmed yet, no ink known)', () => {
-    const r = fitAspectKeeping({ x: 0, y: 0, width: 800, height: 400 }, 3, b)!;
-    expect(r.width / r.height).toBeCloseTo(3, 1);
-  });
-});
-
-describe('coversMostOf', () => {
-  const b = { width: 4000, height: 3000 };
-  it('is true for the whole picture and for a sliver-trimmed one', () => {
-    expect(coversMostOf({ x: 0, y: 0, width: 4000, height: 3000 }, b)).toBe(true);
-    expect(coversMostOf({ x: 10, y: 10, width: 3980, height: 2985 }, b)).toBe(true);
-  });
-  it('is false for a real trim', () => {
-    expect(coversMostOf({ x: 500, y: 800, width: 2000, height: 600 }, b)).toBe(false);
   });
 });

@@ -41,19 +41,3 @@ Hashed `/_astro/*` immutable one year; HTML revalidated every request (ETag); fa
 
 ## 7. Known limitations / unverified
 No live edge test, certificate issuance, Workers preview builds or rollback executed; no Linux `wrangler dev`; Range requests return 200 (irrelevant); Pages-vs-Workers preview maturity A.
-
-## Staging (non-production) and branch flow — decided 2026-11-13
-- Branches: `dev` = integration/staging, `main` = production. Work on `dev` (or feature branches), merge `dev` → `main` by pull request. A husky `pre-push` hook (`.husky/pre-push`) blocks direct pushes to `main`. It is a client-side guard only (bypassed by `--no-verify` or the GitHub web UI). The repo is public, so GitHub branch protection/rulesets are available on the free plan if a server-side guard is wanted.
-- Staging Worker: `sizetune-staging` (`env.staging` in `wrangler.jsonc`), own `*.workers.dev` URL, no custom domain. `"routes": []` in that env is mandatory: wrangler inherits top-level `routes`, and without it a staging deploy would take `sizetune.com` away from production (wrangler warns; verified with `wrangler deploy --env staging --dry-run`).
-- `public/_headers` sends `X-Robots-Tag: noindex` for `*.workers.dev` hosts, so staging is not indexed.
-- Manual first deploy (human, needs `wrangler login`): `pnpm run build && pnpm exec wrangler deploy --env staging`.
-- Workers Builds (human, in the Cloudflare dashboard): create two Workers projects from this repo. Staging: Worker `sizetune-staging`, production branch `dev`, build `pnpm run build`, deploy `pnpm exec wrangler deploy --env staging`. Production (later): Worker `sizetune`, branch `main`, deploy `pnpm exec wrangler deploy`.
-
-## Automatic deploys via GitHub Actions (chosen 2026-11-13; replaces Workers Builds for this repo)
-`ci.yml` jobs `deploy-staging` (push to `dev`) and `deploy-production` (push to `main`) run only after `verify` and `cross-browser` pass. Do NOT also connect Workers Builds, or every push deploys twice (and un-gated).
-Human setup (GitHub → Settings):
-1. Cloudflare dashboard → My Profile → API Tokens → create a token with **Workers Scripts: Edit** (add **Workers Routes/Custom Domains: Edit** for the zone `sizetune.com` before the first production deploy). Copy the Account ID.
-2. Settings → Environments → create `staging` and `production`. Put `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` as **environment secrets** (not repo secrets), with a separate token per environment: the staging token should only be able to edit the `sizetune-staging` Worker. Restrict deployment branches (`staging` → `dev`, `production` → `main`). Without staging secrets `deploy-staging` skips itself. The token is exposed only to the `wrangler deploy` step, never to install/build.
-3. Staging then deploys on every green push to `dev`. URL: `https://sizetune-staging.<your-subdomain>.workers.dev`.
-4. Production stays OFF until you (a) add a required reviewer on Settings → Environments → `production`, then (b) set the repo **Variable** `PRODUCTION_DEPLOY_ENABLED=true`. First production deploy publishes sizetune.com.
-5. Optional: branch protection on `main` (free, repo is public) requiring PR + `verify` + `cross-browser`.
