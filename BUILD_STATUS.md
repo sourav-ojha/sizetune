@@ -1,9 +1,5 @@
 # BUILD_STATUS.md — SizeTune autonomous build sprint (2026-11-12)
 
-> **2026-11-14 latest-staging audit:** staging serves `dev` `8f0b204` (CI green). Five independent live audits found no critical defect; verified fixes are local commits `6c6f6f3`, `3abe369`, `5c49174`, `39371e5`, `a765ed5`, `7ad5f4b` (not pushed, not deployed). `CI=1 pnpm run verify` exit 0 (687 unit, 198 Chrome e2e). Report: `QA/LATEST_STAGING_AUDIT.md`. Open: SEC-1 HTTPS/HSTS, SIG-3 touch handles (device), legal wording (human).
-
-> **2026-11-13 audit sprint:** local commits `c8ec1ea` (wording, privacy statement, worker CSP header) and `3220309` (signature zoom/shape/margin, compare zoom, 44 px nav targets, tests, screenshots). `pnpm run verify` exit 0 (677 unit, 198 Chrome e2e). Not pushed/deployed; staging still shows the older design. Reports: `QA/STAGING_AUDIT.md` and the four sibling audit docs.
-
 Commit: local `main` (see `git log`; latest at time of writing `5283e60` + docs). **Not pushed, not deployed, no remote, no ads/analytics, no DNS change, nothing purchased.** Evidence: `QA/TEST_RESULTS.md`. Honest status vocabulary: **V** = implemented and verified by automated tests/evidence listed; **P** = implemented, not fully verified; **N** = not implemented; **H** = needs your device/approval.
 
 ## Summary
@@ -35,7 +31,7 @@ A functional, locally committed product candidate: browser-only image resizer + 
 Deployment/staging (explicitly out of scope), GitHub repo/CI run, real analytics (none by decision), ads, HEIC/GIF/AVIF/SVG input, PDF utilities (out of scope), bulk processing, exact-pixel "form presets", metadata padding (deliberately never default), WASM encoders, Hindi/other languages, additional preset pages (50/100 KB etc.), Search Console setup.
 
 ## Requires you (H)
-Resolve the 4 remaining `[[HUMAN: …]]` markers (legal review x2, governing law, Search Console sentence; name + hello@sizetune.com filled 2026-11-13); real-device tests (deferred by owner); trademark (IP India) + legal review (owner reviewing); repo + ruleset + CI; staging decision; www; og:image approval; contact mailbox; AdSense strategy. Exact steps: `BLOCKERS.md`.
+Fill the 9 `[[HUMAN: …]]` markers; real-device tests (deferred by owner); trademark (IP India) + legal review (owner reviewing); repo + ruleset + CI; staging decision; www; og:image approval; contact mailbox; AdSense strategy. Exact steps: `BLOCKERS.md`.
 
 ## Sprint work log (commits on local main, oldest→newest, abridged)
 baseline → engine contract → real-device test plan → launch content → parse5 verifiers → UI → engine → review-fix rounds (F1–F13, M1–M6, L1–L5) → Preact merge (+reviews) → audit fixes (F1–F11: header-first rejection, truncated files, keep-original secondary, data-mode) → iOS smoke defects → axe-core audit → quality samples → docs. `git log --oneline` for hashes.

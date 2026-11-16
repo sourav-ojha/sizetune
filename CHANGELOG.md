@@ -1,24 +1,5 @@
 # CHANGELOG — SizeTune (local only; nothing released or deployed)
 
-## Unreleased — staging audit sprint (2026-11-13, local commits `c8ec1ea`, `3220309`; not pushed, not deployed)
-### Added
-- Tests: the keyboard-only flow test armed Playwright's file-chooser interception in parallel with the Enter keypress, so under load (about 10% of runs with 6 workers) the key could win the race and no `filechooser` event arrived (CI timeout on dev). It now arms the listener and round-trips to the page first (60/60 under the same load) and also waits for island hydration after the reload.
-- CI: Firefox project retries once on CI (`retries: process.env.CI ? 1 : 0`, Firefox only) after Firefox content-process "Page crashed" failures inside axe.run on three CI runs, on different tests each time, never reproducible locally. A deterministic failure still fails twice; Chrome and WebKit have no retry.
-- Signature crop editor: zoom slider (100-400%), crop shape presets (free, 2:1, 3:1, 4:1, 1:1 via `fitAspect()`), auto-trim margin menu.
-- Result compare: Fit / 2x / 4x zoom in a scrollable frame.
-- `_headers`: `Content-Security-Policy: connect-src 'none'` on `/_astro/*.js` (worker scripts).
-- QA docs: `STAGING_AUDIT.md`, `UX_AND_ACCESSIBILITY.md`, `COMPRESSION_WORKFLOW.md`, `PRIVACY_SECURITY_AUDIT.md`, `SEO_AUDIT.md`; 72 screenshots in `QA/screenshots/`.
-### Changed
-- Header/footer links are 44 px tall (were 20-32 px). Signature output-size fieldset moved below the size picker.
-- Copy: quality-first, PNG->JPEG preselect exception, 1000/1024 caveat, "up to about 19.5 KB", no WebP claim on the signature page, fuller cookies/storage/hosting statement on `/privacy/`, typo "Sourav.".
-### Tests
-- +3 `fitAspect` unit tests, +6 e2e (shape, zoom, margin, compare zoom, link size, worker CSP header). `pnpm run verify` exit 0: 677 unit, 198 Chrome e2e (after independent-review fixes).
-### CI follow-up (2026-11-13, after the first push of these commits)
-- `cross-browser` on `c666677` failed 4 tests. Two were my new shape tests, which I had only run on Chrome: the fixture is already 3:1, so choosing 3:1 fired no change event; they now use 4:1 and 2:1. The Firefox "Page crashed" in `axe.spec.ts:142` recurred on a second run (so it is not a one-off); it was never reproduced locally. Mitigation, not a proven fix: the crop box's `0 0 0 9999px` box-shadow dimming is replaced by a `clip-path` overlay limited to the picture. Local Chrome+Firefox+WebKit: 180 passed for signature/axe/mobile; `verify` 677 unit, 198 Chrome e2e.
-- Second CI run (`33fd9f5`): the Firefox axe crash did not recur (386 passed). Two WebKit shape tests still flaked: `pick()` only waits for Resize to be enabled, so the shape menu could be used before the crop was initialised and the change was ignored. Reproduced locally under load (4/50), fixed by disabling the menu until a crop exists and waiting for it in the tests; 612 passed (signature spec x12 on Chrome, Firefox, WebKit, 6 workers).
-### Not changed
-- Engine (no defect found), legal text meaning, OG image, deploy config, markers.
-
 ## Unreleased — autonomous product build sprint (2026-11-12)
 ### Added
 - **Compression engine** (`src/lib/engine/`, docs `docs/engine/ENGINE.md`): JPEG/PNG/WebP input validated by magic bytes; dimensions read from file headers before decoding; reduced-size decode for large sources; byte-window targeting `[min·1024, max·1000]` with integer-quality bisect + continuous scale search (≤20 encodes); statuses `ok | raised | below_min | above_max | above_max_fixed`; real `blob.size` and magic-byte verification for every candidate; no metadata padding (`allowPadding` rejected); alpha never flattened silently (disclosure notes); WebP capability probe `canEncode()`; Web Worker client with cancellation, timeout, stale protection; main-thread fallback by feature detection only; optional ICC strip; EXIF orientation + GPS/Make/Model stripping verified by tests.
@@ -29,7 +10,6 @@
 - **Test infrastructure**: engine browser tests (`e2e/engine`), iOS Simulator harness (`e2e/engine/sim`, simulator results only), fixture generator incl. `--device-pack` for phone tests, UI/a11y e2e, opt-in Firefox/WebKit Playwright projects (`PW_ALL_BROWSERS=1`).
 - `QA/REAL_DEVICE_TEST_PLAN.md` (manual phone checklist; NOT run).
 ### Changed
-- **UI redesign (2026-11-13)**: modern look on all pages. Self-hosted Geist variable font (`@fontsource-variable/geist`, latin subset ≈32 KB, no third-party origin), single teal accent on a slate neutral family, design tokens in `src/styles/global.css`, new header/footer with logo mark and active-page state, hero with trust line, large dropzone with icon, pill-less preset chips, rounded card with tinted shadow, 3-step strip on the home page, calmer prose typography. No sticky header (it covered the crop box), no `scroll-behavior:smooth` (broke the tool's own scroll compensation in Firefox), no colour transitions (axe read mid-fade contrast), `prefers-reduced-motion` removes all transitions/animations. Competitor review (Squoosh, TinyPNG, iLoveIMG, CompressJPEG, ResizePixel, two exam-form resizers) informed hierarchy: one dominant drop zone, preset chips, before/after, privacy line near the action; ads, upsells and sign-up walls deliberately not copied. Test fixes: crop-box scrolled into view before pointer math; axe self-test now uses two adjacent tiny targets; D7 corner-handle test waits for stable layout (it also flaked on the old build, 8/20). Chrome 190, Firefox+WebKit 372 pass.
 - **Cross-browser**: Firefox 159 and Playwright WebKit 27.2 installed with owner approval; engine + UI suites run on all three (562 passed). Browser-aware invariants and `@chromium-only` tags (CDP memory, lenient corrupt-PNG decode, WebP encode on WebKit). Real bug found and fixed: doubled byte count in result text for tiny files. Unreadable file now maps to a `corrupt` error. Real-device tests deferred by owner; trademark/legal owned by owner.
 - **Package manager: npm → pnpm 11.17.0** (`packageManager` pinned; `pnpm-lock.yaml`, `pnpm-workspace.yaml` with `allowBuilds` for esbuild/workerd; `package-lock.json` removed). Direct dependencies unchanged (exact pins); transitive versions re-resolved under pnpm's 1-day minimum-release-age policy. Install ≈6 s warm. CI uses `pnpm/action-setup` + `cache: pnpm`. Full verify green (672 unit, 188 e2e).
 - Islands migrated React 19 → **Preact 11.2.0 (compat)** (`@astrojs/preact` 6.1.5, pinned exactly); first-load JS on tool pages ≈95–98 KB → ≈39–42 KB gzip; verifier allow-list re-audited and anchored.

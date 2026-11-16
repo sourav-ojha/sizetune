@@ -119,13 +119,12 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
           <p className="min-w-0 text-sm text-slate-800" data-testid="file-info">
             <span className="block truncate font-medium">{state.file.name}</span>
             {state.natural ? `${formatDims(state.natural.width, state.natural.height)}, ` : ''}{formatSize(state.file.size)}
-            <span className="mt-1 block text-slate-700" data-testid="next-step">Next: choose a size below, then press Resize image.</span>
           </p>
         </div>
       )}
 
-      <SizePicker form={effective} errors={errors} update={update} sourceKind={state.sniff?.kind ?? null} />
-      <FormatPicker form={effective} errors={errors} update={update} formats={['auto', 'jpeg', 'png', 'webp']} webp={webp} hasAlpha={hasAlpha} hasFile={!!state.file} defaultNote={autoJpeg ? 'Your PNG will be saved as a JPEG: smaller files keep more detail. Choose PNG to keep the format.' : undefined} />
+      <SizePicker form={effective} errors={errors} update={update} />
+      <FormatPicker form={effective} errors={errors} update={update} formats={['auto', 'jpeg', 'png', 'webp']} webp={webp} hasAlpha={hasAlpha} defaultNote={autoJpeg ? 'Your PNG will be saved as a JPEG: smaller files keep more detail. Choose PNG to keep the format.' : undefined} />
 
       <AdvancedBlock forceOpen={advancedError}>
         <MinimumField form={effective} errors={errors} update={update} />
@@ -137,7 +136,7 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
         <ProgressBar progress={state.progress} onCancel={() => { anchor.hold(); session.cancel(); }} />
       ) : (
         <div className="flex flex-col gap-2 sm:flex-row">
-          <button ref={runRef} type="button" data-testid="run" className={btnPrimary} disabled={!state.file || busy || state.inspecting || !built.ok} onClick={() => run()}>
+          <button ref={runRef} type="button" data-testid="run" className={btnPrimary} disabled={!state.file || busy || !built.ok} onClick={() => run()}>
             Resize image
           </button>
           {state.file && <button type="button" data-testid="start-over" className={btnSecondary} onClick={reset}>Start over</button>}
@@ -167,18 +166,9 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
         />
       )}
 
-      <div className="text-sm text-slate-700">
-        <p>
-          SizeTune processes your image in your browser. The site's code does not upload it, and SizeTune keeps no copy of it; your browser releases it when you close the tab. By using the tool you agree to the terms of use.
-        </p>
-        <p className="mt-1 flex flex-wrap gap-x-5">
-          {[['/terms/', 'Terms of use'], ['/privacy/', 'Privacy policy']].map(([href, label]) => (
-            <a key={href} href={href} target="_blank" rel="noopener" className="inline-flex min-h-11 items-center font-medium text-teal-800 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
-              {label}<span className="sr-only"> (opens in a new tab)</span>
-            </a>
-          ))}
-        </p>
-      </div>
+      <p className="text-sm text-slate-700">
+        SizeTune processes your image in your browser. It is not uploaded, and this page keeps nothing after you leave it.
+      </p>
     </section>
   );
 }

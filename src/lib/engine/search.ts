@@ -206,12 +206,8 @@ class Search<B> {
     const { lo, hi } = this.p;
     const max = await this.E(1, 100, { raised: true });
     if (max.bytes < lo) {
-      // Chrome encodes WebP at q=1.0 as lossless, which can be SMALLER than q95 (flat images). Probe and enlarge at
-      // whichever quality really gives the larger file: that is the file the user gets (ST-017).
-      const atBase = await this.E(1, qBase);
-      const probe = atBase.bytes > max.bytes ? atBase : max;
-      this.maxProbe = probe;
-      if (this.p.allowEnlarge && !this.p.fixed) await this.enlarge(probe.quality);
+      this.maxProbe = max;
+      if (this.p.allowEnlarge && !this.p.fixed) await this.enlarge(100);
       return;
     }
     // D11 step 5: the LOWEST q in (qBase, 100] whose size reaches lo (smallest honest raise); accept if <= hi.

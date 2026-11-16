@@ -156,17 +156,7 @@ export function derivedDimension(typed: string, srcW: number, srcH: number, solv
   return Math.max(1, Math.round(v));
 }
 
-/** True when the file that will really be written is PNG (explicit PNG, or Auto on a PNG source): lossless, so no quality control applies. */
-export function outputIsLossless(format: OutputFormat, sourceKind: 'jpeg' | 'png' | 'webp' | null | undefined): boolean {
-  return format === 'png' || (format === 'auto' && sourceKind === 'png');
-}
-
 /** Format that will really be requested, for UI decisions about transparency. */
 export function needsFlattenChoice(format: OutputFormat, hasAlpha: boolean | null): boolean {
   return format === 'jpeg' && hasAlpha === true;
-}
-
-/** A picked file whose transparency could not be checked (too large to scan): JPEG would fill any transparent area, so the fill colour must be offered. */
-export function alphaUnchecked(hasFile: boolean, hasAlpha: boolean | null): boolean {
-  return hasFile && hasAlpha === null;
 }
