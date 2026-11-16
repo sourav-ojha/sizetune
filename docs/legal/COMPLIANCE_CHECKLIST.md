@@ -14,7 +14,7 @@ The deployed text contains no placeholders and no claim that a lawyer reviewed i
 | A4 | Grievance contact is hello@sizetune.com, handled by Sourav; target to resolve within one month (and within any time the law allows) | The reviewer reads SPDI r.5(9) as one month (not read from the primary text); DPDP Rule 14(3) maximum is 90 days | Changing the period |
 | A5 | Email retention: "as long as needed or the law requires", no period | Owner has not set one; DPDP Rule 8(3) may require 1 year from 13 May 2027 | Setting a period |
 | A6 | Cloudflare retention not stated; "may keep records under its own policies" | No verified period exists (see technical audit) | After checking the dashboard |
-| A7 | Search Console described as "may use in future", not as in use | Not set up yet (BLOCKERS H13) | Update after DNS TXT verification |
+| A7 | Search Console described as in use (DNS TXT verification, no script) | Owner confirmed verified 2026-11-16 | Update if the verification method changes |
 | A8 | Advertising described as possible future, tool pages meant to stay ad-free | AdSense not integrated | Update before ads go live |
 | A9 | Under-18 users: a parent or guardian must agree to the terms and supervise use | A minor's contract is void (Indian Contract Act s.11); making the guardian the contracting party is the conservative drafting | Counsel's view |
 | A10 | Tool-page notice: links open in a new tab so a result is not lost; the notice says SizeTune stores nothing and closing the tab clears it | A browser back/forward cache could restore a page; "keeps nothing after you leave" was too absolute | Adding `pagehide` cleanup |
