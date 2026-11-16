@@ -287,9 +287,10 @@ describe('runPipeline: combined causes (ST-002 verifier follow-up)', () => {
     expect(iSize).toBeGreaterThan(iMax);
     expect(r.notes[iSize]).toContain('from 800×600 px');
   });
-  it('a memory-capped huge PNG that is also shrunk by the target still discloses the cap', async () => {
+  it('a huge PNG shrunk far below the working size by the target: size-limit note quotes the original, no memory note (ST-016)', async () => {
     const r = await runPipeline(png(7000, 6000), { ...base, maxKb: 200 }, fakeEnv().env);
-    expect(r.notes.some((n) => /opened at reduced size/i.test(n))).toBe(true);
+    expect(r.notes.some((n) => /opened at reduced size/i.test(n))).toBe(false);
+    expect(r.notes.some((n) => /reduced from 7000×6000 px/i.test(n))).toBe(true);
   });
 });
 
@@ -298,5 +299,59 @@ describe('runPipeline: max width on a huge photo (ST-002 re-verification)', () =
     const r = await runPipeline(jpg(8000, 6000), { ...base, maxWidth: 400 }, fakeEnv().env);
     expect(r.width).toBe(400);
     expect(r.notes.some((n) => /maximum width\/height/i.test(n))).toBe(true);
+  });
+});
+
+describe('runPipeline: failed enlarge message for lossless output (ST-007 re-verification)', () => {
+  it('PNG: reports actual dimensions and bytes AND says it was enlarged', async () => {
+    const r = await runPipeline(png(120, 80), { ...base, format: 'png', minKb: 20, allowEnlarge: true }, fakeEnv({ complexity: 0.02 }).env);
+    expect(r.status).toBe('below_min');
+    expect(r.mime).toBe('image/png');
+    expect(r.width).toBeGreaterThan(120);
+    expect(r.message).toContain(`${r.width}×${r.height} px`);
+    expect(r.message).toContain(r.bytes.toLocaleString('en-US'));
+    expect(r.message).toMatch(/enlarg/i);
+    expect(r.message).not.toContain('120×80');
+  });
+  it('PNG without enlarging: message unchanged (no enlarge wording, hint kept)', async () => {
+    const r = await runPipeline(png(120, 80), { ...base, format: 'png', minKb: 20 }, fakeEnv({ complexity: 0.02 }).env);
+    expect(r.status).toBe('below_min');
+    expect(r.message).toMatch(/is lossless, so its size depends only on the pixels: at 120×80 px/);
+    expect(r.message).toMatch(/allow enlarging/);
+    expect(r.message).not.toMatch(/Even after enlarging/);
+  });
+  it('JPEG without enlarging: message unchanged', async () => {
+    const r = await runPipeline(jpg(120, 80), { ...base, minKb: 20 }, fakeEnv({ complexity: 0.02 }).env);
+    expect(r.message).toMatch(/at most .* even at maximum quality/);
+    expect(r.message).not.toMatch(/enlarg(ed|ing the image to)/);
+  });
+});
+
+describe('runPipeline: memory note only when the cap limited the output (ST-016)', () => {
+  const reducedNote = (n: string[]) => n.some((x) => /opened at reduced size/i.test(x));
+  it('8000x6000 JPEG, max width 400: maximum-width note, no memory note', async () => {
+    const r = await runPipeline(jpg(8000, 6000), { ...base, maxWidth: 400, maxKb: 200 }, fakeEnv().env);
+    expect(r.width).toBe(400);
+    expect(r.notes.some((n) => /maximum width\/height/i.test(n))).toBe(true);
+    expect(r.notes.some((n) => /reduced from 8000×6000 px to 400×300 px/i.test(n))).toBe(true);
+    expect(reducedNote(r.notes)).toBe(false);
+  });
+  it('6000x4000 at 50 KB: size-limit note quotes the original, no memory note', async () => {
+    const r = await runPipeline(jpg(6000, 4000), { ...base, maxKb: 50 }, fakeEnv({ complexity: 8 }).env);
+    expect(r.status).toBe('ok');
+    const n = r.notes.find((x) => /to reach your size limit/i.test(x));
+    expect(n).toContain('reduced from 6000×4000 px');
+    expect(reducedNote(r.notes)).toBe(false);
+  });
+  it('8000x6000 No limit: memory note present', async () => {
+    const r = await runPipeline(jpg(8000, 6000), { ...base }, fakeEnv().env);
+    expect(reducedNote(r.notes)).toBe(true);
+    expect(r.notes.find((x) => /opened at reduced size/i.test(x))).toContain('original 8000×6000 px');
+  });
+  it('7000x6000 PNG at 200 KB where the output equals the decode size: memory note present', async () => {
+    const r = await runPipeline(png(7000, 6000), { ...base, format: 'png', maxKb: 200 }, fakeEnv({ complexity: 0.01 }).env);
+    expect(r.status).toBe('ok');
+    expect(r.width * r.height).toBeGreaterThan(5_000_000);
+    expect(reducedNote(r.notes)).toBe(true);
   });
 });
