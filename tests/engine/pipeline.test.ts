@@ -355,3 +355,35 @@ describe('runPipeline: memory note only when the cap limited the output (ST-016)
     expect(reducedNote(r.notes)).toBe(true);
   });
 });
+
+describe('runPipeline: WebP below minimum, q100 is lossless and smaller than q95 (ST-017)', () => {
+  const webpOpts = { ...base, format: 'webp' as const, minKb: 20 };
+  // Flat image model: q1.0 is lossless and size-independent (520 B); lossy sizes grow with pixels (558 B at 120x80).
+  const flatWebp = (n: number, w: number, h: number, q: number | undefined, mime: string) => {
+    const size = q === 1 ? 520 : 400 + Math.round(w * h * 0.0165);
+    const bytes = new Uint8Array(size);
+    bytes.set([...asciiBytes('RIFF'), 0, 0, 0, 0, ...asciiBytes('WEBP')]);
+    return new Blob([bytes], { type: mime });
+  };
+  const env = () => fakeEnv({ webp: true, renderHook: (i) => flatWebp(i.n, i.w, i.h, i.q, i.mime) });
+  const webp = (w: number, h: number) => new Blob([webpVp8(w, h) as BlobPart], { type: 'image/webp' });
+
+  it('without enlarge: message quotes the downloaded bytes, not the q100 probe', async () => {
+    const r = await runPipeline(webp(120, 80), webpOpts, env().env);
+    expect(r.status).toBe('below_min');
+    expect([r.width, r.height, r.bytes]).toEqual([120, 80, 558]);
+    expect(r.message).toContain('558 bytes');
+    expect(r.message).not.toContain('520');
+    expect(r.message).toContain('120×80 px');
+    expect(r.message).not.toMatch(/even at maximum quality/);
+  });
+  it('with enlarge: enlarges at the quality used and the message describes the downloaded file', async () => {
+    const r = await runPipeline(webp(120, 80), { ...webpOpts, allowEnlarge: true }, env().env);
+    expect(r.status).toBe('below_min');
+    expect(r.width).toBeGreaterThan(120);
+    expect(r.message).toContain(`${r.width}×${r.height} px`);
+    expect(r.message).toContain(r.bytes.toLocaleString('en-US'));
+    expect(r.message).toMatch(/enlarging/i);
+    expect(r.message).not.toContain('520');
+  });
+});
