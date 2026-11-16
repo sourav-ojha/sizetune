@@ -83,3 +83,13 @@ Unknown without dashboard/edge access: zone security/bot settings, WAF/Analytics
 5. "Last updated" date predates later edits; legal-review marker unresolved.
 6. No HSTS (security, not a claim).
 Test artifacts: `/private/tmp/claude-501/scratch/{audit.mjs,audit2.mjs,results.json}`.
+
+
+## Re-verification, 2026-11-16 (Sonnet technical agent; code on `dev` + live staging)
+- No fetch, XMLHttpRequest, sendBeacon, WebSocket, EventSource, forms or service workers in `src/`. Only network-capable construct: `new Worker(...)` at `src/lib/engine/index.ts:19`; worker script served with `connect-src 'none'` (`public/_headers`). `pnpm run verify:privacy` passes.
+- Staging run (800x600 JPEG named `secret-name.jpg`, 20 KB target): all requests GET to staging origin (HTML, CSS, JS, one woff2, worker script, two blob: URLs); no POST, no off-origin request, no filename in any request.
+- Cookies, localStorage, sessionStorage, IndexedDB, Cache API empty; zero service workers; no `Set-Cookie` on `/`, `/privacy/`, `/terms/`.
+- Response headers on staging include Cloudflare-injected `nel` and `report-to` (endpoint a.nel.cloudflare.com); no HSTS. Meta CSP in HTML; `frame-ancestors` CSP in header.
+- `wrangler.jsonc`: no `main`, bindings, `observability`, `logpush` or `tail_consumers`. Cloudflare docs: new Workers get observability enabled by default (3 days Free, 7 Paid); docs do not say whether static-assets-only requests are logged. Retention for network-level logs, Web Analytics and Bot Fight cookies are owner-dashboard unknowns. Legal pages therefore state no retention period and no "no logs" claim.
+- No third-party script, link, iframe, font or image; fonts self-hosted. No Search Console tag or file.
+- Staging asset hashes differed from local `dist`: redeploy staging before final validation.

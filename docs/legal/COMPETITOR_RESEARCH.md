@@ -47,3 +47,9 @@ Sources (all fetched 2026-11-13):
 8. Governing law India, courts at a stated city, with an optional short good-faith negotiation step as iLovePDF does. Have counsel confirm; do not copy competitor text.
 9. Age: state a minimum (e.g. 18, or younger with parent/guardian supervision), and a DPDP-compliant note on verifiable parental consent for under-18s if any personal data is collected; students applying for exams are likely minors, so no tracking or behavioural ads aimed at under-18 users.
 10. Cover signature images specifically: they are biometric-adjacent personal identifiers; promise they are not uploaded, but warn users that downloaded files and browser extensions are outside SizeTune's control. Do not claim legal validity or acceptance of resized documents by any authority.
+
+
+## Re-verification, 2026-11-16 (live policies fetched)
+Sources: github.com/GoogleChromeLabs/squoosh; policies.google.com/privacy; tinypng.com/privacy and /terms; iloveimg.com/help/privacy, /terms, /cookies; photopea.com/privacy.html. Not fetched: iLoveIMG /privacy-policy (404), Photopea terms (404), Squoosh has no policy of its own.
+- Squoosh and Photopea: local processing, stated factually with caveats; Squoosh discloses analytics. TinyPNG: server upload, images up to 48 h, logs 31 days, Cookiebot, Dutch law. iLoveIMG: server upload, deleted within 2 h, consent for non-essential cookies, Spanish law, 18+ rule.
+- Lessons applied: factual "not uploaded by the site's code" wording, no absolute claims, vendors named when they exist, dated policy, named contact, "as is" with fraud carve-out, India law without a fee-based cap, explicit not-affiliated and no-verification statements. Traps avoided: "100% private", silence on ads/cookies, copied retention windows.
