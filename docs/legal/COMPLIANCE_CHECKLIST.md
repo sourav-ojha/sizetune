@@ -1,6 +1,6 @@
 # Compliance checklist: Privacy Policy and Terms of Use
 
-Date: 2026-11-13. Branch: `legal/privacy-terms-audit`. Not legal advice. Sources: [LEGAL_REVIEW.md](LEGAL_REVIEW.md), [TECHNICAL_PRIVACY_AUDIT.md](TECHNICAL_PRIVACY_AUDIT.md), [COMPETITOR_RESEARCH.md](COMPETITOR_RESEARCH.md).
+Date: 2026-11-13; revised 2026-11-16. Branch: `legal/privacy-terms-audit`. Not legal advice. Sources: [LEGAL_REVIEW.md](LEGAL_REVIEW.md), [TECHNICAL_PRIVACY_AUDIT.md](TECHNICAL_PRIVACY_AUDIT.md), [COMPETITOR_RESEARCH.md](COMPETITOR_RESEARCH.md).
 
 ## Status in one line
 The deployed text contains no placeholders and no claim that a lawyer reviewed it. It is **not represented as legally reviewed**; the owner-input items below are still open, and an Indian lawyer's review before go-live is recommended (the owner has said they will arrange it).
@@ -60,7 +60,7 @@ Before AdSense goes live:
 - [x] Independent Opus legal review passed (round 2; text only, owner items open)
 - [x] Independent Sonnet technical review passed (round 2)
 - [x] Build, lint and tests pass (local verify; CI cross-browser pending)
-- [ ] Staging validated after deploy
+- [ ] Staging validated after deploy (staging build was stale on 2026-11-16; redeploy after merge)
 - [ ] Lawyer review (owner)
 
 ## Review log
@@ -68,3 +68,12 @@ Before AdSense goes live:
 **Round 2 (2026-11-13).** Opus legal: all 8 round-1 fixes PASS; no Critical/High; M1 (Cloudflare retention is partly in the owner's control) and L1-L4 wording applied. Sonnet technical: 0 Critical/High; axe 0 violations on /, /resize-signature/, /privacy/, /terms/; no overflow at 320-1440; no console errors, cookies or storage; all internal links 200; applied: spacing above notice links, "nothing is uploaded" in Dropzone/error copy aligned to "the site's code does not upload it", "currently" in the meta description. Remaining Low: privacy page filename sentence omits extension/truncation detail (acceptable).
 **Gate:** `CI=1 pnpm run verify` exit 0 (677 unit, 198 Chrome e2e). Firefox/WebKit run in CI after push.
 **Not yet done:** staging validation (needs push and deploy), lawyer review, owner items above.
+
+## Revision 2026-11-16
+Changes: pages re-dated 16 Nov 2026; privacy page adds a "Which laws apply" section (DPDP core duties start 13 May 2027) and discloses Cloudflare-injected network error reporting headers (observed on staging); terms add a no-waiver sentence. Corrections to legal labels recorded in LEGAL_REVIEW.md (CERT-In and SPDI are conditional on commercial operation; no postal address requirement found). Owner item 7 is narrowed: a name or role plus email suffices; address optional.
+Open owner items unchanged: legal name/trade name, court city, Cloudflare dashboard facts, email provider and retention, AdSense decision (drives body-corporate, CERT-In and consent-tool needs), CERT-In contact, counsel review. Re-check egazette.gov.in for any change to the 13 May 2027 date before launch.
+
+### Opus legal review 2026-11-16: dispositions
+Fixed: M1 DPDP wording (individuals covered), M4 children clause, M5 NEL wording (not staging-only), L1 "never" wording, L2 retention carve-out, L4 Board route timing, L7 LEGAL_REVIEW staleness.
+Deferred to owner (not invented): M2 fallback liability cap figure (reviewer suggests a modest cap; business decision); M3 full legal name for grievance contact (SPDI r.5(9) matters only if a "body corporate", i.e. once monetised); L3 email provider; L5 court city; L6 Cloudflare retention (owner dashboard); L8 minors' contract wording (counsel).
+**H1 (blocking before AdSense):** these sentences become false when ads run and must change in the same release: privacy "no advertising and no analytics scripts", "sets no cookies and writes nothing to storage", "We do not use this information to identify, profile...", "share it only with the service providers" (Google is a separate party), index.astro "loads no advertising or analytics scripts" (true only if tool pages stay ad-free). Add: AdSense required vendor/cookie/opt-out wording, certified TCF consent tool for EEA/UK/CH, non-personalised ads for under-18 audience from 13 May 2027.

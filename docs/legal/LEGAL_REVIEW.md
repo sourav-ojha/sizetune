@@ -1,4 +1,4 @@
-# SizeTune legal review (India-first), research as of 2026-11-13
+# SizeTune legal review (India-first), research as of 2026-11-16
 
 Status: research notes for the owner and their counsel. **This is not legal advice.** Every row gives the source that was actually opened in this session. Anything that could not be opened is marked **UNVERIFIED**.
 Facts assumed: an individual developer in India runs SizeTune (sizetune.com). It is free and static (Cloudflare Workers static assets). Images are processed only in the browser and never uploaded. There are no accounts, cookies, analytics or ads today; AdSense is planned. Contact is by `mailto:` only. See `docs/legal/TECHNICAL_PRIVACY_AUDIT.md`.
@@ -15,7 +15,7 @@ Labels: **MANDATORY NOW**, **MANDATORY LATER (date)**, **RECOMMENDED**, **NOT AP
 | Data Protection Board | **G.S.R. 844(E)**, 13 Nov 2025. https://www.meity.gov.in/static/uploads/2025/11/cc217843dc3bcb37b2b05bcc3b4e031f.pdf | Establishes the Board, with its head office in the NCR. |
 | DPDP Rules, 2025 | **G.S.R. 846(E)**, 13 Nov 2025 (Gazette No. 760, CG-DL-E-14112025-267650). https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf | Rule 1(2): Rules 1, 2 and 17–21 apply from publication (they cover the Board). Rule 1(3): **Rule 4 (Consent Managers) applies one year later**. Rule 1(4): **Rules 3, 5–16, 22 and 23 apply 18 months later.** |
 
-- **Date ambiguity:** the Gazette is dated 13 Nov 2025 but was uploaded and signed on 14 Nov 2025. PIB gives both dates: PRID 2190014 and the 17 Nov 2025 backgrounder say 14 Nov, while PRID 2198217 says 13 Nov. The core obligations therefore start on **13 May 2027 (or 14 May 2027)**. Plan for **13 May 2027**. The one-year date (Rule 4, s.6(9)) is **today, 13/14 Nov 2026**, and it concerns only Consent Managers.
+- **Date ambiguity:** the Gazette is dated 13 Nov 2025 but was uploaded and signed on 14 Nov 2025. PIB gives both dates: PRID 2190014 and the 17 Nov 2025 backgrounder say 14 Nov, while PRID 2198217 says 13 Nov. The core obligations therefore start on **13 May 2027 (or 14 May 2027)**. Plan for **13 May 2027**. The one-year date (Rule 4, s.6(9)) was **13/14 Nov 2026** (now past), and it concerns only Consent Managers.
 - **Proposed acceleration:** MeitY consulted in Jan–Feb 2026 on cutting the 18-month period to 12 months, according to secondary reports (ssrana.in, takshashila.org.in, Mar 2026 press). **I found no Gazette amendment to Rule 1 or G.S.R. 843(E).** I could not search egazette.gov.in exhaustively, so the absence of an amendment is **UNVERIFIED**. Check egazette.gov.in and meity.gov.in again before launch.
 - **DPDP (Removal of Difficulties) Order, 2026, S.O. 5458(E), 5 Oct 2026:** reported by legal500.com (secondary source; **primary not opened**). It makes word-level fixes to s.9(1) and s.10(2)(c)(ii) and changes no dates.
 
@@ -52,7 +52,7 @@ Text: PRS copy of the amended Act, https://prsindia.org/files/bills_acts/bills_p
 | Section | Effect | SizeTune | Label |
 |--|--|--|--|
 | s.10A | An electronic contract is not unenforceable merely because it is electronic | Supports click-wrap and browse-wrap Terms | Context |
-| **s.43A** compensation for negligent handling of *sensitive* personal data by a "body corporate". The Explanation (i) definition includes a **sole proprietorship** "engaged in commercial or professional activities". | **In force until s.44(2) DPDP commences (13 May 2027)** | SizeTune collects no sensitive personal data. Exposure is low, but once monetised the operator is plausibly a "body corporate". | MANDATORY NOW (conservative) until 13 May 2027 → NOT APPLICABLE after |
+| **s.43A** compensation for negligent handling of *sensitive* personal data by a "body corporate". The Explanation (i) definition includes a **sole proprietorship** "engaged in commercial or professional activities". | **In force until s.44(2) DPDP commences (13 May 2027)** | SizeTune collects no sensitive personal data. Exposure is low, but once monetised the operator is plausibly a "body corporate". | CONDITIONAL: applies only if SizeTune is a "body corporate" (commercial activity); best practice now; omitted by DPDP s.44(2) on 13 May 2027 |
 | s.2(1)(w) "intermediary" means one who, on behalf of another, "receives, stores or transmits" a record or provides a service for it. **s.79** gives intermediaries safe harbour if they meet due diligence. | In force | SizeTune receives, stores and transmits no user records; images never leave the device. It is **probably not an intermediary**, so it gets no s.79 safe harbour but also has no intermediary duties. If uploads, sharing or hosting are ever added, this flips. | NOT APPLICABLE (today) |
 | s.69 / s.69A: government directions to intercept or decrypt, and blocking | In force | Nothing to do. **Do not promise** in the policy "we will never disclose to authorities". | Context |
 | s.70B(6)/(7) CERT-In directions; non-compliance can bring up to 1 year's imprisonment or a ₹1 lakh fine | In force | See §7 | See §7 |
@@ -61,7 +61,7 @@ Text: PRS copy of the amended Act, https://prsindia.org/files/bills_acts/bills_p
 | s.75 offences outside India involving a computer in India | In force | Context | — |
 
 ## 4. SPDI Rules, 2011 (G.S.R. 313(E), 11 Apr 2011, under s.43A / s.87(2)(ob))
-- Official text: India Code PDF https://upload.indiacode.nic.in/showfile?actid=AC_CEN_45_76_00001_200021_1517807324077&type=rule&filename=GSR313E_10511%281%29_0.pdf. **The connection was refused this session, so the text is UNVERIFIED.** Rule content below comes from secondary sources: Rule 3 lists SPDI (passwords, financial, health, biometric and similar); Rule 4 requires a body corporate that handles information to publish a privacy policy; Rule 5(9) requires a Grievance Officer whose name and contact are published, with redress "within one month".
+- Official text: India Code PDF https://upload.indiacode.nic.in/showfile?actid=AC_CEN_45_76_00001_200021_1517807324077&type=rule&filename=GSR313E_10511%281%29_0.pdf. Re-verified 2026-11-16 against the 2011 Gazette copy (PRS). Rule content: Rule 3 lists SPDI (passwords, financial, health, biometric and similar); Rule 4 requires a body corporate that handles information to publish a privacy policy; Rule 5(9) requires a Grievance Officer whose name and contact are published, with redress "within one month".
 - **Status:** still in force today. DPDP s.44(2) omits s.43A and s.87(2)(ob) (verified in the Act text) with effect from **13 May 2027** (verified in G.S.R. 843(E)). After that the Rules lose their parent provision. My **inference** is that they stop applying; this is not an express Gazette statement.
 - **SizeTune:** collects no SPDI. As a conservative reading for a sole proprietor, **publish a privacy policy (Rule 4) and a named grievance contact (Rule 5(9)) now.** **MANDATORY NOW (conservative) until 13 May 2027.** IT Rules 2021 r.3(1)(i) also points intermediaries to these Rules, which does not apply to SizeTune.
 
@@ -93,7 +93,7 @@ Sources: https://www.cert-in.org.in/PDF/CERT-In_Directions_70B_28.04.2022.pdf an
   - (i) sync clocks to NIC/NPL NTP;
   - **(iv) enable logs of "all their ICT systems" and keep them for a rolling 180 days.** The Direction says the logs must be kept in India, but FAQ Q35 says they "may be stored outside India also" if they can be produced in reasonable time. FAQ Q37 lists examples such as web server logs.
 - **SizeTune:** before monetisation, a free, non-commercial project by an individual is arguably outside scope. With AdSense it is plausibly a "body corporate". The operator runs no servers of its own, so its ICT systems are the Cloudflare account, GitHub, the registrar and the mailbox.
-- **Labels:** 6-hour incident reporting is **MANDATORY NOW (conservative)**. 180-day log retention is **MANDATORY NOW (conservative)**, but **feasibility is doubtful** on Cloudflare's free plan. Keep whatever account and audit logs the providers offer, document why request logs are not available, and get counsel's view. This also interacts with DPDP Rule 8(3) (one year, from May 2027).
+- **Labels:** CERT-In FAQ Q7 says individual citizens are not covered. 6-hour incident reporting and 180-day log retention become **CONDITIONAL on commercial operation (AdSense)**; currently RECOMMENDED only, and **feasibility is doubtful** on Cloudflare's free plan. Keep whatever account and audit logs the providers offer, document why request logs are not available, and get counsel's view. This also interacts with DPDP Rule 8(3) (one year, from May 2027).
 
 ## 8. Contract law, and criminal law on signature misuse
 - **Click-wrap vs browse-wrap:** IT Act s.10A (verified) validates electronic contracts. Indian case law on browse-wrap is thin; I did **not** verify any judgment this session. **RECOMMENDED:** put a visible "By using this tool you agree to the Terms" link next to the upload control. Do not rely on a footer link alone. Do not add a forced checkbox unless counsel advises it, because it creates friction and makes no clear difference for a free tool.
@@ -137,7 +137,7 @@ Sources: https://www.cert-in.org.in/PDF/CERT-In_Directions_70B_28.04.2022.pdf an
 9. **Grievance and contact person** (DPDP r.9, SPDI r.5(9)): name or role and email, with a response time.
 10. **Children:** the service is not directed at children; we knowingly collect no personal data from children; once ads run, they will not be personalised for children (s.9(3)).
 11. **Security:** HTTPS, no server-side storage, 2FA on accounts. Keep it factual.
-12. **Breach:** we will notify affected users and authorities as required by law (CERT-In within 6 h; DPDP Board/users from May 2027).
+12. **Breach:** we will notify affected users and authorities as required by law (CERT-In 6 h reporting (conditional on commercial operation, see section 7); DPDP Board/users from May 2027).
 13. **Disclosure to authorities:** we may disclose where required by law (e.g. IT Act s.69, CERT-In directions under s.70B). No absolute promise.
 14. **Future ads section (activate before AdSense goes live):** Google and third-party vendor cookies, the AdSense required statements, opt-out links, the EEA/UK/CH consent mechanism (CMP), and the vendor list.
 15. **Changes:** a dated version; material changes take effect before any new processing starts.
@@ -181,3 +181,14 @@ Sources: https://www.cert-in.org.in/PDF/CERT-In_Directions_70B_28.04.2022.pdf an
 - GDPR recitals 23/24 and Art 27(2) (EUR-Lex fetch failed). Art 3(2) was read via gdpr-info.eu.
 - Case law on browse-wrap enforceability, *Brojo Nath Ganguly*, and forum selection under s.28. None was re-checked.
 - Cloudflare's privacy policy and DPA were not re-opened; the processor role is cited from TECHNICAL_PRIVACY_AUDIT.md.
+
+
+## Re-verification, 2026-11-16 (Opus legal research agent)
+Checked against Gazette PDFs (G.S.R. 843(E), 846(E), SPDI 2011, CERT-In Directions and FAQ, CPA 2019, E-Commerce Rules 2020, IT Rules 2021 consolidated). Results:
+- DPDP dates confirmed: Rule 4 and s.6(9) from 13 Nov 2026 (Consent Managers only); ss.3-5, 6(1)-(8),(10), 7-17 and Rules 3, 5-16 from **13 May 2027**. No Gazette change found to the 18-month period (proposal of Jan 2026 to shorten it is unconfirmed); re-check egazette.gov.in before launch. S.17(3) startup exemption does not cover an individual.
+- SPDI r.5(9) text verified: Grievance Officer name and contact published; redress "within one month". Rules bind only a "body corporate" (sole proprietorship in commercial activity included).
+- Corrections to earlier text: CERT-In is conditional, not "mandatory now" (FAQ Q7); SPDI r.5(3)(d) concerns notice when collecting information and does not require a postal address; no statute verified requires an individual non-intermediary to publish a postal address (publish a name or role and an email).
+- IT Intermediary Rules 2021: not applicable (site stores and transmits nothing for users). CPA 2019 s.2(42) excludes free services; E-Commerce Rules 2020 not applicable.
+- GDPR/UK GDPR apply only under Art 3(2) (targeting or monitoring); CCPA thresholds not met; COPPA not applicable. Certified IAB TCF CMP required for personalised ads to EEA/UK/CH.
+- Still UNVERIFIED (India Code unreachable): Contract Act ss.11, 23, 28 and case law. Rely on counsel.
+- Open question for counsel: whether IP addresses in Cloudflare logs make the operator a Data Fiduciary (depends on whether the owner enables Workers Logs or Logpush).
