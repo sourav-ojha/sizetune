@@ -1,38 +1,84 @@
 ---
 import Base from '../layouts/Base.astro';
-import { proseClass } from './_seo';
+const steps = [
+  ['Open SizeTune', 'and let the page finish loading.'],
+  ['Go offline.', 'Turn on airplane mode or switch off Wi-Fi.'],
+  ['Resize an image.', 'It still works, because nothing needs the network.'],
+];
+const glance = [
+  ['Your image', "Stays on your device. SizeTune's code does not upload it and keeps no copy."],
+  ['Opening the page', 'Sends the normal request every website receives, handled by our hosting provider.'],
+  ['Analytics and ads', 'None in the code of this site today. The privacy policy says so in plain words, and would say if that changed.'],
+  ['Photo location data', 'The resized file does not carry the original’s location (GPS) data. When your original has some, the result panel tells you.'],
+];
+const does = ['Write guidance from how the tool actually behaves', "Tell you when a limit can't be met", 'Show the real file size before you download'];
+const doesnt = ['Promise a particular result', 'Publish rules for specific forms, because they change', 'Pad a file with filler to reach a minimum'];
+const card = 'rounded-2xl border border-slate-200 bg-white p-6';
 ---
-<Base pageType="policy" title="About the SizeTune image resizer | SizeTune" description="SizeTune is a free browser tool that resizes photos and signatures to a size in KB. Read why it exists, how it works, its limits, and who runs it." path="/about/">
-  <h1 class="mb-3 text-3xl font-bold">About SizeTune</h1>
-  <div class={proseClass}>
-    <h2>What it is</h2>
-    <p>
-      SizeTune is a small, free website that reduces an image to fit a file size limit. It was made for the common
-      moment when a form rejects a photo or signature because it is a few KB too large. It is independent and is not
+<Base pageType="policy" width="wide" title="About the SizeTune image resizer | SizeTune" description="SizeTune is a free browser tool that resizes photos and signatures to a size in KB. Read why it exists, how it works, its limits, and who runs it." path="/about/">
+  <div class="mx-auto max-w-3xl">
+    <h1 class="text-4xl font-bold leading-[1.1] tracking-tight text-slate-950">About SizeTune</h1>
+    <p class="mt-3 max-w-xl text-lg leading-relaxed text-slate-600">
+      A small, free website for the moment a form rejects your photo or signature because it is a few KB too large. It is independent and is not
       connected to any government body, exam board, employer or application portal.
     </p>
 
-    <h2>How it works</h2>
-    <p>
-      The tool runs in your browser. It searches for the best balance of picture quality and pixel dimensions that
-      keeps the file under your limit, and it reports honestly when a limit cannot be met. The <a href="/privacy/">privacy page</a> explains what that means for your images, and the <a href="/guides/photo-size-for-online-forms/">photo size guide</a> explains the ideas behind it.
-    </p>
+    <section aria-labelledby="verify-h" class="mt-9 rounded-3xl border border-slate-200 bg-white p-6 shadow-card sm:p-7">
+      <h2 id="verify-h" class="text-2xl font-bold text-slate-950">Don't take our word for it. Check.</h2>
+      <p class="mt-2 leading-relaxed text-slate-600">Your image is resized by code running on your own device. You can see that for yourself in under a minute.</p>
+      <ol class="mt-5 grid gap-4 sm:grid-cols-3" aria-label="How to check">
+        {steps.map(([b, t], i) => (
+          <li class="flex items-start gap-3">
+            <span aria-hidden="true" class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-teal-100 text-sm font-bold text-teal-900">{i + 1}</span>
+            <span class="leading-relaxed text-slate-900"><strong>{b}</strong> {t}</span>
+          </li>
+        ))}
+      </ol>
+      <p class="mt-5 text-sm leading-relaxed text-slate-600">Browser extensions or device backup features that you have installed are outside the site's control.</p>
+    </section>
 
-    <h2>What we try to do, and what we do not claim</h2>
-    <p>
-      We write guidance from how the tool actually behaves and say so when a statement depends on your device or
-      browser. We do not promise a particular result, we do not publish rules for specific forms because those change,
-      and we ask you to follow the instructions on your own form. The privacy page, the terms and the guide show the date they were last updated.
-    </p>
+    <section aria-labelledby="glance-h" class="mt-10">
+      <h2 id="glance-h" class="mb-3 text-2xl font-bold text-slate-950">Privacy at a glance</h2>
+      <div tabindex="0" role="region" aria-label="Privacy at a glance table" class="overflow-x-auto rounded-2xl border border-slate-200 bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+        <table class="w-full min-w-[32rem] border-collapse text-left text-[0.9375rem] leading-relaxed">
+          <caption class="sr-only">What happens to your data</caption>
+          <thead><tr class="bg-slate-100"><th scope="col" class="px-4 py-3">What</th><th scope="col" class="px-4 py-3">What happens</th></tr></thead>
+          <tbody>
+            {glance.map(([k, v]) => (
+              <tr class="border-t border-slate-200"><th scope="row" class="px-4 py-3 align-top font-semibold">{k}</th><td class="px-4 py-3 text-slate-700">{v}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-3"><a href="/privacy/" class="font-medium text-teal-800 underline decoration-teal-300 underline-offset-4 hover:decoration-teal-700">Read the full privacy policy</a> · <a href="/terms/" class="font-medium text-teal-800 underline decoration-teal-300 underline-offset-4 hover:decoration-teal-700">Terms of use</a></p>
+    </section>
 
-    <h2>Who runs it</h2>
-    <p>
-      SizeTune is run by Sourav, an independent developer who built it because upload forms keep rejecting files over a size limit.
-      You can contact us at <a href="mailto:hello@sizetune.com">hello@sizetune.com</a>. Please include the page address and your browser
-      and device if you are reporting a problem. We read corrections to the guides and fix what we can verify.
-    </p>
-    <p>
-      The terms for using the site are on the <a href="/terms/">terms page</a>. To try the tool, go to the <a href="/">home page</a>.
-    </p>
+    <section class="mt-10 grid gap-4 sm:grid-cols-2" aria-label="Who runs SizeTune">
+      <div class={card}>
+        <h2 class="text-xl font-bold text-slate-950">Who runs it</h2>
+        <p class="mt-2 leading-relaxed text-slate-700">SizeTune is run by Sourav, an independent developer who built it because upload forms keep rejecting files over a size limit.</p>
+      </div>
+      <div class={card}>
+        <h2 class="text-xl font-bold text-slate-950">Contact and corrections</h2>
+        <p class="mt-2 leading-relaxed text-slate-700"><a href="mailto:hello@sizetune.com" class="font-medium text-teal-800 underline decoration-teal-300 underline-offset-4">hello@sizetune.com</a>. Please include the page address and your browser and device if you are reporting a problem. We read corrections to the guides and fix what we can verify.</p>
+      </div>
+    </section>
+
+    <section aria-labelledby="claims-h" class="mt-10">
+      <h2 id="claims-h" class="mb-3 text-2xl font-bold text-slate-950">What we do and don't claim</h2>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+          <p class="font-bold text-teal-900">We do</p>
+          <ul class="mt-2 list-disc space-y-1.5 pl-5 marker:text-teal-700">{does.map((t) => <li>{t}</li>)}</ul>
+        </div>
+        <div class="rounded-2xl border border-slate-300 bg-white p-5">
+          <p class="font-bold text-slate-950">We don't</p>
+          <ul class="mt-2 list-disc space-y-1.5 pl-5 marker:text-slate-500">{doesnt.map((t) => <li>{t}</li>)}</ul>
+        </div>
+      </div>
+      <p class="mt-4 leading-relaxed text-slate-600">
+        Always follow the instructions on your own form. The <a href="/privacy/" class="font-medium text-teal-800 underline decoration-teal-300 underline-offset-4">privacy page</a>, the <a href="/terms/" class="font-medium text-teal-800 underline decoration-teal-300 underline-offset-4">terms</a> and the <a href="/guides/photo-size-for-online-forms/" class="font-medium text-teal-800 underline decoration-teal-300 underline-offset-4">photo size guide</a> show the date they were last updated. To try the tool, go to the <a href="/" class="font-medium text-teal-800 underline decoration-teal-300 underline-offset-4">home page</a>.
+      </p>
+    </section>
   </div>
 </Base>

@@ -8,7 +8,7 @@ const description =
   'Get a photo under 20 KB in your browser with the least quality loss. Learn how KB is counted, what to do if the image is too complex, and how to check the file.';
 const jsonLd = webApplicationLd('SizeTune: resize image to 20 KB', '/resize-image-to-20kb/', description);
 ---
-<Base pageType="tool" title={title} description={description} path="/resize-image-to-20kb/" jsonLd={jsonLd}>
+<Base pageType="tool" width="wide" title={title} description={description} path="/resize-image-to-20kb/" jsonLd={jsonLd}>
   <Hero title="Resize an image to 20 KB" lead="The tool below starts with a 20 KB maximum already selected. Add your picture, check the result and download it. You can change the limit, or add a minimum, if your form says something different." />
 
   <ImageTool client:load defaultMaxKb={20} />
@@ -20,7 +20,7 @@ const jsonLd = webApplicationLd('SizeTune: resize image to 20 KB', '/resize-imag
     </p>
   </noscript>
 
-  <div class={`mt-10 ${proseClass}`}>
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
     <h2>When a form asks for 20 KB or less</h2>
     <p>
       A limit of 20 KB turns up in application portals, document upload boxes and older web systems that store files
