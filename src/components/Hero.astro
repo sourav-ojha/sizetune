@@ -7,10 +7,10 @@ interface Props {
 const { title, lead } = Astro.props;
 ---
 <section class="mb-8 text-center sm:mb-10">
-  <p class="mb-3 inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-sm font-medium text-teal-900">
-    <span aria-hidden="true" class="size-1.5 rounded-full bg-teal-600"></span>
-    Free · Stays in your browser · No sign-up
+  <p class="mb-4 inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3.5 py-1.5 text-sm font-semibold text-teal-900">
+    <svg aria-hidden="true" viewBox="0 0 24 24" class="size-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
+    Free · Your photo stays on this device · No sign-up
   </p>
-  <h1 class="mx-auto max-w-2xl text-3xl font-bold leading-[1.12] tracking-tight text-slate-950 sm:text-5xl">{title}</h1>
-  <p class="mx-auto mt-3 max-w-xl text-base leading-relaxed sm:mt-4 sm:text-lg text-slate-600">{lead}</p>
+  <h1 class="mx-auto max-w-2xl text-3xl font-bold leading-[1.1] tracking-tight text-slate-950 sm:text-5xl">{title}</h1>
+  <p class="mx-auto mt-3 max-w-xl text-base leading-relaxed text-slate-600 sm:mt-4 sm:text-lg">{lead}</p>
 </section>
