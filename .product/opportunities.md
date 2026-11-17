@@ -2,8 +2,8 @@
 type: opportunity-registry
 last_research: 2026-11-17
 review_mode: independent
-decision_count: 5
-decision_head: d298aa39d8de
+decision_count: 6
+decision_head: 4bfafd32a054
 ---
 # Opportunities
 
@@ -93,7 +93,48 @@ Coverage is thin. The Trustpilot 1-star samples (first 20 reviews per site) are 
 
 ### Changes since previous research
 
-First research run.
+Widened pass (2026-11-17, `full auto widen override`): four more parallel research agents on new angles (new competitors by HTML inspection, new community and issue-tracker sources, ad-network, SEO-policy and tool-category facts, open-source licences and autocomplete demand proxies). Reddit, Quora, Stack Overflow, Play Store review text and Bing/Google Trends could not be read, so demand is still unmeasured.
+
+**New competitors (all direct, India exam-focused clones are the closest).** None of the processing claims were network-tested; "client-side" below means the page says so. Ad-network names come from one agent's HTML inspection; the independent reviewer's page fetches strip scripts and could not confirm them (photoresizer.in showed only an ad-space placeholder), so treat every ad claim here as low confidence. examdetail.in (per-KB page, says no upload, about 1,400 words) is a further example of the per-KB pattern. [E: fact; medium; https://www.examdetail.in/tools/image-resizer/20kb; 2026-11-17]
+
+| Name | What it is | Notable facts | Evidence |
+|---|---|---|---|
+| photoresizer.in | Exam photo and signature resizer | Says no upload; loads AdSense; about 3,270 words with FAQ and exam checklist; KB, dimension and percentage modes; batch; compliance check; Hindi; background removal | [E: fact; medium; https://photoresizer.in/; 2026-11-17] |
+| docset.in | Per-exam resize pages inside a PDF and Aadhaar tool suite | One URL per exam; bilingual; says photos never uploaded; AdSense and DoubleClick | [E: fact; medium; https://docset.in/resize/ssc-cgl; 2026-11-17] |
+| onlineresult.in | Exam photo resizer with SSC preset and signature background cleaner | Says processing stays in the browser; AdSense; preset URL parameter | [E: fact; medium; https://www.onlineresult.in/tools/exam-photo-resizer?preset=ssc; 2026-11-17] |
+| mb2kb.com and examdetail.in | One landing page per KB value | Say no upload; AdSense; about 1,200 to 1,400 words with FAQ | [E: fact; medium; https://mb2kb.com/compress-image-to-20kb; 2026-11-17] |
+| resizer.exammint.in | Signature resizer to 140x60 px | WebAssembly in-browser claim | [E: fact; medium; https://resizer.exammint.in/signature-resizer; 2026-11-17] |
+| picresize.com | Older generic resizer | Server-side (form posts to its server); ad script from adapex.io | [E: fact; medium; https://picresize.com/; 2026-11-17] |
+| compressjpeg.com | Generic quality-slider compressor | In-browser per its page; no KB target; batch of 20 | [E: fact; medium; https://compressjpeg.com/; 2026-11-17] |
+
+Not profiled: reduceimages.com and pixelssize.com did not load; mergeimages.net returned 403. [E: unknown; high; https://reduceimages.com/; 2026-11-17]
+
+**What this changes.** The "no upload" claim and per-KB or per-exam pages are common among small sites, not unique to SizeTune. [E: fact; high; https://photoresizer.in/; 2026-11-17] Exam presets, a compliance check, Hindi and batch exist on the strongest clone, which SizeTune lacks. Per-KB pages on competitors are longer (about 1,200 to 3,300 words) than the 300-word tripwire in OPP-001. [E: inference; medium; https://mb2kb.com/compress-image-to-20kb; 2026-11-17]
+
+**Autocomplete demand proxies (weak, no volumes).** Google suggest orders image KB targets 20, 100, 50, 200, 30, 15, 40 KB and PDF targets 200, 100, 500, 50 KB; signature, SSC, UPSC, NEET, RRB, IBPS, PAN and GDS queries recur. [E: inference; low; search:suggestqueries.google.com resize image to ; 2026-11-17] Passport and visa queries are mostly dimensions (cm, pixels), not KB. [E: inference; low; search:suggestqueries.google.com visa photo size; 2026-11-17]
+
+**Pain points (new sources, small samples).** One applicant's 24 KB JPG signature was rejected as invalid although the size was right, cause unknown. [E: fact; low; https://www.careers360.com/question-why-is-my-jee-form-saying-that-signature-jpg-is-not-valid-despite-correct-size-24kb-its-the-same-with-my-category-certificate-pdf-too-uploaded-size-286kb-but-my-photo-was-uploaded-successfully-kindly-answer-this-asap; 2026-11-17] browser-image-compression has an open issue about PNG output ignoring its size target (library issue, not an end-user complaint). [E: fact; medium; https://github.com/Donaldcwl/browser-image-compression/issues/176; 2026-11-17] A second open issue reports white borders when size and dimension caps combine. [E: fact; medium; https://www.github.com/Donaldcwl/browser-image-compression/issues/178; 2026-11-17] No first-hand complaint about a minimum-KB rejection or a PDF size limit was found. [E: unknown; low; search:photo size should be between kb file too small upload application form; 2026-11-17]
+
+**Monetisation and SEO facts that answer earlier unknowns.**
+- Ezoic asks for about 250,000 monthly users for sites added after 2026-02-19 (earlier publishers are grandfathered). [E: fact; high; https://support.ezoic.com/kb/article/getting-started-ezoics-requirements; 2026-11-17]
+- Raptive's minimum is reported as 25,000 monthly pageviews, with a traffic-geography rule (at least 50% from US, CA, UK, AU or NZ at 25 to 99K pageviews); the reviewer could not load Raptive's pages, so this is low confidence. If it holds, geography matters for premium ad networks, though not for AdSense eligibility (inference). [E: fact; low; https://help.raptive.com/hc/en-us/articles/360032840891-Who-is-eligible-for-Raptive; 2026-11-17]
+- AdSense's eligibility page, as fetched (truncated), shows no traffic minimum. [E: inference; medium; https://support.google.com/adsense/answer/9724; 2026-11-17]
+- Google says it treats subdomains and subdirectories about the same but prefers keeping related content together (a 2018 hangout statement); its documentation lists trade-offs, not a ranking claim. [E: fact; medium; https://www.searchenginejournal.com/google-treats-subdomains-subdirectories-john-mueller-says/254687/; 2026-11-17]
+- Google's spam policy names scaled content abuse and doorway pages; substantially similar pages are a doorway example. [E: fact; high; https://developers.google.com/search/docs/essentials/spam-policies; 2026-11-17]
+- RMBG-1.4 (background removal) is non-commercial licensed. [E: fact; high; https://huggingface.co/briaai/RMBG-1.4; 2026-11-17]
+- Semrush estimates (low confidence, India-skewed): iLoveIMG about 40M monthly visits; iLovePDF about 303M. [E: inference; low; https://www.semrush.com/website/iloveimg.com/overview/; 2026-11-17]
+
+**Licences checked (each from its own source; all need legal review before use).**
+- heic-to is LGPL-3.0-or-later. [E: fact; high; https://github.com/hoppergee/heic-to/blob/main/LICENSE; 2026-11-17]
+- libheif is LGPL; its sample apps and wrappers are MIT. [E: fact; high; https://github.com/strukturag/libheif/blob/master/COPYING; 2026-11-17]
+- No permissive HEIC decoder turned up in npm and GitHub licence checks; this is an absence in one pass, not proof none exists. [E: inference; low; search:npm and GitHub licence checks of heic decoder packages; 2026-11-17]
+- pdf-lib is MIT; its last release date (2021) is unconfirmed by the reviewer, who saw no release dates on GitHub. [E: inference; medium; https://github.com/Hopding/pdf-lib; 2026-11-17]
+- pdf.js is Apache-2.0 and active (read and render only, it does not write PDFs). [E: fact; medium; https://github.com/mozilla/pdf.js; 2026-11-17]
+- qpdf WASM wrappers are ISC or Apache-2.0 and restructure streams but do not recompress images. [E: fact; medium; https://github.com/neslinesli93/qpdf-wasm; 2026-11-17]
+- Ghostscript WASM builds are AGPL-3.0. [E: fact; high; https://github.com/alam00000/bentopdf-gs-wasm; 2026-11-17]
+- No single permissive library recompresses images inside a PDF; a build from pdf-lib, qpdf-wasm and the existing canvas worker is plausible but unproven. [E: inference; medium; https://github.com/Hopding/pdf-lib; 2026-11-17]
+
+**Widened pass tally.** About 13 candidates examined; 3 registered (OPP-011, OPP-012, OPP-013, all Low confidence after review); 1 merged (PDF to JPG into OPP-013); 5 dropped (background removal: no evidence of an audience need, extreme competition, and RMBG-1.4 is non-commercial (other models not checked); video compress: no evidence tying it to the audience; OCR and QR/text utilities: no evidence or product link; standalone HEIC page: already Deferred as OPP-002, licence finding is not new demand evidence); 4 existing items updated with evidence (OPP-005, OPP-010, plus flags on OPP-001 and OPP-004, which are approved and left unchanged).
 
 ## Registry
 
@@ -109,6 +150,9 @@ First research run.
 | OPP-008 | Passport and visa photo maker with size specs | Discovered | 55 | Low | Needs evidence | L | 2026-11-17 | - |
 | OPP-009 | Serve minimum-size forms when the source is too small | Discovered | 56 | Low | Needs evidence | S | 2026-11-17 | - |
 | OPP-010 | Localised pages for other languages | Discovered | 55 | Low | Needs evidence | L | 2026-11-17 | - |
+| OPP-011 | Exam-form preset pack with a pixel, KB and file-type compliance check | Deferred | 63 | Low | Needs evidence | M | 2026-11-17 | - |
+| OPP-012 | Client-side image format converters (WebP and PNG to JPG) | Discovered | 57 | Low | Needs evidence | S | 2026-11-17 | - |
+| OPP-013 | Client-side image-to-PDF and JPG-to-PDF | Discovered | 53 | Low | Backlog | M | 2026-11-17 | - |
 
 ## Review Summary
 
@@ -117,6 +161,7 @@ Independent review by separate sub-agents (general-purpose agent following the i
 - Round 1 (PASS WITH CHANGES, 0 Critical, 6 High): found client-side PDF-to-KB competitors that undercut OPP-003's differentiation, an unverifiable volume source (the cited Ahrefs page redirects to a look-alike domain, confirmed and withdrawn), inflated ratings for OPP-001, 002, 005 and 007, and a HEIC premise contradicted by the file picker's accept list. All resolved: ratings lowered, sources withdrawn or re-tagged, competitors added, HEIC premise re-tagged.
 - Round 2 (PASS WITH CHANGES, 0 Critical, 3 High): untagged demand claims on OPP-003, a marginal OPP-001 Recommend, and a mis-sourced thin-content risk. Resolved: OPP-003 re-tagged as hypothesis, OPP-001 and OPP-003 ratings lowered, risk re-sourced to Google's policy.
 - Round 3 (PASS WITH CHANGES, 0 Critical, 0 High, 7 Medium, 7 Low): source-attribution and rating consistency items. Applied: OPP-004 scoped to content pages first and business_impact lowered, OPP-007 business_impact lowered (now Backlog), OPP-005 relabelled as a dependency note, TinyPNG and enabler claims downgraded, per-claim citations fixed. The three-round maximum was reached, so these last edits were not re-reviewed by a fourth round.
+- Widened pass (`full auto widen override`, same day), review round 4 (PASS WITH CHANGES, 0 Critical, 4 High, 9 Medium, 5 Low), by a separate general-purpose agent following the independent-reviewer role, with spot-check fetches. Applied: OPP-012 premise re-tagged as assumption and AVIF removed (the engine rejects AVIF); OPP-012 and OPP-013 returned to Discovered because they fail the evidence test; OPP-013 re-rated (53, Backlog); competitor claims, Raptive, AdSense and licence tags downgraded or split into one source per tag; approved items OPP-001, OPP-003 and OPP-004 were not edited and their conflicts are queued in `.product/attention.md`. This was one review round; the other open points are in the attention queue.
 - Still open: no search volumes, rankings, RPM or real-user data exist for any opportunity; competitor no-upload claims were not network-tested; Reddit, Quora, VisaJourney and Stack Exchange were unreadable; codec and decoder licences need legal review. Net effect: no opportunity reaches Recommend. The review pushed every score down, and the honest overall state is that demand is unmeasured.
 
 ## Decision Log
@@ -128,6 +173,7 @@ Independent review by separate sub-agents (general-purpose agent following the i
 | 2026-11-17 | OPP-003 | approve | sourav | User chose Approve for OPP-003 in the Gate 2 question dialog, 2026-11-17 (reply to 'Give decisions') | 84e3d56d8210 | f43ac835cebf |
 | 2026-11-17 | OPP-002 | approve | sourav | User chose Approve for OPP-002 in the Gate 2 question dialog, 2026-11-17 (reply to 'Give decisions') | 4ff7da1c23c6 | f4b1a448d25c |
 | 2026-11-17 | OPP-002 | defer | sourav | User chose Defer HEIC at the FEATURE-004 blocker walk-through, 2026-11-17 | 4ff7da1c23c6 | d298aa39d8de |
+| 2026-11-17 | OPP-011 | defer | sourav | User: 'Defer OPP-011' (reply to Gate 2 decision sheet, 2026-11-17) | 789fa8d6db11 | 4bfafd32a054 |
 
 ## Opportunity Details
 
@@ -202,7 +248,7 @@ Independent review by separate sub-agents (general-purpose agent following the i
 - **Problem:** Prerequisite, not a standalone feature. The owner wants to run many tools on sizetune.com or its subdomains. Today the site is built around two image tools, with the home page being the image tool and a fixed navigation of jobs. [E: fact; high; repo:src/layouts/Base.astro; 2026-11-17]
 - **Proposed solution:** Introduce a tool registry and shared tool shell (layout, upload/download components, size picker, result panel), a hub or directory page, and a documented decision on subpath versus subdomain per tool family. Make the verifier gates per-tool rather than assuming images.
 - **Why it matters:** Lowers the cost of each new tool and keeps the domain coherent for search and branding.
-- **Evidence:** The owner states the intent. [E: fact; high; user:chat answer 2026-11-17; 2026-11-17] Indie suites with 60-170 tools exist, so the pattern is proven but crowded [E: fact; low; https://www.indiehackers.com/post/i-got-tired-of-uploading-my-files-to-random-free-online-tools-so-i-built-129-of-them-that-never-leave-your-browser-27e58dffcb; 2026-11-17]. No sourced evidence compares subpath and subdomain for search; that is an open question [E: unknown; low; search:none run on subdomain versus subdirectory ranking; 2026-11-17].
+- **Evidence:** The owner states the intent. [E: fact; high; user:chat answer 2026-11-17; 2026-11-17] Indie suites with 60-170 tools exist, so the pattern is proven but crowded [E: fact; low; https://www.indiehackers.com/post/i-got-tired-of-uploading-my-files-to-random-free-online-tools-so-i-built-129-of-them-that-never-leave-your-browser-27e58dffcb; 2026-11-17]. No sourced evidence compares subpath and subdomain for search; that is an open question [E: unknown; low; search:none run on subdomain versus subdirectory ranking; 2026-11-17]. Widened pass: Google's documentation treats both as trade-offs, and a 2018 Google statement says it sees them the same but prefers keeping content together; no data on new subdomains was found, so subdirectories are the safer default [E: fact; medium; https://www.searchenginejournal.com/google-treats-subdomains-subdirectories-john-mueller-says/254687/; 2026-11-17].
 - **Competitive context:** Every incumbent is a multi-tool suite (iLoveIMG, ilovepdf, Zamzar); parity, not differentiation.
 - **Expected value:** Speeds later tools (OPP-002, OPP-003, OPP-006) (inference). No direct user-visible value alone, so do the minimum refactor when the second new tool is committed rather than ahead of it.
 - **Effort:** M — refactor shared components and gates without changing behaviour, plus a design decision.
@@ -282,7 +328,7 @@ Independent review by separate sub-agents (general-purpose agent following the i
 - **Problem:** The owner allows other languages and one competitor offers many, but no evidence shows demand by language. The repo holds Hindi and hreflang back. [E: fact; high; repo:SEO_ARCHITECTURE.md; 2026-11-17]
 - **Proposed solution:** Add translated tool and guide pages for a chosen language with hreflang, only after demand evidence for that language.
 - **Why it matters:** Could widen organic reach for the same engine without a backend.
-- **Evidence:** ResizePixel's language menu shows 15 languages [E: fact; medium; https://resizepixel.com/reduce-image-in-kb; 2026-11-17]. No demand data per language [E: unknown; low; search:resize image to KB search volume by language; 2026-11-17].
+- **Evidence:** ResizePixel's language menu shows 15 languages [E: fact; medium; https://resizepixel.com/reduce-image-in-kb; 2026-11-17]. Widened pass: docset.in and photoresizer.in offer Hindi, so a bilingual competitor set exists [E: fact; high; https://photoresizer.in/; 2026-11-17]. No demand data per language [E: unknown; low; search:resize image to KB search volume by language; 2026-11-17].
 - **Competitive context:** At least one competitor offers multiple languages.
 - **Expected value:** Unknown.
 - **Effort:** L — translation quality, hreflang, maintenance of every page in each language.
@@ -290,3 +336,51 @@ Independent review by separate sub-agents (general-purpose agent following the i
 - **Dependencies:** Demand evidence for a specific language; OPP-001 outcomes.
 - **Ratings:** user_value=3, strategic_alignment=3, market_opportunity=3, competitive_differentiation=2, business_impact=3, implementation_feasibility=2
 - **Reviewer notes:** Added after review round 1 (reviewer finding 17). Hypothesis only.
+
+### OPP-011 — Exam-form preset pack with a pixel, KB and file-type compliance check
+
+- **Category:** product extension
+- **Source direction:** competitive gap
+- **Problem:** Applicants must satisfy several rules at once (KB range, pixel size, file type), and published exam rules differ between sites. One applicant's signature at the right size was still rejected as invalid, cause unknown. [E: fact; low; https://www.careers360.com/question-why-is-my-jee-form-saying-that-signature-jpg-is-not-valid-despite-correct-size-24kb-its-the-same-with-my-category-certificate-pdf-too-uploaded-size-286kb-but-my-photo-was-uploaded-successfully-kindly-answer-this-asap; 2026-11-17] Sources disagree on SSC dimensions. [E: inference; low; https://truejobs.co.in/blog/government-exam-photo-signature-upload-2026; 2026-11-17]
+- **Proposed solution:** A small, hand-maintained preset list (for example SSC, UPSC, NEET photo and signature) that fills KB range and pixel size in the existing tool, plus a result check that shows pass or fail per rule, with a "last verified" date and a link to the official notice. Starts as part of OPP-001's later wave rather than before it.
+- **Why it matters:** Exam-named queries recur in autocomplete [E: inference; low; search:suggestqueries.google.com ssc photo size; 2026-11-17], and the strongest clone already offers presets and a compliance check [E: fact; medium; https://photoresizer.in/; 2026-11-17].
+- **Evidence:** SizeTune has crop, pixel fields, minimum KB and format choice but no presets or compliance check. [E: fact; high; repo:src/components/SignatureTool.tsx; 2026-11-17] docset.in carries per-exam presets. [E: fact; medium; https://docset.in/resize/ssc-cgl; 2026-11-17] onlineresult.in carries an SSC preset. [E: fact; medium; https://www.onlineresult.in/tools/exam-photo-resizer?preset=ssc; 2026-11-17] photoresizer.in lists exam chips. [E: fact; medium; https://photoresizer.in/; 2026-11-17]
+- **Competitive context:** Parity with photoresizer.in, docset.in and onlineresult.in; a verified and dated preset list is the only possible edge, and it costs upkeep.
+- **Expected value:** Unknown; no volumes. Depends on OPP-001 wave 1 results.
+- **Effort:** M — preset data, check UI, content, and a maintenance process.
+- **Risks:** Wrong presets cause rejected applications and liability; exam rules change each cycle; thin template pages (Google's scaled-content and doorway policies). [E: fact; high; https://developers.google.com/search/docs/essentials/spam-policies; 2026-11-17]
+- **Dependencies:** OPP-001 wave 1; an owner process for verifying presets against official notices.
+- **Ratings:** user_value=3, strategic_alignment=4, market_opportunity=3, competitive_differentiation=2, business_impact=3, implementation_feasibility=4
+- **Reviewer notes:** Widened-pass review (independent agent): evidence split into one source per tag; no rating changes. Confidence Low; depends on OPP-001 wave 1.
+
+### OPP-012 — Client-side image format converters (WebP and PNG to JPG)
+
+- **Category:** product extension
+- **Source direction:** adjacent market
+- **Problem:** Portals are assumed to accept JPG only, so applicants would need a conversion; this is an assumption with no user evidence. [E: assumption; low; user:none found, owner direction to broaden tools; 2026-11-17] SizeTune already accepts and outputs JPEG, PNG and WebP but has no dedicated converter pages. [E: fact; high; repo:src/components/tool/Dropzone.tsx; 2026-11-17]
+- **Proposed solution:** Static pages such as "WebP to JPG" that reuse the existing engine (canvas) for the formats it already accepts. AVIF is out of scope: the engine detects and rejects AVIF today, and accepting it would depend on browser support. [E: fact; high; repo:src/lib/engine/sniff.ts; 2026-11-17]
+- **Why it matters:** Cheap extra entry pages and a first step toward a multi-tool site (the owner's direction).
+- **Evidence:** iLoveIMG ranks first for "webp to jpg" at an estimated 201K searches in India (Semrush, low confidence). [E: inference; low; https://www.semrush.com/website/iloveimg.com/overview/; 2026-11-17] SizeTune's output picker offers JPEG, PNG, WebP and Auto. [E: fact; high; repo:src/components/tool/FormatPicker.tsx; 2026-11-17]
+- **Competitive context:** Extreme: iLoveIMG and many converters; no differentiation beyond no-upload, which is common.
+- **Expected value:** Unknown; competition makes ranking uncertain.
+- **Effort:** S — pages and copy on the existing engine.
+- **Risks:** Doorway or thin pages; AdSense low-value policy; weak intent match with the KB-resizing brand.
+- **Dependencies:** OPP-001 outcome (proof that such pages get indexed); OPP-005 if many tools follow.
+- **Ratings:** user_value=2, strategic_alignment=4, market_opportunity=3, competitive_differentiation=1, business_impact=3, implementation_feasibility=5
+- **Reviewer notes:** Widened-pass review (independent agent): premise re-tagged as assumption, AVIF removed from scope (engine rejects it), evidence re-cited. Confidence Low; the Semrush figure is a competitor keyword estimate, not evidence of a user problem. Kept at Under Evaluation but not presented as an option.
+
+### OPP-013 — Client-side image-to-PDF and JPG-to-PDF
+
+- **Category:** product extension
+- **Source direction:** adjacent market
+- **Problem:** Forms are assumed to want a document as PDF, forcing applicants to convert a photo or scan; no user evidence was found. [E: assumption; low; user:none found, owner direction to broaden tools; 2026-11-17] Demand is unmeasured.
+- **Proposed solution:** An in-browser image-to-PDF tool (select images, order, output size note) built on pdf-lib (MIT) with the existing resize step before embedding, no upload.
+- **Why it matters:** "jpg to pdf" is a large keyword at iLovePDF: about 7.5M estimated searches in an India-filtered Semrush table (a search-volume estimate, not visits; low confidence). [E: inference; low; https://www.semrush.com/website/ilovepdf.com/overview/; 2026-11-17] It is simple and permissive-licensed, unlike PDF compression, and pairs with the KB tool.
+- **Evidence:** pdf-lib is MIT; its last release is reported as 2021 (unconfirmed). [E: inference; medium; https://github.com/Hopding/pdf-lib; 2026-11-17] "jpg to pdf under 1mb" appears in autocomplete. [E: inference; low; search:suggestqueries.google.com compress pdf to 100kb; 2026-11-17]
+- **Competitive context:** Extreme (iLovePDF, Smallpdf and many client-side tools); not a differentiator.
+- **Expected value:** Unknown. It does not validate demand for compress-to-KB PDFs (OPP-003); sequencing with OPP-003 Phase 0 is an owner decision.
+- **Effort:** M — new engine path, page ordering UI, memory limits, tests, verifier changes.
+- **Risks:** Crowded; unmaintained library; verifier and privacy gates assume images only (see OPP-005).
+- **Dependencies:** OPP-005 once a second tool is committed; OPP-003's Phase 0 result.
+- **Ratings:** user_value=2, strategic_alignment=4, market_opportunity=3, competitive_differentiation=1, business_impact=3, implementation_feasibility=3
+- **Reviewer notes:** Widened-pass review (independent agent): differentiation lowered 2 to 1 (own text says not a differentiator), feasibility lowered 4 to 3 (new engine path, unmaintained library, verifier gates assume images), user_value lowered 3 to 2 (no user evidence). Score recomputed.
