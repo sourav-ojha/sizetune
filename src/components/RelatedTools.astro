@@ -1,0 +1,22 @@
+---
+import { relatedTools } from '../data/tools';
+interface Props { path: string }
+const { path } = Astro.props;
+const related = relatedTools(path);
+---
+{related.length > 0 && (
+  <section aria-labelledby="related-tools" class="mx-auto mt-12 max-w-3xl" data-testid="related-tools">
+    <h2 id="related-tools" class="text-2xl font-bold text-slate-950">Related tools</h2>
+    <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+      {related.map((t) => (
+        <li>
+          <a href={t.href} class="block h-full rounded-2xl border border-slate-200 bg-white p-4 shadow-sm hover:border-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+            <span class="block font-semibold text-slate-950">{t.title}</span>
+            <span class="mt-1 block text-sm leading-relaxed text-slate-600">{t.blurb}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="mt-4 text-sm"><a href="/tools/" class="font-medium text-teal-800 underline decoration-teal-300 underline-offset-4 hover:decoration-teal-700">See all tools</a></p>
+  </section>
+)}

@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
 import CheckerTool from '../components/CheckerTool.tsx';
 import Hero from '../components/Hero.astro';
 import { webApplicationLd, proseClass } from './_seo';
@@ -97,4 +98,5 @@ const jsonLd = webApplicationLd('SizeTune: check image type, size and pixels', '
       No. The checking happens in your browser. Read the <a href="/privacy/">privacy page</a> for details.
     </p>
   </div>
+  <RelatedTools path="/check-image-size/" />
 </Base>

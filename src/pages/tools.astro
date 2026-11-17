@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import ToolGuide from '../components/ToolGuide.astro';
+import { toolsByFamily } from '../data/tools';
+const groups = toolsByFamily();
+const title = 'All SizeTune Tools: Resize, Convert, Check | SizeTune';
+const description =
+  'Every free SizeTune tool in one list: resize photos and signatures to a size in KB, convert, rotate, check an image and make social images and icons.';
+---
+<Base pageType="policy" width="wide" title={title} description={description} path="/tools/">
+  <Hero title="All SizeTune tools" lead="Each tool runs inside your browser. Pick the job you have, and the page opens with the right settings chosen." />
+
+  {groups.map((g) => (
+    <section aria-labelledby={`fam-${g.key}`} class="mt-10" data-testid="tool-family">
+      <h2 id={`fam-${g.key}`} class="text-2xl font-bold text-slate-950">{g.label}</h2>
+      <p class="mt-1 text-slate-600">{g.blurb}</p>
+      <ul class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {g.tools.map((t) => (
+          <li>
+            <a href={t.href} class="block h-full rounded-2xl border border-slate-200 bg-white p-4 shadow-sm hover:border-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+              <span class="block font-semibold text-slate-950">{t.title}</span>
+              <span class="mt-1 block text-sm leading-relaxed text-slate-600">{t.blurb}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+
+  <ToolGuide
+    howTitle="How the tools work"
+    steps={[
+      'Open the tool that matches your job and add a picture from your device.',
+      'Check the settings the page chose for you, such as the maximum size, and change them if your form says something different.',
+      'Look at the preview and the reported file size, then download the result.',
+    ]}
+    faq={[
+      { q: 'Do the tools cost anything?', a: 'No. There is no account, no watermark and no limit on how many pictures you process.' },
+      { q: 'Which tool should I start with?', a: 'If your form names a size in KB, start with the image resizer. If it names a signature, use the signature tool. If you are unsure whether a file will be accepted, use the checker first.' },
+      { q: 'Will more tools be added?', a: 'This list is the full set of tools that exist today. A tool appears here only once its page is live.' },
+    ]}
+    privacy="The picture you choose is processed by code running on your own device, and its content is not sent to SizeTune."
+  />
+</Base>
