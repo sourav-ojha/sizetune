@@ -1,0 +1,108 @@
+---
+import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import SignatureTool from '../components/SignatureTool.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Resize Signature to 10 KB Online | SizeTune';
+const description =
+  'Crop and shrink a photo of your signature to 10 KB or less in your browser. Learn why 10 KB is tight, how to keep strokes readable and how to check the file.';
+const jsonLd = webApplicationLd('SizeTune: resize signature to 10 KB', '/resize-signature-to-10kb/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/resize-signature-to-10kb/" jsonLd={jsonLd}>
+  <Hero title="Resize a signature to 10 KB" lead="Add a photo or scan of your signature, crop it close and reduce it to 10 KB or less. The maximum starts at 10 KB, and you can change it or add a minimum if your form says something different." />
+
+  <SignatureTool client:load defaultMaxKb={10} />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      The signature tool crops and compresses your image inside your browser, so it needs JavaScript. Turn it on and
+      reload to continue. The advice below on reaching 10 KB works without it.
+    </p>
+  </noscript>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>Why 10 KB is a tight target for a signature</h2>
+    <p>
+      Ten kilobytes is about ten thousand characters of plain text. A signature on white paper is mostly empty space
+      with a few dark strokes, so it can fit, but only when the picture is small and clean. A raw phone photo of a
+      page is hundreds of times larger. The job is to throw away everything that is not ink: the wide white margins,
+      the shadow across the paper and the pixels you do not need.
+    </p>
+    <p>
+      Different forms use 10 KB for different reasons, and some also fix a pixel size such as a short, wide strip.
+      Read your own form for the exact numbers. We do not list organisations here, because rules change.
+    </p>
+
+    <h2>What to do before you open the tool</h2>
+    <ul>
+      <li>Sign with a dark pen, black or dark blue, on plain white paper with no lines.</li>
+      <li>Photograph in daylight from directly above, so no shadow falls across the strokes.</li>
+      <li>Keep the paper flat. A curl or a fold adds grey bands that cost bytes without helping.</li>
+      <li>Leave a little white around the signature. Cropping tighter is the tool's job.</li>
+    </ul>
+
+    <h2>How the crop saves bytes</h2>
+    <p>
+      The crop box is the most powerful control for a 10 KB target. Drag it until the signature fills most of the
+      frame. Then use the automatic trim to remove spare white at the edges. Fewer pixels means fewer bytes, and the
+      strokes stay thicker relative to the frame, which keeps them readable after compression. A signature that took
+      up a fifth of the original photo can become several times sharper in the same file size once cropped.
+    </p>
+
+    <h2>Keeping strokes readable at 10 KB</h2>
+    <p>
+      Thin lines are the first thing heavy compression damages. JPEG tends to leave faint speckle around dark strokes
+      on a white background, and at very low quality the hairlines break up. If the preview looks speckled, try a
+      slightly smaller picture with higher quality instead of the reverse. If your form allows a width and height,
+      choose the smallest it accepts, since a smaller frame lets the tool spend its bytes more evenly.
+    </p>
+    <p>
+      Contrast matters as well. A faint grey signature compresses into a smaller file, but may look washed out on the
+      portal. A bold, dark one costs a few more bytes and reads much better.
+    </p>
+
+    <h2>If you also need a minimum size</h2>
+    <p>
+      Some forms want a signature file between two sizes, for example 4 and 10 KB. Enter both in the range fields. A
+      tiny, plain image can come out below your minimum, and the tool reports it instead of padding the file with
+      meaningless data. If that happens, use a slightly larger crop or a sharper original. For a bigger signature
+      budget, the <a href="/resize-signature/">general signature page</a> starts at 20 KB, and the{' '}
+      <a href="/resize-image-to-100kb/">100 KB photo page</a> handles portraits.
+    </p>
+
+    <h2>Check the file before you upload</h2>
+    <ul>
+      <li>Read the size the tool reports and compare it with the downloaded file's properties.</li>
+      <li>Zoom in on the result to confirm the loops and crossings of the strokes are distinct.</li>
+      <li>Confirm the extension matches the format your form lists, such as .jpg.</li>
+      <li>Upload the saved file directly, without sending it through a chat app first.</li>
+    </ul>
+
+    <h2>Frequently asked questions about 10 KB signatures</h2>
+    <h3>Can a signature really fit in 10 KB?</h3>
+    <p>
+      Usually yes, if it is cropped tightly and photographed on clean white paper. Cluttered backgrounds and shadows are
+      what make it hard.
+    </p>
+    <h3>Why is my result only 6 or 7 KB?</h3>
+    <p>
+      A simple image needs few bytes. If your form has no minimum, a smaller file is fine. If it does, see the section
+      on minimum sizes above.
+    </p>
+    <h3>Should I scan or photograph my signature?</h3>
+    <p>
+      Either works. A flat scan avoids shadows, but a well-lit photo taken from above is just as good once cropped.
+    </p>
+    <h3>Will a 10 KB signature look blurry on the form?</h3>
+    <p>
+      Slight softness is normal at this size. Strokes should remain separate and legible. If they merge, re-crop and
+      try again with a cleaner original.
+    </p>
+    <h3>Is my signature uploaded to SizeTune?</h3>
+    <p>
+      No. Everything happens in your browser. See the <a href="/privacy/">privacy page</a> for details, or open the{' '}
+      <a href="/">SizeTune home page</a> for the general image tool.
+    </p>
+  </div>
+  <RelatedTools path="/resize-signature-to-10kb/" />
+</Base>

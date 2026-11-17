@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
 import SignatureTool from '../components/SignatureTool.tsx';
 import Hero from '../components/Hero.astro';
 import { webApplicationLd, proseClass } from './_seo';
@@ -8,7 +9,7 @@ const description =
   'Crop and resize a photo or scan of your signature to a size in KB in your browser. Capture tips, size guidance and why a tiny signature can miss a minimum.';
 const jsonLd = webApplicationLd('SizeTune: resize signature', '/resize-signature/', description);
 ---
-<Base pageType="tool" title={title} description={description} path="/resize-signature/" jsonLd={jsonLd}>
+<Base pageType="tool" width="wide" title={title} description={description} path="/resize-signature/" jsonLd={jsonLd}>
   <Hero title="Resize a signature image" lead="Add a photo or scan of your signature, crop it close, and reduce it to the file size your form asks for. The maximum starts at 20 KB, and you can change it or add a minimum." />
 
   <SignatureTool client:load defaultMaxKb={20} />
@@ -20,7 +21,7 @@ const jsonLd = webApplicationLd('SizeTune: resize signature', '/resize-signature
     </p>
   </noscript>
 
-  <div class={`mt-10 ${proseClass}`}>
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
     <h2>Capture a clean signature first</h2>
     <p>
       The quality of the final file depends mostly on the starting picture. A clean source also compresses into fewer
@@ -136,7 +137,8 @@ const jsonLd = webApplicationLd('SizeTune: resize signature', '/resize-signature
     <p>
       No. We cannot see your portal's checks, so compare the displayed size, dimensions and format with what the form
       says before you submit. The <a href="/">home page tool</a> offers the same engine without the signature
-      cropping.
+      cropping. If your form caps a signature at 10 KB, there is a <a href="/resize-signature-to-10kb/">page that starts at that limit</a>.
     </p>
   </div>
+  <RelatedTools path="/resize-signature/" />
 </Base>

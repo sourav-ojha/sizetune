@@ -1,0 +1,79 @@
+---
+import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import SocialTool from '../components/SocialTool.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'YouTube Thumbnail Resizer, No Upload | SizeTune';
+const description =
+  "Fit a picture to YouTube's thumbnail sizes for videos and Shorts, and keep the file under the 2 MB mobile limit, in your browser. Sizes come from YouTube Help.";
+const jsonLd = webApplicationLd('SizeTune: YouTube thumbnail resizer', '/youtube-thumbnail-resizer/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/youtube-thumbnail-resizer/" jsonLd={jsonLd}>
+  <Hero title="YouTube thumbnail resizer" lead="Fit a picture to a YouTube thumbnail size and keep the file within YouTube's size limit. The sizes come from YouTube Help, and nothing is uploaded." />
+
+  <SocialTool client:load platform="youtube" />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This tool fits images inside your browser, so it will not run while JavaScript is turned off. Enable JavaScript and
+      reload to use it. The notes below on YouTube's thumbnail rules still apply with any other editor.
+    </p>
+  </noscript>
+  <p class="mx-auto mt-6 max-w-3xl text-center text-base text-slate-700">
+    Want a different file size? <a data-testid="to-resizer" class="font-medium text-teal-800 underline underline-offset-4" href="/">Open the KB resizer</a>.
+  </p>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>What YouTube asks for</h2>
+    <p>
+      YouTube Help recommends a video thumbnail of 3840 by 2160 pixels in the 16:9 shape, and says it should be as large
+      as possible, with a minimum width of 640 pixels. For Shorts the recommended size is 2160 by 3840 in the tall 9:16
+      shape, with a minimum height of 640. The help page names JPG and PNG as accepted image formats. This tool saves a
+      JPEG.
+    </p>
+
+    <h2>The file size limit</h2>
+    <p>
+      The same page gives two limits. A video thumbnail can be up to 2 MB when you set it from the mobile app, and up to
+      50 MB from a computer. Because you may not know which you will use, the tool starts with a size limit of 2,000 KB,
+      which fits both. If your result is larger than that, the quality is lowered to try to fit it, and the page says whether it did so. Clear
+      the box for no limit, or enter another number.
+    </p>
+    <p>
+      A 3840 by 2160 picture is big, and a detailed one can need lower quality to fit under 2 MB. If it looks too soft,
+      a smaller picture at higher quality can look better, but check that it stays above the 640 pixel minimum.
+    </p>
+
+    <h2>Fitting a picture that is not 16:9</h2>
+    <p>
+      Photos from a phone or camera are often 4:3 or square, and a screenshot may be any shape. Crop fills the whole
+      thumbnail and cuts off the rest, and you choose whether the top, middle or bottom of the picture stays, which is
+      useful when a face is near one edge. Colour bars keep the whole picture with bars at the sides. A blurred
+      background keeps the whole picture and fills the sides with a soft copy of it, a look many channels use for
+      pictures that are not widescreen.
+    </p>
+
+    <h2>Thumbnails are read small</h2>
+    <p>
+      Most viewers see a thumbnail as a small card in a list. Keep the main subject large and near the middle, use few
+      words of large text, and keep the text short. The tool shows a preview so you can step back from the screen and see whether it still reads.
+    </p>
+
+    <h2>Frequently asked questions about YouTube thumbnails</h2>
+    <h3>Why does the tool use 2,000 KB as a default?</h3>
+    <p>YouTube Help gives 2 MB as the mobile limit and 50 MB for a computer. The smaller number is safe for both.</p>
+    <h3>Do I have to use 3840 by 2160?</h3>
+    <p>It is the recommended size. YouTube Help says the minimum width is 640 pixels, and a larger picture gives a sharper result.</p>
+    <h3>Can I make a Shorts thumbnail?</h3>
+    <p>Yes. Pick the Shorts size, which is the tall 2160 by 3840 shape.</p>
+    <h3>Why is my result a JPEG?</h3>
+    <p>JPEG is small and accepted by YouTube. This tool saves only JPEG, so a PNG with transparency is flattened onto the colour you choose.</p>
+    <h3>Is my picture uploaded?</h3>
+    <p>
+      No. It is fitted in your browser. See the <a href="/privacy/">privacy page</a>. The{' '}
+      <a href="/instagram-image-resizer/">Instagram</a> and <a href="/linkedin-image-resizer/">LinkedIn</a> pages cover
+      those platforms.
+    </p>
+  </div>
+  <RelatedTools path="/youtube-thumbnail-resizer/" />
+</Base>

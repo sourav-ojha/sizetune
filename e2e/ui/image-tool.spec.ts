@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import fs from 'node:fs';
-import { NOISE, bombPng, unreadablePng, bytesOf, downloaded, file, flatPng, isJpeg, isPng, isWebp, openTool, pick, resize, transparentPng } from './helpers';
+import { cancelRunInSameTask, NOISE, bombPng, unreadablePng, bytesOf, downloaded, file, flatPng, isJpeg, isPng, isWebp, openTool, pick, resize, transparentPng } from './helpers';
 
 test.describe('image tool', () => {
   test('preset buttons set the maximum and the result honours it', async ({ page }) => {
@@ -33,16 +33,17 @@ test.describe('image tool', () => {
     await expect(page.getByTestId('result')).toHaveCount(0);
   });
 
-  test('invalid maximum disables the button with a message', async ({ page }) => {
+  test('invalid maximum stops the automatic run, with a message', async ({ page }) => {
     await openTool(page);
     await pick(page, NOISE);
     for (const bad of ['0', '', 'abc', '-3', '99999999']) {
       await page.getByTestId('target').fill(bad);
-      await expect(page.getByTestId('run'), `value "${bad}"`).toBeDisabled();
+      await expect(page.getByTestId('form-invalid'), `value "${bad}"`).toBeVisible();
       await expect(page.getByTestId('size-picker')).toContainText(/Enter a/);
     }
     await page.getByTestId('target').fill('25');
-    await expect(page.getByTestId('run')).toBeEnabled();
+    await expect(page.getByTestId('form-invalid')).toHaveCount(0);
+    await expect(page.getByTestId('result')).toBeVisible({ timeout: 60_000 }); // a valid size resizes again by itself
   });
 
   test('"No limit" shows a quality slider and uses a fixed quality', async ({ page }) => {
@@ -77,7 +78,7 @@ test.describe('image tool', () => {
     await page.getByTestId('advanced').locator('summary').click();
     await page.getByTestId('min-size').fill('80');
     await page.getByTestId('preset-50').click();
-    await expect(page.getByTestId('run')).toBeDisabled();
+    await expect(page.getByTestId('form-invalid')).toBeVisible();
     await expect(page.getByTestId('advanced')).toContainText('smaller than the maximum');
     await page.getByTestId('min-size').fill('49');
     await expect(page.getByTestId('advanced')).toContainText('too close');
@@ -182,12 +183,7 @@ test.describe('image tool', () => {
   test('cancel stops the run silently and keeps the file', async ({ page }) => {
     await openTool(page);
     await pick(page, NOISE);
-    // click Run then Cancel in the same task so the engine cannot finish in between
-    await page.evaluate(async () => {
-      (document.querySelector('[data-testid=run]') as HTMLButtonElement).click();
-      await Promise.resolve(); // let the UI commit the "processing" UI, but not long enough for the engine to answer
-      (document.querySelector('[data-testid=cancel]') as HTMLButtonElement).click();
-    });
+    await cancelRunInSameTask(page); // the run starts by itself; cancel it before the engine can answer
     await page.waitForTimeout(2500);
     await expect(page.getByTestId('result')).toHaveCount(0);
     await expect(page.getByRole('alert')).toHaveCount(0);
@@ -199,8 +195,7 @@ test.describe('image tool', () => {
   test('progress and Cancel are shown while processing', async ({ page }) => {
     await openTool(page);
     await pick(page, NOISE);
-    await page.evaluate(() => (document.querySelector('[data-testid=run]') as HTMLButtonElement).click());
-    // may already be done on a fast machine: either state is valid, but never both
+    // the run starts by itself; may already be done on a fast machine: either state is valid, but never both
     const progress = await page.getByTestId('progress').count();
     if (progress) { await expect(page.getByTestId('cancel')).toBeVisible(); await expect(page.getByTestId('run')).toHaveCount(0); }
     await expect(page.getByTestId('result')).toBeVisible({ timeout: 60_000 });
@@ -214,7 +209,7 @@ test.describe('image tool', () => {
     await page.getByTestId('reset').click();
     await expect(page.getByTestId('result')).toHaveCount(0);
     await expect(page.getByTestId('preview')).toHaveCount(0);
-    await expect(page.getByTestId('run')).toBeDisabled();
+    await expect(page.getByTestId('run')).toHaveCount(0);
     await expect(page.getByTestId('file')).toBeFocused();
     // same file can be chosen again
     await pick(page, NOISE);
@@ -236,11 +231,11 @@ test.describe('image tool', () => {
     await expect(page.getByTestId('dropzone')).toHaveAttribute('data-over', 'true');
     await page.getByTestId('dropzone').dispatchEvent('drop', { dataTransfer: dt });
     await expect(page.getByTestId('file-info')).toContainText('dropped.png');
-    await expect(page.getByTestId('run')).toBeEnabled();
+    await expect(page.getByTestId('result')).toBeVisible({ timeout: 30_000 }); // dropping a file resizes it by itself
     await expect(page.getByTestId('dropzone')).toHaveAttribute('data-over', 'false');
   });
 
-  test('a second dropped file is ignored with a notice', async ({ page }) => {
+  test('two dropped files start a batch, one row per file (replaces the old "only the first file" behaviour, FEATURE-005)', async ({ page }) => {
     await openTool(page);
     const dt = await page.evaluateHandle(async () => {
       const d = new DataTransfer();
@@ -251,8 +246,9 @@ test.describe('image tool', () => {
       return d;
     });
     await page.getByTestId('dropzone').dispatchEvent('drop', { dataTransfer: dt });
-    await expect(page.getByTestId('file-info')).toContainText('a.png');
-    await expect(page.getByTestId('notice')).toContainText('first file');
+    await expect(page.getByTestId('batch-row')).toHaveCount(2);
+    await expect(page.getByTestId('batch-row').first()).toHaveAttribute('data-name', 'a.png');
+    await expect(page.getByTestId('file-info')).toHaveCount(0);
   });
 
   test('non-image content is rejected immediately', async ({ page }) => {
@@ -260,20 +256,19 @@ test.describe('image tool', () => {
     await page.getByTestId('file').setInputFiles(file('evil.png', Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"></svg>')));
     await expect(page.getByRole('alert')).toContainText('JPEG, PNG or WebP');
     await expect(page.getByTestId('preview')).toHaveCount(0);
-    await expect(page.getByTestId('run')).toBeDisabled();
+    await expect(page.getByTestId('run')).toHaveCount(0);
   });
 
   // @chromium-only: Firefox/WebKit decode a corrupt-IDAT PNG leniently; the cross-browser failure path is the blocked-worker test below.
-  test('an image that cannot be decoded shows a friendly error at Resize and can be retried @chromium-only', async ({ page }) => {
+  test('an image that cannot be decoded shows a friendly error from the automatic run and can be retried @chromium-only', async ({ page }) => {
     await openTool(page);
-    await pick(page, file('unreadable.png', unreadablePng(100, 100))); // valid structure, undecodable pixels
-    await page.getByTestId('run').click();
+    await pick(page, file('unreadable.png', unreadablePng(100, 100))); // valid structure, undecodable pixels: the automatic run fails
     await expect(page.getByRole('alert')).toBeVisible({ timeout: 20_000 });
     await expect(page.getByRole('alert')).not.toContainText(/undefined|Error:/);
     await expect(page.getByTestId('run')).toBeEnabled();
     await expect(page.getByTestId('run'), 'N3: focus is not lost after a failed run').toBeFocused();
-    await pick(page, file('ok.png', flatPng(200, 200)));
-    await resize(page);
+    await pick(page, file('ok.png', flatPng(200, 200))); // a new file resizes by itself
+    await expect(page.getByTestId('result')).toBeVisible({ timeout: 60_000 });
     await expect(page.getByRole('alert')).toHaveCount(0);
   });
 
@@ -282,7 +277,7 @@ test.describe('image tool', () => {
     await page.getByTestId('file').setInputFiles(file('broken.png', flatPng(200, 200).subarray(0, 60)));
     await expect(page.getByRole('alert')).toContainText(/incomplete or damaged/);
     await expect(page.getByTestId('preview')).toHaveCount(0);
-    await expect(page.getByTestId('run')).toBeDisabled();
+    await expect(page.getByTestId('run')).toHaveCount(0);
     await pick(page, file('ok.png', flatPng(200, 200)));
     await expect(page.getByRole('alert')).toHaveCount(0);
     await resize(page);
@@ -293,8 +288,8 @@ test.describe('image tool', () => {
     await pick(page, NOISE);
     await resize(page);
     await page.getByTestId('file').setInputFiles(file('other.png', flatPng(100, 80)));
-    await expect(page.getByTestId('result')).toHaveCount(0);
     await expect(page.getByTestId('file-info')).toContainText('other.png');
+    await expect(page.getByTestId('result')).toContainText('from “other.png”', { timeout: 30_000 }); // the old result is gone; the new file has its own
   });
 
   test('settings: dimensions with aspect lock show derived placeholders, nothing is prefilled', async ({ page }) => {
@@ -419,19 +414,16 @@ test.describe('image tool', () => {
     expect(prevented).toEqual([true, true]);
   });
 
-  test('L3: changing a setting during a run cancels it with a visible notice', async ({ page }) => {
+  test('L3: changing a setting during a run supersedes it: only the run for the new setting delivers a result', async ({ page }) => {
     await openTool(page);
     await pick(page, NOISE);
-    await page.evaluate(async () => {
-      (document.querySelector('[data-testid=run]') as HTMLButtonElement).click();
-      await Promise.resolve();
-      (document.querySelector('[data-testid=preset-10]') as HTMLButtonElement).click();
-    });
-    await expect(page.getByTestId('notice')).toContainText('Settings changed, so the run was cancelled');
-    await page.waitForTimeout(2000);
-    await expect(page.getByTestId('result')).toHaveCount(0);
-    await expect(page.getByTestId('run')).toBeEnabled();
+    await page.evaluate(() => (document.querySelector('[data-testid=preset-10]') as HTMLButtonElement).click()); // while the first run is in flight
     await expect(page.getByTestId('preset-10')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.getByTestId('notice')).toHaveCount(0); // no "run was cancelled" notice: it simply starts again
+    await expect(page.getByTestId('result')).toBeVisible({ timeout: 60_000 });
+    await page.waitForTimeout(1000);
+    await expect(page.getByTestId('result-size')).toHaveCount(1);
+    expect(Number(await page.getByTestId('result-size').getAttribute('data-bytes'))).toBeLessThanOrEqual(10_000);
   });
 
   test('L4: sizes accept units and separators, and say what is expected otherwise', async ({ page }) => {
@@ -439,18 +431,18 @@ test.describe('image tool', () => {
     await pick(page, NOISE);
     await page.getByTestId('target').fill('20 KB');
     await expect(page.getByTestId('preset-20')).toHaveAttribute('aria-pressed', 'true');
-    await expect(page.getByTestId('run')).toBeEnabled();
+    await expect(page.getByTestId('form-invalid')).toHaveCount(0);
     await page.getByTestId('target').fill('1,000');
-    await expect(page.getByTestId('run')).toBeEnabled();
+    await expect(page.getByTestId('form-invalid')).toHaveCount(0);
     await page.getByTestId('target').fill('abc');
     await expect(page.getByTestId('size-picker')).toContainText('for example 20 or “20 KB”');
-    await expect(page.getByTestId('run')).toBeDisabled();
+    await expect(page.getByTestId('form-invalid')).toBeVisible();
     await page.getByTestId('target').fill('30kb');
     await resize(page);
     expect(await bytesOf(page)).toBeLessThanOrEqual(30_000);
     await page.getByTestId('advanced').locator('summary').click();
     await page.getByTestId('width').fill('1,200 px');
-    await expect(page.getByTestId('run')).toBeEnabled();
+    await expect(page.getByTestId('form-invalid')).toHaveCount(0);
     await page.getByTestId('width').fill('12 KB');
     await expect(page.getByTestId('advanced')).toContainText('whole number of pixels');
   });
@@ -458,8 +450,7 @@ test.describe('image tool', () => {
   test('a worker that fails to load shows a friendly error with Try again, and retry works', async ({ page }) => {
     await page.route('**/_astro/*worker*.js', (r) => r.abort());
     await openTool(page);
-    await pick(page, NOISE);
-    await page.getByTestId('run').click();
+    await pick(page, NOISE); // the automatic run fails
     await expect(page.getByRole('alert')).toContainText(/try again/i, { timeout: 20_000 });
     await expect(page.getByRole('alert')).not.toContainText(/undefined|Error:/);
     await expect(page.getByTestId('retry')).toBeVisible();

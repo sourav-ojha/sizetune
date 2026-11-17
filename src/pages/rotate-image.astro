@@ -1,0 +1,106 @@
+---
+import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import RotateTool from '../components/RotateTool.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Rotate or Flip an Image Online | SizeTune';
+const description =
+  'Turn a sideways photo upright or mirror it in your browser, with no upload. Fix a picture that looks rotated on a form, then resize it to the KB limit you need.';
+const jsonLd = webApplicationLd('SizeTune: rotate or flip an image', '/rotate-image/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/rotate-image/" jsonLd={jsonLd}>
+  <Hero title="Rotate or flip an image" lead="Add a JPEG, PNG or WebP picture, turn it a quarter at a time or mirror it, check the preview and download it. Nothing is uploaded." />
+
+  <RotateTool client:load />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This tool turns images inside your browser, so it will not run while JavaScript is turned off. Enable JavaScript
+      and reload to use it. The explanation below of why pictures end up sideways still applies if you prefer another
+      editor.
+    </p>
+  </noscript>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>Why a picture can look sideways on a form</h2>
+    <p>
+      A phone camera records pixels in the orientation of its sensor, which is usually landscape. When you hold the
+      phone upright, it adds a small label to the file saying "show this one turned a quarter". Most photo apps and web
+      browsers obey that label, so the picture looks upright to you. Some upload forms, older software and image
+      processors ignore it and show the raw pixels, so the same photo appears on its side.
+    </p>
+    <p>
+      The cure is to save the picture with its pixels already turned the right way. That is what this page does: it
+      draws the picture the way your browser shows it, turns it and saves the result, so the orientation no longer
+      depends on a label that another program may skip.
+    </p>
+
+    <h2>How to use the buttons</h2>
+    <ol>
+      <li><strong>Add the picture.</strong> Drag it onto the box, or choose it from your phone or computer.</li>
+      <li><strong>Check the preview.</strong> It shows the picture as your browser displays it, with the orientation label already applied once.</li>
+      <li><strong>Turn or mirror.</strong> Rotate left or right moves it a quarter turn each time. Flip horizontally mirrors left to right, and flip vertically mirrors top to bottom.</li>
+      <li><strong>Reset if you overshoot.</strong> Reset returns to the picture as first shown.</li>
+      <li><strong>Download.</strong> The file keeps its format: a JPEG stays a JPEG, a PNG stays a PNG and a WebP stays a WebP.</li>
+    </ol>
+
+    <h2>What happens to the quality</h2>
+    <p>
+      A PNG is saved without compression loss, though a colour profile or 16-bit colour in the original is not kept. A
+      JPEG or WebP picture has to be compressed again when it is saved, and this page uses quality 95 out of 100 so the
+      change is small. Even so, each extra
+      save of a JPEG removes a little detail, so avoid rotating the same file many times. If you only need the
+      orientation fixed once, do it once, from the original.
+    </p>
+    <p>
+      The saved file can be larger or smaller than the one you started with, because a fresh save is not identical to
+      the camera's own. If a form also sets a size limit, the quickest route is to rotate first and then reduce the file
+      with the <a href="/">resizer on the home page</a>, which can aim for the KB number your form states.
+    </p>
+
+    <h2>Mirror images and selfies</h2>
+    <p>
+      Front cameras often show a mirrored preview, and some apps save that mirror image. Text on a shirt or a sign then
+      reads backwards. Flip horizontally to correct it. If you want a mirrored copy on purpose, for a design or a
+      reflection effect, the same button does that.
+    </p>
+
+    <h2>What this page does not do</h2>
+    <ul>
+      <li>It turns in quarter steps only. It does not rotate by a free angle or straighten a tilted horizon.</li>
+      <li>It does not crop, resize or change the file size on purpose.</li>
+      <li>It handles one picture at a time. An animated WebP is saved as its first frame only.</li>
+      <li>Very large pictures above about 16 megapixels are refused, because some phones cannot draw a canvas that big. Reduce them first.</li>
+    </ul>
+    <p>
+      For a form that asks for a specific size in kilobytes, see the <a href="/resize-image-to-20kb/">20 KB page</a>{' '}
+      or the <a href="/resize-image-to-100kb/">100 KB page</a> after turning your picture.
+    </p>
+
+    <h2>Frequently asked questions about rotating images</h2>
+    <h3>Why does my photo look upright on my phone but sideways on the website?</h3>
+    <p>
+      Your phone obeys the orientation label stored in the file. The website ignores it. Saving the picture with its
+      pixels turned, as this page does, fixes the difference.
+    </p>
+    <h3>Will rotating change the file size?</h3>
+    <p>
+      It can. A JPEG or WebP is saved again, so the size may move a little up or down. Use the resizer afterwards if you
+      have a limit in KB.
+    </p>
+    <h3>Does it remove the location stored in my photo?</h3>
+    <p>
+      Saving a new copy from the canvas does not carry the original file's extra data across, which usually includes
+      location. Do not rely on that as a privacy tool, and check the file yourself if it matters.
+    </p>
+    <h3>Can I rotate a picture by 45 degrees?</h3>
+    <p>
+      No. This page turns by 90 degrees at a time. A free angle needs a full photo editor.
+    </p>
+    <h3>Is my picture uploaded?</h3>
+    <p>
+      No. The turning happens in your browser. Read the <a href="/privacy/">privacy page</a> for details.
+    </p>
+  </div>
+  <RelatedTools path="/rotate-image/" />
+</Base>

@@ -52,12 +52,27 @@ export async function openTool(page: Page, url = '/') {
 
 export async function pick(page: Page, f: string | { name: string; mimeType: string; buffer: Buffer }) {
   await page.getByTestId('file').setInputFiles(f);
-  await expect(page.getByTestId('run')).toBeEnabled({ timeout: 15_000 });
+  // image tool: the file card (a run starts by itself); signature tool: the crop editor, then Resize
+  await expect(page.getByTestId('file-card').or(page.getByTestId('crop-section'))).toBeVisible({ timeout: 15_000 });
 }
 
+/** Waits for the result. The image tool resizes by itself; where a Resize button is offered (signature tool, or after Cancel) it is pressed. */
 export async function resize(page: Page) {
-  await page.getByTestId('run').click();
+  const run = page.getByTestId('run');
+  // The button can disappear while we look (an automatic run starting): then there is nothing to press.
+  if (await run.isVisible()) await run.click({ timeout: 2_000 }).catch(() => undefined);
   await expect(page.getByTestId('result')).toBeVisible({ timeout: 60_000 });
+}
+
+/** Clicks Cancel in the same task in which it appears (the tool starts runs by itself), so the engine cannot finish in between. */
+export function cancelRunInSameTask(page: Page) {
+  return page.evaluate(() => new Promise<void>((resolve, reject) => {
+    const click = () => { const b = document.querySelector('[data-testid=cancel]') as HTMLButtonElement | null; if (b) b.click(); return !!b; };
+    if (click()) return resolve();
+    const mo = new MutationObserver(() => { if (click()) { mo.disconnect(); resolve(); } });
+    mo.observe(document.body, { childList: true, subtree: true });
+    setTimeout(() => { mo.disconnect(); reject(new Error('no run to cancel')); }, 5000);
+  }));
 }
 
 /** Clicks the download link, returns the saved file bytes and the decoded pixel size. */

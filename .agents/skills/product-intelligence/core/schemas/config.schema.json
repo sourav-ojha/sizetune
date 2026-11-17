@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Product Intelligence config (.product/config.json, optional)",
+  "description": "Any key omitted falls back to core/config.default.json. Top-level sections are merged one level deep.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "version": { "type": "integer", "minimum": 1 },
+    "scoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scale_max": { "type": "integer", "minimum": 2 },
+        "criteria": { "type": "object", "minProperties": 1, "additionalProperties": { "type": "number", "minimum": 0 } },
+        "tiers": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "recommend_min": { "type": "number", "minimum": 0 },
+            "consider_min": { "type": "number", "minimum": 0 }
+          }
+        },
+        "min_confidence_for_recommend": { "type": "string", "enum": ["Low", "Medium", "High"] }
+      }
+    },
+    "freshness": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_max_age_days": { "type": "integer", "minimum": 1 },
+        "product_review_days": { "type": "integer", "minimum": 1 },
+        "market_refresh_days": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "research": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_competitors_per_category": { "type": "integer", "minimum": 1 },
+        "max_parallel_agents": { "type": "integer", "minimum": 1 },
+        "widen_competitor_multiplier": { "type": "integer", "minimum": 1 },
+        "widen_target_candidates": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "human_confirmation": { "type": "string", "enum": ["chat", "tty"] },
+        "allow_delegated_approval": { "type": "boolean" }
+      }
+    },
+    "models": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "claude-code": { "type": "object", "additionalProperties": { "type": ["string", "null"], "pattern": "^[A-Za-z0-9][A-Za-z0-9._:\\[\\]-]{0,99}$" } },
+        "codex": { "type": "object", "additionalProperties": { "type": ["string", "null"], "pattern": "^[A-Za-z0-9][A-Za-z0-9._:\\[\\]-]{0,99}$" } },
+        "codex_reasoning_effort": { "type": "object", "additionalProperties": { "type": "string", "enum": ["low", "medium", "high"] } },
+        "role_tier_overrides": { "type": "object", "additionalProperties": { "type": "string", "enum": ["reasoning", "standard", "fast"] } }
+      }
+    }
+  }
+}

@@ -35,7 +35,7 @@ test.describe('audit remediation', () => {
     expect(Buffer.compare(fs.readFileSync(await dl.path()), tiny)).toBe(0);
   });
 
-  test('ST-009: Resize is disabled while a replacement file is being inspected (delayed intake)', async ({ page }) => {
+  test('ST-009: a replacement file is only resized once it has been accepted (delayed intake)', async ({ page }) => {
     await page.addInitScript(() => {
       const orig = window.createImageBitmap.bind(window);
       (window as unknown as { createImageBitmap: unknown }).createImageBitmap = async (...a: unknown[]) => {
@@ -48,11 +48,9 @@ test.describe('audit remediation', () => {
     await resize(page);
     await page.evaluate(() => { (window as unknown as { __slow: boolean }).__slow = true; });
     await page.getByTestId('file').setInputFiles({ name: 'second.png', mimeType: 'image/png', buffer: flatPng(300, 200) });
-    await expect(page.getByTestId('run')).toBeDisabled(); // would otherwise accept a click that the new file then discards
-    await expect(page.getByTestId('run')).toBeEnabled({ timeout: 15_000 });
-    await expect(page.getByTestId('file-info')).toContainText('second.png');
-    await page.getByTestId('run').click();
-    await expect(page.getByTestId('result')).toBeVisible({ timeout: 30_000 });
+    // while the new file is inspected nothing may start (the new file would discard it); then the new file is resized by itself
+    await expect(page.getByTestId('file-info')).toContainText('second.png', { timeout: 15_000 });
+    await expect(page.getByTestId('result')).toContainText('from “second.png”', { timeout: 30_000 });
   });
 
   test('ST-012: an empty file says it is empty', async ({ page }) => {

@@ -6,13 +6,13 @@ test.use({ ...devices['Pixel 7'], channel: 'chrome' });
 const overflow = (page: import('@playwright/test').Page) =>
   page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
 
-for (const url of ['/', '/resize-image-to-20kb/', '/resize-signature/']) {
+for (const url of ['/', '/resize-image-to-20kb/', '/resize-image-to-100kb/', '/resize-signature/', '/resize-signature-to-10kb/']) {
   test(`mobile ${url}: no horizontal scroll through the whole flow, tool usable`, async ({ page }) => {
     await page.goto(url);
     expect(await overflow(page)).toBeLessThanOrEqual(0);
     await expect(page.getByTestId('file')).toBeVisible();
     await openTool(page, url);
-    await pick(page, url === '/resize-signature/' ? file('s.png', signaturePng()) : NOISE);
+    await pick(page, url.includes('signature') ? file('s.png', signaturePng()) : NOISE);
     await page.getByTestId('advanced').locator('summary').click();
     expect(await overflow(page), 'with file + advanced open').toBeLessThanOrEqual(0);
     await resize(page);
@@ -26,7 +26,7 @@ for (const url of ['/', '/resize-image-to-20kb/', '/resize-signature/']) {
 test('mobile: primary controls are at least 44px tall', async ({ page }) => {
   await openTool(page);
   await pick(page, NOISE);
-  for (const id of ['preset-10', 'preset-200', 'run', 'target', 'start-over']) {
+  for (const id of ['preset-10', 'preset-200', 'target', 'start-over']) {
     const b = (await page.getByTestId(id).boundingBox())!;
     expect(b.height, id).toBeGreaterThanOrEqual(43.5);
   }

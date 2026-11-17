@@ -9,17 +9,24 @@ interface Props {
   capText: string | null;
   disabled?: boolean;
   onPick: (file: File, extraCount: number) => void;
+  /** File-picker filter (default: the three formats the resizer reads). */
+  accept?: string;
+  /** Sentence naming what is supported (default: JPEG, PNG and WebP). */
+  supportedText?: string;
+  /** When set, several files can be chosen or dropped at once; a selection of two or more goes here instead of to `onPick`. */
+  onPickMany?: (files: File[]) => void;
 }
 
 /** Native file input inside a label-button (keyboard + touch friendly) plus a drag-and-drop target. The input is SSR'd so a pre-hydration pick is not lost. */
-export default function Dropzone({ inputRef, hasFile, capText, disabled, onPick }: Props) {
+export default function Dropzone({ inputRef, hasFile, capText, disabled, onPick, accept = 'image/jpeg,image/png,image/webp', supportedText = 'Supported: JPEG, PNG and WebP.', onPickMany }: Props) {
   const hintId = useId();
   const [over, setOver] = useState(false);
 
   const onChange = (e: TargetedEvent<HTMLInputElement, Event>) => {
     const files = e.currentTarget.files;
-    const first = files?.[0];
-    if (first) onPick(first, (files?.length ?? 1) - 1);
+    const list = files ? Array.from(files) : [];
+    if (onPickMany && list.length > 1) onPickMany(list);
+    else if (list[0]) onPick(list[0], list.length - 1);
     e.currentTarget.value = ''; // lets the same file be chosen again
   };
   const onDrop = (e: TargetedDragEvent<HTMLDivElement>) => {
@@ -27,7 +34,8 @@ export default function Dropzone({ inputRef, hasFile, capText, disabled, onPick 
     setOver(false);
     const files = e.dataTransfer?.files;
     if (disabled || !files || files.length === 0) return;
-    onPick(files[0], files.length - 1);
+    if (onPickMany && files.length > 1) onPickMany(Array.from(files));
+    else onPick(files[0], files.length - 1);
   };
   const onDragOver = (e: TargetedDragEvent<HTMLDivElement>) => {
     if (!e.dataTransfer?.types?.includes('Files')) return;
@@ -61,7 +69,8 @@ export default function Dropzone({ inputRef, hasFile, capText, disabled, onPick 
           ref={inputRef}
           data-testid="file"
           type="file"
-          accept="image/jpeg,image/png,image/webp"
+          accept={accept}
+          multiple={!!onPickMany}
           className={`sr-only ${focusRing}`}
           aria-describedby={hintId}
           disabled={disabled}
@@ -69,7 +78,7 @@ export default function Dropzone({ inputRef, hasFile, capText, disabled, onPick 
         />
       </label>
       <p id={hintId} className="mt-4 text-sm text-slate-600">
-        Supported: JPEG, PNG and WebP.{capText ? ` ${capText}` : ''} Your image stays in this browser; the site's code does not upload it.
+        {supportedText}{capText ? ` ${capText}` : ''} Your image stays in this browser; the site's code does not upload it.
       </p>
     </div>
   );

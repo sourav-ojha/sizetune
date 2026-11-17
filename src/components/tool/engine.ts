@@ -1,10 +1,11 @@
 /**
  * The ONE seam between the UI and the compression engine (src/lib/engine). Nothing else in src/components imports the engine.
  */
+import { MAX_OUTPUT_PIXELS } from '../../lib/engine/limits';
 import { canEncode, DEFAULT_LIMITS, EngineError, processImage as engineProcessImage, inspectFile, readHeader, type EngineLimits, type ProcessImage, type ProcessOptions, type ProcessResult } from '../../lib/engine';
 
 export { EngineError };
-export type { ProcessOptions, ProcessResult };
+export type { ProcessImage, ProcessOptions, ProcessResult };
 
 /**
  * Static import on purpose. Lazy-loading the engine on first pick (dynamic import()) was tried and rejected: scripts/verify-privacy.mjs
@@ -33,3 +34,6 @@ export async function inspectSize(file: Blob): Promise<{ width: number; height: 
     throw e;
   }
 }
+
+/** Largest canvas the tools allocate (portable ceiling: iOS Safari blanks canvases above 16 MP). */
+export const MAX_CANVAS_PIXELS = MAX_OUTPUT_PIXELS;

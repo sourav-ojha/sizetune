@@ -9,18 +9,35 @@ interface Props {
   noindex?: boolean;
   /** Drives build gates (scripts/verify-html.mjs): home | tool | guide | policy | error */
   pageType: 'home' | 'tool' | 'guide' | 'policy' | 'error';
+  /** Main column width: "narrow" (prose, default) or "wide" (tool pages). */
+  width?: 'narrow' | 'wide';
   /** Open Graph type: "article" for guides, "website" for everything else. */
   ogType?: 'website' | 'article';
 }
-const { title, description, path, jsonLd, noindex = false, pageType, ogType = 'website' } = Astro.props;
+const { title, description, path, jsonLd, noindex = false, pageType, ogType = 'website', width = 'narrow' } = Astro.props;
 const canonical = new URL(path, Astro.site).href;
 const ogImage = new URL('/og-default.png', Astro.site).href;
 const ogImageAlt = 'SizeTune: resize an image to a size in KB, in your browser';
+// Main nav: the jobs people come for. Legal pages live in the footer only.
 const navItems = [
-  { href: '/', label: 'Image resizer' },
+  { href: '/', label: 'Resize image' },
   { href: '/resize-image-to-20kb/', label: '20 KB' },
   { href: '/resize-signature/', label: 'Signature' },
-  { href: '/guides/photo-size-for-online-forms/', label: 'Guide' },
+  { href: '/tools/', label: 'All tools' },
+  { href: '/guides/photo-size-for-online-forms/', label: 'Guides' },
+  { href: '/about/', label: 'About' },
+];
+const footerItems = [
+  { href: '/tools/', label: 'All tools' },
+  { href: '/rotate-image/', label: 'Rotate image' },
+  { href: '/check-image-size/', label: 'Check an image' },
+  { href: '/webp-to-jpg/', label: 'WebP to JPG' },
+  { href: '/png-to-jpg/', label: 'PNG to JPG' },
+  { href: '/instagram-image-resizer/', label: 'Instagram sizes' },
+  { href: '/linkedin-image-resizer/', label: 'LinkedIn sizes' },
+  { href: '/youtube-thumbnail-resizer/', label: 'YouTube thumbnails' },
+  { href: '/favicon-generator/', label: 'Favicon generator' },
+  { href: '/guides/photo-size-for-online-forms/', label: 'Guides' },
   { href: '/about/', label: 'About' },
   { href: '/privacy/', label: 'Privacy' },
   { href: '/terms/', label: 'Terms' },
@@ -55,8 +72,8 @@ const navItems = [
   <body data-page-type={pageType} class="text-slate-900 antialiased">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:font-semibold focus:shadow-pop">Skip to main content</a>
     <header class="relative z-40 border-b border-slate-200/70 bg-white/80 backdrop-blur">
-      <div class="mx-auto flex max-w-5xl flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-        <a href="/" class="flex items-center gap-2.5 rounded-lg text-xl font-bold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+      <div class="mx-auto flex max-w-[70rem] flex-col gap-2 px-4 py-3 sm:flex-row sm:px-8 sm:items-center sm:justify-between">
+        <a href="/" class="flex min-h-11 items-center gap-2.5 rounded-lg text-xl font-bold tracking-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
           <svg aria-hidden="true" viewBox="0 0 32 32" class="size-8 shrink-0"><rect width="32" height="32" rx="9" fill="#0f766e" /><path d="M9 11h14M9 16h14M9 21h14" stroke="#ccfbf1" stroke-width="2" stroke-linecap="round" /><circle cx="13" cy="11" r="2.6" fill="#fff" /><circle cx="20" cy="16" r="2.6" fill="#fff" /><circle cx="12" cy="21" r="2.6" fill="#fff" /></svg>
           SizeTune
         </a>
@@ -67,18 +84,18 @@ const navItems = [
         </nav>
       </div>
     </header>
-    <main id="main" class="mx-auto max-w-3xl px-4 pb-8 pt-8 sm:pt-12"><slot /></main>
+    <main id="main" class={`mx-auto px-4 pb-8 pt-8 sm:pt-12 ${width === 'wide' ? 'max-w-5xl' : 'max-w-3xl'}`}><slot /></main>
     <footer class="mt-8 border-t border-slate-200 bg-white/60">
-      <div class="mx-auto flex max-w-5xl flex-col gap-4 px-4 py-8 text-sm text-slate-600 sm:flex-row sm:items-start sm:justify-between">
+      <div class="mx-auto flex max-w-[62.5rem] flex-col gap-4 px-4 py-7 sm:px-6 text-sm text-slate-600 sm:flex-row sm:items-start sm:justify-between">
         <div class="max-w-sm space-y-2">
           <p class="flex items-center gap-2 font-semibold text-slate-900">
             <svg aria-hidden="true" viewBox="0 0 32 32" class="size-6 shrink-0"><rect width="32" height="32" rx="9" fill="#0f766e" /><path d="M9 11h14M9 16h14M9 21h14" stroke="#ccfbf1" stroke-width="2" stroke-linecap="round" /><circle cx="13" cy="11" r="2.6" fill="#fff" /><circle cx="20" cy="16" r="2.6" fill="#fff" /><circle cx="12" cy="21" r="2.6" fill="#fff" /></svg>
             SizeTune
           </p>
-          <p>SizeTune is a free image resizer. Your images are processed in your browser.</p>
+          <p>A free image resizer that works in your browser. Always follow the instructions on your own form.</p>
         </div>
         <nav aria-label="Footer" class="flex flex-wrap gap-x-2">
-          {navItems.map((n) => (
+          {footerItems.map((n) => (
             <a href={n.href} class="inline-flex min-h-11 items-center rounded px-2 text-slate-700 underline decoration-slate-300 underline-offset-4 hover:text-teal-800 hover:decoration-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">{n.label}</a>
           ))}
         </nav>

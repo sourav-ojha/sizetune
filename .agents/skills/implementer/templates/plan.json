@@ -1,0 +1,14 @@
+{
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Short task title",
+      "deps": [],
+      "files": ["src/feature/", "tests/feature.test.js"],
+      "criteria": [
+        { "id": "AC1", "text": "Given <state> When <action> Then <observable result>", "tests": [] }
+      ],
+      "verify": "npm test"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+---
+// Reusable per-tool guide block (FEATURE-012 FR-2): how it works, FAQ, privacy note. Plain text props only, no URLs.
+interface Props {
+  howTitle?: string;
+  steps: string[];
+  faq: Array<{ q: string; a: string }>;
+  privacy: string;
+}
+const { howTitle = 'How it works', steps, faq, privacy } = Astro.props;
+import { proseClass } from '../pages/_seo';
+---
+<div class={`mx-auto max-w-3xl mt-12 ${proseClass}`} data-testid="tool-guide">
+  <h2>{howTitle}</h2>
+  <ol>{steps.map((s) => <li>{s}</li>)}</ol>
+  <h2>Frequently asked questions</h2>
+  {faq.map((f) => (<><h3>{f.q}</h3><p>{f.a}</p></>))}
+  <h2>Privacy</h2>
+  <p>{privacy}{' '}Read the <a href="/privacy/">privacy page</a> for the details.</p>
+</div>

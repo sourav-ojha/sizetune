@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
 import ImageTool from '../components/ImageTool.tsx';
 import Hero from '../components/Hero.astro';
 import { webApplicationLd, proseClass } from './_seo';
@@ -8,8 +9,8 @@ const description =
   'Reduce a photo to the file size your form allows, in KB, right in your browser. Preview, compare sizes and download. The code here does not upload your image.';
 const jsonLd = webApplicationLd('SizeTune image resizer', '/', description);
 ---
-<Base pageType="home" title={title} description={description} path="/" jsonLd={jsonLd}>
-  <Hero title="Resize an image to a size in KB" lead="Choose a picture, pick the largest file size your form accepts, and SizeTune makes a smaller copy for you in your browser. You see a preview, the before and after sizes, and a download button once the result fits." />
+<Base pageType="home" width="wide" title={title} description={description} path="/" jsonLd={jsonLd}>
+  <Hero title="Resize an image to a size in KB" lead="Pick the limit your form asks for, add your photo, download. You see a preview and the real before and after sizes, with no account and no watermark." />
 
   <ImageTool client:load defaultMaxKb={50} />
   <noscript>
@@ -19,21 +20,42 @@ const jsonLd = webApplicationLd('SizeTune image resizer', '/', description);
     </p>
   </noscript>
 
-  <ol class="mt-10 grid gap-3 sm:grid-cols-3" aria-label="How it works">
+  <section aria-label="Why people trust SizeTune" class="mt-8 grid gap-4 sm:grid-cols-3">
     {[
-      ['1', 'Choose your image', 'Drop a JPEG, PNG or WebP, or pick one from your device.'],
-      ['2', 'Set the size', 'Pick a preset like 20 or 50 KB, or type the limit your form states.'],
-      ['3', 'Check and download', 'Compare before and after, read the real file size, then save it.'],
-    ].map(([n, t, d]) => (
-      <li class="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm">
-        <span aria-hidden="true" class="mb-2 flex size-8 items-center justify-center rounded-lg bg-teal-100 text-sm font-bold text-teal-900">{n}</span>
-        <p class="font-semibold text-slate-950">{t}</p>
-        <p class="mt-1 text-sm text-slate-600">{d}</p>
-      </li>
+      ['Nothing is uploaded', 'Your image is resized by code running on your own device.', 'M5 11h14v9H5zM8 11V8a4 4 0 0 1 8 0v3'],
+      ['Test it yourself', 'Once this page has loaded, switch off your internet. It still works.', 'M2 8.8a15 15 0 0 1 4-2.5M22 8.8a15 15 0 0 0-8.5-3.7M5 12.5a10 10 0 0 1 3.5-2M19 12.5a10 10 0 0 0-3-2M8.5 16a5 5 0 0 1 7 0M3 3l18 18'],
+      ['Free, no strings', 'No sign-up, no watermark, no limit on how many images.', 'M12 3v18M17 7.5c0-1.9-2.2-3-5-3s-5 1.1-5 3 2.2 2.8 5 3.5 5 1.6 5 3.5-2.2 3-5 3-5-1.1-5-3'],
+    ].map(([t, d, icon]) => (
+      <div class="flex items-start gap-3">
+        <span aria-hidden="true" class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-teal-100 text-teal-900">
+          <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d={icon} /></svg>
+        </span>
+        <div>
+          <p class="font-semibold text-slate-950">{t}</p>
+          <p class="mt-0.5 text-sm leading-relaxed text-slate-600">{d}</p>
+        </div>
+      </div>
     ))}
-  </ol>
+  </section>
 
-  <div class={`mt-12 ${proseClass}`}>
+  <section aria-label="Start from the job you have" class="mt-12">
+    <h2 class="text-2xl font-bold text-slate-950">Start from the job you have</h2>
+    <p class="mt-1 text-slate-600">Each page opens the tool with the right settings already chosen.</p>
+    <div class="mt-4 grid gap-3 sm:grid-cols-3">
+      {[
+        ['/resize-image-to-20kb/', 'Resize to 20 KB', 'The smallest common limit. Tips to keep faces readable.'],
+        ['/resize-signature/', 'Resize a signature', 'Crop to the ink, put it on white, then shrink.'],
+        ['/guides/photo-size-for-online-forms/', 'Photo size guide', 'Pixels, KB and formats, explained from scratch.'],
+      ].map(([href, t, d]) => (
+        <a href={href} class="block rounded-2xl border border-slate-200 bg-white p-4 shadow-sm hover:border-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+          <span class="block font-semibold text-slate-950">{t}</span>
+          <span class="mt-1 block text-sm leading-relaxed text-slate-600">{d}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <div class={`mx-auto max-w-3xl mt-12 ${proseClass}`}>
     <h2>What the tool does</h2>
     <p>
       Many upload forms refuse a file that is even slightly over a limit written in kilobytes. A modern phone photo is
@@ -102,42 +124,61 @@ const jsonLd = webApplicationLd('SizeTune image resizer', '/', description);
       this in detail, and the <a href="/about/">about page</a> says who runs the site and how to reach them.
     </p>
 
-    <h2>Frequently asked questions</h2>
-    <h3>Is 20 KB the same as 20,000 bytes or 20,480 bytes?</h3>
-    <p>
-      Both conventions are in use. SizeTune aims below your maximum counted as 1,000 bytes per KB, and above your minimum
-      counted as 1,024, so the file passes whether a portal counts a KB as 1,000 or 1,024 bytes (except for ranges too narrow for both, which are flagged). Results are displayed
-      in 1,024-byte KB, so a 20 KB target shows as up to about 19.5 KB, often a little lower.
-    </p>
-    <h3>Will my picture look worse?</h3>
-    <p>
-      Usually a little, and sometimes a lot, depending on how small the limit is compared with the original. JPEG
-      compression discards detail, and the tool looks for a high quality that still fits. The preview lets you
-      compare before you download.
-    </p>
-    <h3>Is my photo sent anywhere?</h3>
-    <p>
-      SizeTune's code keeps the image on your device and does not upload it. Browser extensions or device backup
-      features that you have installed are outside the site's control.
-    </p>
-    <h3>Which pictures can I open?</h3>
-    <p>
-      Only JPEG, PNG and WebP files are accepted. Other types, such as HEIC photos from some phones or GIF images, need
-      converting first. On an iPhone you can set Settings, Camera, Formats to Most Compatible, or export the photo as
-      a JPEG.
-    </p>
-    <h3>Why did the tool say it could not reach my limit?</h3>
-    <p>
-      The limit is too small for that image at the chosen settings, or the minimum is too large for it. Try the
-      dimensions-first option, allow a smaller width and height, choose a plainer picture, or raise the limit if your
-      form permits it.
-    </p>
-    <h3>Does it work on a phone?</h3>
-    <p>
-      It runs in current mobile browsers. Very large photos use a lot of memory, so an older phone may be slow or may
-      fail on a huge file. If that happens, try again with a smaller original.
-    </p>
-    <h3>Does it cost anything?</h3>
-    <p>No. There is no account, no sign-up and no watermark added by SizeTune.</p>
   </div>
+
+  <section aria-label="Frequently asked questions" class="mx-auto mt-12 max-w-3xl">
+    <h2 class="text-2xl font-bold text-slate-950">Frequently asked questions</h2>
+    <div class="mt-4 border-b border-slate-300">
+      <details class="group border-t border-slate-300">
+        <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 py-2 text-[1.0625rem] font-semibold text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 [&::-webkit-details-marker]:hidden">
+          Is 20 KB the same as 20,000 bytes or 20,480 bytes?
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="size-5 shrink-0 group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+        </summary>
+        <p class="pb-4 leading-relaxed text-slate-700">Both conventions are in use. SizeTune aims below your maximum counted as 1,000 bytes per KB, and above your minimum counted as 1,024, so the file passes whether a portal counts a KB as 1,000 or 1,024 bytes (except for ranges too narrow for both, which are flagged). Results are displayed in 1,024-byte KB, so a 20 KB target shows as up to about 19.5 KB, often a little lower.</p>
+      </details>
+      <details class="group border-t border-slate-300">
+        <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 py-2 text-[1.0625rem] font-semibold text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 [&::-webkit-details-marker]:hidden">
+          Will my picture look worse?
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="size-5 shrink-0 group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+        </summary>
+        <p class="pb-4 leading-relaxed text-slate-700">Usually a little, and sometimes a lot, depending on how small the limit is compared with the original. JPEG compression discards detail, and the tool looks for a high quality that still fits. The preview lets you compare before you download.</p>
+      </details>
+      <details class="group border-t border-slate-300">
+        <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 py-2 text-[1.0625rem] font-semibold text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 [&::-webkit-details-marker]:hidden">
+          Is my photo sent anywhere?
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="size-5 shrink-0 group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+        </summary>
+        <p class="pb-4 leading-relaxed text-slate-700">SizeTune's code keeps the image on your device and does not upload it. Browser extensions or device backup features that you have installed are outside the site's control.</p>
+      </details>
+      <details class="group border-t border-slate-300">
+        <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 py-2 text-[1.0625rem] font-semibold text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 [&::-webkit-details-marker]:hidden">
+          Which pictures can I open?
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="size-5 shrink-0 group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+        </summary>
+        <p class="pb-4 leading-relaxed text-slate-700">Only JPEG, PNG and WebP files are accepted. Other types, such as HEIC photos from some phones or GIF images, need converting first. On an iPhone you can set Settings, Camera, Formats to Most Compatible, or export the photo as a JPEG.</p>
+      </details>
+      <details class="group border-t border-slate-300">
+        <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 py-2 text-[1.0625rem] font-semibold text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 [&::-webkit-details-marker]:hidden">
+          Why did the tool say it could not reach my limit?
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="size-5 shrink-0 group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+        </summary>
+        <p class="pb-4 leading-relaxed text-slate-700">The limit is too small for that image at the chosen settings, or the minimum is too large for it. Try the dimensions-first option, allow a smaller width and height, choose a plainer picture, or raise the limit if your form permits it.</p>
+      </details>
+      <details class="group border-t border-slate-300">
+        <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 py-2 text-[1.0625rem] font-semibold text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 [&::-webkit-details-marker]:hidden">
+          Does it work on a phone?
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="size-5 shrink-0 group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+        </summary>
+        <p class="pb-4 leading-relaxed text-slate-700">It runs in current mobile browsers. Very large photos use a lot of memory, so an older phone may be slow or may fail on a huge file. If that happens, try again with a smaller original.</p>
+      </details>
+      <details class="group border-t border-slate-300">
+        <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 py-2 text-[1.0625rem] font-semibold text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 [&::-webkit-details-marker]:hidden">
+          Does it cost anything?
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="size-5 shrink-0 group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+        </summary>
+        <p class="pb-4 leading-relaxed text-slate-700">No. There is no account, no sign-up and no watermark added by SizeTune.</p>
+      </details>
+    </div>
+  </section>
+  <RelatedTools path="/" />
 </Base>

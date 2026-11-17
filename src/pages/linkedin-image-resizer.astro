@@ -1,0 +1,82 @@
+---
+import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import SocialTool from '../components/SocialTool.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Resize an Image for LinkedIn, No Upload | SizeTune';
+const description =
+  "Fit a picture to LinkedIn's profile cover, company logo and shared link image sizes in your browser. Sizes come from LinkedIn's own Help pages, with dates.";
+const jsonLd = webApplicationLd('SizeTune: resize an image for LinkedIn', '/linkedin-image-resizer/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/linkedin-image-resizer/" jsonLd={jsonLd}>
+  <Hero title="Resize an image for LinkedIn" lead="Choose a LinkedIn size, decide how the picture should fit, and download a JPEG. The sizes come from LinkedIn's own Help pages, and nothing is uploaded." />
+
+  <SocialTool client:load platform="linkedin" />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This tool fits images inside your browser, so it will not run while JavaScript is turned off. Enable JavaScript and
+      reload to use it. The notes below on LinkedIn's image sizes still apply with any other editor.
+    </p>
+  </noscript>
+  <p class="mx-auto mt-6 max-w-3xl text-center text-base text-slate-700">
+    Need the file under a size limit? <a data-testid="to-resizer" class="font-medium text-teal-800 underline underline-offset-4" href="/">Open the KB resizer</a>.
+  </p>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>The LinkedIn sizes in this tool</h2>
+    <p>
+      There are three presets, each taken from a LinkedIn Help page that states the number. The profile cover image
+      is recommended at 1584 by 396 pixels, as a JPG or PNG under 8 MB. The logo for a company Page is recommended at
+      400 by 400 pixels, with a minimum of 268 by 268, as a PNG or JPEG under 3 MB. An image attached to a post with a
+      link uses a 1.91:1 ratio, which is 1,200 by 627 pixels.
+    </p>
+
+    <h2>A size we left out on purpose</h2>
+    <p>
+      A company Page also has a cover image. the sources we found give different numbers for
+      it. Rather than offer a number we cannot stand behind, the tool
+      leaves it out. If you need it, read the current figure on LinkedIn's Page image specifications help page before
+      you upload.
+    </p>
+
+    <h2>Why the profile cover is so wide</h2>
+    <p>
+      The cover image is a thin strip behind your photo, about four times wider than it is tall. A normal photo does not
+      have that shape, so something has to give. With crop, the tool keeps a band across the picture, and you choose
+      whether it comes from the top, the middle or the bottom. With colour bars, the whole picture is shown small in the
+      middle of the strip, which rarely looks good for a cover. A blurred background works better for a wide image you
+      want to show whole.
+    </p>
+
+    <h2>Logos and transparent backgrounds</h2>
+    <p>
+      LinkedIn's Page help says a logo with a transparent background is shown on white. This tool saves JPEG, which has
+      no transparency, so the bars colour decides what appears behind the logo. Choose white to match LinkedIn, or pick
+      the colour of your brand. Keep important details away from the edges of the cover, since LinkedIn's help notes that
+      it can be trimmed on some screens, especially in the lower-right.
+    </p>
+
+    <h2>Steps</h2>
+    <ol>
+      <li>Add your picture by dragging it onto the box or choosing it.</li>
+      <li>Choose the LinkedIn size from the list. Its source and date are shown beneath it.</li>
+      <li>Pick crop, colour bars or blurred background and check the preview.</li>
+      <li>Download the JPEG. If you need a smaller file, set a size limit in KB.</li>
+    </ol>
+
+    <h2>Frequently asked questions about LinkedIn images</h2>
+    <h3>Which format does LinkedIn accept for these images?</h3>
+    <p>The help pages we read name JPG or PNG for the profile cover and PNG or JPEG for Pages. This tool saves a JPEG.</p>
+    <h3>Why is there no profile photo preset?</h3>
+    <p>We only list a size when we could read it on a LinkedIn Help page. We did not find one we could verify for the profile photo.</p>
+    <h3>How current are the sizes?</h3>
+    <p>Each names its source and the date we last read it, and our sizes guide lists the official page. LinkedIn can change its figures, so check that date.</p>
+    <h3>Is my picture uploaded to SizeTune?</h3>
+    <p>
+      No. It is fitted in your browser. See the <a href="/privacy/">privacy page</a>. For other platforms, try the{' '}
+      <a href="/instagram-image-resizer/">Instagram</a> or <a href="/youtube-thumbnail-resizer/">YouTube</a> pages.
+    </p>
+  </div>
+  <RelatedTools path="/linkedin-image-resizer/" />
+</Base>

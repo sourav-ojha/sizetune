@@ -12,9 +12,11 @@ export function progressText(p: P | null): string {
 export default function ProgressBar({ progress, onCancel }: { progress: P | null; onCancel: () => void }) {
   const cancelRef = useRef<HTMLButtonElement>(null);
   useLayoutEffect(() => {
-    // The Resize button just unmounted, so keyboard focus would be lost on <body>: put it on Cancel (same place in the tab order).
+    // If the Resize button just unmounted, keyboard focus is lost on <body>: put it on Cancel (same place in the tab order).
     // (Escape is handled by the tool itself with a listener that is always attached, so there is no window where it is ignored.)
-    cancelRef.current?.focus({ preventScroll: true });
+    // Only when focus was lost with it: an automatic run must never pull focus out of a setting the user is typing in.
+    const a = document.activeElement;
+    if (!a || a === document.body) cancelRef.current?.focus({ preventScroll: true });
   }, []);
   const determinate = progress?.stage === 'encoding' && progress.attempt != null && progress.total != null && progress.total > 0;
   return (
