@@ -2,8 +2,8 @@
 type: opportunity-registry
 last_research: 2026-11-17
 review_mode: independent
-decision_count: 13
-decision_head: d06a2ad927f9
+decision_count: 23
+decision_head: 4dfaa32dc1c2
 ---
 # Opportunities
 
@@ -149,6 +149,20 @@ The owner asked about Bulk Image Compressor, Bulk Image Converter, Image Rotator
 - **Favicon and app icons.** realfavicongenerator.net is the leader (Semrush estimate of 556,300 visits in September 2026, a competitor estimate, low confidence). [E: inference; low; https://de.semrush.com/website/realfavicongenerator.net/overview/; 2026-11-17] Apple's guidelines specify a 1024 px layout size for iOS, iPadOS and macOS and say the system scales to smaller sizes (tvOS and watchOS differ); that per-size sets are now legacy output is my inference. [E: inference; medium; https://developer.apple.com/design/human-interface-guidelines/app-icons.md; 2026-11-17] The page's change log shows two dated entries in 2026, including one on 2026-10-28. [E: fact; medium; https://developer.apple.com/design/human-interface-guidelines/app-icons.md; 2026-11-17] Free CLIs (Capacitor assets, pwa-asset-generator) serve developers. [E: fact; medium; https://github.com/ionic-team/capacitor-assets; 2026-11-17] Vendor sources claim developers block ads heavily; no developer RPM figure was found. [E: fact; low; https://carbonads.net/blog/developer-advertising-guide-2026; 2026-11-17]
 
 
+### Portfolio pass: breadth of tools for aggregate traffic (2026-11-17, `full auto widen override`)
+
+New owner direction in the command: do not judge ideas only by competition; the plan is to offer as many tools as possible, so that some rank in a cluttered market and total traffic grows. Four parallel research agents covered portfolio strategy, image and document tools, non-image tools, and client-side libraries with licences. All SERP reads were made with a US-only search tool and are inference at low confidence; autocomplete proves only that a query exists. No volume, Trends, Semrush or Similarweb figure was obtained for these candidates.
+
+- **What the case studies say.** The 200-tool author reports that broad queries such as "image compressor" rank nowhere and that organic traffic was still early-stage after 8 months. [E: fact; low; https://dev.to/ezytoolz/i-built-200-free-online-tools-heres-everything-i-learned-in-8-months-4c4h; 2026-11-17] One 100-plus-tool site had zero Google clicks for 3 months until a canonical error, thin pages and weak trust signals were fixed. [E: fact; low; https://dev.to/tzhkai/i-spent-3-months-getting-zero-organic-traffic-then-one-fix-brought-40-users-in-24-hours-5a2; 2026-11-17] A claim that 2 or 3 tools take about 80% of traffic is repeated in blog posts but its Indie Hackers source could not be loaded. [E: hypothesis; low; search:indie hackers tool site traffic concentration; 2026-11-17] Breadth alone is therefore not a plan.
+- **Where a new site gets impressions.** The same author says niche calculators were starting to get impressions. [E: fact; low; https://dev.to/ezytoolz/i-built-200-free-online-tools-heres-everything-i-learned-in-8-months-4c4h; 2026-11-17]
+- **Backlinks are the bottleneck.** The same author reports a Domain Rating of 4.1 after 8 months and advises starting link building on day one. [E: fact; low; https://dev.to/ezytoolz/i-built-200-free-online-tools-heres-everything-i-learned-in-8-months-4c4h; 2026-11-17]
+- **Policy limit on breadth.** Google defines doorway abuse and scaled content abuse around many substantially similar pages built to rank; the policy does not address how many distinct tools a site may have, so reading it as safe for distinct tools is my inference. [E: inference; medium; https://developers.google.com/search/docs/essentials/spam-policies; 2026-11-17]
+- **AdSense for tool sites.** One tool-site author's generic checklist (about 800 words per tool, trust pages, navigation, a sitemap) shows no outcomes, so it is not evidence of what reviewers accept. [E: hypothesis; low; https://neatforge.pages.dev/guides/adsense-rejection-reasons-tool-sites; 2026-11-17] A 65-tool site was rejected as low-value in one anecdote. [E: inference; low; https://toolpod.dev/blog/adsense-rejection-low-value-content; 2026-11-17]
+- **Revenue.** Per-category RPM evidence is blog-level only and a tool-site datapoint (about 14 USD) rests on an Indie Hackers page that could not be loaded, whose title mentions a different figure. [E: unknown; low; search:AdSense RPM tool sites; 2026-11-17] Finance and health calculators are claimed to pay more by one blog, which gives no figure for text or utility tools. [E: fact; low; https://basicfreetools.pages.dev/adsense-revenue-estimator; 2026-11-17]
+- **Ad-network geography (the cited article is dated 2025-10-20; rules change).** Raptive requires 25,000 monthly pageviews and, at 25K to 100K, at least 50% of traffic from the US, UK, Canada, Australia or New Zealand. [E: fact; medium; https://www.searchenginejournal.com/raptive-drops-traffic-requirement-by-75-to-25000-views/558780/; 2026-11-17] This repeats the A-001 conflict.
+- **Open-source and platform facts.** tesseract.js is Apache-2.0 and active. [E: fact; high; https://api.github.com/repos/naptha/tesseract.js; 2026-11-17] The imgly background-removal library is AGPL. [E: fact; high; https://github.com/imgly/background-removal-js; 2026-11-17] BRIA RMBG-1.4 is non-commercial. [E: fact; high; https://huggingface.co/briaai/RMBG-1.4; 2026-11-17] The ffmpeg.wasm core follows FFmpeg's LGPL or GPL terms. [E: fact; high; https://ffmpegwasm.netlify.app/docs/faq; 2026-11-17] WebCodecs reaches 95.92% of users globally and is partial or missing on some mobile browsers. [E: fact; medium; https://caniuse.com/webcodecs; 2026-11-17]
+- **Negative results.** No SERP-weakness study, keyword-difficulty cutoff, per-category RPM benchmark, bundle size for any library, or traffic figure for TinyWow or 123apps beyond estimates was found. [E: unknown; low; search:SERP weakness new domain tool keyword difficulty; 2026-11-17]
+
 ## Registry
 
 | ID | Title | Status | Score | Confidence | Tier | Effort | Updated | Feature |
@@ -170,6 +184,23 @@ The owner asked about Bulk Image Compressor, Bulk Image Converter, Image Rotator
 | OPP-015 | "Will this file pass?" image checker (format, KB, pixels, type) | Implemented | 60 | Low | Needs evidence | M | 2026-11-17 | FEATURE-008 |
 | OPP-016 | Social media (Instagram, LinkedIn, YouTube) image resizers | Implemented | 46 | Low | Backlog | S | 2026-11-17 | FEATURE-009 |
 | OPP-017 | Favicon and app icon generator | Ready for Implementation | 49 | Low | Backlog | M | 2026-11-17 | FEATURE-010 |
+| OPP-018 | Print-unit and DPI controls (cm, inch, mm plus KB) | Ready for Implementation | 62 | Low | Needs evidence | S | 2026-11-17 | FEATURE-013 |
+| OPP-019 | PDF page tools: merge, split, extract pages, rotate, page numbers | Discovered | 51 | Low | Backlog | M | 2026-11-17 | - |
+| OPP-020 | PDF to JPG or PNG with a KB target | Ready for Implementation | 61 | Low | Needs evidence | M | 2026-11-17 | FEATURE-014 |
+| OPP-021 | Image metadata (EXIF) remover | Discovered | 54 | Low | Backlog | S | 2026-11-17 | - |
+| OPP-022 | Canvas image-edit mini-tools (watermark, add text, blur or pixelate, circle crop, grayscale, side-by-side) | Discovered | 50 | Low | Backlog | M | 2026-11-17 | - |
+| OPP-023 | Instagram grid splitter | Discovered | 53 | Low | Backlog | S | 2026-11-17 | - |
+| OPP-024 | Image to text (OCR) in the browser | Ready for Implementation | 58 | Low | Needs evidence | M | 2026-11-17 | FEATURE-015 |
+| OPP-025 | Academic grade calculators (CGPA to percentage, SGPA to CGPA, marks percentage, attendance, GPA) | Deferred | 62 | Low | Needs evidence | S | 2026-11-17 | - |
+| OPP-026 | Finance calculators (SIP, EMI, GST, compound interest) | Deferred | 56 | Low | Needs evidence | M | 2026-11-17 | - |
+| OPP-027 | Date and time calculators (age, days between dates, timestamp converter) | Ready for Implementation | 55 | Low | Needs evidence | S | 2026-11-17 | FEATURE-016 |
+| OPP-028 | Text counters and converters (word counter, character counter, case converter, dummy text) | Ready for Implementation | 55 | Low | Needs evidence | S | 2026-11-17 | FEATURE-017 |
+| OPP-029 | Developer and encoder converters (base64 image and text, hex to RGBA, JSON formatter, UUID and hash) | Discovered | 51 | Low | Backlog | S | 2026-11-17 | - |
+| OPP-030 | QR code generator | Ready for Implementation | 56 | Low | Needs evidence | M | 2026-11-17 | FEATURE-018 |
+| OPP-031 | In-browser background remover | Approved | 56 | Low | Needs evidence | L | 2026-11-17 | FEATURE-019 |
+| OPP-032 | Small generators: Roman numerals, number to words (rupees), random name picker | Discovered | 53 | Low | Backlog | S | 2026-11-17 | - |
+| OPP-033 | In-browser audio and video trim and convert | Discovered | 48 | Low | Backlog | L | 2026-11-17 | - |
+| OPP-034 | Tool hub, per-tool guide template and directory listings | Ready for Implementation | 67 | Low | Needs evidence | M | 2026-11-17 | FEATURE-012 |
 
 ## Review Summary
 
@@ -180,6 +211,8 @@ Independent review by separate sub-agents (general-purpose agent following the i
 - Round 3 (PASS WITH CHANGES, 0 Critical, 0 High, 7 Medium, 7 Low): source-attribution and rating consistency items. Applied: OPP-004 scoped to content pages first and business_impact lowered, OPP-007 business_impact lowered (now Backlog), OPP-005 relabelled as a dependency note, TinyPNG and enabler claims downgraded, per-claim citations fixed. The three-round maximum was reached, so these last edits were not re-reviewed by a fourth round.
 - Widened pass (`full auto widen override`, same day), review round 4 (PASS WITH CHANGES, 0 Critical, 4 High, 9 Medium, 5 Low), by a separate general-purpose agent following the independent-reviewer role, with spot-check fetches. Applied: OPP-012 premise re-tagged as assumption and AVIF removed (the engine rejects AVIF); OPP-012 and OPP-013 returned to Discovered because they fail the evidence test; OPP-013 re-rated (53, Backlog); competitor claims, Raptive, AdSense and licence tags downgraded or split into one source per tag; approved items OPP-001, OPP-003 and OPP-004 were not edited and their conflicts are queued in `.product/attention.md`. This was one review round; the other open points are in the attention queue.
 - Feature research (seven owner-proposed tools), review round 5 (PASS WITH CHANGES, 0 Critical, 4 High, 8 Medium, 5 Low), by a separate general-purpose agent with spot-check fetches. Applied: Squoosh reaction counts split between issues #301 and #1406, Semrush figure corrected, OPP-015 differentiation lowered (score 60), licence and YouTube claims split into one source per tag; OPP-014, OPP-015, OPP-016 and OPP-017 returned to Discovered because they fail the evidence test; OPP-008 lowered to 52 (Backlog); OPP-006 kept at 57 and proposed. One review round only.
+- Portfolio pass (owner strategy: breadth of tools), review round 6 (FAIL as first written: 0 Critical, 7 High, 8 Medium, 3 Low), by a separate general-purpose agent that fetched 19 sources. Applied: an unsupported click figure and an unsupported 80% claim removed or re-tagged; the Google policy reading re-tagged as my inference; the AdSense checklist re-tagged as a hypothesis; OPP-034 rewritten after the reviewer found its absence claim partly false; ratings lowered for OPP-018, 020, 021, 022, 024, 025, 026, 030, 031, 034; OPP-019, 023, 029, 032 and 033 returned to Discovered because they fail the admission test; the cluster items pass only as one distinct workbench per family. A second review round checks the fixes.
+- Portfolio pass, review round 7 (verification round; FAIL on the round 6 fixes: 0 Critical, 2 High, 2 Medium, 3 Low), by a separate general-purpose agent that re-fetched changed sources and re-computed all 17 scores. Applied: five items returned to Discovered where the registry still said Under Evaluation (and OPP-021 and OPP-022, which fell to Backlog); an unsupported timeline and an over-reaching impressions claim reduced to what the source says; OPP-018's absence claim re-tagged as inference; OPP-034's contact-page claim corrected; multi-query autocomplete claims narrowed to the checked query with a disclosure; OPP-022's policy risk softened. The round 7 fixes were not re-reviewed (the pass used two review rounds); treat them as unreviewed.
 - Still open: no search volumes, rankings, RPM or real-user data exist for any opportunity; competitor no-upload claims were not network-tested; Reddit, Quora, VisaJourney and Stack Exchange were unreadable; codec and decoder licences need legal review. Net effect: no opportunity reaches Recommend. The review pushed every score down, and the honest overall state is that demand is unmeasured.
 
 ## Decision Log
@@ -199,6 +232,16 @@ Independent review by separate sub-agents (general-purpose agent following the i
 | 2026-11-17 | OPP-015 | approve | sourav | User: 'lets add them, so we ll have more tools in our arsenal' (owner override of Backlog/Needs-evidence tier, 2026-11-17) | c8cf40333119 | ea2fc4e19686 |
 | 2026-11-17 | OPP-016 | approve | sourav | User: 'lets add them, so we ll have more tools in our arsenal' (owner override of Backlog/Needs-evidence tier, 2026-11-17) | 67726529a2a4 | 281a9902d7ad |
 | 2026-11-17 | OPP-017 | approve | sourav | User: 'lets add them, so we ll have more tools in our arsenal' (owner override of Backlog/Needs-evidence tier, 2026-11-17) | a73bf4e09ee4 | d06a2ad927f9 |
+| 2026-11-17 | OPP-025 | defer | sourav | User: 'Defer Grade calculators, Finance calculators; Rest can be approved' (reply to the portfolio-pass decision sheet, 2026-11-17) | 2fb1e9ee57b2 | ed5737d1a671 |
+| 2026-11-17 | OPP-026 | defer | sourav | User: 'Defer Grade calculators, Finance calculators; Rest can be approved' (reply to the portfolio-pass decision sheet, 2026-11-17) | 309f31eb1203 | 52b596951f06 |
+| 2026-11-17 | OPP-034 | approve | sourav | User: 'Defer Grade calculators, Finance calculators; Rest can be approved' (reply to the portfolio-pass decision sheet, 2026-11-17) | 6fadae552127 | d3789fe2608e |
+| 2026-11-17 | OPP-018 | approve | sourav | User: 'Defer Grade calculators, Finance calculators; Rest can be approved' (reply to the portfolio-pass decision sheet, 2026-11-17) | 0d71611414f4 | 201072168b71 |
+| 2026-11-17 | OPP-020 | approve | sourav | User: 'Defer Grade calculators, Finance calculators; Rest can be approved' (reply to the portfolio-pass decision sheet, 2026-11-17) | 7e540f191a04 | 30d8cba2f3ca |
+| 2026-11-17 | OPP-024 | approve | sourav | User: 'Defer Grade calculators, Finance calculators; Rest can be approved' (reply to the portfolio-pass decision sheet, 2026-11-17) | 1b458e97481d | 0427179dccdb |
+| 2026-11-17 | OPP-027 | approve | sourav | User: 'Defer Grade calculators, Finance calculators; Rest can be approved' (reply to the portfolio-pass decision sheet, 2026-11-17) | 574de6e607ca | 67a3a93e654b |
+| 2026-11-17 | OPP-028 | approve | sourav | User: 'Defer Grade calculators, Finance calculators; Rest can be approved' (reply to the portfolio-pass decision sheet, 2026-11-17) | 0c5c13ffd3c9 | 0be57f486642 |
+| 2026-11-17 | OPP-030 | approve | sourav | User: 'Defer Grade calculators, Finance calculators; Rest can be approved' (reply to the portfolio-pass decision sheet, 2026-11-17) | 31576ee09635 | 1f828b01e1e7 |
+| 2026-11-17 | OPP-031 | approve | sourav | User: 'Defer Grade calculators, Finance calculators; Rest can be approved' (reply to the portfolio-pass decision sheet, 2026-11-17) | 7fdfeda84780 | 4dfaa32dc1c2 |
 
 ## Opportunity Details
 
@@ -476,3 +519,275 @@ Independent review by separate sub-agents (general-purpose agent following the i
 - **Dependencies:** OPP-005.
 - **Ratings:** user_value=3, strategic_alignment=2, market_opportunity=3, competitive_differentiation=1, business_impact=2, implementation_feasibility=4
 - **Reviewer notes:** Feature-research review (independent agent): fails the admission test (no user problem evidence for a standalone favicon tool; developer audience); returned to Discovered. Backlog tier.
+
+### OPP-018 — Print-unit and DPI controls (cm, inch, mm plus KB)
+
+- **Category:** product extension
+- **Source direction:** competitive gap
+- **Problem:** SizeTune offers pixel fields and a KB target; a search of src for dpi, cm and inch found no print-unit or DPI control. [E: inference; medium; search:grep dpi cm inch under repo src; 2026-11-17] That forms ask for sizes in cm or mm is inferred from autocomplete, which returns "resize image in cm and kb", with "and dpi" and "and pixel" variants and "change dpi of image online". [E: inference; low; https://suggestqueries.google.com/complete/search?client=firefox&q=resize+image+in+cm+and+kb; 2026-11-17]
+- **Proposed solution:** A unit selector (px, cm, mm, inch) with a DPI field on the existing tool and a DPI changer that writes the JFIF or pHYs tag. Exact-size crop for passport sizes stays with OPP-008 and size pages with OPP-001.
+- **Why it matters:** Extends the core engine instead of adding a new one, and matches the exam and passport traffic the site already targets.
+- **Evidence:** A page-one read for "35mm x 45mm" crop showed small tools (imresizer, visafoto, passport-photo.online) and pages.dev clones, no giants (a US-only search tool, not a real Google SERP). [E: inference; low; search:crop image to 35mm x 45mm; 2026-11-17] imresizer has a page per format and exam sites also rank. [E: inference; low; search:resize image in cm and kb; 2026-11-17]
+- **Competitive context:** imresizer entrenched; exam-site tools present; many clones.
+- **Expected value:** Unknown; plausible long-tail entries, volumes unmeasured.
+- **Effort:** S
+- **Risks:** Overlaps OPP-001 and OPP-008; DPI is metadata only and some portals check pixels, not DPI.
+- **Dependencies:** OPP-001 outcome; OPP-005 if pages multiply.
+- **Ratings:** user_value=3,strategic_alignment=4,market_opportunity=3,competitive_differentiation=2,business_impact=2,implementation_feasibility=5
+- **Reviewer notes:**  Independent review (round 6): problem claim split into fact and inference; exact-size crop removed (overlaps OPP-008); strategic_alignment 5 with no evidence lowered; score recomputed.
+
+### OPP-019 — PDF page tools: merge, split, extract pages, rotate, page numbers
+
+- **Category:** product extension
+- **Source direction:** adjacent market
+- **Problem:** Users need small PDF edits for form submissions; this is an assumption, no user statement was gathered. [E: assumption; low; search:no user statement found on PDF page-edit needs; 2026-11-17] Autocomplete shows "merge pdf online", "split pdf", "extract pages from pdf", and "add page numbers to pdf from specific page". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=add+page+numbers+to+pdf+from+specific+page; 2026-11-17] (The other listed phrases come from the research agent's own autocomplete fetches and were not re-checked here.)
+- **Proposed solution:** A small set of page-level PDF tools on pdf-lib (merge, split, extract, rotate, page numbers), in the browser, one tool per distinct job.
+- **Why it matters:** PDF is a large tool category and the head terms are held by giants, but long-tail jobs such as page numbers from a given page showed a mixed SERP with small tools.
+- **Evidence:** A page-one read for the page-numbers phrase listed Adobe, Smallpdf and pdf4me next to many small and AI-built tools. [E: inference; low; search:add page numbers to pdf from specific page; 2026-11-17] pdf-lib is MIT but last pushed 2024-07-17; the @cantoo/pdf-lib fork is MIT and pushed 2026-09-11. [E: fact; high; https://api.github.com/repos/Hopding/pdf-lib; 2026-11-17] [E: fact; high; https://api.github.com/repos/cantoo-scribe/pdf-lib; 2026-11-17]
+- **Competitive context:** Extreme at the head (iLovePDF, Smallpdf); mixed on long-tail variants.
+- **Expected value:** Unknown.
+- **Effort:** M
+- **Risks:** Sequencing with OPP-003 Phase 0 is an open owner decision; encrypted-PDF and large-file memory limits unverified; verifiers assume images (OPP-005).
+- **Dependencies:** OPP-005; OPP-003 Phase 0 result.
+- **Ratings:** user_value=2,strategic_alignment=3,market_opportunity=3,competitive_differentiation=1,business_impact=3,implementation_feasibility=4
+- **Reviewer notes:**  Independent review (round 6): fails admission (assumption only, source mislabelled as user:). Returned to Discovered; consider only as a cluster with OPP-003 after its Phase 0.
+
+### OPP-020 — PDF to JPG or PNG with a KB target
+
+- **Category:** product extension
+- **Source direction:** competitive gap
+- **Problem:** People convert PDF pages to images and then must meet a KB limit; autocomplete shows "pdf to jpg converter 100 kb" and "200 kb" variants. [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=pdf+to+jpg+converter+100+kb; 2026-11-17]
+- **Proposed solution:** Render PDF pages with pdf.js (Apache-2.0) in a worker, then run the existing KB engine on each page image, with ZIP download for several pages.
+- **Why it matters:** Combines a high-volume conversion with SizeTune's one differentiator, the KB target.
+- **Evidence:** Page one for the KB phrases included mid-size and small marketing sites (wondershare, WPS, 11zon, duplichecker, examdetail). [E: inference; low; search:pdf to jpg converter 100 kb; 2026-11-17] pdf.js is Apache-2.0 and active; its worker file must be self-hosted. [E: fact; high; https://api.github.com/repos/mozilla/pdf.js; 2026-11-17]
+- **Competitive context:** Many converters; the KB target combination is less common (inference).
+- **Expected value:** Unknown.
+- **Effort:** M
+- **Risks:** Large PDFs on low-memory phones; verifier changes; sequencing with OPP-003.
+- **Dependencies:** OPP-006 (ZIP code), OPP-005.
+- **Ratings:** user_value=3,strategic_alignment=4,market_opportunity=3,competitive_differentiation=2,business_impact=3,implementation_feasibility=3
+- **Reviewer notes:**  Independent review (round 6): strategic_alignment lowered 5 to 4; passes admission.
+
+### OPP-021 — Image metadata (EXIF) remover
+
+- **Category:** product extension
+- **Source direction:** adjacent market
+- **Problem:** People want location and device data removed from photos before sharing; autocomplete shows "remove exif data from photo online". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=remove+exif+data+from+photo+online; 2026-11-17]
+- **Proposed solution:** Strip EXIF and other metadata in the browser (segment strip or re-encode) and offer a link to the KB resizer.
+- **Why it matters:** Cheap, privacy-aligned with the site's no-upload message, and cheap to add.
+- **Evidence:** Page one mixed established tools (ezgif, cloudinary, compresto) with small ones (pixelpeeper, tooljunction, trustmyip, imageonline.io). [E: inference; low; search:remove exif data from photo online; 2026-11-17]
+- **Competitive context:** Mixed; no clear giant.
+- **Expected value:** Unknown; likely low.
+- **Effort:** S
+- **Risks:** Thin page risk; canvas re-encode loses quality, segment stripping is more work.
+- **Dependencies:** OPP-005.
+- **Ratings:** user_value=2,strategic_alignment=4,market_opportunity=3,competitive_differentiation=1,business_impact=2,implementation_feasibility=5
+- **Reviewer notes:**  Independent review (round 6): user_value lowered 3 to 2 (one autocomplete query); cluster-only. Cluster rule (review): build as one distinct workbench per family; no per-keyword, per-university, per-currency or per-variant pages. This is an acceptance gate for any spec.
+
+### OPP-022 — Canvas image-edit mini-tools (watermark, add text, blur or pixelate, circle crop, grayscale, side-by-side)
+
+- **Category:** product extension
+- **Source direction:** adjacent market
+- **Problem:** Everyday edits that people search for; autocomplete returns "add watermark to photo online free", "add text to image online free no watermark", "blur face in photo online free", "crop image to circle", "join two images side by side online". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=add+watermark+to+photo+online+free; 2026-11-17] (The other listed phrases come from the research agent's own autocomplete fetches and were not re-checked here.)
+- **Proposed solution:** A single canvas-based engine delivering three to five distinct tools (not one page per variant), each with its own guidance and output options.
+- **Why it matters:** One shared engine, many entry points, and the owner wants breadth.
+- **Evidence:** Demand is autocomplete only; SERPs were not checked. [E: unknown; low; search:not checked for these phrases; 2026-11-17]
+- **Competitive context:** Many free editors (Canva, Adobe Express, Kapwing).
+- **Expected value:** Unknown.
+- **Effort:** M
+- **Risks:** Doorway and scaled-content policy if pages are near-identical. [E: inference; medium; https://developers.google.com/search/docs/essentials/spam-policies; 2026-11-17] Weak differentiation.
+- **Dependencies:** OPP-005.
+- **Ratings:** user_value=2,strategic_alignment=3,market_opportunity=3,competitive_differentiation=1,business_impact=2,implementation_feasibility=5
+- **Reviewer notes:**  Independent review (round 6): evidence is unchecked and leans on the breadth strategy; admitted only as a cluster of three to five distinct tools. Cluster rule (review): build as one distinct workbench per family; no per-keyword, per-university, per-currency or per-variant pages. This is an acceptance gate for any spec.
+
+### OPP-023 — Instagram grid splitter
+
+- **Category:** product extension
+- **Source direction:** adjacent market
+- **Problem:** Creators split one image into tiles for an Instagram grid; autocomplete shows "split image into 9 squares for instagram". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=split+image+into+9+squares+for+instagram; 2026-11-17]
+- **Proposed solution:** Slice an image into 3, 6 or 9 tiles in the browser and download a ZIP, reusing the ZIP code from OPP-006.
+- **Why it matters:** Page-one read shows no search giants, and it reuses engine and ZIP code.
+- **Evidence:** Page one for the phrase listed bundle.social, storrito, unilink and similar small or brand tools plus blogs. [E: inference; low; search:split image into 9 squares for instagram; 2026-11-17]
+- **Competitive context:** Small tools and social-media brands.
+- **Expected value:** Unknown; likely low and off-brand.
+- **Effort:** S
+- **Risks:** Brand fit with a KB tool is weak; the audience is creators.
+- **Dependencies:** OPP-006 (ZIP code), OPP-016.
+- **Ratings:** user_value=2,strategic_alignment=3,market_opportunity=3,competitive_differentiation=2,business_impact=2,implementation_feasibility=5
+- **Reviewer notes:**  Independent review (round 6): fails admission (off-brand, depends on OPP-016 which is itself weak). Returned to Discovered.
+
+### OPP-024 — Image to text (OCR) in the browser
+
+- **Category:** product extension
+- **Source direction:** technology shift
+- **Problem:** Users extract text from screenshots and scans; autocomplete shows "image to text converter". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=image+to+text+converter; 2026-11-17]
+- **Proposed solution:** tesseract.js with self-hosted worker, core WASM and language data, English first and then a few languages, in the browser.
+- **Why it matters:** Large keyword family with many languages; the shared client-side engine keeps files private.
+- **Evidence:** tesseract.js is Apache-2.0, last pushed 2026-05-17; tessdata_fast is Apache-2.0; defaults load from a CDN so every path must be self-hosted. [E: fact; high; https://api.github.com/repos/naptha/tesseract.js; 2026-11-17] [E: fact; high; https://github.com/naptha/tesseract.js/blob/master/docs/local-installation.md; 2026-11-17] The WASM and language-file sizes were not found. [E: unknown; low; search:tesseract.js core wasm size; 2026-11-17]
+- **Competitive context:** Likely strong incumbents (not SERP-checked).
+- **Expected value:** Unknown.
+- **Effort:** M
+- **Risks:** Heavy downloads on mobile data; accuracy on photos and handwriting; first-load budget must not grow.
+- **Dependencies:** OPP-005; real-device memory test.
+- **Ratings:** user_value=3,strategic_alignment=4,market_opportunity=3,competitive_differentiation=1,business_impact=3,implementation_feasibility=3
+- **Reviewer notes:**  Independent review (round 6): market_opportunity capped at 3 (no volume data); cluster-only.
+
+### OPP-025 — Academic grade calculators (CGPA to percentage, SGPA to CGPA, marks percentage, attendance, GPA)
+
+- **Category:** product extension
+- **Source direction:** adjacent market
+- **Problem:** Students convert grades for forms and applications; autocomplete shows "cgpa to percentage vtu", "sgpa to cgpa calculator vtu", "attendance percentage calculator for college students". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=cgpa+to+percentage; 2026-11-17] (The other listed phrases come from the research agent's own autocomplete fetches and were not re-checked here.)
+- **Proposed solution:** One calculator shell with a handful of distinct tools, each with the formula and its official source and a worked example; no page that only swaps a university name.
+- **Why it matters:** Probably the same audience as the exam-form traffic (inference, no source) and an easy build; the SERP showed college and edu pages plus free-hosting clones, no clear giant.
+- **Evidence:** The CGPA SERP was college and blog pages plus tool sites; the attendance SERP held many pages.dev, vercel and lovable.app clones. [E: inference; low; search:cgpa to percentage calculator; 2026-11-17] Formulas differ by source: one page gives (CGPA minus 0.75) times 10 as Amrita's formula, and a 9.5 multiplier appears only as a hypothetical example. [E: fact; low; https://onlineamrita.com/blog/cgpa-to-percentage-calculator/; 2026-11-17]
+- **Competitive context:** College sites and free-hosted clones.
+- **Expected value:** Probably low RPM (education); no benchmark was found. [E: unknown; low; search:AdSense RPM utility tools; 2026-11-17]
+- **Effort:** S
+- **Risks:** Doorway risk if pages are per university; wrong formulas create trust and liability problems; clones lower the barrier but also the value.
+- **Dependencies:** Owner decision on scope; OPP-005.
+- **Ratings:** user_value=3,strategic_alignment=4,market_opportunity=3,competitive_differentiation=2,business_impact=2,implementation_feasibility=5
+- **Reviewer notes:**  Independent review (round 6): university attribution fixed; differentiation 3 lowered to 2 (formula content edge unproven); cluster-only. Cluster rule (review): build as one distinct workbench per family; no per-keyword, per-university, per-currency or per-variant pages. This is an acceptance gate for any spec.
+
+### OPP-026 — Finance calculators (SIP, EMI, GST, compound interest)
+
+- **Category:** product extension
+- **Source direction:** adjacent market
+- **Problem:** People compute investments and loans; autocomplete shows "sip calculator", "emi calculator", "gst calculator", "compound interest calculator". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=sip+calculator; 2026-11-17] (The other listed phrases come from the research agent's own autocomplete fetches and were not re-checked here.)
+- **Proposed solution:** One shared finance engine with a distinct page per intent (SIP with step-up and inflation, EMI, GST, compound interest), inputs user-entered, no live data.
+- **Why it matters:** Finance content attracts higher-paying advertisers according to blogs and calculators need no backend.
+- **Evidence:** Finance RPM of 15 to 50 USD is claimed by one blog and 8 to 25 USD by another; both are weak sources. [E: fact; low; https://basicfreetools.pages.dev/adsense-revenue-estimator; 2026-11-17] [E: fact; low; https://alc-tools-free.pages.dev/adsense-revenue-calculator/; 2026-11-17] SERPs likely held by banks and fund houses (not verified). [E: unknown; low; search:not SERP-checked; 2026-11-17]
+- **Competitive context:** Banks, fund houses and calculator sites dominate (unverified).
+- **Expected value:** Higher than other utility tools if the blog figures hold; unknown.
+- **Effort:** M
+- **Risks:** Financial accuracy and liability; likely hard to rank; finance may need compliance wording.
+- **Dependencies:** OPP-004, OPP-005.
+- **Ratings:** user_value=3,strategic_alignment=3,market_opportunity=3,competitive_differentiation=1,business_impact=3,implementation_feasibility=4
+- **Reviewer notes:**  Independent review (round 6): business_impact lowered 4 to 3 (two weak blog RPM figures); finance accuracy and liability are real costs; cluster-only. Cluster rule (review): build as one distinct workbench per family; no per-keyword, per-university, per-currency or per-variant pages. This is an acceptance gate for any spec.
+
+### OPP-027 — Date and time calculators (age, days between dates, timestamp converter)
+
+- **Category:** product extension
+- **Source direction:** adjacent market
+- **Problem:** Everyday date maths; autocomplete shows "age calculator", "days between dates", "timestamp converter". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=days+between+dates; 2026-11-17] (The other listed phrases come from the research agent's own autocomplete fetches and were not re-checked here.)
+- **Proposed solution:** A small set of date and time tools with distinct inputs and outputs.
+- **Why it matters:** Cheap and a steady query family.
+- **Evidence:** Not SERP-checked; large head terms are probably held by giants. [E: unknown; low; search:not checked; 2026-11-17]
+- **Competitive context:** Established calculator sites.
+- **Expected value:** Unknown.
+- **Effort:** S
+- **Risks:** Crowded; thin pages.
+- **Dependencies:** OPP-005.
+- **Ratings:** user_value=3,strategic_alignment=3,market_opportunity=3,competitive_differentiation=1,business_impact=2,implementation_feasibility=5
+- **Reviewer notes:**  Independent review (round 6): cluster-only; keep timestamps here and out of OPP-029. Cluster rule (review): build as one distinct workbench per family; no per-keyword, per-university, per-currency or per-variant pages. This is an acceptance gate for any spec.
+
+### OPP-028 — Text counters and converters (word counter, character counter, case converter, dummy text)
+
+- **Category:** product extension
+- **Source direction:** adjacent market
+- **Problem:** Writers and students count and transform text; autocomplete shows "word counter", "character counter", "case converter", a dummy-text generator query (the Latin filler-text tool). [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=word+counter; 2026-11-17] (The other listed phrases come from the research agent's own autocomplete fetches and were not re-checked here.)
+- **Proposed solution:** One text workbench with distinct tools rather than near-identical pages.
+- **Why it matters:** Easy build and wide intent.
+- **Evidence:** A competitor name (wordcounter.net) appears in autocomplete suggestions, which shows a query and a brand exist but not SERP strength. [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=word+counter; 2026-11-17] Incumbent strength is a hypothesis. [E: hypothesis; low; search:not SERP-checked; 2026-11-17]
+- **Competitive context:** Strong incumbents.
+- **Expected value:** Unknown; likely low.
+- **Effort:** S
+- **Risks:** Thin pages; incumbents.
+- **Dependencies:** OPP-005.
+- **Ratings:** user_value=3,strategic_alignment=3,market_opportunity=3,competitive_differentiation=1,business_impact=2,implementation_feasibility=5
+- **Reviewer notes:**  Independent review (round 6): cluster-only; competition claim re-sourced as a hypothesis. Cluster rule (review): build as one distinct workbench per family; no per-keyword, per-university, per-currency or per-variant pages. This is an acceptance gate for any spec.
+
+### OPP-029 — Developer and encoder converters (base64 image and text, hex to RGBA, JSON formatter, UUID and hash)
+
+- **Category:** product extension
+- **Source direction:** adjacent market
+- **Problem:** Developers convert and format data; autocomplete shows base64 image variants, "json formatter" and "hex to rgb". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=image+to+base64+converter+online; 2026-11-17]
+- **Proposed solution:** A set of small converters using built-ins (Web Crypto, JSON) and tiny libraries, each distinct. Timestamps live in OPP-027.
+- **Why it matters:** Trivial build; breadth.
+- **Evidence:** The base64 SERP is crowded with dev-tool sites and pages.dev clones; jsonformatter.org appears in suggestions. [E: inference; low; search:image to base64 converter online; 2026-11-17]
+- **Competitive context:** Saturated.
+- **Expected value:** Developer audiences block ads heavily according to a vendor claim. [E: fact; low; https://carbonads.net/blog/developer-advertising-guide-2026; 2026-11-17]
+- **Effort:** S
+- **Risks:** Saturation and ad blockers.
+- **Dependencies:** OPP-005.
+- **Ratings:** user_value=3,strategic_alignment=2,market_opportunity=3,competitive_differentiation=1,business_impact=2,implementation_feasibility=5
+- **Reviewer notes:**  Independent review (round 6): fails admission (developer audience outside PRODUCT.md, saturated SERP, duplicate of OPP-027 on timestamps). Returned to Discovered.
+
+### OPP-030 — QR code generator
+
+- **Category:** product extension
+- **Source direction:** adjacent market
+- **Problem:** Users make QR codes for links, Wi-Fi and text; autocomplete shows "qr code generator for location". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=qr+code+generator; 2026-11-17]
+- **Proposed solution:** Static QR generation in the browser with PNG and SVG export, using an MIT library.
+- **Why it matters:** A high-volume everyday tool with a simple client-side build.
+- **Evidence:** node-qrcode is MIT (last push 2024-08-23); bwip-js is MIT (2026-08-19). [E: fact; high; https://api.github.com/repos/soldair/node-qrcode; 2026-11-17] [E: fact; high; https://github.com/metafloor/bwip-js/blob/master/LICENSE; 2026-11-17] Canva and Adobe appear in the suggestions; that the SERP is very strong is a hypothesis. [E: hypothesis; low; search:not SERP-checked; 2026-11-17]
+- **Competitive context:** Very strong incumbents.
+- **Expected value:** Unknown.
+- **Effort:** M
+- **Risks:** Crowded head term; dynamic QR codes are out of scope (need a backend).
+- **Dependencies:** OPP-005.
+- **Ratings:** user_value=3,strategic_alignment=3,market_opportunity=3,competitive_differentiation=1,business_impact=3,implementation_feasibility=4
+- **Reviewer notes:**  Independent review (round 6): market_opportunity lowered 4 to 3; cluster-only.
+
+### OPP-031 — In-browser background remover
+
+- **Category:** product extension
+- **Source direction:** technology shift
+- **Problem:** Users remove backgrounds from photos; autocomplete shows "make image background transparent". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=make+image+background+transparent; 2026-11-17]
+- **Proposed solution:** Transformers.js (Apache-2.0) with a permissively licensed segmentation model such as MODNet, self-hosted, in a worker.
+- **Why it matters:** Large demand and links into passport and product photos (OPP-008).
+- **Evidence:** Transformers.js is Apache-2.0 and active; Xenova/modnet is Apache-2.0 per its card; imgly is AGPL and BRIA RMBG-1.4 is non-commercial, so both are excluded. [E: fact; high; https://api.github.com/repos/huggingface/transformers.js; 2026-11-17] [E: fact; medium; https://huggingface.co/Xenova/modnet; 2026-11-17] [E: fact; high; https://huggingface.co/briaai/RMBG-1.4; 2026-11-17] The model download size and general-object quality are unknown. [E: unknown; low; search:modnet onnx size; 2026-11-17]
+- **Competitive context:** AI removers are heavily competed (not SERP-checked).
+- **Expected value:** Unknown.
+- **Effort:** L
+- **Risks:** Large model download, mobile memory, quality limited to portraits, licence of the weights needs a legal check.
+- **Dependencies:** Legal review; real-device test; OPP-005.
+- **Ratings:** user_value=3,strategic_alignment=4,market_opportunity=3,competitive_differentiation=1,business_impact=3,implementation_feasibility=2
+- **Reviewer notes:**  Independent review (round 6): market_opportunity capped at 3; the upstream MODNet and training-data licence must be added to the legal check; cluster-only.
+
+### OPP-032 — Small generators: Roman numerals, number to words (rupees), random name picker
+
+- **Category:** product extension
+- **Source direction:** adjacent market
+- **Problem:** Niche intents such as "roman numeral converter birthday" and "number to words indian rupees"; autocomplete shows both and "random name picker wheel". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=roman+numeral+converter; 2026-11-17] (The other listed phrases come from the research agent's own autocomplete fetches and were not re-checked here.)
+- **Proposed solution:** Three small, distinct tools.
+- **Why it matters:** Intent variants suggest a long tail and the picker wheel has longer dwell time.
+- **Evidence:** Not SERP-checked. [E: unknown; low; search:not checked; 2026-11-17]
+- **Competitive context:** Unknown.
+- **Expected value:** Unknown.
+- **Effort:** S
+- **Risks:** Thin pages; low value per visit.
+- **Dependencies:** OPP-005.
+- **Ratings:** user_value=2,strategic_alignment=3,market_opportunity=3,competitive_differentiation=2,business_impact=2,implementation_feasibility=5
+- **Reviewer notes:**  Independent review (round 6): fails admission (no evidence beyond autocomplete). Returned to Discovered.
+
+### OPP-033 — In-browser audio and video trim and convert
+
+- **Category:** product extension
+- **Source direction:** technology shift
+- **Problem:** Users trim or convert clips; autocomplete shows "gif to mp4". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=gif+to+mp4; 2026-11-17]
+- **Proposed solution:** WebCodecs based trimming with a library such as Mediabunny, or ffmpeg.wasm only after a licence review.
+- **Why it matters:** Large category and technology now practical in browsers.
+- **Evidence:** WebCodecs reaches 95.92% of users; Firefox Android lacks it. [E: fact; medium; https://caniuse.com/webcodecs; 2026-11-17] Mediabunny is MPL-2.0; the ffmpeg.wasm core follows FFmpeg's LGPL or GPL terms. [E: fact; high; https://api.github.com/repos/Vanilagy/mediabunny; 2026-11-17] [E: fact; high; https://ffmpegwasm.netlify.app/docs/faq; 2026-11-17]
+- **Competitive context:** Many video tools (not SERP-checked).
+- **Expected value:** Unknown.
+- **Effort:** L
+- **Risks:** Licence review needed, 2 GB input limit, heavy memory use, mobile reliability.
+- **Dependencies:** Legal review; OPP-005.
+- **Ratings:** user_value=3,strategic_alignment=2,market_opportunity=3,competitive_differentiation=1,business_impact=3,implementation_feasibility=2
+- **Reviewer notes:**  Independent review (round 6): fails admission (one autocomplete query, effort L, licence flags, off-brand). Returned to Discovered.
+
+### OPP-034 — Tool hub, per-tool guide template and directory listings
+
+- **Category:** UX improvement
+- **Source direction:** internal gap
+- **Problem:** The site has no tool index page and no dedicated contact page (the about page has a contact section); it has a home page, about, privacy, terms, one guide route and a sitemap integration. [E: inference; medium; search:repo pages listing and astro.config.mjs, absence checked by listing src/pages; 2026-11-17] One indie author with 100-plus tools had zero Google clicks for 3 months until thin pages, a canonical error and weak trust signals were fixed. [E: fact; low; https://dev.to/tzhkai/i-spent-3-months-getting-zero-organic-traffic-then-one-fix-brought-40-users-in-24-hours-5a2; 2026-11-17]
+- **Proposed solution:** Only the missing pieces: a tool hub page listing every tool, a reusable per-tool guide section (how it works, FAQ, privacy), internal links between related tools, and a list of directories to submit to (AlternativeTo, Toolify, Product Hunt). Sitemap, About, Privacy and Terms already exist and are out of scope. Sequence after OPP-004 and reconcile with the existing guides and FEATURE-001.
+- **Why it matters:** Case studies say backlinks and page quality, not tool count, decide results; a foundation lifts every tool and helps AdSense review.
+- **Evidence:** The 200-tool author reports that directory listings gave small steady referrals and a Domain Rating of 4.1 after 8 months. [E: fact; low; https://dev.to/ezytoolz/i-built-200-free-online-tools-heres-everything-i-learned-in-8-months-4c4h; 2026-11-17] A generic tool-site checklist suggests about 800 words per tool and complete trust pages, but shows no outcomes. [E: hypothesis; low; https://neatforge.pages.dev/guides/adsense-rejection-reasons-tool-sites; 2026-11-17]
+- **Competitive context:** Not applicable; this is infrastructure for every tool.
+- **Expected value:** Indirect; raises the chance that any tool ranks and that ads are approved.
+- **Effort:** M
+- **Risks:** Per-tool guide writing is manual work; link building is outside code; overlaps OPP-004 (ads and content pages) and the existing guides.
+- **Dependencies:** OPP-001, OPP-004, OPP-005.
+- **Ratings:** user_value=3,strategic_alignment=5,market_opportunity=3,competitive_differentiation=2,business_impact=3,implementation_feasibility=4
+- **Reviewer notes:**  Independent review (round 6): absence claim re-tagged as inference; the 'sitemap and trust pages missing' claim was partly false and is removed; passes admission as foundation work only. Ratings lowered; score recomputed.
