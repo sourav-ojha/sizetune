@@ -2,8 +2,8 @@
 type: opportunity-registry
 last_research: 2026-11-17
 review_mode: independent
-decision_count: 7
-decision_head: e20b8aabd117
+decision_count: 13
+decision_head: d06a2ad927f9
 ---
 # Opportunities
 
@@ -160,16 +160,16 @@ The owner asked about Bulk Image Compressor, Bulk Image Converter, Image Rotator
 | OPP-005 | Multi-tool site platform (dependency note, not an option) | Under Evaluation | 65 | Medium | Consider | M | 2026-11-17 | - |
 | OPP-006 | Bulk resize with one ZIP download | Ready for Implementation | 57 | Medium | Consider | M | 2026-11-17 | FEATURE-005 |
 | OPP-007 | Evaluate whether WASM encoders improve quality at tiny KB targets | Under Evaluation | 54 | Low | Backlog | L | 2026-11-17 | - |
-| OPP-008 | Passport and visa photo maker with size specs | Discovered | 52 | Low | Backlog | L | 2026-11-17 | - |
+| OPP-008 | Passport and visa photo maker with size specs | Approved | 52 | Low | Backlog | L | 2026-11-17 | FEATURE-011 |
 | OPP-009 | Serve minimum-size forms when the source is too small | Discovered | 56 | Low | Needs evidence | S | 2026-11-17 | - |
 | OPP-010 | Localised pages for other languages | Discovered | 55 | Low | Needs evidence | L | 2026-11-17 | - |
 | OPP-011 | Exam-form preset pack with a pixel, KB and file-type compliance check | Deferred | 63 | Low | Needs evidence | M | 2026-11-17 | - |
-| OPP-012 | Client-side image format converters (WebP and PNG to JPG) | Discovered | 57 | Low | Needs evidence | S | 2026-11-17 | - |
+| OPP-012 | Client-side image format converters (WebP and PNG to JPG) | Ready for Implementation | 57 | Low | Needs evidence | S | 2026-11-17 | FEATURE-006 |
 | OPP-013 | Client-side image-to-PDF and JPG-to-PDF | Discovered | 53 | Low | Backlog | M | 2026-11-17 | - |
-| OPP-014 | Image rotator and flipper | Discovered | 50 | Low | Backlog | S | 2026-11-17 | - |
-| OPP-015 | "Will this file pass?" image checker (format, KB, pixels, type) | Discovered | 60 | Low | Needs evidence | M | 2026-11-17 | - |
-| OPP-016 | Social media (Instagram, LinkedIn, YouTube) image resizers | Discovered | 46 | Low | Backlog | S | 2026-11-17 | - |
-| OPP-017 | Favicon and app icon generator | Discovered | 49 | Low | Backlog | M | 2026-11-17 | - |
+| OPP-014 | Image rotator and flipper | Ready for Implementation | 50 | Low | Backlog | S | 2026-11-17 | FEATURE-007 |
+| OPP-015 | "Will this file pass?" image checker (format, KB, pixels, type) | Ready for Implementation | 60 | Low | Needs evidence | M | 2026-11-17 | FEATURE-008 |
+| OPP-016 | Social media (Instagram, LinkedIn, YouTube) image resizers | Ready for Implementation | 46 | Low | Backlog | S | 2026-11-17 | FEATURE-009 |
+| OPP-017 | Favicon and app icon generator | Ready for Implementation | 49 | Low | Backlog | M | 2026-11-17 | FEATURE-010 |
 
 ## Review Summary
 
@@ -193,6 +193,12 @@ Independent review by separate sub-agents (general-purpose agent following the i
 | 2026-11-17 | OPP-002 | defer | sourav | User chose Defer HEIC at the FEATURE-004 blocker walk-through, 2026-11-17 | 4ff7da1c23c6 | d298aa39d8de |
 | 2026-11-17 | OPP-011 | defer | sourav | User: 'Defer OPP-011' (reply to Gate 2 decision sheet, 2026-11-17) | 789fa8d6db11 | 4bfafd32a054 |
 | 2026-11-17 | OPP-006 | approve | sourav | User: 'Approve OPP-006' (reply to Gate 2 decision sheet, 2026-11-17) | 153c1f5be11a | e20b8aabd117 |
+| 2026-11-17 | OPP-008 | approve | sourav | User: 'lets add them, so we ll have more tools in our arsenal' (owner override of Backlog/Needs-evidence tier, 2026-11-17) | 1344bd07e6b9 | 3ad8894a2d11 |
+| 2026-11-17 | OPP-012 | approve | sourav | User: 'lets add them, so we ll have more tools in our arsenal' (owner override of Backlog/Needs-evidence tier, 2026-11-17) | 2a671f9909bc | 5626037167e7 |
+| 2026-11-17 | OPP-014 | approve | sourav | User: 'lets add them, so we ll have more tools in our arsenal' (owner override of Backlog/Needs-evidence tier, 2026-11-17) | 470dae0fbb6e | 2d6f447ec2f8 |
+| 2026-11-17 | OPP-015 | approve | sourav | User: 'lets add them, so we ll have more tools in our arsenal' (owner override of Backlog/Needs-evidence tier, 2026-11-17) | c8cf40333119 | ea2fc4e19686 |
+| 2026-11-17 | OPP-016 | approve | sourav | User: 'lets add them, so we ll have more tools in our arsenal' (owner override of Backlog/Needs-evidence tier, 2026-11-17) | 67726529a2a4 | 281a9902d7ad |
+| 2026-11-17 | OPP-017 | approve | sourav | User: 'lets add them, so we ll have more tools in our arsenal' (owner override of Backlog/Needs-evidence tier, 2026-11-17) | a73bf4e09ee4 | d06a2ad927f9 |
 
 ## Opportunity Details
 
