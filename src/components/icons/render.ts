@@ -2,9 +2,13 @@ import { containRect, coverRect } from '../social/layout';
 
 export type SquareFit = 'pad' | 'crop';
 
-/** Android's adaptive icon keeps the logo inside a 66 by 66 area of the 108 by 108 layer. */
+/**
+ * Where the logo goes in a maskable icon. A circular mask is the tightest common shape, so the logo's box is sized so its corners stay
+ * inside a central circle of radius 40% of the icon: a square of side 0.8 / sqrt(2) = about 56.6%. (Android's adaptive icon guidance
+ * keeps the logo inside the middle 66 of 108, which is looser.)
+ */
 export function safeBox(size: number): { x: number; y: number; s: number } {
-  const s = Math.round((size * 66) / 108);
+  const s = Math.floor((size * 0.8) / Math.SQRT2);
   return { x: Math.round((size - s) / 2), y: Math.round((size - s) / 2), s };
 }
 

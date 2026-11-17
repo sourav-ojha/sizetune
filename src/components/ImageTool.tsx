@@ -37,13 +37,15 @@ export default function ImageTool({ defaultMaxKb = 50, defaultFormat, defaultNoL
   const [form, setForm] = useForm({ maxKb: String(defaultMaxKb), noLimit: defaultNoLimit });
   const webp = useWebpSupport();
   const anchor = useScrollAnchor();
-  const { inputRef, onPick } = useIntake(session);
+  const manyRef = useRef<((files: File[]) => void) | undefined>(undefined);
+  const { inputRef, onPick } = useIntake(session, (files) => manyRef.current?.(files));
   // Several files at once go to a batch: one queue, one file at a time, one ZIP. A single file keeps using the single-file view above.
   const [batch] = useState(() => new BatchRunner({ process: processImage, createObjectURL: (b) => URL.createObjectURL(b), revokeObjectURL: (u) => URL.revokeObjectURL(u) }));
   const batchState = useSyncExternalStore(batch.subscribe, batch.getSnapshot, batch.getSnapshot);
   const [batchNote, setBatchNote] = useState<string | null>(null);
   const [zipError, setZipError] = useState<string | null>(null);
   const [ranKey, setRanKey] = useState<string | null>(null);
+  const [ranHasTarget, setRanHasTarget] = useState(true);
   const inBatch = batchState.rows.length > 0;
   useEffect(() => () => batch.dispose(), [batch]);
   const runRef = useRef<HTMLButtonElement>(null);
@@ -78,17 +80,22 @@ export default function ImageTool({ defaultMaxKb = 50, defaultFormat, defaultNoL
   const [rev, setRev] = useState(0);
   const attempted = !!state.file && settingsKey !== null && ranFor.current === `${state.fileSerial}|${settingsKey}`;
 
-  const startBatch = (opts: ProcessOptions | null, key: string | null) => { if (opts) { setRanKey(key); batch.start(opts); } };
+  const startBatch = (opts: ProcessOptions | null, key: string | null) => { if (opts) { setRanKey(key); setRanHasTarget(opts.maxKb !== undefined || opts.minKb !== undefined); batch.start(opts); } };
   const onPickMany = (files: File[]) => {
     session.reset();
     const out = batch.add(files);
     setBatchNote(out.message);
     setZipError(null);
-    if (out.added > 0) startBatch(optsRef.current, settingsKey);
   };
+  manyRef.current = onPickMany;
+  // Queued files start as soon as the settings are valid: right away when files are added, or later once a bad setting is fixed.
+  useEffect(() => {
+    const s = batch.getSnapshot();
+    if (s.rows.length > 0 && !s.running && s.rows.every((r) => r.status === 'queued') && optsRef.current) startBatch(optsRef.current, settingsKey);
+  }, [batchState, settingsKey]);
   const downloadZip = async () => {
     try {
-      const zip = await buildBatchZip(batchState.rows);
+      const zip = await buildBatchZip(batchState.rows, ranHasTarget);
       const url = URL.createObjectURL(new Blob([zip as BlobPart], { type: 'application/zip' }));
       const a = document.createElement('a');
       a.href = url; a.download = 'sizetune-images.zip';
@@ -176,7 +183,9 @@ export default function ImageTool({ defaultMaxKb = 50, defaultFormat, defaultNoL
               snapshot={batchState}
               note={batchNote}
               zipError={zipError}
-              stale={!batchState.running && ranKey !== settingsKey}
+              stale={!batchState.running && ranKey !== settingsKey && batchState.rows.some((r) => r.status !== 'queued')}
+              hasTarget={ranHasTarget}
+              invalid={!built.ok && batchState.rows.every((r) => r.status === 'queued')}
               onCancel={() => batch.cancel()}
               onZip={() => { void downloadZip(); }}
               onRerun={() => startBatch(optsRef.current, settingsKey)}

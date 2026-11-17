@@ -130,6 +130,25 @@ describe('ZIP (AC-3)', () => {
     const z = unzipSync(await buildBatchZip(runner.getSnapshot().rows));
     expect(Object.keys(z).sort()).toEqual(['SizeTune-report.txt', 'photo-2.jpg', 'photo-3.jpg', 'photo.jpg']);
   });
+  it('keeps the engine notes and the raised message for each file and prints them in the report (review M2)', async () => {
+    const { runner } = fake(() => result({ status: 'raised', message: 'Raised quality to reach your minimum.', notes: ['Transparent areas were filled with white.'] }));
+    runner.add([file('a.png')]);
+    runner.start(OPTS);
+    await settle(runner);
+    expect(runner.getSnapshot().rows[0]).toMatchObject({ status: 'reached', notes: ['Transparent areas were filled with white.'], message: 'Raised quality to reach your minimum.' });
+    const z = unzipSync(await buildBatchZip(runner.getSnapshot().rows, true));
+    const report = new TextDecoder().decode(z['SizeTune-report.txt']);
+    expect(report).toMatch(/Transparent areas were filled with white/);
+    expect(report).toMatch(/Raised quality/);
+  });
+  it('says "done" and not "reached the target" when there was no size target', async () => {
+    const { runner } = fake(() => result());
+    runner.add([file('a.jpg')]);
+    runner.start({ ...OPTS, maxKb: undefined });
+    await settle(runner);
+    const z = unzipSync(await buildBatchZip(runner.getSnapshot().rows, false));
+    expect(new TextDecoder().decode(z['SizeTune-report.txt'])).not.toMatch(/reached the target/);
+  });
   it('holds every reached file, leaves out others, and lists every file in the report', async () => {
     const { runner } = fake((_f, i) => (i === 0 ? result() : i === 1 ? result({ status: 'above_max', bytes: 70_000 }) : new EngineError('corrupt', 'Incomplete.')));
     runner.add([file('ok.jpg'), file('big.jpg'), file('bad.jpg')]);

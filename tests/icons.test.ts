@@ -5,7 +5,8 @@ import { buildIco, readIcoDirectory } from '../src/components/icons/ico';
 import { buildManifest } from '../src/components/icons/manifest';
 import { buildSnippet } from '../src/components/icons/snippet';
 import { ICON_MODES, filesFor } from '../src/data/iconSets';
-import { makeZip, uniqueNames } from '../src/lib/zip';
+import { crc32, makeZip, uniqueNames } from '../src/lib/zip';
+import { safeBox } from '../src/components/icons/render';
 
 const png = (n: number) => new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, n, n, n, n]);
 
@@ -78,7 +79,34 @@ describe('ZIP (AC-2, FEATURE-005 AC-3)', () => {
   it('makes duplicate names unique with a numeric suffix, keeping the extension', () => {
     expect(uniqueNames(['photo.jpg', 'photo.jpg', 'sig.png', 'photo.jpg'])).toEqual(['photo.jpg', 'photo-2.jpg', 'sig.png', 'photo-3.jpg']);
   });
+  it('never hands out the same name twice, even when a suffixed name is already taken (review M1)', () => {
+    expect(uniqueNames(['photo.jpg', 'photo.jpg', 'photo-2.jpg'])).toEqual(['photo.jpg', 'photo-2.jpg', 'photo-2-2.jpg']);
+    const names = uniqueNames(['a.png', 'a-2.png', 'a.png', 'a.png', 'a-2.png']);
+    expect(new Set(names.map((n) => n.toLowerCase())).size).toBe(names.length);
+  });
+  it('computes the standard CRC-32 and writes a ZIP that an independent reader accepts, including empty and larger files', () => {
+    expect(crc32(new TextEncoder().encode('123456789'))).toBe(0xcbf43926);
+    const big = new Uint8Array(200_000).map((_, i) => (i * 31) % 251);
+    const z = makeZip([{ name: 'empty.txt', data: new Uint8Array(0) }, { name: 'big.bin', data: big }, { name: 'ünï.txt', data: new TextEncoder().encode('é') }]);
+    const back = unzipSync(z);
+    expect(back['empty.txt'].length).toBe(0);
+    expect(Array.from(back['big.bin'].subarray(0, 1000))).toEqual(Array.from(big.subarray(0, 1000)));
+    expect(back['big.bin'].length).toBe(200_000);
+    expect(new TextDecoder().decode(back['ünï.txt'])).toBe('é');
+  });
   it('strips path separators from names so a file cannot escape the archive folder', () => {
     expect(uniqueNames(['../../evil.png', 'a/b.png'])).toEqual(['evil.png', 'b.png']);
+  });
+});
+
+describe('maskable safe area (review M4)', () => {
+  it('keeps a square logo inside the central circle of radius 40% so a circular mask cannot clip its corners', () => {
+    for (const size of [192, 512]) {
+      const b = safeBox(size);
+      const half = b.s / 2;
+      const cornerFromCentre = Math.hypot(half, half);
+      expect(cornerFromCentre / size).toBeLessThanOrEqual(0.4 + 0.005);
+      expect(Math.abs(b.x * 2 + b.s - size)).toBeLessThanOrEqual(1); // centred to the pixel
+    }
   });
 });

@@ -9,6 +9,10 @@ interface Props {
   zipError: string | null;
   /** The settings changed after the batch finished, so the results no longer describe them. */
   stale: boolean;
+  /** A size limit or minimum is set; without one a finished file is "done", not "reached the target". */
+  hasTarget: boolean;
+  /** The settings cannot be used yet: the files wait and nothing is processed. */
+  invalid: boolean;
   onCancel: () => void;
   onZip: () => void;
   onRerun: () => void;
@@ -26,28 +30,37 @@ const TONE: Record<Row['status'], string> = {
 };
 
 /** The list of files in a batch with a status for each, and the batch actions. Presentation only: the queue lives in BatchRunner. */
-export default function BatchPanel({ snapshot, note, zipError, stale, onCancel, onZip, onRerun, onStartOver }: Props) {
+export default function BatchPanel({ snapshot, note, zipError, stale, hasTarget, invalid, onCancel, onZip, onRerun, onStartOver }: Props) {
   const { rows, running } = snapshot;
   const count = (s: Row['status']) => rows.filter((r) => r.status === s).length;
   const doneSoFar = rows.filter((r) => ['reached', 'not-reached', 'failed', 'cancelled'].includes(r.status)).length;
   const reached = count('reached');
-  const summary = running
-    ? `Processing file ${Math.min(doneSoFar + 1, rows.length)} of ${rows.length}.`
-    : `Finished. ${reached} reached the target${count('not-reached') ? `, ${count('not-reached')} did not` : ''}${count('failed') ? `, ${count('failed')} failed` : ''}${count('cancelled') ? `, ${count('cancelled')} cancelled` : ''}.`;
+  const label = (r: Row) => (r.status === 'reached' && !hasTarget ? 'Done' : LABEL[r.status]);
+  const summary = invalid
+    ? 'Waiting for valid settings.'
+    : running
+      ? `Processing file ${Math.min(doneSoFar + 1, rows.length)} of ${rows.length}.`
+      : `Finished. ${reached} ${hasTarget ? 'reached the target' : 'done'}${count('not-reached') ? `, ${count('not-reached')} did not reach it` : ''}${count('failed') ? `, ${count('failed')} failed` : ''}${count('cancelled') ? `, ${count('cancelled')} cancelled` : ''}.`;
+  // Each finished file is announced as it finishes, not only the overall summary.
+  const lastDone = [...rows].reverse().find((r) => ['reached', 'not-reached', 'failed', 'cancelled'].includes(r.status));
+  const cancel = () => { onCancel(); setTimeout(() => document.querySelector<HTMLElement>('[data-testid=batch-start-over]')?.focus({ preventScroll: true }), 0); };
   return (
     <div data-testid="batch-panel" className="space-y-4">
-      <div role="status" aria-live="polite" data-testid="batch-status" className="text-base font-semibold text-slate-900">{summary}</div>
+      <div data-testid="batch-status" className="text-base font-semibold text-slate-900">{summary}</div>
+      <div role="status" aria-live="polite" className="sr-only" data-testid="batch-announce">{lastDone ? `${lastDone.name}: ${label(lastDone)}.` : ''}</div>
+      {invalid && <p role="alert" data-testid="batch-invalid" className="rounded-lg border border-red-700 bg-red-50 p-3 text-sm font-medium text-red-950">Fix the highlighted settings. Your files are waiting and will be processed as soon as the settings are valid.</p>}
       {note && <p role="note" data-testid="batch-note" className="rounded-lg border border-amber-600 bg-amber-50 p-3 text-sm text-amber-950">{note}</p>}
       <ul className="space-y-2" aria-label="Files in this batch">
         {rows.map((r, i) => (
           <li key={r.id} data-testid="batch-row" data-status={r.status} data-name={r.name} className={`rounded-xl border p-3 ${TONE[r.status]}`}>
             <p className="break-all font-semibold">{r.name}</p>
             <p className="text-sm">
-              <strong>{LABEL[r.status]}.</strong>
+              <strong>{label(r)}.</strong>
               {r.status === 'reached' && ` ${formatSize(r.bytes ?? 0)}, ${formatDims(r.width ?? 0, r.height ?? 0)}.`}
-              {r.status === 'not-reached' && ` Best result ${formatSize(r.bytes ?? 0)}. ${r.message ?? ''}`}
-              {r.status === 'failed' && ` ${r.message ?? ''}`}
+              {r.status === 'not-reached' && ` Best result ${formatSize(r.bytes ?? 0)}.`}
+              {(r.status === 'reached' || r.status === 'not-reached' || r.status === 'failed') && r.message ? ` ${r.message}` : ''}
             </p>
+            {r.notes?.map((n) => <p key={n} className="text-sm" data-testid="batch-row-note">{n}</p>)}
             {r.url && (r.status === 'reached' || r.status === 'not-reached') && (
               <a data-testid={`batch-download-${i}`} className="mt-1 inline-flex min-h-11 items-center font-medium underline underline-offset-4" href={r.url} download={r.name.replace(/\.[^.]+$/, '') + (r.mime === 'image/png' ? '.png' : r.mime === 'image/webp' ? '.webp' : '.jpg')}>
                 {r.status === 'reached' ? 'Download this file' : 'Download anyway'}<span className="sr-only">: {r.name}</span>
@@ -58,7 +71,7 @@ export default function BatchPanel({ snapshot, note, zipError, stale, onCancel, 
       </ul>
       {zipError && <p role="alert" className="text-sm font-medium text-red-800" data-testid="batch-zip-error">{zipError}</p>}
       <div className="flex flex-col gap-2 sm:flex-row">
-        {running && <button type="button" data-testid="batch-cancel" className={btnSecondary} onClick={onCancel}>Cancel</button>}
+        {running && <button type="button" data-testid="batch-cancel" className={btnSecondary} onClick={cancel}>Cancel</button>}
         {!running && reached > 0 && <button type="button" data-testid="download-zip" className={btnPrimary} onClick={onZip}>Download all (ZIP)</button>}
         {!running && stale && <button type="button" data-testid="batch-rerun" className={btnSecondary} onClick={onRerun}>Process again with the new settings</button>}
         <button type="button" data-testid="batch-start-over" className={btnSecondary} onClick={onStartOver}>Start over</button>

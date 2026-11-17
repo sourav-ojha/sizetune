@@ -54,8 +54,8 @@ const jsonLd = webApplicationLd('SizeTune: favicon and app icon generator', '/fa
     <h2>Maskable icons</h2>
     <p>
       Android and some browsers cut an installed app icon into a circle, a rounded square or another shape. A maskable
-      icon has a full background and keeps the logo inside a safe area in the middle, so the cut does not clip it. In
-      app icon mode the maskable file fills the square with your background colour and scales the logo into that area.
+      icon has a full background and keeps the logo in the middle, so the cut is less likely to clip it. In
+      app icon mode the maskable file fills the square with your background colour and scales the logo to sit inside a central circle.
     </p>
 
     <h2>Adding the files to your site</h2>
@@ -67,7 +67,7 @@ const jsonLd = webApplicationLd('SizeTune: favicon and app icon generator', '/fa
 
     <h2>Frequently asked questions about favicons and app icons</h2>
     <h3>Do I still need a favicon.ico?</h3>
-    <p>Many sites still ship one, because every browser and many tools look for it. Google lists ICO among the formats it supports for search results.</p>
+    <p>Many sites still ship one, because many browsers and tools look for it. Google lists ICO among the formats it supports for search results.</p>
     <h3>Why is there no SVG option?</h3>
     <p>This generator accepts JPEG, PNG and WebP pictures only. SVG input is not supported yet.</p>
     <h3>Why does the Apple touch icon say common practice?</h3>

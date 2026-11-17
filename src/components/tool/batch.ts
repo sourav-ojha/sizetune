@@ -18,6 +18,8 @@ export interface Row {
   status: RowStatus;
   /** Plain explanation for a failure or a missed target (the engine's user-safe message). */
   message?: string;
+  /** The engine's disclosures for this file (for example that transparent areas were filled). They must be shown. */
+  notes?: string[];
   bytes?: number;
   width?: number;
   height?: number;
@@ -104,7 +106,7 @@ export class BatchRunner {
           const r: ProcessResult = await this.deps.process(file, options, { signal });
           if (mine !== this.run) return;
           const reached = r.status === 'ok' || r.status === 'raised';
-          this.patchRow(row.id, { status: reached ? 'reached' : 'not-reached', message: reached ? undefined : r.message, bytes: r.bytes, width: r.width, height: r.height, mime: r.mime, blob: r.blob, url: this.deps.createObjectURL(r.blob) });
+          this.patchRow(row.id, { status: reached ? 'reached' : 'not-reached', message: r.message || undefined, notes: r.notes.length ? r.notes : undefined, bytes: r.bytes, width: r.width, height: r.height, mime: r.mime, blob: r.blob, url: this.deps.createObjectURL(r.blob) });
         } catch (e) {
           if (mine !== this.run) return;
           if (e instanceof EngineError && e.code === 'cancelled') this.patchRow(row.id, { status: 'cancelled' });
@@ -135,10 +137,12 @@ export class BatchRunner {
   }
 }
 
-const statusLine = (r: Row, out?: string): string => {
+const extra = (r: Row): string => [r.message, ...(r.notes ?? [])].filter(Boolean).join(' ');
+
+const statusLine = (r: Row, out: string | undefined, hasTarget: boolean): string => {
   switch (r.status) {
-    case 'reached': return `${r.name} -> ${out}: reached the target, ${formatKb(r.bytes ?? 0)} (${r.width} x ${r.height} px)`;
-    case 'not-reached': return `${r.name}: target not reached, best result ${formatKb(r.bytes ?? 0)}, not included in this ZIP${r.message ? `. ${r.message}` : ''}`;
+    case 'reached': return `${r.name} -> ${out}: ${hasTarget ? 'reached the target' : 'done'}, ${formatKb(r.bytes ?? 0)} (${r.width} x ${r.height} px)${extra(r) ? `. ${extra(r)}` : ''}`;
+    case 'not-reached': return `${r.name}: target not reached, best result ${formatKb(r.bytes ?? 0)}, not included in this ZIP${extra(r) ? `. ${extra(r)}` : ''}`;
     case 'failed': return `${r.name}: failed. ${r.message ?? ''}`.trim();
     case 'cancelled': return `${r.name}: cancelled`;
     default: return `${r.name}: ${r.status}`;
@@ -146,12 +150,12 @@ const statusLine = (r: Row, out?: string): string => {
 };
 
 /** One ZIP of every file that reached its target, plus a plain-text report with a status for every file in the batch. */
-export async function buildBatchZip(rows: Row[]): Promise<Uint8Array> {
+export async function buildBatchZip(rows: Row[], hasTarget = true): Promise<Uint8Array> {
   const done = rows.filter((r) => r.status === 'reached' && r.blob);
   const names = uniqueNames(done.map((r) => outputName(r.name, r.mime ?? '')));
   const outNames = new Map(done.map((r, i) => [r.id, names[i]]));
   const files = await Promise.all(done.map(async (r, i) => ({ name: names[i], data: new Uint8Array(await r.blob!.arrayBuffer()) })));
-  const lines = ['SizeTune batch report', '', ...rows.map((r) => statusLine(r, outNames.get(r.id))), ''];
+  const lines = ['SizeTune batch report', '', ...rows.map((r) => statusLine(r, outNames.get(r.id), hasTarget)), ''];
   files.push({ name: 'SizeTune-report.txt', data: new TextEncoder().encode(lines.join('\n')) });
   return makeZip(files);
 }

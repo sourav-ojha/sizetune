@@ -111,3 +111,43 @@ test('AC-8: cancelling stops the batch, keeps finished files downloadable and ma
   expect(['reached', 'not-reached']).toContain(statuses[0]);
   await expect(page.getByTestId('batch-download-0')).toBeVisible();
 });
+
+test('review M3: several files picked before the page is interactive still form a batch', async ({ page }) => {
+  let release!: () => void;
+  const gate = new Promise<void>((r) => (release = r));
+  await page.route('**/_astro/*.js', async (route) => { await gate; await route.continue(); });
+  await page.goto('/', { waitUntil: 'commit' });
+  await page.getByTestId('file').setInputFiles(three);
+  release();
+  await expect(rows(page)).toHaveCount(3, { timeout: 30_000 });
+  await page.unroute('**/_astro/*.js');
+});
+
+test('review L6: invalid settings at pick time are explained, and the batch starts once they are fixed', async ({ page }) => {
+  await open(page);
+  await page.getByTestId('target').fill('abc');
+  await page.getByTestId('file').setInputFiles(three.slice(0, 2));
+  await expect(rows(page)).toHaveCount(2);
+  await expect(page.getByTestId('batch-invalid')).toBeVisible();
+  await expect(rows(page).first()).toHaveAttribute('data-status', 'queued');
+  await page.getByTestId('target').fill('50');
+  await expect(rows(page).first()).toHaveAttribute('data-status', 'reached', { timeout: 60_000 });
+  await expect(page.getByTestId('batch-invalid')).toHaveCount(0);
+});
+
+test('review M2: a transparent PNG flattened to JPEG shows the engine note in its row', async ({ page }) => {
+  await open(page);
+  await page.getByTestId('format-jpeg').check();
+  await page.getByTestId('file').setInputFiles([{ name: 't0.png', mimeType: 'image/png', buffer: makePng(40, 40, (x) => (x < 20 ? [0, 0, 0, 0] : [200, 10, 10, 255])) }, tinyPng(1)]);
+  await expect(rows(page).first()).toHaveAttribute('data-status', 'reached', { timeout: 60_000 });
+  await expect(rows(page).first()).toContainText(/Transparent areas were filled/);
+});
+
+test('review L11: with no size limit the rows say done, not "reached the target"', async ({ page }) => {
+  await open(page);
+  await page.getByTestId('preset-none').click();
+  await page.getByTestId('file').setInputFiles([tinyPng(1), tinyPng(2)]);
+  await expect(rows(page).first()).toHaveAttribute('data-status', 'reached', { timeout: 60_000 });
+  await expect(rows(page).first()).not.toContainText(/Reached the target/);
+  await expect(rows(page).first()).toContainText(/Done/);
+});

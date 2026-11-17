@@ -4,7 +4,7 @@ import type { IconMode } from '../../data/iconSets';
 export function buildSnippet(mode: IconMode): string {
   if (mode === 'favicon') {
     return [
-      '<link rel="icon" href="/favicon.ico" sizes="48x48">',
+      '<link rel="icon" href="/favicon.ico" sizes="any">',
       '<link rel="icon" href="/favicon-96x96.png" type="image/png" sizes="96x96">',
     ].join('\n');
   }

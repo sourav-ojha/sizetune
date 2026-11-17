@@ -40,6 +40,7 @@ export default function IconTool() {
   const [appName, setAppName] = useState('My app');
   const [made, setMade] = useState<Made[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [pickNote, setPickNote] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const cap = getLimits().maxFileBytes;
   const bg = normalizeHex(hex) ?? '#ffffff';
@@ -59,11 +60,12 @@ export default function IconTool() {
       let bmp = await createImageBitmap(file, { imageOrientation: 'from-image', ...(d ? { resizeWidth: d.width, resizeHeight: d.height, resizeQuality: 'high' as const } : {}) });
       if (d && Math.abs(bmp.width / bmp.height - size.width / size.height) > 0.02 * (size.width / size.height)) { bmp.close(); bmp = await createImageBitmap(file, { imageOrientation: 'from-image' }); }
       if (mine !== serial.current) { bmp.close(); return; }
+      run.current++; // a render still running for the old picture must not touch its closed bitmap or show an error
       bitmapRef.current?.close();
       bitmapRef.current = bmp;
       setSrc({ w: size.width, h: size.height });
       setRev((n) => n + 1);
-      if (extra > 0) setError('Only the first file was used.');
+      setPickNote(extra > 0 ? 'Only the first file was used.' : null);
     } catch (e) {
       if (mine === serial.current) setError(e instanceof EngineError || e instanceof PickError ? e.message : 'This image could not be read. It may be damaged, or too large for this device.');
     }
@@ -150,6 +152,7 @@ export default function IconTool() {
       <div className="space-y-5">
         <Dropzone inputRef={inputRef} hasFile={!!src} capText={cap ? `Up to ${formatCap(cap)}.` : null} onPick={(f, extra) => { void pick(f, extra); }} />
         {error && <div role="alert" data-testid="error" className="rounded-lg border border-red-700 bg-red-50 p-3 text-red-950">{error}</div>}
+        {pickNote && <p role="note" data-testid="notice" className="text-sm text-slate-800">{pickNote}</p>}
 
         <fieldset className="min-w-0 space-y-2" data-testid="mode-picker">
           <legend className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-600">What do you need?</legend>
@@ -195,6 +198,7 @@ export default function IconTool() {
                 <li key={m.file} data-testid={`icon-file-${m.file}`} className="flex items-center gap-3 rounded-xl border border-slate-200 p-3">
                   {m.kind === 'png' ? <img data-testid={`icon-preview-${m.file}`} src={m.url} alt="" className="size-16 shrink-0 rounded border border-slate-200 bg-[repeating-conic-gradient(#e2e8f0_0_25%,#fff_0_50%)] bg-[length:12px_12px] object-contain" /> : <span aria-hidden="true" className="flex size-16 shrink-0 items-center justify-center rounded border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-700">{m.kind === 'ico' ? 'ICO' : 'JSON'}</span>}
                   <span className="min-w-0 text-sm text-slate-800"><span className="block break-all font-semibold">{m.file}</span>{m.label}, {formatSize(m.data.length)}
+                    {m.file === 'play-store-512.png' && m.data.length > 1024 * 1024 && <span data-testid="play-size-warning" className="block font-medium text-amber-900">Larger than Google Play's 1,024 KB limit. Use a simpler picture.</span>}
                     <a data-testid={`download-file-${m.file}`} className="mt-1 block font-medium text-teal-800 underline underline-offset-4" href={m.url} download={m.file}>Download {m.file}</a>
                   </span>
                 </li>
@@ -207,7 +211,7 @@ export default function IconTool() {
             <button type="button" data-testid="download-zip" className={btnPrimary} aria-disabled={busy ? 'true' : undefined} onClick={downloadZip}>Download all (ZIP)</button>
           </div>
         )}
-        {src && <button type="button" data-testid="start-over" className={btnSecondary} onClick={() => { run.current++; serial.current++; setBusy(false); bitmapRef.current?.close(); bitmapRef.current = null; revokeAll(); setMade([]); setSrc(null); setError(null); inputRef.current?.focus(); }}>Start over</button>}
+        {src && <button type="button" data-testid="start-over" className={btnSecondary} onClick={() => { run.current++; serial.current++; setBusy(false); bitmapRef.current?.close(); bitmapRef.current = null; revokeAll(); setMade([]); setSrc(null); setError(null); setPickNote(null); inputRef.current?.focus(); }}>Start over</button>}
       </div>
       <p className="mt-5 text-sm text-slate-700">SizeTune makes your icons in your browser. The site's code does not upload your picture, and SizeTune keeps no copy of it.</p>
     </section>
