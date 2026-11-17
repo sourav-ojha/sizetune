@@ -1,15 +1,16 @@
 ---
 import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
 import SignatureTool from '../components/SignatureTool.tsx';
 import Hero from '../components/Hero.astro';
 import { webApplicationLd, proseClass } from './_seo';
-const title = 'Resize Signature Image for Online Forms | SizeTune';
+const title = 'Resize Signature to 20 KB Online for Forms | SizeTune';
 const description =
-  'Crop and resize a photo or scan of your signature to a size in KB in your browser. Capture tips, size guidance and why a tiny signature can miss a minimum.';
+  'Crop and shrink a photo of your signature to 20 KB or any size in KB, in your browser. Capture tips, size guidance and why a tiny signature can miss a minimum.';
 const jsonLd = webApplicationLd('SizeTune: resize signature', '/resize-signature/', description);
 ---
 <Base pageType="tool" width="wide" title={title} description={description} path="/resize-signature/" jsonLd={jsonLd}>
-  <Hero title="Resize a signature image" lead="Add a photo or scan of your signature, crop it close, and reduce it to the file size your form asks for. The maximum starts at 20 KB, and you can change it or add a minimum." />
+  <Hero title="Resize a signature to 20 KB or any size" lead="Add a photo or scan of your signature, crop it close, and reduce it to the file size your form asks for. The maximum starts at 20 KB, and you can change it or add a minimum." />
 
   <SignatureTool client:load defaultMaxKb={20} />
   <noscript>
@@ -139,4 +140,5 @@ const jsonLd = webApplicationLd('SizeTune: resize signature', '/resize-signature
       cropping. If your form caps a signature at 10 KB, there is a <a href="/resize-signature-to-10kb/">page that starts at that limit</a>.
     </p>
   </div>
+  <RelatedTools path="/resize-signature/" />
 </Base>

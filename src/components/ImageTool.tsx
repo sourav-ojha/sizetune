@@ -1,13 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import { useSyncExternalStore } from 'preact/compat';
 import type { OutputFormat, ProcessOptions } from '../lib/engine/types';
 import { AdvancedBlock, DimensionFields, MinimumField, StrategyField } from './tool/Advanced';
+import BatchPanel from './tool/BatchPanel';
+import { BatchRunner, buildBatchZip } from './tool/batch';
 import Compare from './tool/Compare';
 import Dropzone from './tool/Dropzone';
 import FormatPicker from './tool/FormatPicker';
 import ProgressBar from './tool/Progress';
 import ResultPanel from './tool/ResultPanel';
 import SizePicker from './tool/SizePicker';
-import { getLimits } from './tool/engine';
+import { getLimits, processImage } from './tool/engine';
 import { formatCap, formatDims, formatSize } from './tool/format';
 import { ensureVisible, useForm, useScrollAnchor, useWebpSupport } from './tool/hooks';
 import { buildOptions, type FormState } from './tool/options';
@@ -34,7 +37,17 @@ export default function ImageTool({ defaultMaxKb = 50, defaultFormat, defaultNoL
   const [form, setForm] = useForm({ maxKb: String(defaultMaxKb), noLimit: defaultNoLimit });
   const webp = useWebpSupport();
   const anchor = useScrollAnchor();
-  const { inputRef, onPick } = useIntake(session);
+  const manyRef = useRef<((files: File[]) => void) | undefined>(undefined);
+  const { inputRef, onPick } = useIntake(session, (files) => manyRef.current?.(files));
+  // Several files at once go to a batch: one queue, one file at a time, one ZIP. A single file keeps using the single-file view above.
+  const [batch] = useState(() => new BatchRunner({ process: processImage, createObjectURL: (b) => URL.createObjectURL(b), revokeObjectURL: (u) => URL.revokeObjectURL(u) }));
+  const batchState = useSyncExternalStore(batch.subscribe, batch.getSnapshot, batch.getSnapshot);
+  const [batchNote, setBatchNote] = useState<string | null>(null);
+  const [zipError, setZipError] = useState<string | null>(null);
+  const [ranKey, setRanKey] = useState<string | null>(null);
+  const [ranHasTarget, setRanHasTarget] = useState(true);
+  const inBatch = batchState.rows.length > 0;
+  useEffect(() => () => batch.dispose(), [batch]);
   const runRef = useRef<HTMLButtonElement>(null);
   const cap = getLimits().maxFileBytes;
 
@@ -66,6 +79,33 @@ export default function ImageTool({ defaultMaxKb = 50, defaultFormat, defaultNoL
   const lastSerial = useRef(-1);
   const [rev, setRev] = useState(0);
   const attempted = !!state.file && settingsKey !== null && ranFor.current === `${state.fileSerial}|${settingsKey}`;
+
+  const startBatch = (opts: ProcessOptions | null, key: string | null) => { if (opts) { setRanKey(key); setRanHasTarget(opts.maxKb !== undefined || opts.minKb !== undefined); batch.start(opts); } };
+  const onPickMany = (files: File[]) => {
+    session.reset();
+    const out = batch.add(files);
+    setBatchNote(out.message);
+    setZipError(null);
+  };
+  manyRef.current = onPickMany;
+  // Queued files start as soon as the settings are valid: right away when files are added, or later once a bad setting is fixed.
+  useEffect(() => {
+    const s = batch.getSnapshot();
+    if (s.rows.length > 0 && !s.running && s.rows.every((r) => r.status === 'queued') && optsRef.current) startBatch(optsRef.current, settingsKey);
+  }, [batchState, settingsKey]);
+  const downloadZip = async () => {
+    try {
+      const zip = await buildBatchZip(batchState.rows, ranHasTarget);
+      const url = URL.createObjectURL(new Blob([zip as BlobPart], { type: 'application/zip' }));
+      const a = document.createElement('a');
+      a.href = url; a.download = 'sizetune-images.zip';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 10_000);
+      setZipError(null);
+    } catch {
+      setZipError('The ZIP could not be made. Use the download link on each file instead.');
+    }
+  };
 
   /** Any settings change invalidates the shown result/error (it no longer describes the current settings). */
   const update = useCallback((patch: Partial<FormState>) => {
@@ -99,10 +139,11 @@ export default function ImageTool({ defaultMaxKb = 50, defaultFormat, defaultNoL
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && !e.defaultPrevented && session.getSnapshot().phase === 'processing') { anchor.hold(); session.cancel(); }
+      if (e.key === 'Escape' && !e.defaultPrevented && batch.getSnapshot().running) batch.cancel();
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [session, anchor.hold]);
+  }, [session, batch, anchor.hold]);
 
   const wasProcessing = useRef(false);
   useEffect(() => {
@@ -137,7 +178,21 @@ export default function ImageTool({ defaultMaxKb = 50, defaultFormat, defaultNoL
       {/* One column on a phone, two from lg: picture and result on the left, settings on the right. DOM order is the reading and tab order. */}
       <div className="space-y-5 lg:grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:items-start lg:gap-x-8 lg:space-y-0">
         <div className="space-y-5">
-          <Dropzone inputRef={inputRef} hasFile={!!state.file} capText={cap ? `Up to ${formatCap(cap)}.` : null} onPick={onPick} />
+          {inBatch && (
+            <BatchPanel
+              snapshot={batchState}
+              note={batchNote}
+              zipError={zipError}
+              stale={!batchState.running && ranKey !== settingsKey && batchState.rows.some((r) => r.status !== 'queued')}
+              hasTarget={ranHasTarget}
+              invalid={!built.ok && batchState.rows.every((r) => r.status === 'queued')}
+              onCancel={() => batch.cancel()}
+              onZip={() => { void downloadZip(); }}
+              onRerun={() => startBatch(optsRef.current, settingsKey)}
+              onStartOver={() => { batch.reset(); setBatchNote(null); setZipError(null); setRanKey(null); requestAnimationFrame(() => inputRef.current?.focus({ preventScroll: true })); }}
+            />
+          )}
+          {!inBatch && <Dropzone inputRef={inputRef} hasFile={!!state.file} capText={cap ? `Up to ${formatCap(cap)}.` : null} supportedText="Supported: JPEG, PNG and WebP. Choose several files to process them together." onPick={onPick} onPickMany={onPickMany} />}
 
           {state.notice && <p className="text-sm text-slate-800" data-testid="notice">{state.notice}</p>}
           {state.error && !state.file && (

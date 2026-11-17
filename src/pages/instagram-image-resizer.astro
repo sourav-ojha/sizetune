@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
 import SocialTool from '../components/SocialTool.tsx';
 import Hero from '../components/Hero.astro';
 import { webApplicationLd, proseClass } from './_seo';
@@ -101,4 +102,5 @@ const jsonLd = webApplicationLd('SizeTune: resize an image for Instagram', '/ins
       <a href="/youtube-thumbnail-resizer/">YouTube thumbnail</a> pages.
     </p>
   </div>
+  <RelatedTools path="/instagram-image-resizer/" />
 </Base>

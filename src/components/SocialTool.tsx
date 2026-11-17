@@ -35,6 +35,7 @@ export default function SocialTool({ platform }: Props) {
   const [out, setOut] = useState<Out | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [pickNote, setPickNote] = useState<string | null>(null);
   const [rev, setRev] = useState(0); // bumped for every picture picked, so the result is made again even when the settings did not change
   const lastUrl = useRef<string | null>(null);
   const cap = getLimits().maxFileBytes;
@@ -65,12 +66,13 @@ export default function SocialTool({ platform }: Props) {
         bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
       }
       if (mine !== serial.current) { bmp.close(); return; }
+      run.current++; // a render still running for the old picture must not touch its closed bitmap or show an error
       bitmapRef.current?.close();
       bitmapRef.current = bmp;
       fileRef.current = file;
       setHasFile(true);
       setRev((n) => n + 1);
-      if (extra > 0) setError('Only the first file was used.');
+      setPickNote(extra > 0 ? 'Only the first file was used.' : null);
     } catch (e) {
       if (mine === serial.current) setError(e instanceof EngineError || e instanceof PickError ? e.message : 'This image could not be read. It may be damaged, or too large for this device.');
     }
@@ -133,6 +135,7 @@ export default function SocialTool({ platform }: Props) {
         <div className="space-y-5">
           <Dropzone inputRef={inputRef} hasFile={hasFile} capText={cap ? `Up to ${formatCap(cap)}.` : null} onPick={(f, extra) => { void pick(f, extra); }} />
           {error && <div role="alert" data-testid="error" className="rounded-lg border border-red-700 bg-red-50 p-3 text-red-950">{error}</div>}
+          {pickNote && <p role="note" data-testid="notice" className="text-sm text-slate-800">{pickNote}</p>}
           {out && (
             <div data-testid="social-result" data-width={out.width} data-height={out.height} data-fit={out.fit} data-bytes={out.blob.size} data-busy={busy ? 'true' : 'false'} className="space-y-3">
               <div className="flex justify-center rounded-xl border border-slate-200 bg-slate-50 p-3">

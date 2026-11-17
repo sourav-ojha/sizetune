@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
 import ImageTool from '../components/ImageTool.tsx';
 import Hero from '../components/Hero.astro';
 import { webApplicationLd, proseClass } from './_seo';
@@ -151,4 +152,5 @@ const jsonLd = webApplicationLd('SizeTune: resize image to 20 KB', '/resize-imag
       tool with other presets, go back to the <a href="/">SizeTune home page</a>.
     </p>
   </div>
+  <RelatedTools path="/resize-image-to-20kb/" />
 </Base>

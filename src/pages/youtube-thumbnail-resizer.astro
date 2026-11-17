@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
 import SocialTool from '../components/SocialTool.tsx';
 import Hero from '../components/Hero.astro';
 import { webApplicationLd, proseClass } from './_seo';
@@ -74,4 +75,5 @@ const jsonLd = webApplicationLd('SizeTune: YouTube thumbnail resizer', '/youtube
       those platforms.
     </p>
   </div>
+  <RelatedTools path="/youtube-thumbnail-resizer/" />
 </Base>
