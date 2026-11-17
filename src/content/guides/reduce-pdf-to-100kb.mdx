@@ -1,0 +1,55 @@
+---
+title: "How to Get a PDF Under 100 KB"
+description: "Why a PDF is over 100 KB, what to change first, and how to shrink a one-page document or photo scan to fit a form limit, with honest limits on what works."
+updated: 2026-11-17
+---
+
+A form that asks for a PDF "up to 100 KB" is asking for a very small file. A single page of typed text can fit without effort, but a scanned page or a document with a photo in it usually cannot, at least not at the settings it was created with. SizeTune does not compress PDFs today. This guide explains what makes a PDF large and which changes bring it down, so you can do it with software you already have.
+
+*Published and last updated 17 November 2026 by SizeTune.*
+
+## What makes a PDF big
+
+A PDF is a container. Inside it are text, fonts, vector drawings and pictures, and nearly all of the weight comes from the pictures. A page of typed words is often a few tens of kilobytes. A photograph of that same page, stored inside a PDF, can be several megabytes because every pixel of paper texture and shadow is kept.
+
+That means the first question is whether your PDF is made of text or of a picture of text. If you can select and copy words with your cursor, the page is mostly text and is already efficient. If you cannot, it is an image, and the size is controlled by that image's pixels and quality.
+
+## Why 100 KB is demanding
+
+One hundred kilobytes leaves very little room for a picture. A colour photograph of a page at phone resolution would be forty times bigger than that. To fit, a scanned page has to be reduced to a modest number of pixels, often in grey or black and white, and compressed harder than a casual viewer would choose.
+
+Do not expect a clean result for every document. A page of small print scanned in colour may not reach 100 KB with readable text, and in that case the honest answer is to simplify the source rather than push compression further.
+
+## Changes that help, in order of effect
+
+1. **Rescan at a lower resolution.** Many scanner apps default to 300 dots per inch, which is generous for reading. For a form upload, 150 or even 100 is often readable and cuts the pixel count sharply.
+2. **Choose grey or black and white.** A grey scan stores one value per pixel instead of three colour values. Black and white is smaller still and suits typed or printed pages.
+3. **Export from the original document.** If you wrote the page in a word processor, saving or exporting to PDF directly keeps real text and stays tiny. This beats printing and scanning your own document.
+4. **Remove extra pages.** The limit applies to the whole file, so send only the pages the form needs.
+5. **Shrink pictures before inserting them.** If a photo has to sit inside the document, resize it first, since an oversized image inserted at a small display size still carries all its pixels.
+
+## Tools you may already have
+
+Word processors usually have a command to compress inserted pictures and a "minimum size" option when saving as PDF. Many scanner apps let you pick a lower quality. Some computers include a built-in PDF viewer with a reduced-size export. These options vary by version and system, so look for words like "reduce file size" or "minimum size" in the save or export dialog. Their results differ, and some are very aggressive, so open the output and read it before you send it.
+
+## Checking the result
+
+Look at the file's properties to see the size in kilobytes. Zoom to a normal reading size and check that the smallest text is legible. Open it once in a different viewer, such as a phone, in case a portal's preview is less forgiving. If the portal counts a kilobyte as 1,024 bytes, a file at 99 KB by one system could read slightly differently on another, so leave a small margin under the stated limit.
+
+## If a PDF will not go under 100 KB
+
+When a document stays larger, there are three honest choices. Check whether the form accepts a different format, such as a JPEG, for that field. Ask the issuer whether a larger limit exists for scanned pages. Or split the content into several smaller files if the form allows more than one upload. Padding or fake tricks do not help, because a portal will either measure the real size or reject the file.
+
+## Photos in the PDF
+
+If the picture inside your PDF is a photograph, you can prepare it with the [image tool](/) first. Set a maximum that suits the page and insert the result into your document. For a smaller upload target, see the [20 KB image page](/resize-image-to-20kb/), and for the next size up, read [how to get a PDF under 200 KB](/guides/reduce-pdf-to-200kb/).
+
+## Frequently asked questions
+
+**Does SizeTune compress PDFs?** Not at the moment. It resizes images in your browser. This page exists to explain the problem while we find out whether a PDF tool is worth building.
+
+**Is a text PDF always under 100 KB?** Usually, unless it embeds large fonts or pictures. A short typed page is typically well below the limit.
+
+**Will lower resolution make text unreadable?** Below roughly 100 dots per inch, small print starts to blur. Test one page first and read it at normal zoom.
+
+**Can I trust online PDF compressors with my documents?** Many upload your file to their servers. If a document includes an identity number or financial details, prefer software on your own device. Read our [privacy page](/privacy/) for how SizeTune treats the files it does handle.
