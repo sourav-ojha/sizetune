@@ -1,0 +1,132 @@
+---
+import Base from '../layouts/Base.astro';
+import ImageTool from '../components/ImageTool.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Resize Image to 100 KB Online | SizeTune';
+const description =
+  'Shrink a photo to 100 KB or less in your browser without uploading it. See what a 100 KB limit allows, how to keep faces sharp, and how to check the file.';
+const jsonLd = webApplicationLd('SizeTune: resize image to 100 KB', '/resize-image-to-100kb/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/resize-image-to-100kb/" jsonLd={jsonLd}>
+  <Hero title="Resize an image to 100 KB" lead="The tool below starts with a 100 KB maximum already selected. Add your picture, look at the preview and download the result. If your form names a different limit, or a minimum as well, change the numbers in the tool." />
+
+  <ImageTool client:load defaultMaxKb={100} />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This tool works inside your browser and cannot run while JavaScript is off. Turn it on and reload to resize your
+      photo to 100 KB. The notes below about what a 100 KB file can hold are still useful with any other editor.
+    </p>
+  </noscript>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>What a 100 KB limit gives you</h2>
+    <p>
+      One hundred kilobytes is roomy compared with the tiny limits some forms use, yet it is still far smaller than a
+      modern phone photo, which is usually several megabytes. Most of that gap is closed by two things: fewer pixels and
+      a sensible JPEG quality. Because the budget is generous, you rarely need to give up much. A portrait cropped to
+      the head and shoulders can stay clear enough to read a face, a name badge and a plain background.
+    </p>
+    <p>
+      This page is a good starting point when a form says "up to 100 KB" for a passport-style photo, an identity card
+      scan or an uploaded certificate. Check your own form for the exact maximum, the file types it accepts and any
+      pixel dimensions, because those details differ from one form to the next and we do not list them here.
+    </p>
+
+    <h2>Why a bigger budget still needs care</h2>
+    <p>
+      It is tempting to assume that 100 KB means the tool can ignore detail. It cannot. A full-frame 12-megapixel photo
+      squeezed into 100 KB would have to be compressed hard, and the result looks smeared. A better route is to keep
+      the quality reasonable and let the picture become smaller in pixels. A face that fills the frame at 600 by 800
+      pixels looks better at 100 KB than the same face lost inside a 4,000 pixel wide scene.
+    </p>
+    <p>
+      SizeTune aims below your maximum counted as 1,000 bytes per KB, so a result passes even when a portal counts 1 KB
+      as 1,024 bytes. The result is shown in 1,024-byte KB, which is why a 100 KB target is displayed as up to about
+      97.7 KB. The small gap is the safety margin.
+    </p>
+
+    <h2>Steps that keep a 100 KB photo sharp</h2>
+    <ol>
+      <li>
+        <strong>Start from the camera original.</strong> A photo that arrived through a chat app has already been
+        shrunk once. Compressing it again adds visible blockiness for no gain in size.
+      </li>
+      <li>
+        <strong>Crop before you shrink.</strong> Remove sky, walls and empty margins in your phone's editor. Every
+        pixel you drop is a pixel you do not have to compress.
+      </li>
+      <li>
+        <strong>Use quality-first when pixels are fixed.</strong> If the form states a width and height, type them in
+        and let the tool vary only the compression.
+      </li>
+      <li>
+        <strong>Use dimensions-first when only KB is stated.</strong> Letting the picture shrink usually keeps edges
+        cleaner than pushing quality to the floor.
+      </li>
+      <li>
+        <strong>Zoom into the preview.</strong> Check eyes, glasses frames, text on clothing and the line where hair
+        meets the background. Those places show damage first.
+      </li>
+    </ol>
+
+    <h2>Photos, scans and screenshots behave differently</h2>
+    <p>
+      A portrait photo has soft gradients that JPEG handles well, so 100 KB is usually comfortable. A scan of a
+      printed certificate is different: it has fine black text on white paper, and aggressive compression leaves a
+      grey haze around each letter. For documents, keep more pixels and accept a lower quality number, and check that
+      the smallest text is still readable. A screenshot with flat colour is often tiny as a PNG already, so converting
+      it to JPEG only helps if the form requires that format.
+    </p>
+
+    <h2>When your form also sets a minimum</h2>
+    <p>
+      Some forms want a file between, say, 50 and 100 KB. Enter both numbers in the range fields. If your picture ends
+      up below the minimum, the tool raises the JPEG quality to store more detail. A small, plain image may still fall
+      short, and the tool says so rather than adding filler bytes that a portal would strip on its next save. For a
+      photo that is already tiny, going back to a larger original is the honest fix. If you need a smaller target, the{' '}
+      <a href="/resize-image-to-20kb/">20 KB page</a> covers what changes at that scale, and the{' '}
+      <a href="/resize-signature-to-10kb/">10 KB signature page</a> covers handwriting.
+    </p>
+
+    <h2>Check the file before you upload</h2>
+    <ul>
+      <li>Read the size and dimensions displayed in the result panel.</li>
+      <li>Open the downloaded file's properties on your device to confirm the size.</li>
+      <li>Make sure the extension matches the format your form accepts, such as .jpg.</li>
+      <li>Upload the file as it was saved, without forwarding it through a messaging app first.</li>
+      <li>Look at the portal's own preview after the upload and go back if it looks soft.</li>
+    </ul>
+    <p>
+      For a plain-language explanation of pixels, kilobytes and formats, read the{' '}
+      <a href="/guides/photo-size-for-online-forms/">photo size guide</a>.
+    </p>
+
+    <h2>Frequently asked questions about 100 KB photos</h2>
+    <h3>Is 100 KB enough for a clear passport-style photo?</h3>
+    <p>
+      Usually yes, if the picture is cropped to the head and shoulders and not larger in pixels than the form needs.
+      Busy backgrounds and very high pixel counts are what push a file past the limit.
+    </p>
+    <h3>What pixel size usually fits in 100 KB?</h3>
+    <p>
+      For a cropped portrait, somewhere in the hundreds of pixels on each side is typical, but it depends on the
+      picture. Read the dimensions the tool shows rather than relying on a rule of thumb.
+    </p>
+    <h3>Can I use a scan of a certificate at 100 KB?</h3>
+    <p>
+      Often, but text is less forgiving than faces. Keep enough pixels for the smallest print to stay legible and check
+      the preview closely before you download.
+    </p>
+    <h3>Can I resize without losing any quality?</h3>
+    <p>
+      No. Meeting a byte limit means discarding some information. The aim is to discard what you are least likely to
+      notice, and the preview lets you judge the result before you download.
+    </p>
+    <h3>Does my photo leave my device?</h3>
+    <p>
+      No. The resizing runs in your browser. Read the <a href="/privacy/">privacy page</a> for details, or return to
+      the <a href="/">SizeTune home page</a> for the general tool.
+    </p>
+  </div>
+</Base>
