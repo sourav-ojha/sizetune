@@ -3,6 +3,7 @@ type: feature-spec
 id: FEATURE-001
 opportunity: OPP-001
 status: ready
+delivery: partial
 product_revision: 3
 created: 2026-11-17
 ---
@@ -133,3 +134,8 @@ No new data or trust boundary: static pages on the existing client-side tool; no
 - **Definition of done:** all acceptance criteria pass; no out-of-scope work; no new unresolved decisions invented.
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** AC-1 Playwright check per page; AC-2, AC-3, AC-4, AC-8 via `pnpm run verify:html:strict`; AC-5 file count in CI or review; AC-7 `pnpm run verify:privacy`.
+
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-17 | PR #19, squash c8ad91f (commits d2a7242, 8aed0f8) | AC-1, AC-2, AC-3, AC-4, AC-5, AC-7, AC-8 for 2 pages: /resize-image-to-100kb/, /resize-signature-to-10kb/ (AC-6 not triggered) | FR-1 minimum: wave ships 2 of the 3 to 5 required pages | owner copy curation of both pages (FR-3); Search Console indexing and impressions (gate for wave 2); owner to confirm sizes and pick or drop a third page | no ledger (impl report not run); delivery backfilled from PR evidence: check, build, 717 unit, verify:html(:strict), verify:privacy OK; one unrelated flaky e2e (preact-semantics.spec.ts:132) not investigated |
