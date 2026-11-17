@@ -46,3 +46,53 @@ describe('DPI tag (FEATURE-013 AC-2)', () => {
     expect(stampDpi(new Uint8Array([1, 2, 3]), 'image/jpeg', 200)).toBeNull();
   });
 });
+
+// processWithDpi with a stubbed engine
+import { vi } from 'vitest';
+const engine = vi.hoisted(() => ({ processImage: vi.fn() }));
+vi.mock('../src/components/tool/engine', () => ({ processImage: engine.processImage }));
+
+describe('processWithDpi (FEATURE-013)', () => {
+  const mk = (bytes: Uint8Array, mime: string, maxBytes: number | null = null) => ({
+    status: 'ok', blob: new Blob([bytes as BlobPart], { type: mime }), mime, width: 40, height: 30, bytes: bytes.length, quality: 80, attempts: 1,
+    window: { minBytes: null, maxBytes }, source: {}, notes: [] as string[], message: '',
+  });
+  const run = async (opts: Record<string, unknown>) => {
+    const { processWithDpi } = await import('../src/components/tool/dpi');
+    return processWithDpi(new Blob([new Uint8Array(1)]), opts as never, {});
+  };
+
+  it('AC-4: without a dpi option the engine result is returned unchanged and the engine does not see dpi', async () => {
+    const r = mk(await jpeg(), 'image/jpeg'); engine.processImage.mockResolvedValueOnce(r);
+    expect(await run({ format: 'jpeg' })).toBe(r);
+    expect(engine.processImage.mock.calls.at(-1)![1]).not.toHaveProperty('dpi');
+  });
+  it('stamps JPEG, updates blob, bytes and notes; the engine never receives dpi', async () => {
+    const j = await jpeg(); engine.processImage.mockResolvedValueOnce(mk(j, 'image/jpeg'));
+    const out = await run({ dpi: 200 });
+    expect(out.bytes).toBe(out.blob.size);
+    expect(out.bytes).toBe(j.length + 18);
+    expect(readDpi(new Uint8Array(await out.blob.arrayBuffer()), 'image/jpeg')).toBe(200);
+    expect(out.notes.join(' ')).toContain('DPI set to 200');
+    expect(engine.processImage.mock.calls.at(-1)![1]).not.toHaveProperty('dpi');
+  });
+  it('WebP: no tag, a note, the original bytes', async () => {
+    const w = await webp(); const r = mk(w, 'image/webp'); engine.processImage.mockResolvedValueOnce(r);
+    const out = await run({ dpi: 200 });
+    expect(out.blob).toBe(r.blob);
+    expect(out.notes.join(' ')).toMatch(/not written to WebP/);
+  });
+  it('KB guard: a file at the limit is not pushed over it by the tag', async () => {
+    const j = await jpeg(); const r = mk(j, 'image/jpeg', j.length); engine.processImage.mockResolvedValueOnce(r);
+    const out = await run({ dpi: 200 });
+    expect(out.blob).toBe(r.blob);
+    expect(out.bytes).toBe(j.length);
+    expect(out.notes.join(' ')).toMatch(/was not written/);
+  });
+  it('unreadable bytes: a note, the result is kept', async () => {
+    const r = mk(new Uint8Array([1, 2, 3, 4]), 'image/jpeg'); engine.processImage.mockResolvedValueOnce(r);
+    const out = await run({ dpi: 200 });
+    expect(out.blob).toBe(r.blob);
+    expect(out.notes.join(' ')).toMatch(/could not be written/);
+  });
+});

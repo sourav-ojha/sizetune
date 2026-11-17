@@ -76,3 +76,28 @@ test('AC-3: no request leaves the page or carries the file while using print uni
   expect(net.external).toEqual([]);
   expect(net.nonGet).toEqual([]);
 });
+
+test('switching back to px takes back a DPI the tool filled in, but keeps one the user typed', async ({ page }) => {
+  await openTool(page);
+  await openAdvanced(page);
+  await page.getByTestId('unit').selectOption('mm');
+  await expect(page.getByTestId('dpi')).toHaveValue('300');
+  await page.getByTestId('unit').selectOption('px');
+  await expect(page.getByTestId('dpi')).toHaveValue('');
+  await page.getByTestId('dpi').fill('200');
+  await page.getByTestId('unit').selectOption('cm');
+  await page.getByTestId('unit').selectOption('px');
+  await expect(page.getByTestId('dpi')).toHaveValue('200');
+});
+
+test('length fields use a decimal keypad in print units and the fit choice appears for two lengths with a suffix', async ({ page }) => {
+  await openTool(page);
+  await openAdvanced(page);
+  await expect(page.getByTestId('width')).toHaveAttribute('inputmode', 'numeric');
+  await page.getByTestId('unit').selectOption('cm');
+  await expect(page.getByTestId('width')).toHaveAttribute('inputmode', 'decimal');
+  await page.getByTestId('width').fill('3.5 cm');
+  await page.getByTestId('height').fill('4.5cm');
+  await expect(page.getByTestId('fit')).toBeVisible();
+  await expect(page.getByTestId('width')).toHaveAttribute('aria-describedby', /pxp/);
+});
