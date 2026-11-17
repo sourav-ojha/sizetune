@@ -1,0 +1,104 @@
+---
+import Base from '../layouts/Base.astro';
+import SocialTool from '../components/SocialTool.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Resize an Image for Instagram, No Upload | SizeTune';
+const description =
+  "Fit a photo to Instagram's feed and Reel cover sizes in your browser, with crop, colour bars or a blurred background. Sizes come from Instagram's Help Center.";
+const jsonLd = webApplicationLd('SizeTune: resize an image for Instagram', '/instagram-image-resizer/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/instagram-image-resizer/" jsonLd={jsonLd}>
+  <Hero title="Resize an image for Instagram" lead="Pick a size, choose how the picture should fit, check the preview and download a JPEG. Every size on this page comes from Instagram's own Help Center, and nothing is uploaded." />
+
+  <SocialTool client:load platform="instagram" />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This tool fits images inside your browser, so it will not run while JavaScript is turned off. Enable JavaScript and
+      reload to use it. The notes below on Instagram's photo sizes still apply with any other editor.
+    </p>
+  </noscript>
+  <p class="mx-auto mt-6 max-w-3xl text-center text-base text-slate-700">
+    Need a file under a size limit instead? <a data-testid="to-resizer" class="font-medium text-teal-800 underline underline-offset-4" href="/">Open the KB resizer</a>.
+  </p>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>What Instagram says about photo sizes</h2>
+    <p>
+      Instagram's Help Center says photos are shared at the best resolution possible, up to a width of 1,080 pixels. A
+      photo between 320 and 1,080 pixels wide keeps its resolution as long as its shape sits between 1.91:1 (wide) and
+      3:4 (tall). That is a height between 566 and 1,440 pixels at the full 1,080 width. A photo outside that range is
+      cropped to fit, and a larger photo is scaled down to 1,080 pixels wide.
+    </p>
+    <p>
+      The sizes in the tool follow those numbers: a 1,080 by 1,080 square, a 1,080 by 1,440 portrait at the tallest
+      shape the page lists, and a 1,080 by 566 landscape at the widest. Making the picture the right shape yourself means
+      Instagram has nothing to crop, so you choose what stays in the frame.
+    </p>
+
+    <h2>Reel cover</h2>
+    <p>
+      For Reels, the Help Center recommends a cover photo of 420 by 654 pixels, a ratio of 1:1.55. The page said at the time we read it that a
+      cover cannot be edited after you upload it, so it is worth checking the preview first. The tool has a preset for
+      this size. Reels themselves accept shapes from 1.91:1 to 9:16 and need at least 720 pixels, but this page works with
+      pictures, not video.
+    </p>
+
+    <h2>Crop, colour bars or blur</h2>
+    <p>
+      When your picture is not the shape of the frame, there are three honest choices. Crop fills the frame and cuts
+      off the overflow, and you pick whether to keep the centre, the top, the bottom, the left or the right. Colour bars
+      keep the whole picture and fill the empty space with white, black or a colour you choose. The blurred background
+      keeps the whole picture too, and fills the space with an enlarged, softened copy of the same picture, which
+      suits photos with a lot of colour.
+    </p>
+    <ul>
+      <li>Use crop for portraits where the subject is in the middle, and set the focus if they are not.</li>
+      <li>Use colour bars for graphics, text or screenshots that must not be cut.</li>
+      <li>Use the blurred background for a wide photo you want to show whole in a square post.</li>
+    </ul>
+
+    <h2>What this page does not cover</h2>
+    <p>
+      The Instagram Help Center pages we read, on photos and Reels, do not state a pixel size for Stories or a
+      profile picture, so those sizes are not offered here. Guides on other websites give numbers for them, but
+      they are not from Instagram, and platform sizes change. If you need one, check Instagram's current guidance in the
+      app.
+    </p>
+
+    <h2>Keeping the file small</h2>
+    <p>
+      The result is a JPEG saved at good quality. If you also need the file under a number of kilobytes, type it in the
+      size limit box and the tool lowers the quality to try to fit it, and says if it could not. The <a href="/">main resizer</a> can do that for any
+      picture, and you can turn a sideways photo with the <a href="/rotate-image/">rotator</a> first.
+    </p>
+
+    <h2>Frequently asked questions about Instagram image sizes</h2>
+    <h3>Why does Instagram crop my photo?</h3>
+    <p>
+      The Help Center says a photo outside the supported shape range is cropped to a supported one. Fitting it yourself
+      with crop, bars or blur lets you decide what is kept.
+    </p>
+    <h3>What width should I use?</h3>
+    <p>
+      Instagram says it shares photos at up to 1,080 pixels wide. A photo wider than that is scaled down, so more pixels
+      do not help.
+    </p>
+    <h3>Will a small photo look sharp?</h3>
+    <p>
+      Not always. A photo smaller than the size you pick is enlarged, which adds no detail, and the tool tells you when
+      that happens.
+    </p>
+    <h3>Where do the sizes come from, and how current are they?</h3>
+    <p>
+      Each size names its source and the date we last read it, and links to our sizes guide, which lists the official Instagram Help Center page. Platforms
+      change their rules, so use that date to judge how fresh a number is.
+    </p>
+    <h3>Is my photo uploaded?</h3>
+    <p>
+      No. The fitting happens in your browser. Read the <a href="/privacy/">privacy page</a> for details. Other
+      platforms are covered by the <a href="/linkedin-image-resizer/">LinkedIn</a> and{' '}
+      <a href="/youtube-thumbnail-resizer/">YouTube thumbnail</a> pages.
+    </p>
+  </div>
+</Base>
