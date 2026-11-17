@@ -1,5 +1,6 @@
 import type { Background, CropRect, FitMode, OutputFormat, ProcessOptions, Strategy } from '../../lib/engine/types';
 import { normalizeHex } from './format';
+import { toPixels, unitLabel, type Unit } from './units';
 
 export const PRESETS_KB = [10, 20, 30, 50, 100, 200] as const;
 export const MAX_KB_LIMIT = 50_000;
@@ -24,22 +25,27 @@ export interface FormState {
   quality: number;          // 1-100, only used when there is no size target
   bg: BgChoice;
   bgCustom: string;         // #rrggbb
+  unit: Unit;               // unit of width, height, maxWidth and maxHeight (FEATURE-013)
+  dpi: string;              // blank = no DPI tag (px only); required for cm, mm and inch
 }
 
-export type FieldName = 'maxKb' | 'minKb' | 'width' | 'height' | 'maxWidth' | 'maxHeight' | 'bgCustom' | 'quality';
+/** Engine options plus the UI-only DPI tag (written after encoding by tool/dpi.ts; the engine never sees it). */
+export type ToolOptions = ProcessOptions & { dpi?: number };
+
+export type FieldName = 'maxKb' | 'minKb' | 'width' | 'height' | 'maxWidth' | 'maxHeight' | 'bgCustom' | 'quality' | 'dpi';
 export type FieldErrors = Partial<Record<FieldName, string>>;
 
 export interface BuildContext {
   crop?: CropRect | null;
 }
 
-export type BuildResult = { ok: true; options: ProcessOptions } | { ok: false; errors: FieldErrors };
+export type BuildResult = { ok: true; options: ToolOptions } | { ok: false; errors: FieldErrors };
 
 export function defaultForm(over: Partial<FormState> = {}): FormState {
   return {
     maxKb: '50', noLimit: false, minKb: '', format: 'auto', strategy: 'quality-first',
     width: '', height: '', maxWidth: '', maxHeight: '',
-    lockAspect: true, fit: 'contain', allowEnlarge: false, quality: 85, bg: 'white', bgCustom: '#ffffff',
+    lockAspect: true, fit: 'contain', allowEnlarge: false, quality: 85, bg: 'white', bgCustom: '#ffffff', unit: 'px', dpi: '',
     ...over,
   };
 }
@@ -82,6 +88,30 @@ function pxField(raw: string, name: 'width' | 'height' | 'maxWidth' | 'maxHeight
   return p.value;
 }
 
+const MAX_DPI_INPUT = 10_000;
+
+function dpiField(raw: string, required: boolean, errors: FieldErrors): number | undefined {
+  const p = parseNumber(raw);
+  if (p.kind === 'empty') { if (required) errors.dpi = 'Enter the DPI to convert the size to pixels, for example 300.'; return undefined; }
+  if (p.kind === 'bad' || !Number.isInteger(p.value) || p.value < 1 || p.value > MAX_DPI_INPUT) {
+    errors.dpi = `Enter a whole number of dots per inch between 1 and ${MAX_DPI_INPUT.toLocaleString('en-US')}, for example 300.`;
+    return undefined;
+  }
+  return p.value;
+}
+
+/** A width or height typed in px (whole pixels) or in a print unit (decimals allowed), as pixels. */
+function lengthField(raw: string, name: 'width' | 'height' | 'maxWidth' | 'maxHeight', unit: Unit, dpi: number | undefined, errors: FieldErrors): number | undefined {
+  if (unit === 'px') return pxField(raw, name, errors);
+  const p = parseNumber(raw.replace(/\s*(cm|mm|inch|inches|in)$/i, ''));
+  if (p.kind === 'empty') return undefined;
+  if (p.kind === 'bad' || p.value <= 0) { errors[name] = `Enter a length in ${unitLabel(unit)}, for example 3.5.`; return undefined; }
+  if (dpi == null) return undefined; // the DPI field carries the error
+  const px = toPixels(p.value, unit, dpi);
+  if (px > MAX_DIM_LIMIT) { errors[name] = `That is more than ${MAX_DIM_LIMIT.toLocaleString('en-US')} pixels at ${dpi} DPI. Enter a smaller length or a lower DPI.`; return undefined; }
+  return px;
+}
+
 /** Colour used to fill transparency when the output is JPEG. */
 export function backgroundFor(f: Pick<FormState, 'bg' | 'bgCustom'>): Background | null {
   if (f.bg === 'white' || f.bg === 'black') return f.bg;
@@ -103,10 +133,11 @@ export function buildOptions(f: FormState, ctx: BuildContext = {}): BuildResult 
       errors.minKb = `These are too close: ${minKb} KB counted as ${(minKb * 1024).toLocaleString('en-US')} bytes is above ${maxKb} KB counted as ${(maxKb * 1000).toLocaleString('en-US')} bytes. Widen the range.`;
     }
   }
-  const width = pxField(f.width, 'width', errors);
-  const height = pxField(f.height, 'height', errors);
-  const maxWidth = pxField(f.maxWidth, 'maxWidth', errors);
-  const maxHeight = pxField(f.maxHeight, 'maxHeight', errors);
+  const dpi = dpiField(f.dpi, f.unit !== 'px', errors);
+  const width = lengthField(f.width, 'width', f.unit, dpi, errors);
+  const height = lengthField(f.height, 'height', f.unit, dpi, errors);
+  const maxWidth = lengthField(f.maxWidth, 'maxWidth', f.unit, dpi, errors);
+  const maxHeight = lengthField(f.maxHeight, 'maxHeight', f.unit, dpi, errors);
   if (width != null && maxWidth != null && width > maxWidth) errors.width = 'Width is larger than the maximum width.';
   if (height != null && maxHeight != null && height > maxHeight) errors.height = 'Height is larger than the maximum height.';
 
@@ -123,7 +154,7 @@ export function buildOptions(f: FormState, ctx: BuildContext = {}): BuildResult 
   if (Object.keys(errors).length) return { ok: false, errors };
 
   const both = width != null && height != null;
-  const options: ProcessOptions = {
+  const options: ToolOptions = {
     format: f.format,
     strategy: f.strategy,
     lockAspect: f.lockAspect,
@@ -132,6 +163,7 @@ export function buildOptions(f: FormState, ctx: BuildContext = {}): BuildResult 
   };
   if (maxKb != null) options.maxKb = maxKb;
   if (minKb != null) options.minKb = minKb;
+  if (dpi != null) options.dpi = dpi;
   if (width != null) options.width = width;
   if (height != null) options.height = height;
   if (maxWidth != null) options.maxWidth = maxWidth;
