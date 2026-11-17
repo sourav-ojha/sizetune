@@ -1,0 +1,79 @@
+---
+import Base from '../layouts/Base.astro';
+import ImageTool from '../components/ImageTool.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Convert PNG to JPG Online, No Upload | SizeTune';
+const description =
+  'Turn a PNG into a smaller JPG in your browser, with no upload. See why photos shrink, how transparent areas are filled, and when to keep the PNG instead.';
+const jsonLd = webApplicationLd('SizeTune: convert PNG to JPG', '/png-to-jpg/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/png-to-jpg/" jsonLd={jsonLd}>
+  <Hero title="Convert PNG to JPG" lead="Add a PNG picture and download it as a JPG, which is usually much smaller for a photograph. The tool opens with JPEG chosen and no size limit." />
+
+  <ImageTool client:load defaultFormat="jpeg" defaultNoLimit label="PNG to JPG converter" />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This converter works inside your browser, so it will not run while JavaScript is turned off. Enable JavaScript and
+      reload to convert your PNG. The advice below on when JPG is the right choice still applies elsewhere.
+    </p>
+  </noscript>
+  <p class="mx-auto mt-6 max-w-3xl text-center text-base text-slate-700">
+    Need the JPG under a size limit for a form? <a data-testid="to-resizer" class="font-medium text-teal-800 underline underline-offset-4" href="/">Open the KB resizer</a>.
+  </p>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>When PNG to JPG makes sense</h2>
+    <p>
+      PNG stores every pixel exactly, which is ideal for logos, diagrams and screenshots with flat colour. For a
+      photograph it is wasteful: a camera picture saved as PNG can be several times larger than the same picture as a JPG,
+      and the extra bytes buy nothing the eye can see. Screenshots of a photo, scanned documents saved as PNG and edited
+      pictures exported by mistake in this format are the usual cases where converting helps.
+    </p>
+    <p>
+      Many upload forms say "JPG only", and a PNG renamed to end in .jpg does not fix that, because the contents are still
+      PNG. Converting properly rewrites the file in the JPG format.
+    </p>
+
+    <h2>What you give up</h2>
+    <ul>
+      <li><strong>Transparency.</strong> JPG has no see-through pixels. Transparent areas are filled with white by default, or black or a colour you pick.</li>
+      <li><strong>Sharpness of fine lines.</strong> Thin text and hard edges can show faint speckle around them. For a screenshot full of text, check the preview closely or keep the PNG.</li>
+      <li><strong>Exactness.</strong> A JPG is lossy, so converting back to PNG does not restore the lost detail.</li>
+    </ul>
+
+    <h2>How to convert</h2>
+    <ol>
+      <li>Add the PNG by dragging it onto the box or choosing it.</li>
+      <li>Keep JPEG as the output. If the picture is transparent, pick the fill colour shown.</li>
+      <li>Compare the preview with your original, then download the JPG.</li>
+      <li>If the form states a limit in KB, type it as the maximum. The tool reduces quality and then pixels to fit.</li>
+    </ol>
+
+    <h2>Choosing the fill colour for transparent PNGs</h2>
+    <p>
+      A logo with a transparent background placed on a coloured page will look right in the PNG and wrong as a JPG if the
+      fill is a different colour from the page. Pick the colour of the place where the picture will be shown. White suits
+      most documents and forms, black suits dark layouts, and the custom option takes any hex colour.
+    </p>
+
+    <h2>If the result is still too large or refused</h2>
+    <ul>
+      <li>Open the <a href="/">resizer</a> and give it the size your form states.</li>
+      <li>Reduce the pixel size if the form allows it. A smaller picture needs fewer bytes at any quality.</li>
+      <li>Compare against the form's rules with <a href="/check-image-size/">the checker</a> before you upload.</li>
+    </ul>
+
+    <h2>Frequently asked questions about PNG to JPG</h2>
+    <h3>Will my JPG be smaller than the PNG?</h3>
+    <p>For a photograph, almost always, often by a large factor. For a flat graphic the saving is smaller and the JPG can look worse.</p>
+    <h3>What happens to a transparent background?</h3>
+    <p>It is filled with the colour you choose, white by default, because JPG cannot store transparency.</p>
+    <h3>Is the conversion done on a server?</h3>
+    <p>No. It runs in your browser. Read the <a href="/privacy/">privacy page</a> for details.</p>
+    <h3>Can I convert WebP files as well?</h3>
+    <p>Yes. Use the <a href="/webp-to-jpg/">WebP to JPG page</a>.</p>
+    <h3>Why does the quality look slightly different?</h3>
+    <p>JPG compresses by discarding fine detail. The tool saves at high quality, but a close look at sharp edges can show small differences from the PNG.</p>
+  </div>
+</Base>

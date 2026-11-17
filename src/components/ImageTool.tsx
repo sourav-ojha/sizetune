@@ -19,20 +19,26 @@ import { btnPrimary, btnSecondary, panelCls } from './tool/ui';
 export interface ImageToolProps {
   /** Maximum size (KB) preselected when the tool opens. */
   defaultMaxKb?: number;
+  /** Output format preselected when the tool opens (the converter pages use 'jpeg'). The user can still change it. */
+  defaultFormat?: OutputFormat;
+  /** Open with "No limit" selected, so the file is converted at a fixed high quality. A KB limit can still be chosen. */
+  defaultNoLimit?: boolean;
+  /** Accessible name and hidden heading of the tool region (default: the resizer wording). */
+  label?: string;
 }
 
 const ADVANCED_FIELDS = ['minKb', 'width', 'height', 'maxWidth', 'maxHeight'] as const;
 
-export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
+export default function ImageTool({ defaultMaxKb = 50, defaultFormat, defaultNoLimit = false, label }: ImageToolProps) {
   const { session, state } = useToolSession();
-  const [form, setForm] = useForm({ maxKb: String(defaultMaxKb) });
+  const [form, setForm] = useForm({ maxKb: String(defaultMaxKb), noLimit: defaultNoLimit });
   const webp = useWebpSupport();
   const anchor = useScrollAnchor();
   const { inputRef, onPick } = useIntake(session);
   const runRef = useRef<HTMLButtonElement>(null);
   const cap = getLimits().maxFileBytes;
 
-  const [userFormat, setUserFormat] = useState<OutputFormat | null>(null);
+  const [userFormat, setUserFormat] = useState<OutputFormat | null>(defaultFormat ?? null);
   // An opaque PNG with a size limit is preselected as JPEG (visible note, one click to undo); transparent PNGs keep Auto.
   const autoJpeg = userFormat === null && state.sniff?.kind === 'png' && state.alpha === false && !form.noLimit;
   const format: OutputFormat = userFormat ?? (autoJpeg ? 'jpeg' : 'auto');
@@ -124,8 +130,8 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
   };
 
   return (
-    <section ref={anchor.ref} data-testid="tool" aria-label="Image resizer" className={`${panelCls} lg:p-8`}>
-      <h2 className="sr-only">Resize your image</h2>
+    <section ref={anchor.ref} data-testid="tool" aria-label={label ?? 'Image resizer'} className={`${panelCls} lg:p-8`}>
+      <h2 className="sr-only">{label ?? 'Resize your image'}</h2>
       <div role="status" aria-live="polite" data-testid="status" className="sr-only">{statusText(state, true)}</div>
 
       {/* One column on a phone, two from lg: picture and result on the left, settings on the right. DOM order is the reading and tab order. */}
