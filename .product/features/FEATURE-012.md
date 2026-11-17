@@ -3,6 +3,7 @@ type: feature-spec
 id: FEATURE-012
 opportunity: OPP-034
 status: ready
+delivery: partial
 product_revision: 3
 created: 2026-11-17
 ---
@@ -125,3 +126,8 @@ Static content only; no data collected; no new trust boundary.
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** AC-1, AC-3, AC-5 via build output and Playwright; AC-2 by reviewer; AC-4 file check; AC-6 `pnpm run verify:html`.
 
+
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-17 | feat/tool-hub (stacked on feat/zip-bulk-and-favicon, PR #25) | AC-1, AC-3, AC-4, AC-5, AC-6: /tools/ hub from src/data/tools.ts, related-tools block on all 13 tool pages, All tools nav and footer link, .product/directories.md | AC-2 on tool pages: ToolGuide exists and is used on the hub only; spec section 8 asks for it on each tool page. Footer links are still a hand-kept list | owner to confirm directory submission steps (unverified, Toolify may suit poorly) and to submit; decide whether tool pages adopt ToolGuide | Left `ready`/partial. Hub is typed `policy` because the build gates have no hub type. Reviewer verdict: pass with changes; test gap for unlisted tool pages fixed |

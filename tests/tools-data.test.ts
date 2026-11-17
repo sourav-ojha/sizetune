@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { existsSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { TOOLS, FAMILIES, relatedTools, toolsByFamily } from '../src/data/tools';
 
 const pageFile = (href: string) => (href === '/' ? 'src/pages/index.astro' : `src/pages${href.replace(/\/$/, '')}.astro`);
@@ -32,7 +32,7 @@ describe('tools data (FEATURE-012)', () => {
     }
   });
 
-  it('relatedTools of an unknown path or a lone tool is empty, never throws', () => {
+  it('relatedTools of an unknown path is empty, never throws', () => {
     expect(relatedTools('/nope/')).toEqual([]);
   });
 
@@ -40,5 +40,14 @@ describe('tools data (FEATURE-012)', () => {
     const groups = toolsByFamily();
     expect(groups.every((g) => g.tools.length > 0)).toBe(true);
     expect(groups.flatMap((g) => g.tools).length).toBe(TOOLS.length);
+  });
+
+  it('every tool or home page is listed (a new tool page cannot be forgotten)', () => {
+    const listed = new Set(TOOLS.map((t) => pageFile(t.href)));
+    const pages = readdirSync('src/pages').filter((f) => f.endsWith('.astro'));
+    for (const f of pages) {
+      const src = readFileSync(`src/pages/${f}`, 'utf8');
+      if (/pageType="(tool|home)"/.test(src)) expect(listed.has(`src/pages/${f}`), f).toBe(true);
+    }
   });
 });
