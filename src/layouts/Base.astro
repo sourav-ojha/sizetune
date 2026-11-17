@@ -1,11 +1,13 @@
 ---
 import '../styles/global.css';
+import { TOOLS } from '../data/tools';
+import { breadcrumbLd, breadcrumbTrail } from '../pages/_seo';
 interface Props {
   title: string;
   description: string;
   /** Path starting with "/" and ending with "/" – canonical is built from astro.config `site`. */
   path: string;
-  jsonLd?: Record<string, unknown>;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   noindex?: boolean;
   /** Drives build gates (scripts/verify-html.mjs): home | tool | guide | policy | error */
   pageType: 'home' | 'tool' | 'guide' | 'policy' | 'error';
@@ -16,6 +18,8 @@ interface Props {
 }
 const { title, description, path, jsonLd, noindex = false, pageType, ogType = 'website', width = 'narrow' } = Astro.props;
 const canonical = new URL(path, Astro.site).href;
+const crumbs = noindex ? [] : breadcrumbTrail(path, title, TOOLS);
+const ldBlocks = [...(Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : []), ...(crumbs.length > 1 ? [breadcrumbLd(crumbs)] : [])];
 const ogImage = new URL('/og-default.png', Astro.site).href;
 const ogImageAlt = 'SizeTune: resize an image to a size in KB, in your browser';
 // Main nav: the jobs people come for. Legal pages live in the footer only.
@@ -24,7 +28,7 @@ const navItems = [
   { href: '/resize-image-to-20kb/', label: '20 KB' },
   { href: '/resize-signature/', label: 'Signature' },
   { href: '/tools/', label: 'All tools' },
-  { href: '/guides/photo-size-for-online-forms/', label: 'Guides' },
+  { href: '/guides/', label: 'Guides' },
   { href: '/about/', label: 'About' },
 ];
 const footerItems = [
@@ -37,7 +41,7 @@ const footerItems = [
   { href: '/linkedin-image-resizer/', label: 'LinkedIn sizes' },
   { href: '/youtube-thumbnail-resizer/', label: 'YouTube thumbnails' },
   { href: '/favicon-generator/', label: 'Favicon generator' },
-  { href: '/guides/photo-size-for-online-forms/', label: 'Guides' },
+  { href: '/guides/', label: 'Guides' },
   { href: '/about/', label: 'About' },
   { href: '/privacy/', label: 'Privacy' },
   { href: '/terms/', label: 'Terms' },
@@ -67,7 +71,7 @@ const footerItems = [
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={ogImageAlt} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
+    {ldBlocks.map((b) => <script type="application/ld+json" set:html={JSON.stringify(b).replace(/</g, '\\u003c')} />)}
   </head>
   <body data-page-type={pageType} class="text-slate-900 antialiased">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:font-semibold focus:shadow-pop">Skip to main content</a>
@@ -84,7 +88,21 @@ const footerItems = [
         </nav>
       </div>
     </header>
-    <main id="main" class={`mx-auto px-4 pb-8 pt-8 sm:pt-12 ${width === 'wide' ? 'max-w-5xl' : 'max-w-3xl'}`}><slot /></main>
+    {crumbs.length > 1 && (
+      <nav aria-label="Breadcrumb" class={`mx-auto px-4 pt-6 text-sm text-slate-600 ${width === 'wide' ? 'max-w-5xl' : 'max-w-3xl'}`} data-testid="breadcrumbs">
+        <ol class="flex flex-wrap items-center gap-x-1.5">
+          {crumbs.map((c, i) => (
+            <li class="flex items-center gap-x-1.5">
+              {i > 0 && <span aria-hidden="true" class="text-slate-400">/</span>}
+              {i < crumbs.length - 1
+                ? <a href={c.href} class="inline-flex min-h-11 items-center rounded px-1 underline decoration-slate-300 underline-offset-4 hover:text-teal-800 hover:decoration-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">{c.name}</a>
+                : <span aria-current="page" class="font-medium text-slate-800">{c.name}</span>}
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )}
+    <main id="main" class={`mx-auto px-4 pb-8 pt-4 sm:pt-6 ${width === 'wide' ? 'max-w-5xl' : 'max-w-3xl'}`}><slot /></main>
     <footer class="mt-8 border-t border-slate-200 bg-white/60">
       <div class="mx-auto flex max-w-[62.5rem] flex-col gap-4 px-4 py-7 sm:px-6 text-sm text-slate-600 sm:flex-row sm:items-start sm:justify-between">
         <div class="max-w-sm space-y-2">
