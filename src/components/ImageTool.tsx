@@ -11,6 +11,7 @@ import { getLimits } from './tool/engine';
 import { formatCap, formatDims, formatSize } from './tool/format';
 import { ensureVisible, useForm, useScrollAnchor, useWebpSupport } from './tool/hooks';
 import { buildOptions, type FormState } from './tool/options';
+import { targetFromSearch } from './tool/query';
 import { statusText, useIntake } from './tool/useIntake';
 import { useToolSession } from './tool/useSession';
 import { btnPrimary, btnSecondary, panelCls } from './tool/ui';
@@ -41,6 +42,14 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
   const hasAlpha = state.result?.data.source.hasAlpha ?? state.alpha;
   const busy = state.phase === 'processing';
   const advancedError = ADVANCED_FIELDS.some((k) => errors[k]);
+  // A size target handed over by another page (the file checker links to "/?max=50&min=20"). Applied after mount so the server HTML stays identical.
+  const [linkedMin, setLinkedMin] = useState(false);
+  useEffect(() => {
+    const t = targetFromSearch(window.location.search);
+    if (!t.maxKb && !t.minKb) return;
+    setForm({ ...(t.maxKb ? { maxKb: t.maxKb, noLimit: false } : {}), ...(t.minKb ? { minKb: t.minKb } : {}) });
+    if (t.minKb) setLinkedMin(true);
+  }, []);
 
   // Auto-run: a run starts by itself when a file is accepted and whenever the settings change (typing is debounced).
   // `ranFor` remembers the file + settings a run was started for, so Cancel or a failed run never loops; the Resize button then offers a manual retry.
@@ -180,7 +189,7 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
           <SizePicker form={effective} errors={errors} update={update} sourceKind={state.sniff?.kind ?? null} />
           <FormatPicker form={effective} errors={errors} update={update} formats={['auto', 'jpeg', 'png', 'webp']} webp={webp} hasAlpha={hasAlpha} hasFile={!!state.file} defaultNote={autoJpeg ? 'Your PNG will be saved as a JPEG: smaller files keep more detail. Choose PNG to keep the format.' : undefined} />
 
-          <AdvancedBlock forceOpen={advancedError}>
+          <AdvancedBlock forceOpen={advancedError || linkedMin}>
             <MinimumField form={effective} errors={errors} update={update} />
             <DimensionFields form={effective} errors={errors} update={update} basis={state.natural} showMax />
             <StrategyField form={effective} update={update} />
