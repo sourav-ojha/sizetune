@@ -1,0 +1,36 @@
+{
+  "$comment": "Opportunity lifecycle. 'agent' transitions may be made by the skill via `pi.mjs transition`. 'user' transitions require an explicit human decision and are only possible through `pi.mjs decide`.",
+  "statuses": [
+    "Discovered",
+    "Under Evaluation",
+    "Proposed",
+    "Approved",
+    "Rejected",
+    "Deferred",
+    "Ready for Implementation",
+    "Implemented",
+    "Validated"
+  ],
+  "agent": {
+    "Discovered": ["Under Evaluation"],
+    "Under Evaluation": ["Discovered", "Proposed"],
+    "Approved": ["Ready for Implementation"],
+    "Ready for Implementation": ["Implemented"],
+    "Implemented": ["Validated"]
+  },
+  "user": {
+    "Proposed": ["Approved", "Rejected", "Deferred", "Under Evaluation"],
+    "Approved": ["Rejected", "Deferred", "Under Evaluation"],
+    "Ready for Implementation": ["Rejected", "Deferred", "Under Evaluation"],
+    "Rejected": ["Under Evaluation"],
+    "Deferred": ["Under Evaluation"]
+  },
+  "feature_allowed_statuses": ["Approved", "Ready for Implementation", "Implemented", "Validated"],
+  "decisions": {
+    "approve": "Approved",
+    "reject": "Rejected",
+    "defer": "Deferred",
+    "research": "Under Evaluation",
+    "modify": "Under Evaluation"
+  }
+}
