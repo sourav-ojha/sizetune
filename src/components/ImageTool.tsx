@@ -21,7 +21,7 @@ export interface ImageToolProps {
   defaultMaxKb?: number;
   /** Output format preselected when the tool opens (the converter pages use 'jpeg'). The user can still change it. */
   defaultFormat?: OutputFormat;
-  /** Open with "No limit" selected, so the file is converted at a fixed high quality. A KB limit can still be chosen. */
+  /** Open with "No limit" selected, so the file is converted at the default quality (85 out of 100). A KB limit can still be chosen. */
   defaultNoLimit?: boolean;
   /** Accessible name and hidden heading of the tool region (default: the resizer wording). */
   label?: string;

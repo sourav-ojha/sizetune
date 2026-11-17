@@ -6,10 +6,9 @@ import type { SniffKind } from './tool/sniff';
 import { btnSecondary, hintCls, inputCls, labelCls, panelCls } from './tool/ui';
 import { readDpi, type Dpi } from './check/dpi';
 import { evaluate, parseRules, resizerHref, type RuleField, type RuleInput, type Status } from './check/rules';
-import { realType } from './check/type';
+import { nameMismatch, realType } from './check/type';
 
 const HEAD_BYTES = 256 * 1024;
-const EXT_KIND: Record<string, SniffKind> = { jpg: 'jpeg', jpeg: 'jpeg', jpe: 'jpeg', jfif: 'jpeg', png: 'png', webp: 'webp' };
 const KINDS: Array<[SniffKind, string]> = [['jpeg', 'JPEG'], ['png', 'PNG'], ['webp', 'WebP']];
 const FIELDS: Array<[RuleField, string]> = [
   ['minKb', 'Minimum size (KB)'], ['maxKb', 'Maximum size (KB)'],
@@ -48,11 +47,8 @@ export default function CheckerTool() {
         try { const s = await inspectSize(file); width = s.width; height = s.height; dims = formatDims(s.width, s.height); }
         catch (e) { dims = e instanceof EngineError ? e.message : 'The pixel size could not be read.'; }
       }
-      const ext = file.name.includes('.') ? file.name.split('.').pop()!.toLowerCase() : '';
-      const named = EXT_KIND[ext];
-      const mismatch = ext && ((named && named !== rt.kind) || (!named && ['gif', 'bmp', 'pdf', 'heic', 'avif', 'tif', 'tiff', 'svg'].includes(ext) && ext !== rt.label.toLowerCase()))
-        ? `The name ends in .${ext}, but the contents are ${rt.label === 'Unknown' ? 'not a format SizeTune recognises' : rt.label}. A portal that checks the contents may reject it.`
-        : null;
+      const ext = file.name.includes('.') ? file.name.split('.').pop()! : '';
+      const mismatch = nameMismatch(ext, rt);
       if (mine !== serial.current) return;
       setInfo({ name: file.name, bytes: file.size, label: rt.label, kind: rt.kind, width, height, dims, dpi: rt.kind ? readDpi(head) : null, mismatch: extra > 0 ? `${mismatch ?? ''} Only the first file was checked.`.trim() : mismatch });
     } catch {
@@ -72,17 +68,20 @@ export default function CheckerTool() {
 
   const parsed = parseRules(raw, types);
   const errors = parsed.ok ? {} : parsed.errors;
-  const results = info && info.kind && info.width !== null && info.height !== null && parsed.ok
-    ? evaluate({ kind: info.kind, bytes: info.bytes, width: info.width, height: info.height }, parsed.rules)
+  const results = info && parsed.ok
+    ? evaluate({ kind: info.kind, label: info.label, bytes: info.bytes, width: info.width, height: info.height }, parsed.rules)
     : [];
   const notPassing = results.some((r) => r.status !== 'pass');
+  const summary = results.length
+    ? `${results.filter((r) => r.status === 'pass').length} pass, ${results.filter((r) => r.status === 'borderline').length} borderline, ${results.filter((r) => r.status === 'fail').length} fail.`
+    : '';
 
   return (
     <section data-testid="tool" aria-label="Image checker" className={`${panelCls} lg:p-8`}>
       <h2 className="sr-only">Check your image</h2>
-      <div role="status" aria-live="polite" data-testid="status" className="sr-only">{info ? 'Image checked.' : ''}</div>
+      <div role="status" aria-live="polite" data-testid="status" className="sr-only">{info ? `File checked. ${summary}` : ''}</div>
       <div className="space-y-6">
-        <Dropzone inputRef={inputRef} hasFile={!!info} capText={cap ? `Up to ${formatCap(cap)}.` : null} onPick={(f, extra) => { void pick(f, extra); }} />
+        <Dropzone inputRef={inputRef} hasFile={!!info} accept="image/*,.heic,.heif,.avif,.gif,.pdf,.svg,.tif,.tiff,.bmp" supportedText="Any picture or PDF. Pixels are measured for JPEG, PNG and WebP." capText={cap ? `Up to ${formatCap(cap)}.` : null} onPick={(f, extra) => { void pick(f, extra); }} />
         {error && <div role="alert" data-testid="error" className="rounded-lg border border-red-700 bg-red-50 p-3 text-red-950">{error}</div>}
 
         {info && (
@@ -94,11 +93,11 @@ export default function CheckerTool() {
               <dt className="font-semibold text-slate-900">Pixels</dt><dd data-testid="file-dims">{info.dims}</dd>
               <dt className="font-semibold text-slate-900">Resolution</dt>
               <dd data-testid="file-dpi">
-                {info.dpi ? `${info.dpi.x} × ${info.dpi.y} dpi (from the file header)` : info.kind ? 'Not present in the file header (JPEG JFIF or PNG pHYs). EXIF resolution is not read.' : 'Not available for this file type.'}
+                {info.dpi ? `${info.dpi.x} × ${info.dpi.y} dpi (from the file header)` : info.kind ? 'Not found in the JPEG (JFIF or EXIF) or PNG fields this page reads. WebP resolution is not read.' : 'Not available for this file type.'}
               </dd>
             </dl>
             {info.mismatch && <p role="note" data-testid="type-mismatch" className="rounded-lg border border-amber-600 bg-amber-50 p-3 text-amber-950">{info.mismatch}</p>}
-            {!info.kind && <p data-testid="unsupported-note" className="rounded-lg border border-slate-300 bg-slate-50 p-3 text-slate-800">SizeTune can check JPEG, PNG and WebP pictures. This file is a different type, so it has no pixel size here and the rules below are not applied.</p>}
+            {!info.kind && <p data-testid="unsupported-note" className="rounded-lg border border-slate-300 bg-slate-50 p-3 text-slate-800">SizeTune measures pixels for JPEG, PNG and WebP pictures only. This file is a different type, so pixel rules are skipped, but the type and size rules below still apply.</p>}
           </div>
         )}
 
@@ -110,7 +109,7 @@ export default function CheckerTool() {
               {FIELDS.map(([f, label]) => (
                 <div key={f}>
                   <label htmlFor={`${uid}-${f}`} className={labelCls}>{label}</label>
-                  <input id={`${uid}-${f}`} data-testid={`rule-${f}`} type="text" inputMode="numeric" autoComplete="off" className={inputCls} value={raw[f]} aria-invalid={errors[f] ? 'true' : undefined} aria-describedby={errors[f] ? `${uid}-${f}-err` : undefined} onInput={(e) => setRaw({ ...raw, [f]: e.currentTarget.value })} />
+                  <input id={`${uid}-${f}`} data-testid={`rule-${f}`} type="text" inputMode="decimal" autoComplete="off" className={inputCls} value={raw[f]} aria-invalid={errors[f] ? 'true' : undefined} aria-describedby={errors[f] ? `${uid}-${f}-err` : undefined} onInput={(e) => setRaw({ ...raw, [f]: e.currentTarget.value })} />
                   {errors[f] && <p id={`${uid}-${f}-err`} className="mt-1 text-sm font-medium text-red-800">{errors[f]}</p>}
                 </div>
               ))}

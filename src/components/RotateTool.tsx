@@ -9,6 +9,9 @@ import { IDENTITY, flipDisplay, matrixFor, outputSize, rotateDisplay, type Op } 
 const MIME: Record<SniffKind, string> = { jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' };
 const EXT: Record<SniffKind, string> = { jpeg: 'jpg', png: 'png', webp: 'webp' };
 
+/** A message written for the user. Anything else that goes wrong is replaced by a generic one so raw browser errors never reach the page. */
+class PickError extends Error {}
+
 interface Loaded { bitmap: ImageBitmap; kind: SniffKind; name: string }
 
 /** Rotate and flip one image on a canvas, entirely in the browser. The file is never sent anywhere. */
@@ -26,11 +29,11 @@ export default function RotateTool() {
     const mine = ++serial.current;
     setError(null);
     try {
-      if (file.size > cap) throw new Error(`This file is larger than ${formatCap(cap)}. Choose a smaller image.`);
+      if (file.size > cap) throw new PickError(`This file is larger than ${formatCap(cap)}. Choose a smaller image.`);
       const kind = sniffImage(new Uint8Array(await file.slice(0, SNIFF_BYTES).arrayBuffer())).kind;
-      if (!kind) throw new Error('This is not a JPEG, PNG or WebP image. Choose one of those formats.');
+      if (!kind) throw new PickError('This is not a JPEG, PNG or WebP image. Choose one of those formats.');
       const size = await inspectSize(file);
-      if (size.width * size.height > MAX_CANVAS_PIXELS) throw new Error(`This picture has ${formatDims(size.width, size.height)}, more than the ${MAX_CANVAS_PIXELS / 1_000_000} megapixels this page can turn safely on every device. Shrink it on the home page first, then rotate it.`);
+      if (size.width * size.height > MAX_CANVAS_PIXELS) throw new PickError(`This picture has ${formatDims(size.width, size.height)}, more than the ${MAX_CANVAS_PIXELS / 1_000_000} megapixels this page can turn safely on every device. Shrink it on the home page first, then rotate it.`);
       // The browser applies the EXIF orientation while decoding, so the preview matches the system viewer and is not turned twice.
       const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
       if (mine !== serial.current) { bitmap.close(); return; }
@@ -39,7 +42,7 @@ export default function RotateTool() {
       setStatus(`Image ready, ${formatDims(bitmap.width, bitmap.height)}.${extra > 0 ? ' Only the first file was used.' : ''}`);
     } catch (e) {
       if (mine !== serial.current) return;
-      setError(e instanceof EngineError || e instanceof Error ? e.message : 'This image could not be read.');
+      setError(e instanceof EngineError || e instanceof PickError ? e.message : 'This image could not be read. It may be damaged, or too large for this device. Try a smaller picture.');
     }
   };
 
@@ -121,7 +124,7 @@ export default function RotateTool() {
               />
             </div>
             <p className="text-sm text-slate-700" data-testid="rotate-note">
-              {loaded.kind === 'png' ? 'PNG keeps every pixel, so nothing is lost.' : `${loaded.kind === 'jpeg' ? 'JPEG' : 'WebP'} is saved again at high quality, which can cost a little detail.`}
+              {loaded.kind === 'png' ? 'PNG is saved without compression loss. Colour profiles and 16-bit colour are not kept.' : `${loaded.kind === 'jpeg' ? 'JPEG' : 'WebP'} is saved again at quality 95 out of 100, which can cost a little detail.`}
             </p>
             <div className="flex flex-col gap-2 sm:flex-row">
               <button type="button" data-testid="download" className={btnPrimary} onClick={download}>Download image</button>

@@ -39,4 +39,10 @@ describe('rotate transform (FEATURE-007 AC-1, AC-2)', () => {
     expect(flipDisplay(flipDisplay(IDENTITY, 'v'), 'v')).toEqual(IDENTITY);
     expect(rotateDisplay(IDENTITY, 'ccw').turns).toBe(3);
   });
+
+  it('rotate left then flip horizontally mirrors what is on screen', () => {
+    // after a left turn the source top-left pixel is shown bottom-left; flipping the display horizontally moves it to bottom-right
+    const op = flipDisplay(rotateDisplay(IDENTITY, 'ccw'), 'h');
+    expect(apply(matrixFor(op, 400, 300), 0, 0)).toEqual([300, 400]);
+  });
 });

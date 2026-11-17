@@ -39,7 +39,7 @@ const jsonLd = webApplicationLd('SizeTune: convert PNG to JPG', '/png-to-jpg/', 
     <ul>
       <li><strong>Transparency.</strong> JPG has no see-through pixels. Transparent areas are filled with white by default, or black or a colour you pick.</li>
       <li><strong>Sharpness of fine lines.</strong> Thin text and hard edges can show faint speckle around them. For a screenshot full of text, check the preview closely or keep the PNG.</li>
-      <li><strong>Exactness.</strong> A JPG is lossy, so converting back to PNG does not restore the lost detail.</li>
+      <li><strong>Exactness.</strong> A JPG is lossy, so converting back to PNG does not restore the lost detail. An animated PNG becomes a still picture from its first frame.</li>
     </ul>
 
     <h2>How to convert</h2>
@@ -74,6 +74,6 @@ const jsonLd = webApplicationLd('SizeTune: convert PNG to JPG', '/png-to-jpg/', 
     <h3>Can I convert WebP files as well?</h3>
     <p>Yes. Use the <a href="/webp-to-jpg/">WebP to JPG page</a>.</p>
     <h3>Why does the quality look slightly different?</h3>
-    <p>JPG compresses by discarding fine detail. The tool saves at high quality, but a close look at sharp edges can show small differences from the PNG.</p>
+    <p>JPG compresses by discarding fine detail. The tool saves at quality 85 out of 100, but a close look at sharp edges can show small differences from the PNG.</p>
   </div>
 </Base>

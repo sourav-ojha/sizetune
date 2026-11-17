@@ -78,3 +78,11 @@ test('a file that is not an image says what it is and does not crash', async ({ 
   await check(page, { name: 'doc.png', mimeType: 'image/png', buffer: Buffer.from('%PDF-1.7 hello world') });
   await expect(page.getByTestId('real-type')).toHaveText(/PDF/);
 });
+
+test('H1: a HEIC file is named, and an accepted-type rule fails it', async ({ page }) => {
+  await check(page, path.join(FIX, 'heic-header.heic'));
+  await expect(page.getByTestId('real-type')).toHaveText(/HEIC/);
+  await page.getByTestId('rule-type-jpeg').check();
+  await expect(page.getByTestId('rule-row-type')).toHaveAttribute('data-status', 'fail');
+  await expect(page.getByTestId('unsupported-note')).toBeVisible();
+});

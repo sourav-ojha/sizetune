@@ -36,8 +36,8 @@ const jsonLd = webApplicationLd('SizeTune: convert WebP to JPG', '/webp-to-jpg/'
     <p>
       A WebP picture can be saved in two ways, with some detail thrown away to save space or with every pixel kept. A JPG
       always throws some detail away. Converting a lossy WebP to a JPG therefore compresses the picture a second time, and
-      the new file may show faint blockiness around sharp edges that was not there before. The converter saves at a high
-      quality setting to keep that change small, and the preview lets you compare before you download.
+      the new file may show faint blockiness around sharp edges that was not there before. The converter saves at quality 85
+      out of 100, a common good-quality setting, to keep that change small, and the preview lets you compare before you download.
     </p>
     <p>
       JPG cannot store transparency. If your WebP has see-through areas, such as a cut-out logo, those areas are filled
@@ -71,7 +71,7 @@ const jsonLd = webApplicationLd('SizeTune: convert WebP to JPG', '/webp-to-jpg/'
     <h3>Why is my JPG bigger than the WebP?</h3>
     <p>WebP usually stores the same picture in fewer bytes. A larger JPG is normal, and you can set a size limit in the tool if a form needs it smaller.</p>
     <h3>Can I convert an animated WebP?</h3>
-    <p>The tool makes a single still picture. It does not keep animation.</p>
+    <p>The tool makes a single still picture from the first frame. It does not keep animation.</p>
     <h3>Does the picture get uploaded?</h3>
     <p>No. The conversion runs in your browser. Read the <a href="/privacy/">privacy page</a> for details.</p>
     <h3>Can I convert PNG files too?</h3>

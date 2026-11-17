@@ -56,9 +56,10 @@ const jsonLd = webApplicationLd('SizeTune: check image type, size and pixels', '
     <h2>A note on resolution</h2>
     <p>
       Some forms mention dots per inch. That number is a label inside the file and does not change how many pixels the
-      picture has. The checker shows it only when the file records one in a place it reads: the JFIF header of a JPEG
-      or the physical size chunk of a PNG. If it says the resolution is not present, that is exactly what it found, and
-      it does not guess a value. Resolution stored in other metadata is not read.
+      picture has. The checker shows it only when the file records one in a place it reads: the JFIF header or the EXIF
+      resolution fields of a JPEG, or the physical size chunk of a PNG. If it says the resolution was not found, that is
+      exactly what it found, and it does not guess a value. WebP resolution and other metadata are not read, and your
+      computer may show a default such as 72 or 96 that the file itself does not contain.
     </p>
 
     <h2>If a rule fails</h2>
@@ -83,8 +84,8 @@ const jsonLd = webApplicationLd('SizeTune: check image type, size and pixels', '
     </p>
     <h3>Why is the resolution missing?</h3>
     <p>
-      Many files, including most phone photos and screenshots, do not store one in the places the checker reads. It
-      shows what is present and never invents a number.
+      Screenshots, WebP files and many edited pictures do not store one in the places the checker reads. It shows what
+      is present and never invents a number.
     </p>
     <h3>Can it check a PDF?</h3>
     <p>

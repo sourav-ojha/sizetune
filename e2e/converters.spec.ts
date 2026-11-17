@@ -52,7 +52,7 @@ test('AC-3: nothing leaves the origin and no request carries the file', async ({
   expect(bad).toEqual([]);
 });
 
-test('AC-4: each converter page links into the KB resizer, before and after a result', async ({ page }) => {
+test('AC-4: each converter page links into the KB resizer, visible before any file is chosen', async ({ page }) => {
   for (const url of ['/webp-to-jpg/', '/png-to-jpg/']) {
     await page.goto(url);
     const link = page.getByTestId('to-resizer');

@@ -59,6 +59,7 @@ test('AC-3: EXIF orientation is applied once (preview and download match the sys
   const buf = await download(page);
   const meta = await sharp(buf).metadata();
   expect([meta.width, meta.height]).toEqual([300, 400]);
+  expect(meta.exif).toBeUndefined(); // the saved copy carries no EXIF, so the original's GPS block is not copied over
   const top = await px(buf, 150, 5); // red band is at the top once oriented
   expect(top[0]).toBeGreaterThan(top[2] + 60);
   await page.getByTestId('rotate-cw').click();

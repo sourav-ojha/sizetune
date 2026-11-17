@@ -1,13 +1,15 @@
 import type { SniffKind } from '../tool/sniff';
-import { formatKb } from '../tool/format';
+import { formatSize } from '../tool/format';
 
-export interface Facts { kind: SniffKind; bytes: number; width: number; height: number }
+/** `kind` is null for a type SizeTune cannot measure (HEIC, PDF, ...): then `label` names it and the pixels are unknown. */
+export interface Facts { kind: SniffKind | null; label?: string; bytes: number; width: number | null; height: number | null }
 export interface Rules { minKb?: number; maxKb?: number; minW?: number; maxW?: number; minH?: number; maxH?: number; types: SniffKind[] }
 export type RuleField = 'minKb' | 'maxKb' | 'minW' | 'maxW' | 'minH' | 'maxH';
 export type RuleInput = Record<RuleField, string>;
 export type Status = 'pass' | 'fail' | 'borderline';
 export interface RuleResult { id: string; label: string; status: Status; measured: string; expected: string; note?: string }
 
+const PLAIN = /^\d{1,6}(\.\d{1,2})?$/;
 const LABEL: Record<SniffKind, string> = { jpeg: 'JPEG', png: 'PNG', webp: 'WebP' };
 
 export function parseRules(raw: RuleInput, types: SniffKind[]): { ok: true; rules: Rules } | { ok: false; errors: Partial<Record<RuleField, string>> } {
@@ -16,7 +18,7 @@ export function parseRules(raw: RuleInput, types: SniffKind[]): { ok: true; rule
     const t = raw[f].trim();
     if (t === '') return undefined;
     const n = Number(t);
-    if (!Number.isFinite(n) || n <= 0) { errors[f] = 'Enter a number above zero.'; return undefined; }
+    if (!PLAIN.test(t) || !Number.isFinite(n) || n <= 0) { errors[f] = 'Enter a plain number above zero, such as 50 or 35.5.'; return undefined; }
     return n;
   };
   const rules: Rules = { minKb: num('minKb'), maxKb: num('maxKb'), minW: num('minW'), maxW: num('maxW'), minH: num('minH'), maxH: num('maxH'), types };
@@ -34,9 +36,10 @@ const px = (n: number) => `${new Intl.NumberFormat('en-US').format(n)} px`;
  */
 export function evaluate(f: Facts, r: Rules): RuleResult[] {
   const out: RuleResult[] = [];
-  const kb = formatKb(f.bytes);
+  const kb = formatSize(f.bytes);
+  const name = f.label ?? (f.kind ? LABEL[f.kind] : 'Unknown');
   if (r.types.length) {
-    out.push({ id: 'type', label: 'File type', status: r.types.includes(f.kind) ? 'pass' : 'fail', measured: LABEL[f.kind], expected: r.types.map((t) => LABEL[t]).join(' or ') });
+    out.push({ id: 'type', label: 'File type', status: f.kind && r.types.includes(f.kind) ? 'pass' : 'fail', measured: name, expected: r.types.map((t) => LABEL[t]).join(' or ') });
   }
   if (r.minKb !== undefined) {
     const strict = r.minKb * 1024;
@@ -52,8 +55,10 @@ export function evaluate(f: Facts, r: Rules): RuleResult[] {
     if (min !== undefined) out.push({ id: `min-${id}`, label: `Minimum ${label}`, status: v >= min ? 'pass' : 'fail', measured: px(v), expected: `at least ${px(min)}` });
     if (max !== undefined) out.push({ id: `max-${id}`, label: `Maximum ${label}`, status: v <= max ? 'pass' : 'fail', measured: px(v), expected: `at most ${px(max)}` });
   };
-  dim('width', 'width', f.width, r.minW, r.maxW);
-  dim('height', 'height', f.height, r.minH, r.maxH);
+  if (f.width !== null && f.height !== null) {
+    dim('width', 'width', f.width, r.minW, r.maxW);
+    dim('height', 'height', f.height, r.minH, r.maxH);
+  }
   return out;
 }
 

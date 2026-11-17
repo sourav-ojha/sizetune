@@ -9,10 +9,14 @@ interface Props {
   capText: string | null;
   disabled?: boolean;
   onPick: (file: File, extraCount: number) => void;
+  /** File-picker filter (default: the three formats the resizer reads). */
+  accept?: string;
+  /** Sentence naming what is supported (default: JPEG, PNG and WebP). */
+  supportedText?: string;
 }
 
 /** Native file input inside a label-button (keyboard + touch friendly) plus a drag-and-drop target. The input is SSR'd so a pre-hydration pick is not lost. */
-export default function Dropzone({ inputRef, hasFile, capText, disabled, onPick }: Props) {
+export default function Dropzone({ inputRef, hasFile, capText, disabled, onPick, accept = 'image/jpeg,image/png,image/webp', supportedText = 'Supported: JPEG, PNG and WebP.' }: Props) {
   const hintId = useId();
   const [over, setOver] = useState(false);
 
@@ -61,7 +65,7 @@ export default function Dropzone({ inputRef, hasFile, capText, disabled, onPick 
           ref={inputRef}
           data-testid="file"
           type="file"
-          accept="image/jpeg,image/png,image/webp"
+          accept={accept}
           className={`sr-only ${focusRing}`}
           aria-describedby={hintId}
           disabled={disabled}
@@ -69,7 +73,7 @@ export default function Dropzone({ inputRef, hasFile, capText, disabled, onPick 
         />
       </label>
       <p id={hintId} className="mt-4 text-sm text-slate-600">
-        Supported: JPEG, PNG and WebP.{capText ? ` ${capText}` : ''} Your image stays in this browser; the site's code does not upload it.
+        {supportedText}{capText ? ` ${capText}` : ''} Your image stays in this browser; the site's code does not upload it.
       </p>
     </div>
   );

@@ -45,8 +45,9 @@ const jsonLd = webApplicationLd('SizeTune: rotate or flip an image', '/rotate-im
 
     <h2>What happens to the quality</h2>
     <p>
-      Turning a PNG loses nothing, because PNG stores every pixel exactly. A JPEG or WebP picture has to be compressed
-      again when it is saved, and this page uses a high quality setting so the change is small. Even so, each extra
+      A PNG is saved without compression loss, though a colour profile or 16-bit colour in the original is not kept. A
+      JPEG or WebP picture has to be compressed again when it is saved, and this page uses quality 95 out of 100 so the
+      change is small. Even so, each extra
       save of a JPEG removes a little detail, so avoid rotating the same file many times. If you only need the
       orientation fixed once, do it once, from the original.
     </p>
@@ -67,7 +68,7 @@ const jsonLd = webApplicationLd('SizeTune: rotate or flip an image', '/rotate-im
     <ul>
       <li>It turns in quarter steps only. It does not rotate by a free angle or straighten a tilted horizon.</li>
       <li>It does not crop, resize or change the file size on purpose.</li>
-      <li>It handles one picture at a time.</li>
+      <li>It handles one picture at a time. An animated WebP is saved as its first frame only.</li>
       <li>Very large pictures above about 16 megapixels are refused, because some phones cannot draw a canvas that big. Reduce them first.</li>
     </ul>
     <p>
