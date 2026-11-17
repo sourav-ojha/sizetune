@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-008
 opportunity: OPP-015
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-17
 ---
@@ -127,3 +128,7 @@ Local processing; no retention. Bytes are read only; no decode of untrusted data
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** AC-1 to AC-3, AC-5 via unit tests on fixtures and Playwright e2e; AC-4 network log; AC-3 link by e2e.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-17 | feat/tools-converter-rotator-checker (commits 9512042, 0885e42) | AC-1 to AC-6: /check-image-size/ | none | owner review of page copy; Search Console impressions | DPI read from JFIF, EXIF resolution and PNG pHYs (WebP not read). KB rules report borderline when 1,000 vs 1,024 bytes disagree. Fix link carries ?max= and ?min= (ImageTool reads them after mount); the file and pixel rules are not carried. OPP-011 overlap untouched |
