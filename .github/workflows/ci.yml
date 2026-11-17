@@ -2,10 +2,28 @@
 # Pair with a branch ruleset on `main` requiring PR + this check ("verify"), no bypass, BEFORE connecting Cloudflare Workers Builds
 # (Workers Builds deploys every push to the production branch regardless of this workflow).
 name: ci
+# Docs-only changes do not trigger CI or deploys. A run is skipped ONLY if every changed file matches paths-ignore; any other
+# file (src/, tests/, e2e/, scripts/, public/, config, lockfile, this workflow) still runs the full pipeline. '*.md' is root-level
+# only on purpose: src/content/** guides are site content and must still build, test and deploy. If a branch ruleset ever
+# requires the "verify" check, a skipped docs-only PR would wait forever for it: re-evaluate this filter at that point.
 on:
   pull_request:
+    paths-ignore:
+      - '*.md'
+      - 'docs/**'
+      - 'QA/**'
+      - 'AUDIT/**'
+      - '.product/**'
+      - '.claude/**'
   push:
     branches: [main, dev]
+    paths-ignore:
+      - '*.md'
+      - 'docs/**'
+      - 'QA/**'
+      - 'AUDIT/**'
+      - '.product/**'
+      - '.claude/**'
 permissions:
   contents: read
 # Only superseded PR runs are cancelled. A push run that is already running (possibly mid-deploy) is never cancelled by a newer push; GitHub keeps at most one waiting run per group, so a newer push replaces an older still-waiting one.
