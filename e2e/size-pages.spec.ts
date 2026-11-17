@@ -12,6 +12,8 @@ for (const p of SIZE_PAGES) {
     await page.goto(p.url);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(p.h1);
     await expect(page.getByTestId('target')).toHaveValue(p.kb);
+    // signature tool only: guards against a signature page accidentally built on the photo tool
+    await expect(page.getByTestId('signature-guidance')).toHaveCount(p.tool === 'signature' ? 1 : 0);
     await expect(page.getByRole('heading', { level: 2, name: /questions/i })).toBeVisible();
   });
 }

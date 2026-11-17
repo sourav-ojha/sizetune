@@ -43,7 +43,7 @@ const jsonLd = webApplicationLd('SizeTune: resize image to 100 KB', '/resize-ima
     <p>
       SizeTune aims below your maximum counted as 1,000 bytes per KB, so a result passes even when a portal counts 1 KB
       as 1,024 bytes. The result is shown in 1,024-byte KB, which is why a 100 KB target is displayed as up to about
-      97.6 KB. The small gap is the safety margin.
+      97.7 KB. The small gap is the safety margin.
     </p>
 
     <h2>Steps that keep a 100 KB photo sharp</h2>
@@ -79,7 +79,7 @@ const jsonLd = webApplicationLd('SizeTune: resize image to 100 KB', '/resize-ima
       it to JPEG only helps if the form requires that format.
     </p>
 
-    <h2>When 100 KB is a minimum as well</h2>
+    <h2>When your form also sets a minimum</h2>
     <p>
       Some forms want a file between, say, 50 and 100 KB. Enter both numbers in the range fields. If your picture ends
       up below the minimum, the tool raises the JPEG quality to store more detail. A small, plain image may still fall
@@ -108,15 +108,15 @@ const jsonLd = webApplicationLd('SizeTune: resize image to 100 KB', '/resize-ima
       Usually yes, if the picture is cropped to the head and shoulders and not larger in pixels than the form needs.
       Busy backgrounds and very high pixel counts are what push a file past the limit.
     </p>
-    <h3>Why does my 100 KB file show as less than 100 KB?</h3>
+    <h3>What pixel size usually fits in 100 KB?</h3>
     <p>
-      The tool stays under 100,000 bytes and picks the highest quality that fits. Quality steps are not evenly spaced,
-      so the result often lands a little below the cap.
+      For a cropped portrait, somewhere in the hundreds of pixels on each side is typical, but it depends on the
+      picture. Read the dimensions the tool shows rather than relying on a rule of thumb.
     </p>
-    <h3>Should I pick JPEG or PNG for a 100 KB photo?</h3>
+    <h3>Can I use a scan of a certificate at 100 KB?</h3>
     <p>
-      JPEG for photographs. PNG keeps every pixel exactly, which makes a camera photo several times larger at the same
-      dimensions. Pick PNG only when your form insists on it.
+      Often, but text is less forgiving than faces. Keep enough pixels for the smallest print to stay legible and check
+      the preview closely before you download.
     </p>
     <h3>Can I resize without losing any quality?</h3>
     <p>
