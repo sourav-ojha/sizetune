@@ -2,8 +2,8 @@
 type: opportunity-registry
 last_research: 2026-11-17
 review_mode: independent
-decision_count: 6
-decision_head: 4bfafd32a054
+decision_count: 13
+decision_head: d06a2ad927f9
 ---
 # Opportunities
 
@@ -136,6 +136,19 @@ Not profiled: reduceimages.com and pixelssize.com did not load; mergeimages.net 
 
 **Widened pass tally.** About 13 candidates examined; 3 registered (OPP-011, OPP-012, OPP-013, all Low confidence after review); 1 merged (PDF to JPG into OPP-013); 5 dropped (background removal: no evidence of an audience need, extreme competition, and RMBG-1.4 is non-commercial (other models not checked); video compress: no evidence tying it to the audience; OCR and QR/text utilities: no evidence or product link; standalone HEIC page: already Deferred as OPP-002, licence finding is not new demand evidence); 4 existing items updated with evidence (OPP-005, OPP-010, plus flags on OPP-001 and OPP-004, which are approved and left unchanged).
 
+### Feature research: seven owner-proposed tools (2026-11-17, `feature` command)
+
+The owner asked about Bulk Image Compressor, Bulk Image Converter, Image Rotator, Passport Photo Maker, Image Format Checker, social thumbnail resizers and Favicon/App Icon generators. A request is not approval. Four parallel research agents covered them; Reddit, Trustpilot, Play Store and Product Hunt user voice could not be loaded, and no search volumes exist (Google/DuckDuckGo autocomplete gives ordering only). Mapping to the registry: Bulk Compressor merges into OPP-006, Bulk Converter into OPP-012, Passport Photo into OPP-008; Rotator, Format Checker, social resizers and Favicon/App Icon are new (OPP-014 to OPP-017).
+
+- **Bulk compression.** Squoosh's multi-file request (#301) has 115 reactions and was closed in 2020, pointing users to the Squoosh CLI as the batch route. [E: fact; medium; https://github.com/GoogleChromeLabs/squoosh/issues/301; 2026-11-17] A later request (#1406) is open since 2024 with about 58 reactions and users built forks. [E: fact; medium; https://github.com/GoogleChromeLabs/squoosh/issues/1406; 2026-11-17] TinyPNG limits free use to 20 images of 5 MB each and keeps uploads up to 48 hours. [E: fact; medium; https://tinypng.com; 2026-11-17] BIRME claims in-browser bulk processing with ZIP. [E: fact; low; https://www.birme.net; 2026-11-17] Autocomplete suggests "bulk image compressor to 50kb/100kb/20kb". [E: inference; low; search:suggestqueries.google.com bulk image compressor; 2026-11-17] fflate (MIT) and JSZip (dual MIT/GPL) are usable client-side ZIP libraries. [E: fact; high; https://api.github.com/repos/101arrowz/fflate; 2026-11-17] Phone memory use for many large photos is an untested risk. [E: hypothesis; low; n/a; 2026-11-17]
+- **Bulk conversion.** heic.online is server-side and accepts up to 100 files. [E: fact; medium; https://heic.online; 2026-11-17] CloudConvert's free plan is 10 credits a day. [E: fact; high; https://cloudconvert.com/pricing; 2026-11-17] Privacy as a differentiator comes from vendor pages only. [E: inference; low; https://heic.online; 2026-11-17] heic2any has an open crash report on a large HEIC. [E: fact; medium; https://github.com/alexcorvi/heic2any/issues/64; 2026-11-17] libheif is LGPL (HEIC stays Deferred as OPP-002). [E: inference; low; https://api.github.com/repos/strukturag/libheif; 2026-11-17]
+- **Passport photo.** Competitors range from free server-side croppers (idphoto4you) to paid services with acceptance guarantees (Visafoto, which already offers a KB-size option). [E: fact; low; https://www.visafoto.com; 2026-11-17] One user reported a photo passing one government tool but failing another's upload. [E: fact; low; https://www.uniquephoto.com/community/qa/why-can-a-passport-style-photo-pass-the-state-department-photo-tool-but-still-be-rejected-by-uscis-upload; 2026-11-17] The real pain is acceptance, which a free tool cannot guarantee (inference). MediaPipe is Apache-2.0. [E: fact; medium; https://api.github.com/repos/google-ai-edge/mediapipe; 2026-11-17] @imgly/background-removal is AGPL-3.0 per the GitHub API (not fetched by the reviewer). [E: fact; medium; https://api.github.com/repos/imgly/background-removal-js; 2026-11-17] RMBG-1.4 is non-commercial licensed. [E: fact; high; https://huggingface.co/briaai/RMBG-1.4; 2026-11-17]
+- **Rotator.** The head term is dominated by iLoveIMG, Img2go, Canva and Adobe Express (all free). [E: fact; medium; https://www.img2go.com/rotate-image; 2026-11-17] Browsers apply EXIF orientation by default. [E: fact; high; https://developer.mozilla.org/en-US/docs/Web/API/Window/createImageBitmap; 2026-11-17] SizeTune's engine decodes with orientation applied. [E: fact; high; repo:src/lib/engine/env.ts; 2026-11-17] Canvas rotation is trivial but re-encodes JPEG; lossless rotation needs a WASM jpegtran build of unverified upkeep. [E: fact; low; https://socket.dev/npm/package/jpegtran-js; 2026-11-17] No applicant-specific complaint was found. [E: unknown; low; search:sideways photo upload form applicant; 2026-11-17]
+- **Format checker.** Competitors are EXIF viewers (Metadata2go processes files on servers) and a few real-file-type checkers. [E: fact; medium; https://www.metadata2go.com; 2026-11-17] photoresizer.in links a "Photo Compliance Checker" beside its exam presets, though its page does not say it returns an explicit pass or fail. [E: fact; medium; https://photoresizer.in/; 2026-11-17] Renamed or mismatched files (WebP named .jpg) are rejected by upload systems in several support threads seen as search snippets only. [E: fact; low; search:photo upload rejected invalid file format jpg actually png webp heic; 2026-11-17] "is my image a real jpeg" shows thin autocomplete demand. [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=is%20my%20image%20a%20real%20jpeg; 2026-11-17] exifr is MIT. [E: fact; high; https://github.com/MikeKovarik/exifr; 2026-11-17]
+- **Social resizers.** Specs move: YouTube's help page lists a 50 MB thumbnail cap on desktop and 2 MB on mobile, while many blogs still say 2 MB. [E: fact; medium; https://support.google.com/youtube/answer/72431; 2026-11-17] Reel cover and LinkedIn banner sizes conflict across third-party guides, with no official page read. [E: unknown; low; search:Instagram reel cover size help center; 2026-11-17] Canva, Kapwing and Adobe Express offer free resizers, so price is no differentiator. [E: fact; low; https://www.kapwing.com/resize-image; 2026-11-17] The audience (creators) differs from SizeTune's form applicants. [E: inference; low; ref:competitor tags above; 2026-11-17] Google's spam policy lists doorway pages as abuse, so near-identical size pages are a risk. [E: fact; high; https://developers.google.com/search/docs/essentials/spam-policies; 2026-11-17]
+- **Favicon and app icons.** realfavicongenerator.net is the leader (Semrush estimate of 556,300 visits in September 2026, a competitor estimate, low confidence). [E: inference; low; https://de.semrush.com/website/realfavicongenerator.net/overview/; 2026-11-17] Apple's guidelines specify a 1024 px layout size for iOS, iPadOS and macOS and say the system scales to smaller sizes (tvOS and watchOS differ); that per-size sets are now legacy output is my inference. [E: inference; medium; https://developer.apple.com/design/human-interface-guidelines/app-icons.md; 2026-11-17] The page's change log shows two dated entries in 2026, including one on 2026-10-28. [E: fact; medium; https://developer.apple.com/design/human-interface-guidelines/app-icons.md; 2026-11-17] Free CLIs (Capacitor assets, pwa-asset-generator) serve developers. [E: fact; medium; https://github.com/ionic-team/capacitor-assets; 2026-11-17] Vendor sources claim developers block ads heavily; no developer RPM figure was found. [E: fact; low; https://carbonads.net/blog/developer-advertising-guide-2026; 2026-11-17]
+
+
 ## Registry
 
 | ID | Title | Status | Score | Confidence | Tier | Effort | Updated | Feature |
@@ -145,14 +158,18 @@ Not profiled: reduceimages.com and pixelssize.com did not load; mergeimages.net 
 | OPP-003 | Client-side PDF compression to a target KB | Ready for Implementation | 63 | Low | Needs evidence | L | 2026-11-17 | FEATURE-003 |
 | OPP-004 | Ad and consent foundation for content pages | Ready for Implementation | 57 | Medium | Consider | M | 2026-11-17 | FEATURE-002 |
 | OPP-005 | Multi-tool site platform (dependency note, not an option) | Under Evaluation | 65 | Medium | Consider | M | 2026-11-17 | - |
-| OPP-006 | Bulk resize with one ZIP download | Under Evaluation | 57 | Medium | Consider | M | 2026-11-17 | - |
+| OPP-006 | Bulk resize with one ZIP download | Ready for Implementation | 57 | Medium | Consider | M | 2026-11-17 | FEATURE-005 |
 | OPP-007 | Evaluate whether WASM encoders improve quality at tiny KB targets | Under Evaluation | 54 | Low | Backlog | L | 2026-11-17 | - |
-| OPP-008 | Passport and visa photo maker with size specs | Discovered | 55 | Low | Needs evidence | L | 2026-11-17 | - |
+| OPP-008 | Passport and visa photo maker with size specs | Approved | 52 | Low | Backlog | L | 2026-11-17 | FEATURE-011 |
 | OPP-009 | Serve minimum-size forms when the source is too small | Discovered | 56 | Low | Needs evidence | S | 2026-11-17 | - |
 | OPP-010 | Localised pages for other languages | Discovered | 55 | Low | Needs evidence | L | 2026-11-17 | - |
 | OPP-011 | Exam-form preset pack with a pixel, KB and file-type compliance check | Deferred | 63 | Low | Needs evidence | M | 2026-11-17 | - |
-| OPP-012 | Client-side image format converters (WebP and PNG to JPG) | Discovered | 57 | Low | Needs evidence | S | 2026-11-17 | - |
+| OPP-012 | Client-side image format converters (WebP and PNG to JPG) | Ready for Implementation | 57 | Low | Needs evidence | S | 2026-11-17 | FEATURE-006 |
 | OPP-013 | Client-side image-to-PDF and JPG-to-PDF | Discovered | 53 | Low | Backlog | M | 2026-11-17 | - |
+| OPP-014 | Image rotator and flipper | Ready for Implementation | 50 | Low | Backlog | S | 2026-11-17 | FEATURE-007 |
+| OPP-015 | "Will this file pass?" image checker (format, KB, pixels, type) | Ready for Implementation | 60 | Low | Needs evidence | M | 2026-11-17 | FEATURE-008 |
+| OPP-016 | Social media (Instagram, LinkedIn, YouTube) image resizers | Ready for Implementation | 46 | Low | Backlog | S | 2026-11-17 | FEATURE-009 |
+| OPP-017 | Favicon and app icon generator | Ready for Implementation | 49 | Low | Backlog | M | 2026-11-17 | FEATURE-010 |
 
 ## Review Summary
 
@@ -162,6 +179,7 @@ Independent review by separate sub-agents (general-purpose agent following the i
 - Round 2 (PASS WITH CHANGES, 0 Critical, 3 High): untagged demand claims on OPP-003, a marginal OPP-001 Recommend, and a mis-sourced thin-content risk. Resolved: OPP-003 re-tagged as hypothesis, OPP-001 and OPP-003 ratings lowered, risk re-sourced to Google's policy.
 - Round 3 (PASS WITH CHANGES, 0 Critical, 0 High, 7 Medium, 7 Low): source-attribution and rating consistency items. Applied: OPP-004 scoped to content pages first and business_impact lowered, OPP-007 business_impact lowered (now Backlog), OPP-005 relabelled as a dependency note, TinyPNG and enabler claims downgraded, per-claim citations fixed. The three-round maximum was reached, so these last edits were not re-reviewed by a fourth round.
 - Widened pass (`full auto widen override`, same day), review round 4 (PASS WITH CHANGES, 0 Critical, 4 High, 9 Medium, 5 Low), by a separate general-purpose agent following the independent-reviewer role, with spot-check fetches. Applied: OPP-012 premise re-tagged as assumption and AVIF removed (the engine rejects AVIF); OPP-012 and OPP-013 returned to Discovered because they fail the evidence test; OPP-013 re-rated (53, Backlog); competitor claims, Raptive, AdSense and licence tags downgraded or split into one source per tag; approved items OPP-001, OPP-003 and OPP-004 were not edited and their conflicts are queued in `.product/attention.md`. This was one review round; the other open points are in the attention queue.
+- Feature research (seven owner-proposed tools), review round 5 (PASS WITH CHANGES, 0 Critical, 4 High, 8 Medium, 5 Low), by a separate general-purpose agent with spot-check fetches. Applied: Squoosh reaction counts split between issues #301 and #1406, Semrush figure corrected, OPP-015 differentiation lowered (score 60), licence and YouTube claims split into one source per tag; OPP-014, OPP-015, OPP-016 and OPP-017 returned to Discovered because they fail the evidence test; OPP-008 lowered to 52 (Backlog); OPP-006 kept at 57 and proposed. One review round only.
 - Still open: no search volumes, rankings, RPM or real-user data exist for any opportunity; competitor no-upload claims were not network-tested; Reddit, Quora, VisaJourney and Stack Exchange were unreadable; codec and decoder licences need legal review. Net effect: no opportunity reaches Recommend. The review pushed every score down, and the honest overall state is that demand is unmeasured.
 
 ## Decision Log
@@ -174,6 +192,13 @@ Independent review by separate sub-agents (general-purpose agent following the i
 | 2026-11-17 | OPP-002 | approve | sourav | User chose Approve for OPP-002 in the Gate 2 question dialog, 2026-11-17 (reply to 'Give decisions') | 4ff7da1c23c6 | f4b1a448d25c |
 | 2026-11-17 | OPP-002 | defer | sourav | User chose Defer HEIC at the FEATURE-004 blocker walk-through, 2026-11-17 | 4ff7da1c23c6 | d298aa39d8de |
 | 2026-11-17 | OPP-011 | defer | sourav | User: 'Defer OPP-011' (reply to Gate 2 decision sheet, 2026-11-17) | 789fa8d6db11 | 4bfafd32a054 |
+| 2026-11-17 | OPP-006 | approve | sourav | User: 'Approve OPP-006' (reply to Gate 2 decision sheet, 2026-11-17) | 153c1f5be11a | e20b8aabd117 |
+| 2026-11-17 | OPP-008 | approve | sourav | User: 'lets add them, so we ll have more tools in our arsenal' (owner override of Backlog/Needs-evidence tier, 2026-11-17) | 1344bd07e6b9 | 3ad8894a2d11 |
+| 2026-11-17 | OPP-012 | approve | sourav | User: 'lets add them, so we ll have more tools in our arsenal' (owner override of Backlog/Needs-evidence tier, 2026-11-17) | 2a671f9909bc | 5626037167e7 |
+| 2026-11-17 | OPP-014 | approve | sourav | User: 'lets add them, so we ll have more tools in our arsenal' (owner override of Backlog/Needs-evidence tier, 2026-11-17) | 470dae0fbb6e | 2d6f447ec2f8 |
+| 2026-11-17 | OPP-015 | approve | sourav | User: 'lets add them, so we ll have more tools in our arsenal' (owner override of Backlog/Needs-evidence tier, 2026-11-17) | c8cf40333119 | ea2fc4e19686 |
+| 2026-11-17 | OPP-016 | approve | sourav | User: 'lets add them, so we ll have more tools in our arsenal' (owner override of Backlog/Needs-evidence tier, 2026-11-17) | 67726529a2a4 | 281a9902d7ad |
+| 2026-11-17 | OPP-017 | approve | sourav | User: 'lets add them, so we ll have more tools in our arsenal' (owner override of Backlog/Needs-evidence tier, 2026-11-17) | a73bf4e09ee4 | d06a2ad927f9 |
 
 ## Opportunity Details
 
@@ -272,6 +297,7 @@ Independent review by separate sub-agents (general-purpose agent following the i
 - **Dependencies:** Real-device testing.
 - **Ratings:** user_value=3, strategic_alignment=3, market_opportunity=3, competitive_differentiation=2, business_impact=3, implementation_feasibility=3
 - **Reviewer notes:** Review round 1: differentiation lowered 3 to 2; review counts harmonised and tagged low.
+- **Feature research (2026-11-17), "Bulk Image Compressor" request:** Squoosh's multi-file request (#301) has 115 reactions and was closed in 2020 with a pointer to its CLI. [E: fact; medium; https://github.com/GoogleChromeLabs/squoosh/issues/301; 2026-11-17] A later request (#1406) is open with about 58 reactions and forks built. [E: fact; medium; https://github.com/GoogleChromeLabs/squoosh/issues/1406; 2026-11-17] Free in-browser or uncapped bulk tools already exist (BIRME, and imresizer's 12-file batch), so the unproven gap is per-file KB targeting in a batch; TinyPNG's limit and BIRME's claim are vendor-sourced. Autocomplete suggests bulk compression to 20, 50 and 100 KB. [E: inference; low; search:suggestqueries.google.com bulk image compressor; 2026-11-17] TinyPNG caps free batches at 20 images of 5 MB. [E: fact; medium; https://tinypng.com; 2026-11-17] This supports demand for batch KB targeting more than before; no volumes exist. Scope proposal: batch compress or resize to a per-file KB target with ZIP output.
 
 ### OPP-007 — Evaluate whether WASM encoders improve quality at tiny KB targets
 
@@ -302,8 +328,9 @@ Independent review by separate sub-agents (general-purpose agent following the i
 - **Effort:** L — face and head alignment, background replacement, presets maintenance.
 - **Risks:** Spec accuracy liability if a photo is rejected; AGPL or heavy models; presets drift.
 - **Dependencies:** Demand evidence.
-- **Ratings:** user_value=3, strategic_alignment=3, market_opportunity=3, competitive_differentiation=2, business_impact=3, implementation_feasibility=2
+- **Ratings:** user_value=3, strategic_alignment=3, market_opportunity=3, competitive_differentiation=1, business_impact=3, implementation_feasibility=2
 - **Reviewer notes:** Review round 1: fails the admission test (no evidence of user problem or value). Kept as Discovered so it is not rediscovered; not presented and not counted among scored options.
+- **Feature research (2026-11-17):** Visafoto already offers a KB-size option with an acceptance guarantee, and a free tool cannot match that. [E: fact; low; https://www.visafoto.com; 2026-11-17] A common browser background-removal library is AGPL-3.0 and a common model is non-commercial, so permissive options need checking. [E: fact; medium; https://api.github.com/repos/imgly/background-removal-js; 2026-11-17] Wrong specs create liability (inference). [E: inference; medium; https://www.uniquephoto.com/community/qa/why-can-a-passport-style-photo-pass-the-state-department-photo-tool-but-still-be-rejected-by-uscis-upload; 2026-11-17] Visafoto's refund promise and the liability risk are why a free tool cannot offer the same guarantee (inference). Differentiation lowered 2 to 1 (score 52, Backlog); the owner asked about this idea, but the evidence does not support recommending it now.
 
 ### OPP-009 — Serve minimum-size forms when the source is too small
 
@@ -368,6 +395,7 @@ Independent review by separate sub-agents (general-purpose agent following the i
 - **Dependencies:** OPP-001 outcome (proof that such pages get indexed); OPP-005 if many tools follow.
 - **Ratings:** user_value=2, strategic_alignment=4, market_opportunity=3, competitive_differentiation=1, business_impact=3, implementation_feasibility=5
 - **Reviewer notes:** Widened-pass review (independent agent): premise re-tagged as assumption, AVIF removed from scope (engine rejects it), evidence re-cited. Confidence Low; the Semrush figure is a competitor keyword estimate, not evidence of a user problem. Kept at Under Evaluation but not presented as an option.
+- **Feature research (2026-11-17), "Bulk Image Converter" request:** BIRME converts in the browser with ZIP (vendor claim). [E: fact; low; https://www.birme.net; 2026-11-17] That batch conversion is commoditised is my inference. [E: inference; low; https://www.birme.net; 2026-11-17] HEIC input stays out of scope while OPP-002 is deferred (decoder licences are an unverified legal check). Bulk mode would depend on OPP-006.
 
 ### OPP-013 — Client-side image-to-PDF and JPG-to-PDF
 
@@ -384,3 +412,67 @@ Independent review by separate sub-agents (general-purpose agent following the i
 - **Dependencies:** OPP-005 once a second tool is committed; OPP-003's Phase 0 result.
 - **Ratings:** user_value=2, strategic_alignment=4, market_opportunity=3, competitive_differentiation=1, business_impact=3, implementation_feasibility=3
 - **Reviewer notes:** Widened-pass review (independent agent): differentiation lowered 2 to 1 (own text says not a differentiator), feasibility lowered 4 to 3 (new engine path, unmaintained library, verifier gates assume images), user_value lowered 3 to 2 (no user evidence). Score recomputed.
+
+### OPP-014 — Image rotator and flipper
+
+- **Category:** product extension
+- **Source direction:** adjacent market
+- **Problem:** Some photos appear sideways or mirrored before upload. The complaint exists in developer-side articles; no applicant-specific complaint was found. [E: hypothesis; low; n/a; 2026-11-17] SizeTune's engine already applies EXIF orientation when decoding. [E: fact; high; repo:src/lib/engine/env.ts; 2026-11-17]
+- **Proposed solution:** A rotate (90, 180, 270) and flip page on canvas, with a link into the KB resizer.
+- **Why it matters:** Cheap extra entry page and part of a multi-tool site; autocomplete shows "rotate image online" queries. [E: inference; low; https://suggestqueries.google.com/complete/search?client=firefox&q=rotate%20image; 2026-11-17]
+- **Evidence:** Free incumbents (iLoveIMG, Img2go, Adobe Express) hold the head term. [E: fact; medium; https://www.img2go.com/rotate-image; 2026-11-17] OS viewers and phone galleries rotate natively (not sourced). [E: assumption; low; n/a; 2026-11-17] Browsers apply EXIF orientation by default. [E: fact; high; https://developer.mozilla.org/en-US/docs/Web/API/Window/createImageBitmap; 2026-11-17]
+- **Competitive context:** Extreme and free; no differentiation beyond no-upload.
+- **Expected value:** Unknown; likely low-value filler, as the research agent concluded.
+- **Effort:** S — canvas rotation and a page.
+- **Risks:** Thin or doorway page; JPEG re-encoding quality loss; weak brand fit.
+- **Dependencies:** OPP-005 if tools multiply.
+- **Ratings:** user_value=2, strategic_alignment=3, market_opportunity=3, competitive_differentiation=1, business_impact=2, implementation_feasibility=5
+- **Reviewer notes:** Feature-research review (independent agent): fails the admission test (hypothesis problem, no applicant complaint, engine already applies EXIF orientation); returned to Discovered. Backlog tier.
+
+### OPP-015 — "Will this file pass?" image checker (format, KB, pixels, type)
+
+- **Category:** product extension
+- **Source direction:** competitive gap
+- **Problem:** Upload systems reject files whose real type differs from the extension or whose size or pixels fall outside rules; reports exist but are vendor articles and unopened support-thread snippets. [E: fact; low; search:photo upload rejected invalid file format jpg actually png webp heic; 2026-11-17] One applicant's correctly sized signature was still rejected as invalid. [E: fact; low; https://www.careers360.com/question-why-is-my-jee-form-saying-that-signature-jpg-is-not-valid-despite-correct-size-24kb-its-the-same-with-my-category-certificate-pdf-too-uploaded-size-286kb-but-my-photo-was-uploaded-successfully-kindly-answer-this-asap; 2026-11-17]
+- **Proposed solution:** A page where a user picks a file and, optionally, enters a form's rules (KB range, pixel range, type); the tool shows real format (magic bytes), dimensions, size and pass or fail per rule, with a one-click link to the resizer. Overlaps the compliance-check part of the deferred OPP-011; this version is generic and rule-entry based, so it needs no maintained exam preset list.
+- **Why it matters:** The only angle that ties to SizeTune's audience; keeps users on the site.
+- **Evidence:** Existing generic checkers are EXIF viewers or type detectors [E: fact; medium; https://www.metadata2go.com; 2026-11-17]; photoresizer.in already offers a compliance checker next to exam presets, so the rule-check angle is not clear of competition. [E: fact; medium; https://photoresizer.in/; 2026-11-17] SizeTune already reads headers for dimensions and orientation. [E: fact; high; repo:src/lib/engine/header.ts; 2026-11-17] Autocomplete shows "check image format" and "check image dimensions" queries, but "is my image a real jpeg" is thin (ordering only). [E: inference; low; https://suggestqueries.google.com/complete/search?client=firefox&q=check%20image%20format; 2026-11-17]
+- **Competitive context:** Many small and mid-size checkers exist; exif.tools says it processes files in the browser (vendor claim, page not verified). [E: fact; low; https://exif.tools; 2026-11-17] OS tools show type, dimensions and size natively for desktop users.
+- **Expected value:** Unknown; entry pages for checker queries and better result pages for the resizer.
+- **Effort:** M — rule input UI, reuse of header and sniff code, content, tests.
+- **Risks:** Weak demand evidence; DPI is often missing from files; a checker cannot know a portal's hidden rules (pass here, fail there). Overlap with OPP-011.
+- **Dependencies:** Decision on OPP-011; DPI field availability unverified.
+- **Ratings:** user_value=3, strategic_alignment=4, market_opportunity=2, competitive_differentiation=2, business_impact=3, implementation_feasibility=4
+- **Reviewer notes:** Feature-research review (independent agent): differentiation lowered 3 to 2 (photoresizer.in already has a compliance checker); score 60. Fails the admission test as a standalone option: the problem evidence is the same anecdote as the deferred OPP-011 plus unopened search snippets. Returned to Discovered and tied to the OPP-011 decision; revisit with OPP-011. DPI would be new code (header.ts reads dimensions and orientation only), so effort M assumes that.
+
+### OPP-016 — Social media (Instagram, LinkedIn, YouTube) image resizers
+
+- **Category:** product extension
+- **Source direction:** adjacent market
+- **Problem:** Creators need images in platform sizes; only a few independent complaints were found (one 2019 thread). [E: fact; low; https://community.adobe.com/questions-712/frustrated-instagram-upload-dimensions-1076234; 2026-11-17]
+- **Proposed solution:** A few preset modes (crop, pad, blur-background fit) on the existing engine, at most 3 to 5 pages, not one per size.
+- **Why it matters:** Wider audience and ad topics; a byte-target overlap exists for YouTube thumbnails (2 MB on mobile, 50 MB on desktop). [E: fact; medium; https://support.google.com/youtube/answer/72431; 2026-11-17]
+- **Evidence:** Canva, Kapwing and Adobe Express offer free resizers. [E: fact; low; https://www.kapwing.com/resize-image; 2026-11-17] Autocomplete order suggests size-lookup intent over resizer intent (weak proxy). [E: inference; low; https://suggestqueries.google.com/complete/search?client=firefox&q=linkedin%20banner%20size; 2026-11-17] Third-party specs conflict and YouTube's cap changed within a year, so presets need upkeep. [E: inference; medium; https://blog.youtube/news-and-events/youtube-updates-october-2025/; 2026-11-17]
+- **Competitive context:** Free tools from large brands and many thin clones.
+- **Expected value:** Unknown; likely low and off-brand.
+- **Effort:** S — presets and fit modes.
+- **Risks:** Doorway or scaled-content policy for many near-identical pages [E: fact; high; https://developers.google.com/search/docs/essentials/spam-policies; 2026-11-17]; spec upkeep; brand dilution.
+- **Dependencies:** OPP-005.
+- **Ratings:** user_value=2, strategic_alignment=2, market_opportunity=3, competitive_differentiation=1, business_impact=2, implementation_feasibility=5
+- **Reviewer notes:** Feature-research review (independent agent): fails the admission test (one 2019 thread, off-brand audience); returned to Discovered. Backlog tier.
+
+### OPP-017 — Favicon and app icon generator
+
+- **Category:** product extension
+- **Source direction:** adjacent market
+- **Problem:** Developers and designers need icon sets from one image; free tools and CLIs already do it. [E: fact; medium; https://github.com/ionic-team/capacitor-assets; 2026-11-17]
+- **Proposed solution:** One tool with favicon and app-icon modes (ICO, PNG set, web manifest, ZIP), client-side, not two separate near-duplicate pages. [E: hypothesis; low; n/a; 2026-11-17]
+- **Why it matters:** Adds a tool with steady search interest ("favicon generator" appears in autocomplete). [E: inference; low; https://suggestqueries.google.com/complete/search?client=firefox&q=favicon+generator; 2026-11-17]
+- **Evidence:** realfavicongenerator.net leads (Semrush estimate of 556,300 visits in September 2026, low confidence). [E: inference; low; https://de.semrush.com/website/realfavicongenerator.net/overview/; 2026-11-17] Apple's guidelines specify a 1024 px layout size for its main platforms and say the system scales down; that per-size sets are legacy is an inference, and Android and PWA icon rules were not covered by that page. [E: inference; medium; https://developer.apple.com/design/human-interface-guidelines/app-icons.md; 2026-11-17] The audience is developers, who an ad vendor claims block ads heavily (a vendor claim; no RPM was found). [E: fact; low; https://carbonads.net/blog/developer-advertising-guide-2026; 2026-11-17]
+- **Competitive context:** Long-established incumbents and free CLIs.
+- **Expected value:** Unknown and probably low ad yield.
+- **Effort:** M — ICO encoding, ZIP (fflate, MIT), adaptive-icon and Apple variants are harder than plain resizing. [E: inference; low; https://github.com/101arrowz/fflate; 2026-11-17]
+- **Risks:** Crowded; developer audience mismatch with SizeTune; spec churn.
+- **Dependencies:** OPP-005.
+- **Ratings:** user_value=3, strategic_alignment=2, market_opportunity=3, competitive_differentiation=1, business_impact=2, implementation_feasibility=4
+- **Reviewer notes:** Feature-research review (independent agent): fails the admission test (no user problem evidence for a standalone favicon tool; developer audience); returned to Discovered. Backlog tier.
