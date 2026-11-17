@@ -6,7 +6,7 @@ test.use({ ...devices['Pixel 7'], channel: 'chrome' });
 const overflow = (page: import('@playwright/test').Page) =>
   page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
 
-for (const url of ['/', '/resize-image-to-20kb/', '/resize-image-to-100kb/', '/resize-signature/', '/resize-signature-to-10kb/']) {
+for (const url of ['/', '/resize-image-to-20kb/', '/resize-image-to-50kb/', '/resize-image-to-100kb/', '/resize-signature/', '/resize-signature-to-10kb/']) {
   test(`mobile ${url}: no horizontal scroll through the whole flow, tool usable`, async ({ page }) => {
     await page.goto(url);
     expect(await overflow(page)).toBeLessThanOrEqual(0);

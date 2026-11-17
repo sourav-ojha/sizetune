@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+const guides = (await getCollection('guides')).sort((a, b) => b.data.updated.getTime() - a.data.updated.getTime());
+const title = 'Photo, PDF, Social and Icon Size Guides | SizeTune';
+const description =
+  'Plain guides to photo size limits, PDF size, social image sizes and icon sizes, with links to the free SizeTune tools that fit each job.';
+---
+<Base pageType="policy" title={title} description={description} path="/guides/">
+  <Hero title="SizeTune guides" lead="Short explanations of the limits that online forms and websites set on pictures and files, and what to do about them." />
+  <ul class="space-y-3" data-testid="guide-list">
+    {guides.map((g) => (
+      <li>
+        <a href={`/guides/${g.id}/`} class="block rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:border-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700">
+          <span class="block text-lg font-semibold text-slate-950">{g.data.title}</span>
+          <span class="mt-1 block leading-relaxed text-slate-600">{g.data.description}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+  <p class="mt-8 text-slate-700">Looking for a tool instead? See <a class="font-medium text-teal-800 underline decoration-teal-300 underline-offset-4" href="/tools/">all SizeTune tools</a>.</p>
+</Base>

@@ -249,7 +249,7 @@ describe('verify-html: HUMAN placeholders and strictness levels', () => {
     hasNot(mutate(PRIV, (s) => mainEnd(base(s), '<p>[[HUMAN: contact email]]</p>'), true), /no contact method/);
   });
   it('orphan page is a LAUNCH item', () => {
-    const r = mutateDir((d) => { for (const f of pagesOf(d, ['home', 'tool', 'guide', 'policy'])) if (f !== PRIV && read(d, f).includes('href="/privacy/"')) edit(d, f, (s) => s.replace(/(<main[\s\S]*?<\/main>)/, (m) => m.replace(/href="\/privacy\/"/g, 'href="/about/"'))); }, true);
+    const r = mutateDir((d) => { for (const f of pagesOf(d, ['home', 'tool', 'guide', 'policy'])) if (f !== PRIV && /<main[\s\S]*?href="\/privacy\/"[\s\S]*?<\/main>/.test(read(d, f))) edit(d, f, (s) => s.replace(/(<main[\s\S]*?<\/main>)/, (m) => m.replace(/href="\/privacy\/"/g, 'href="/about/"'))); }, true);
     has(r.fails as string[], /\[LAUNCH\].*\/privacy\/: orphan/);
   });
   it('FAQ heading missing on a tool page is a LAUNCH item', () => {

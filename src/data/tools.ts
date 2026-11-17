@@ -21,8 +21,9 @@ export interface Tool {
 export const TOOLS: Tool[] = [
   { href: '/', title: 'Image resizer', family: 'size', blurb: 'Reduce any photo to the KB limit you choose, with a preview and the real before and after sizes.' },
   { href: '/resize-image-to-20kb/', title: 'Resize to 20 KB', family: 'size', blurb: 'Opens the resizer with 20 KB as the maximum, with tips for keeping faces readable.' },
+  { href: '/resize-image-to-50kb/', title: 'Resize to 50 KB', family: 'size', blurb: 'Opens the resizer with 50 KB as the maximum, with advice for portraits versus document scans.' },
   { href: '/resize-image-to-100kb/', title: 'Resize to 100 KB', family: 'size', blurb: 'Opens the resizer with 100 KB as the maximum, for photos that need more detail than 20 KB allows.' },
-  { href: '/resize-signature/', title: 'Resize a signature', family: 'signature', blurb: 'Crop a signature to the ink, put it on white and shrink it to your limit.' },
+  { href: '/resize-signature/', title: 'Resize a signature (20 KB)', family: 'signature', blurb: 'Crop a signature to the ink, put it on white and shrink it to your limit.' },
   { href: '/resize-signature-to-10kb/', title: 'Signature to 10 KB', family: 'signature', blurb: 'The signature tool with a 10 KB maximum already set.' },
   { href: '/webp-to-jpg/', title: 'WebP to JPG', family: 'convert', blurb: 'Turn a WebP picture into a JPG, with an optional size limit.', related: ['/png-to-jpg/', '/check-image-size/', '/'] },
   { href: '/png-to-jpg/', title: 'PNG to JPG', family: 'convert', blurb: 'Turn a PNG into a JPG on a background colour you pick, with an optional size limit.', related: ['/webp-to-jpg/', '/check-image-size/', '/'] },
