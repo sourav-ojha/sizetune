@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-007
 opportunity: OPP-014
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-17
 ---
@@ -121,3 +122,7 @@ Local processing; no retention; no new trust boundary.
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** AC-1 to AC-3 via Playwright e2e with an EXIF fixture; AC-4 network log; AC-5 axe spec.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-17 | feat/tools-converter-rotator-checker (commits a8b2859, 0885e42) | AC-1 to AC-5: /rotate-image/ | none | owner review of page copy; Search Console impressions; Firefox/Safari behaviour of EXIF-aware decode and canvas WebP encode untested (e2e is Chrome only) | Pictures above 16 MP are refused with a message (portable canvas ceiling). JPEG/WebP saved at quality 95. No separate fix for Safari WebP encode failure (shows an error) |

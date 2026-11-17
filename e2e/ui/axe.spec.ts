@@ -9,7 +9,7 @@ async function expectClean(page: Page, label: string, scope?: string) {
 }
 
 const expectCleanIn = expectClean;
-const PAGES = ['/', '/resize-image-to-20kb/', '/resize-image-to-100kb/', '/resize-signature/', '/resize-signature-to-10kb/', '/guides/photo-size-for-online-forms/', '/guides/reduce-pdf-to-100kb/', '/guides/reduce-pdf-to-200kb/', '/privacy/', '/about/', '/terms/', '/definitely-missing/'];
+const PAGES = ['/', '/resize-image-to-20kb/', '/resize-image-to-100kb/', '/resize-signature/', '/resize-signature-to-10kb/', '/rotate-image/', '/check-image-size/', '/webp-to-jpg/', '/png-to-jpg/', '/guides/photo-size-for-online-forms/', '/guides/reduce-pdf-to-100kb/', '/guides/reduce-pdf-to-200kb/', '/privacy/', '/about/', '/terms/', '/definitely-missing/'];
 const VIEWPORTS = [{ name: 'desktop', width: 1280, height: 800 }, { name: 'mobile 375', width: 375, height: 800 }];
 
 for (const vp of VIEWPORTS) {
