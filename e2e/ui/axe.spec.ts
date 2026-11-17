@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import { test, expect, type Page } from '@playwright/test';
 import { NOISE, bombPng, unreadablePng, file, flatPng, openTool, pick, resize, signaturePng, transparentPng } from './helpers';
 import { format, runAxe, unexpected } from './axe-helper';
@@ -9,7 +10,7 @@ async function expectClean(page: Page, label: string, scope?: string) {
 }
 
 const expectCleanIn = expectClean;
-const PAGES = ['/', '/resize-image-to-20kb/', '/resize-image-to-100kb/', '/resize-signature/', '/resize-signature-to-10kb/', '/rotate-image/', '/check-image-size/', '/webp-to-jpg/', '/png-to-jpg/', '/instagram-image-resizer/', '/linkedin-image-resizer/', '/youtube-thumbnail-resizer/', '/guides/photo-size-for-online-forms/', '/guides/reduce-pdf-to-100kb/', '/guides/social-image-sizes/', '/guides/reduce-pdf-to-200kb/', '/privacy/', '/about/', '/terms/', '/definitely-missing/'];
+const PAGES = ['/', '/resize-image-to-20kb/', '/resize-image-to-100kb/', '/resize-signature/', '/resize-signature-to-10kb/', '/rotate-image/', '/check-image-size/', '/webp-to-jpg/', '/png-to-jpg/', '/instagram-image-resizer/', '/linkedin-image-resizer/', '/youtube-thumbnail-resizer/', '/guides/photo-size-for-online-forms/', '/guides/reduce-pdf-to-100kb/', '/guides/social-image-sizes/', '/favicon-generator/', '/guides/icon-sizes-and-sources/', '/guides/reduce-pdf-to-200kb/', '/privacy/', '/about/', '/terms/', '/definitely-missing/'];
 const VIEWPORTS = [{ name: 'desktop', width: 1280, height: 800 }, { name: 'mobile 375', width: 375, height: 800 }];
 
 for (const vp of VIEWPORTS) {
@@ -46,6 +47,15 @@ for (const vp of VIEWPORTS) {
       await expectClean(page, 'advanced open (min, dimensions, fit)');
       await page.getByTestId('lock-aspect').uncheck();
       await expectClean(page, 'advanced open, aspect lock off');
+    });
+
+    test('batch: running, finished with a failure, and the ZIP button', async ({ page }) => {
+      await openTool(page);
+      await page.getByTestId('file').setInputFiles([file('noise.png', fs.readFileSync(NOISE)), file('ok.png', transparentPng()), file('bad.png', Buffer.from('not an image at all'))]);
+      await expect(page.getByTestId('batch-panel')).toBeVisible();
+      await expectClean(page, 'batch started');
+      await expect(page.getByTestId('download-zip')).toBeVisible({ timeout: 60_000 });
+      await expectClean(page, 'batch finished (reached, failed rows, ZIP)');
     });
 
     test('invalid input (field errors)', async ({ page }) => {

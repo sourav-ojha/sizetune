@@ -1,0 +1,81 @@
+---
+import Base from '../layouts/Base.astro';
+import IconTool from '../components/IconTool.tsx';
+import IconSizes from '../components/IconSizes.astro';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Favicon and App Icon Generator, No Upload | SizeTune';
+const description =
+  'Make a favicon.ico, PNG icons and a web manifest from one image in your browser, then download one ZIP. Each size lists its source. Nothing is uploaded.';
+const jsonLd = webApplicationLd('SizeTune: favicon and app icon generator', '/favicon-generator/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/favicon-generator/" jsonLd={jsonLd}>
+  <Hero title="Favicon and app icon generator" lead="Add one square picture, choose favicon or app icon, check each size and download a ZIP with a short note on how to add the files. Everything happens in your browser." />
+
+  <IconTool client:load />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This generator works inside your browser, so it will not run while JavaScript is turned off. Enable JavaScript and
+      reload to use it. The explanation below of each icon size still applies with any other tool.
+    </p>
+  </noscript>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>Two modes, one tool</h2>
+    <p>
+      A website needs small icons for the browser tab, bookmarks and search results. An installable web app, an Android
+      app or an iPhone home screen needs larger ones. The two modes above make those two sets from the same picture, so
+      you add one image and switch between them. Favicon mode makes a favicon.ico and PNG files. App icon mode makes the
+      PNG sizes for web apps, the Play Store and Apple, plus a web app manifest that lists the icons.
+    </p>
+
+    <h2>Every file, its size and why</h2>
+    <p>
+      The list below is what each mode produces. Where an official page states a size, the line says so and links to our
+      guide that lists the page and the date we read it. Where a size is only common practice, the line says that too.
+    </p>
+    <IconSizes />
+
+    <h2>What makes a good source picture</h2>
+    <ul>
+      <li>Use a square picture of at least 512 pixels on each side. The App Store icon is 1,024 pixels, so a larger original gives the sharpest set.</li>
+      <li>Keep the design simple. A favicon is shown at 16 pixels, where fine detail turns into mud.</li>
+      <li>Leave a small margin around the logo. Round or masked icons cut into the corners.</li>
+      <li>Use PNG with a transparent background if you want the favicon to have no background. Transparency is kept in the plain icons and filled with your background colour where a size must be opaque.</li>
+    </ul>
+
+    <h2>Pictures that are not square</h2>
+    <p>
+      Icons are square. If your picture is not, the page warns you and offers two fixes. Pad keeps the whole picture and
+      leaves empty space on the short sides. Crop fills the square and cuts off the long sides. Pad suits a wide logo
+      that must not be cut. Crop suits a photograph or a mark that sits in the middle.
+    </p>
+
+    <h2>Maskable icons</h2>
+    <p>
+      Android and some browsers cut an installed app icon into a circle, a rounded square or another shape. A maskable
+      icon has a full background and keeps the logo in the middle, so the cut is less likely to clip it. In
+      app icon mode the maskable file fills the square with your background colour and scales the logo to sit inside a central circle.
+    </p>
+
+    <h2>Adding the files to your site</h2>
+    <ol>
+      <li>Download the ZIP and unpack it into your site's root folder, so that the files are at addresses such as /favicon.ico.</li>
+      <li>Paste the lines shown above, and written in HOW-TO-ADD.txt, inside the head of your pages.</li>
+      <li>Open your site in a private window and reload, since browsers keep an old favicon for a long time.</li>
+    </ol>
+
+    <h2>Frequently asked questions about favicons and app icons</h2>
+    <h3>Do I still need a favicon.ico?</h3>
+    <p>Many sites still ship one, because many browsers and tools look for it. Google lists ICO among the formats it supports for search results.</p>
+    <h3>Why is there no SVG option?</h3>
+    <p>This generator accepts JPEG, PNG and WebP pictures only. SVG input is not supported yet.</p>
+    <h3>Why does the Apple touch icon say common practice?</h3>
+    <p>The Apple page we read specifies 1,024 by 1,024 px for app icons, but it does not state the 180 by 180 px size used for websites on a home screen. We say so instead of presenting it as a rule.</p>
+    <h3>Is my logo uploaded?</h3>
+    <p>
+      No. The icons are made in your browser. Read the <a href="/privacy/">privacy page</a> for details. The{' '}
+      <a href="/guides/icon-sizes-and-sources/">sizes guide</a> lists the official pages.
+    </p>
+  </div>
+</Base>

@@ -1,0 +1,14 @@
+---
+import { ICON_SOURCES } from '../data/iconSources';
+// Server-rendered only: this is where the official URLs live, so the tool page stays free of third-party links.
+---
+<div class="space-y-4">
+  {Object.entries(ICON_SOURCES).map(([id, s]) => (
+    <div id={id} class="scroll-mt-6 rounded-2xl border border-slate-200 bg-white p-5">
+      <p class="font-semibold text-slate-950">
+        <a class="font-medium text-teal-800 underline underline-offset-4" href={s.url} target="_blank" rel="noopener noreferrer">{s.title}<span class="sr-only"> (opens in a new tab)</span></a>
+      </p>
+      <p class="mt-2 text-slate-700">{s.read} Last read 2026-11-17.</p>
+    </div>
+  ))}
+</div>

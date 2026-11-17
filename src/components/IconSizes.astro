@@ -1,0 +1,19 @@
+---
+import { ICON_MODES, filesFor } from '../data/iconSets';
+// Server-rendered list of every file, its size and where the size comes from. Links go to the on-site sources guide.
+---
+<div class="space-y-6">
+  {ICON_MODES.map((m) => (
+    <div>
+      <h3 class="mt-6 text-lg font-semibold text-slate-900">{m.label} mode</h3>
+      <ul class="mt-2 list-disc space-y-1.5 pl-6">
+        {filesFor(m.id).map((f) => (
+          <li>
+            <strong>{f.file}</strong>{f.size ? `, ${f.size} × ${f.size} px` : ''}. {f.note}
+            {' '}<a href={`/guides/icon-sizes-and-sources/#${f.source.id}`}>{f.source.type === 'official' ? `Source: ${f.source.name}` : `Common practice (${f.source.name} gives no size)`}</a>.
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</div>

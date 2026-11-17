@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-010
 opportunity: OPP-017
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-17
 ---
@@ -127,3 +128,7 @@ Local processing; no retention; no new trust boundary.
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** AC-1, AC-2, AC-5 via Playwright e2e and fixtures; AC-3 build check; AC-4 network log; AC-6 `pnpm run verify:html`.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-17 | feat/zip-bulk-and-favicon (commits 4d7f606 and the review-fix commit) | AC-1 to AC-6: /favicon-generator/ (favicon and app-icon modes of one tool), sources guide /guides/icon-sizes-and-sources/ | none | owner confirmation of the size list (spec section 18); owner review of page copy; Search Console impressions; check the ICO in real browsers and the maskable icon under a real mask | Sizes are labelled official or common practice (180 px Apple touch icon and the 16/32/48 images inside the ICO are common practice, no official page read). Official URLs only on the sources guide (privacy gate). ZIP written by a small in-repo store-only writer; fflate is a devDependency used as a test oracle. No SVG input |

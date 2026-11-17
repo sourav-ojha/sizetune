@@ -183,7 +183,7 @@ New owner direction in the command: do not judge ideas only by competition; the 
 | OPP-014 | Image rotator and flipper | Implemented | 50 | Low | Backlog | S | 2026-11-17 | FEATURE-007 |
 | OPP-015 | "Will this file pass?" image checker (format, KB, pixels, type) | Implemented | 60 | Low | Needs evidence | M | 2026-11-17 | FEATURE-008 |
 | OPP-016 | Social media (Instagram, LinkedIn, YouTube) image resizers | Implemented | 46 | Low | Backlog | S | 2026-11-17 | FEATURE-009 |
-| OPP-017 | Favicon and app icon generator | Ready for Implementation | 49 | Low | Backlog | M | 2026-11-17 | FEATURE-010 |
+| OPP-017 | Favicon and app icon generator | Implemented | 49 | Low | Backlog | M | 2026-11-17 | FEATURE-010 |
 | OPP-018 | Print-unit and DPI controls (cm, inch, mm plus KB) | Ready for Implementation | 62 | Low | Needs evidence | S | 2026-11-17 | FEATURE-013 |
 | OPP-019 | PDF page tools: merge, split, extract pages, rotate, page numbers | Discovered | 51 | Low | Backlog | M | 2026-11-17 | - |
 | OPP-020 | PDF to JPG or PNG with a KB target | Ready for Implementation | 61 | Low | Needs evidence | M | 2026-11-17 | FEATURE-014 |

@@ -5,7 +5,7 @@ import { MAX_OUTPUT_PIXELS } from '../../lib/engine/limits';
 import { canEncode, DEFAULT_LIMITS, EngineError, processImage as engineProcessImage, inspectFile, readHeader, type EngineLimits, type ProcessImage, type ProcessOptions, type ProcessResult } from '../../lib/engine';
 
 export { EngineError };
-export type { ProcessOptions, ProcessResult };
+export type { ProcessImage, ProcessOptions, ProcessResult };
 
 /**
  * Static import on purpose. Lazy-loading the engine on first pick (dynamic import()) was tried and rejected: scripts/verify-privacy.mjs
