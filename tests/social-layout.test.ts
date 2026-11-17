@@ -18,6 +18,15 @@ describe('cover (crop) layout (FEATURE-009 AC-1)', () => {
   });
 });
 
+describe('cover rounding never reads past the source (review item 10)', () => {
+  it('stays inside the source for right and bottom focus when the spare room is a half pixel', () => {
+    const r = coverRect(1001, 600, 500, 500, 'right');
+    expect(r.sx + r.sw).toBeLessThanOrEqual(1001);
+    const b = coverRect(600, 1001, 500, 500, 'bottom');
+    expect(b.sy + b.sh).toBeLessThanOrEqual(1001);
+  });
+});
+
 describe('contain (pad / blur) layout (AC-2)', () => {
   it('a wide source in a square is letterboxed, fully visible and centred', () => {
     expect(containRect(2000, 1000, 1080, 1080)).toEqual({ dx: 0, dy: 270, dw: 1080, dh: 540 });

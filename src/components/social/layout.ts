@@ -9,7 +9,10 @@ export function coverRect(sw: number, sh: number, dw: number, dh: number, focus:
   const slide = (room: number, low: boolean, high: boolean) => (low ? 0 : high ? room : room / 2);
   const sx = slide(sw - vw, focus === 'left', focus === 'right');
   const sy = slide(sh - vh, focus === 'top', focus === 'bottom');
-  return { sx: Math.round(sx), sy: Math.round(sy), sw: Math.round(vw), sh: Math.round(vh) };
+  const w = Math.round(vw);
+  const h = Math.round(vh);
+  // clamp after rounding: a half-pixel of spare room must not push the window past the edge
+  return { sx: Math.min(Math.round(sx), sw - w), sy: Math.min(Math.round(sy), sh - h), sw: w, sh: h };
 }
 
 /** Where the whole source sits inside the target, centred (pad and blur modes). A small source is enlarged to fit. */

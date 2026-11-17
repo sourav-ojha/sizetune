@@ -21,15 +21,15 @@ export function compose(bmp: ImageBitmap, w: number, h: number, fit: Fit, focus:
   const out = canvas(w, h);
   const ctx = out.getContext('2d');
   if (!ctx) throw new Error('canvas unavailable');
+  // JPEG has no transparency: fill first in every mode so see-through areas take the chosen colour, never black
+  ctx.fillStyle = background;
+  ctx.fillRect(0, 0, w, h);
   if (fit === 'crop') {
     const r = coverRect(bmp.width, bmp.height, w, h, focus);
     draw(ctx, bmp, r.sx, r.sy, r.sw, r.sh, 0, 0, w, h);
     return out;
   }
-  if (fit === 'pad') {
-    ctx.fillStyle = background;
-    ctx.fillRect(0, 0, w, h);
-  } else {
+  if (fit === 'blur') {
     const c = coverRect(bmp.width, bmp.height, w, h, 'center');
     const small = canvas(Math.max(2, Math.round(w / 40)), Math.max(2, Math.round(h / 40)));
     draw(small.getContext('2d')!, bmp, c.sx, c.sy, c.sw, c.sh, 0, 0, small.width, small.height);

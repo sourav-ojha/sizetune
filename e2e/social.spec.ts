@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import fs from 'node:fs';
 import sharp from 'sharp';
-import { makePng, NOISE } from './ui/helpers';
+import { makePng, NOISE, transparentPng } from './ui/helpers';
 
 // 400x200 PNG: red grows left to right, green top to bottom, blue constant 60 (so a white pad is never mistaken for picture).
 const wide = () => ({ name: 'wide.png', mimeType: 'image/png', buffer: makePng(400, 200, (x, y) => [Math.round((x / 399) * 255), Math.round((y / 199) * 255), 60, 255]) });
@@ -106,4 +106,42 @@ test('FR-5: the YouTube thumbnail page applies the 2 MB byte cap and the result 
 test('a source smaller than the preset is flagged as enlarged', async ({ page }) => {
   await load(page, '/instagram-image-resizer/', wide());
   await expect(page.getByTestId('enlarge-note')).toBeVisible();
+});
+
+test('H1: choosing a second picture replaces the result (no stale download)', async ({ page }) => {
+  await load(page, '/instagram-image-resizer/', wide()); // red grows to the right
+  const flipped = { name: 'other.png', mimeType: 'image/png', buffer: makePng(400, 200, (x, y) => [Math.round(((399 - x) / 399) * 255), Math.round((y / 199) * 255), 60, 255]) }; // red grows to the left
+  await page.getByTestId('fit-pad').check();
+  await expect(page.getByTestId('social-result')).toHaveAttribute('data-fit', 'pad');
+  await page.getByTestId('file').setInputFiles(flipped);
+  await expect(async () => {
+    const buf = await download(page);
+    expect((await px(buf, 1076, 540))[0]).toBeLessThan(60); // right edge now has LOW red
+    expect((await px(buf, 3, 540))[0]).toBeGreaterThan(200);
+  }).toPass({ timeout: 15_000 });
+});
+
+test('M3: transparent areas are filled with the chosen colour in crop mode too, never black', async ({ page }) => {
+  await load(page, '/instagram-image-resizer/', { name: 't.png', mimeType: 'image/png', buffer: transparentPng() });
+  await page.getByTestId('fit-crop').check();
+  await expect(page.getByTestId('social-result')).toHaveAttribute('data-fit', 'crop');
+  const buf = await download(page);
+  expect(Math.min(...(await px(buf, 5, 5)))).toBeGreaterThan(235); // top-left of the source is transparent: white, not black
+});
+
+test('M2/M7: a tight size limit lowers the quality, says so, and the result fits', async ({ page }) => {
+  await load(page, '/youtube-thumbnail-resizer/', NOISE);
+  await page.getByTestId('max-kb').fill('300');
+  const result = page.getByTestId('social-result');
+  await expect.poll(async () => Number(await result.getAttribute('data-bytes')), { timeout: 20_000 }).toBeLessThanOrEqual(300_000);
+  await expect(result).toHaveAttribute('data-busy', 'false');
+  await expect(page.getByTestId('lowered-note')).toBeVisible();
+  const buf = await download(page);
+  expect(buf.length).toBeLessThanOrEqual(300_000);
+});
+
+test('Start over clears the result', async ({ page }) => {
+  await load(page, '/instagram-image-resizer/', wide());
+  await page.getByTestId('start-over').click();
+  await expect(page.getByTestId('social-result')).toHaveCount(0);
 });

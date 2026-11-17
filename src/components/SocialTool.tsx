@@ -12,7 +12,7 @@ import { presetsFor, type PlatformId } from '../data/socialPresets';
 class PickError extends Error {}
 
 interface Props { platform: PlatformId }
-interface Out { url: string; blob: Blob; width: number; height: number; fit: Fit; lowered: boolean; enlarged: boolean }
+interface Out { url: string; blob: Blob; width: number; height: number; fit: Fit; note: string | null; enlarged: boolean }
 
 const FOCI: Array<[Focus, string]> = [['center', 'Centre'], ['top', 'Top'], ['bottom', 'Bottom'], ['left', 'Left'], ['right', 'Right']];
 
@@ -35,6 +35,8 @@ export default function SocialTool({ platform }: Props) {
   const [out, setOut] = useState<Out | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [rev, setRev] = useState(0); // bumped for every picture picked, so the result is made again even when the settings did not change
+  const lastUrl = useRef<string | null>(null);
   const cap = getLimits().maxFileBytes;
   const bg = pad === 'white' ? '#ffffff' : pad === 'black' ? '#000000' : normalizeHex(hex) ?? '#ffffff';
   const capKb = maxKb.trim() === '' ? null : Number(maxKb);
@@ -56,12 +58,18 @@ export default function SocialTool({ platform }: Props) {
       const big = presets.reduce((m, p) => ({ w: Math.max(m.w, p.width), h: Math.max(m.h, p.height) }), { w: 0, h: 0 });
       const d = decodeSize(size.width, size.height, big.w, big.h);
       // The browser applies the EXIF orientation while decoding, so the picture is turned once and matches the system viewer.
-      const bmp = await createImageBitmap(file, { imageOrientation: 'from-image', ...(d ? { resizeWidth: d.width, resizeHeight: d.height, resizeQuality: 'high' as const } : {}) });
+      let bmp = await createImageBitmap(file, { imageOrientation: 'from-image', ...(d ? { resizeWidth: d.width, resizeHeight: d.height, resizeQuality: 'high' as const } : {}) });
+      // Some browsers size a rotated photo before turning it, which squashes it. If the shape is off, decode again at full size.
+      if (d && Math.abs(bmp.width / bmp.height - size.width / size.height) > 0.02 * (size.width / size.height)) {
+        bmp.close();
+        bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+      }
       if (mine !== serial.current) { bmp.close(); return; }
       bitmapRef.current?.close();
       bitmapRef.current = bmp;
       fileRef.current = file;
       setHasFile(true);
+      setRev((n) => n + 1);
       if (extra > 0) setError('Only the first file was used.');
     } catch (e) {
       if (mine === serial.current) setError(e instanceof EngineError || e instanceof PickError ? e.message : 'This image could not be read. It may be damaged, or too large for this device.');
@@ -90,17 +98,19 @@ export default function SocialTool({ platform }: Props) {
         const canvasEl = compose(bmp, preset.width, preset.height, fit, focus, bg);
         let blob = await new Promise<Blob | null>((res) => canvasEl.toBlob(res, 'image/jpeg', 0.92));
         if (!blob || blob.type !== 'image/jpeg') throw new EngineError('encode_failed', 'This browser could not save the picture. Try another browser.');
-        let lowered = false;
+        let note: string | null = null;
         if (capKb !== null && blob.size > capKb * 1000) {
           const r = await processImage(blob, { format: 'jpeg', strategy: 'quality-first', lockAspect: true, fit: 'contain', background: 'white', width: preset.width, height: preset.height, maxKb: capKb });
           blob = r.blob;
-          lowered = true;
+          const fits = r.status === 'ok' || r.status === 'raised';
+          note = `${fits ? 'Quality was lowered to fit your size limit.' : 'Your size limit could not be reached at this size.'}${r.message ? ` ${r.message}` : ''}${r.notes.length ? ` ${r.notes.join(' ')}` : ''}`;
         }
         if (mine !== run.current) return;
         const need = Math.max(preset.width / bmp.width, preset.height / bmp.height);
         const enlarged = (fit === 'crop' ? need : Math.min(preset.width / bmp.width, preset.height / bmp.height)) > 1;
         const url = URL.createObjectURL(blob);
-        setOut((old) => { if (old) URL.revokeObjectURL(old.url); return { url, blob, width: preset.width, height: preset.height, fit, lowered, enlarged }; });
+        lastUrl.current = url;
+        setOut((old) => { if (old) URL.revokeObjectURL(old.url); return { url, blob, width: preset.width, height: preset.height, fit, note, enlarged }; });
         setError(null);
       } catch (e) {
         if (mine === run.current) setError(e instanceof EngineError ? e.message : 'The picture could not be made. Try a smaller picture or another browser.');
@@ -109,9 +119,9 @@ export default function SocialTool({ platform }: Props) {
       }
     }, 150);
     return () => clearTimeout(t);
-  }, [hasFile, preset.id, fit, focus, bg, capKb, capInvalid]);
+  }, [hasFile, rev, preset.id, fit, focus, bg, capKb, capInvalid]);
 
-  useEffect(() => () => { run.current++; serial.current++; bitmapRef.current?.close(); }, []);
+  useEffect(() => () => { run.current++; serial.current++; bitmapRef.current?.close(); if (lastUrl.current) URL.revokeObjectURL(lastUrl.current); }, []);
 
   const name = (fileRef.current?.name ?? 'image').replace(/\.[^.]+$/, '') || 'image';
   const radio = 'size-4 accent-teal-700';
@@ -124,15 +134,16 @@ export default function SocialTool({ platform }: Props) {
           <Dropzone inputRef={inputRef} hasFile={hasFile} capText={cap ? `Up to ${formatCap(cap)}.` : null} onPick={(f, extra) => { void pick(f, extra); }} />
           {error && <div role="alert" data-testid="error" className="rounded-lg border border-red-700 bg-red-50 p-3 text-red-950">{error}</div>}
           {out && (
-            <div data-testid="social-result" data-width={out.width} data-height={out.height} data-fit={out.fit} className="space-y-3">
+            <div data-testid="social-result" data-width={out.width} data-height={out.height} data-fit={out.fit} data-bytes={out.blob.size} data-busy={busy ? 'true' : 'false'} className="space-y-3">
               <div className="flex justify-center rounded-xl border border-slate-200 bg-slate-50 p-3">
                 <img data-testid="social-preview" src={out.url} width={out.width} height={out.height} alt={`Preview, ${formatDims(out.width, out.height)}`} className="block h-auto max-h-[70vh] w-auto max-w-full" />
               </div>
               <p className="text-sm text-slate-800" data-testid="social-info">{formatDims(out.width, out.height)}, JPEG, {formatSize(out.blob.size)}</p>
-              {out.lowered && <p className="text-sm text-slate-800" data-testid="lowered-note">Quality was lowered to fit your size limit.</p>}
+              {out.note && <p className="text-sm text-slate-800" data-testid="lowered-note">{out.note}</p>}
+              {busy && <p className="text-sm text-slate-700" data-testid="updating">Updating the preview.</p>}
               {out.enlarged && <p role="note" className="rounded-lg border border-amber-600 bg-amber-50 p-3 text-sm text-amber-950" data-testid="enlarge-note">Your picture is smaller than this size, so it was enlarged and may look soft. A larger original gives a sharper result.</p>}
               <div className="flex flex-col gap-2 sm:flex-row">
-                <a data-testid="download" role="button" href={out.url} download={`${name}-${preset.id}.jpg`} className={btnPrimary}>Download image</a>
+                <a data-testid="download" role="button" href={out.url} download={`${name}-${preset.id}.jpg`} aria-disabled={busy ? 'true' : undefined} onClick={(e) => { if (busy) e.preventDefault(); }} className={`${btnPrimary} ${busy ? 'opacity-50' : ''}`}>Download image</a>
                 <a data-testid="resize-link" className={btnSecondary} href="/">Resize to a KB limit</a>
               </div>
             </div>
@@ -182,6 +193,7 @@ export default function SocialTool({ platform }: Props) {
                 <div>
                   <label htmlFor={`${uid}-hex`} className={labelCls}>Colour (hex, such as #ffcc00)</label>
                   <input id={`${uid}-hex`} data-testid="pad-hex" className={inputCls} value={hex} onInput={(e) => setHex(e.currentTarget.value)} aria-invalid={normalizeHex(hex) ? undefined : 'true'} />
+                  {!normalizeHex(hex) && <p className="mt-1 text-sm font-medium text-red-800">Enter a colour such as #ffcc00. White is used until it is valid.</p>}
                 </div>
               )}
             </fieldset>
@@ -192,7 +204,7 @@ export default function SocialTool({ platform }: Props) {
             <input id={`${uid}-max`} data-testid="max-kb" type="text" inputMode="numeric" autoComplete="off" className={inputCls} value={maxKb} aria-invalid={capInvalid ? 'true' : undefined} onInput={(e) => setMaxKb(e.currentTarget.value)} />
             {capInvalid ? <p className="mt-1 text-sm font-medium text-red-800">Enter a whole number above zero, or leave it empty.</p> : <p className={hintCls}>Leave empty for no limit. If a result is larger, the quality is lowered to fit.</p>}
           </div>
-          {hasFile && <button type="button" className={btnSecondary} data-testid="start-over" onClick={() => { run.current++; bitmapRef.current?.close(); bitmapRef.current = null; setHasFile(false); setOut((o) => { if (o) URL.revokeObjectURL(o.url); return null; }); setError(null); inputRef.current?.focus(); }}>Start over</button>}
+          {hasFile && <button type="button" className={btnSecondary} data-testid="start-over" onClick={() => { run.current++; serial.current++; setBusy(false); bitmapRef.current?.close(); bitmapRef.current = null; setHasFile(false); setOut((o) => { if (o) URL.revokeObjectURL(o.url); return null; }); setError(null); inputRef.current?.focus(); }}>Start over</button>}
         </div>
       </div>
       <p className="mt-5 text-sm text-slate-700">SizeTune fits your image in your browser. The site's code does not upload it, and SizeTune keeps no copy of it.</p>
