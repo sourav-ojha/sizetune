@@ -1,0 +1,41 @@
+{
+  "$comment": "Single source of truth for worker roles. Agent files for each platform are generated from this by core/scripts/install-agents.mjs. tier = reasoning | standard | fast (mapped to concrete models in config).",
+  "roles": [
+    {
+      "name": "repository-analyst",
+      "description": "Read-only inventory of a code repository for product understanding: purpose, capabilities, architecture, stack, integrations, limitations. Use for the product-intelligence init phase; scope it to one area (architecture, UX, business model, quality) per delegation.",
+      "tier": "fast",
+      "capabilities": ["read", "search", "shell-readonly"]
+    },
+    {
+      "name": "competitor-researcher",
+      "description": "Web research on named direct or indirect competitors: positioning, features, pricing, UX, weaknesses, with cited sources and accessed dates. Read-only; returns profiles, never files.",
+      "tier": "standard",
+      "capabilities": ["read", "search", "web"]
+    },
+    {
+      "name": "opensource-researcher",
+      "description": "Evaluates open-source alternatives: license, maintenance, release cadence, issues, commercial usability and relevance. Never treats stars as commercial traction. Read-only.",
+      "tier": "standard",
+      "capabilities": ["read", "search", "web"]
+    },
+    {
+      "name": "market-researcher",
+      "description": "Finds user pain points, emerging products, adjacent markets and public market signals from reviews, communities, articles and changelogs, with cited sources. Read-only.",
+      "tier": "standard",
+      "capabilities": ["read", "search", "web"]
+    },
+    {
+      "name": "opportunity-analyst",
+      "description": "Synthesizes approved product context and consolidated research into evidence-linked product opportunities and scores them with the configured rubric. Strategy-level reasoning; read-only.",
+      "tier": "reasoning",
+      "capabilities": ["read", "search", "web"]
+    },
+    {
+      "name": "independent-reviewer",
+      "description": "Adversarial reviewer of research and opportunity artifacts. Re-checks sources, finds unsupported claims, duplicates, missing competitors and inflated scores. Must not simply summarize; returns graded findings with required fixes. Read-only.",
+      "tier": "reasoning",
+      "capabilities": ["read", "search", "web"]
+    }
+  ]
+}

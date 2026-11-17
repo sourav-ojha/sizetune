@@ -1,0 +1,60 @@
+{
+  "$comment": "Structural contracts for .product artifacts. Used by core/validators/validate-artifacts.mjs.",
+  "product": {
+    "frontmatter_required": ["type", "status", "revision", "last_reviewed"],
+    "status_values": ["draft", "approved"],
+    "approved_requires": ["approved_by", "approved_at", "content_hash"],
+    "sections": [
+      "Product overview",
+      "Problem statement",
+      "Target audience",
+      "Value proposition",
+      "Core user journeys",
+      "Existing capabilities",
+      "Business model",
+      "Technical overview",
+      "Known limitations",
+      "Assumptions and unanswered questions",
+      "Evidence and confidence"
+    ]
+  },
+  "registry": {
+    "frontmatter_required": ["type", "last_research", "review_mode", "decision_count"],
+    "review_modes": ["pending", "independent", "self-review"],
+    "landscape_categories": [
+      "Direct competitors",
+      "Indirect competitors",
+      "Open-source alternatives",
+      "Emerging products",
+      "Adjacent products and markets"
+    ],
+    "registry_columns": ["id", "title", "status", "score", "confidence", "tier", "effort", "updated", "feature"],
+    "effort_values": ["XS", "S", "M", "L", "XL", "-"],
+    "confidence_values": ["Low", "Medium", "High", "-"]
+  },
+  "feature": {
+    "frontmatter_required": ["type", "id", "opportunity", "status", "product_revision"],
+    "status_values": ["draft", "ready", "implemented", "validated", "superseded"],
+    "sections": [
+      "Feature overview",
+      "Problem statement",
+      "Business justification",
+      "Target users and personas",
+      "User stories",
+      "Functional requirements",
+      "Non-functional requirements",
+      "User journeys and expected UX",
+      "Technical considerations",
+      "Acceptance criteria",
+      "Edge cases",
+      "Error and failure scenarios",
+      "Security and privacy considerations",
+      "Out of scope",
+      "Dependencies",
+      "Success metrics",
+      "Research references",
+      "Unresolved decisions",
+      "Implementation handoff"
+    ]
+  }
+}

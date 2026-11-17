@@ -1,0 +1,41 @@
+{
+  "$comment": "Single source of truth for implementer roles. Agent files are generated from this by core/scripts/install-agents.mjs. tier = reasoning | standard | fast.",
+  "roles": [
+    {
+      "name": "architect",
+      "description": "Designs the change before code is written: challenges scope, reuses existing code, fixes interfaces and splits work into a dependency graph of tasks with owned files and acceptance criteria. Read-only; returns a short design note and task list.",
+      "tier": "reasoning",
+      "capabilities": ["read", "search"]
+    },
+    {
+      "name": "software-engineer",
+      "description": "Implements exactly one task by test-driven development inside its owned files: failing test per acceptance criterion first, then minimal code, then refactor. Never edits files it does not own.",
+      "tier": "standard",
+      "capabilities": ["read", "search", "edit", "shell"]
+    },
+    {
+      "name": "qa",
+      "description": "Owns test quality for a task: checks tests map to acceptance criteria, adds only missing risk cases, runs the verification command and records its exit code, and deletes tests that add no value.",
+      "tier": "standard",
+      "capabilities": ["read", "search", "edit", "shell"]
+    },
+    {
+      "name": "reviewer",
+      "description": "Independent fresh-context review of a diff against its spec and acceptance criteria. Returns severity-rated findings with required fixes. Read-only.",
+      "tier": "reasoning",
+      "capabilities": ["read", "search"]
+    },
+    {
+      "name": "security",
+      "description": "Optional lens for risky changes (auth, input handling, secrets, data exposure, dependencies). Returns severity-rated findings only. Read-only.",
+      "tier": "reasoning",
+      "capabilities": ["read", "search"]
+    },
+    {
+      "name": "database",
+      "description": "Optional lens for schema, migration and query changes: safety of DDL, locking, rollback, existing-row impact, indexes. Returns severity-rated findings only. Read-only.",
+      "tier": "reasoning",
+      "capabilities": ["read", "search"]
+    }
+  ]
+}

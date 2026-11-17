@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "scoring": {
+    "scale_max": 5,
+    "criteria": {
+      "user_value": 0.25,
+      "strategic_alignment": 0.2,
+      "market_opportunity": 0.15,
+      "competitive_differentiation": 0.15,
+      "business_impact": 0.15,
+      "implementation_feasibility": 0.1
+    },
+    "tiers": { "recommend_min": 70, "consider_min": 55 },
+    "min_confidence_for_recommend": "Medium"
+  },
+  "freshness": {
+    "source_max_age_days": 180,
+    "product_review_days": 90,
+    "market_refresh_days": 30
+  },
+  "research": {
+    "max_competitors_per_category": 5,
+    "max_parallel_agents": 4,
+    "widen_competitor_multiplier": 2,
+    "widen_target_candidates": 10
+  },
+  "gates": {
+    "human_confirmation": "chat",
+    "allow_delegated_approval": true
+  },
+  "models": {
+    "claude-code": { "reasoning": "opus", "standard": "sonnet", "fast": "haiku" },
+    "codex": { "reasoning": null, "standard": null, "fast": null },
+    "codex_reasoning_effort": { "reasoning": "high", "standard": "medium", "fast": "low" },
+    "role_tier_overrides": {}
+  }
+}

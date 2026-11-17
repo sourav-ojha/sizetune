@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "skills": {
+    "implementer": {
+      "source": "sourav-ojha/agent-skills",
+      "commit": "cd034041ee58380ee5e3c29c0a0610c5fdd9a5f2",
+      "sourceType": "github",
+      "skillPath": "skills/implementer/SKILL.md",
+      "computedHash": "c93e7b2212bf5ff54ed4972bdbd1f079b96bc001c698b68d05ca17101e483639"
+    },
+    "product-intelligence": {
+      "source": "sourav-ojha/agent-skills",
+      "commit": "cd034041ee58380ee5e3c29c0a0610c5fdd9a5f2",
+      "sourceType": "github",
+      "skillPath": "skills/product-intelligence/SKILL.md",
+      "computedHash": "813fb543f9216c35ea8872c07e25c25c0203a7eee30d0e69b65a1b62211cab41"
+    },
+    "skill-insights": {
+      "source": "sourav-ojha/agent-skills",
+      "commit": "802bad18e94a1035399f021c24bddf0cecf95d9e",
+      "sourceType": "github",
+      "skillPath": "skills/skill-insights/SKILL.md",
+      "computedHash": "ac8b66027b23bdc0cc152f89d2bb06af9688d83075afdc9cdd4ea5ea755a4ada"
+    }
+  }
+}
