@@ -2,12 +2,17 @@ import SelectBox, { selectCls } from './SelectBox';
 import type { ComponentChildren } from 'preact';
 import { useEffect, useId, useRef } from 'preact/hooks';
 import { derivedDimension, parseNumber, type FieldErrors, type FormState } from './options';
+import { toPixels, UNITS, unitLabel, type Unit } from './units';
 import { errCls, fieldsetCls, hintCls, inputCls, labelCls, legendCls } from './ui';
 
 interface UpdateProps { form: FormState; errors: FieldErrors; update: (p: Partial<FormState>) => void }
 
-function NumberField({ id, label, value, onChange, error, placeholder, testId, hint }: {
+function NumberField({ id, label, value, onChange, error, placeholder, testId, hint, decimal, describedBy }: {
   id: string; label: string; value: string; onChange: (v: string) => void; error?: string; placeholder?: string; testId: string; hint?: string;
+  /** Decimal keypad (print lengths such as 3.5 cm). */
+  decimal?: boolean;
+  /** Id of an extra description (the pixel preview). */
+  describedBy?: string;
 }) {
   return (
     <div>
@@ -16,13 +21,13 @@ function NumberField({ id, label, value, onChange, error, placeholder, testId, h
         id={id}
         data-testid={testId}
         type="text"
-        inputMode="numeric"
+        inputMode={decimal ? 'decimal' : 'numeric'}
         autoComplete="off"
         className={`${inputCls} mt-1`}
         value={value}
         placeholder={placeholder}
         aria-invalid={error ? true : undefined}
-        aria-describedby={error ? `${id}-err` : hint ? `${id}-hint` : undefined}
+        aria-describedby={[error ? `${id}-err` : hint ? `${id}-hint` : null, describedBy ?? null].filter(Boolean).join(' ') || undefined}
         onChange={(e) => onChange(e.currentTarget.value)}
       />
       {error ? <p id={`${id}-err`} className={errCls}>{error}</p> : hint ? <p id={`${id}-hint`} className={hintCls}>{hint}</p> : null}
@@ -79,22 +84,60 @@ interface DimProps extends UpdateProps {
   basis: { width: number; height: number } | null;
   showMax: boolean;
   legend?: string;
+  /** Show the unit selector and the DPI field (FEATURE-013). Only the image tool turns this on. */
+  print?: boolean;
 }
 
 /** Width/height (+ aspect lock, fit) and optional maximum width/height. Nothing is prefilled: blanks mean "keep the original proportions". */
-export function DimensionFields({ form, errors, update, basis, showMax, legend = 'Output size in pixels (optional)' }: DimProps) {
+export function DimensionFields({ form, errors, update, basis, showMax, legend, print = false }: DimProps) {
   const id = useId();
-  const both = parseNumber(form.width, 'px').kind === 'ok' && parseNumber(form.height, 'px').kind === 'ok';
-  const oneOnly = !both && (parseNumber(form.width, 'px').kind === 'ok' || parseNumber(form.height, 'px').kind === 'ok');
+  const unit = print ? form.unit : 'px';
+  const isPx = unit === 'px';
+  const ul = unitLabel(unit);
+  const legendText = legend ?? (print ? `Output size in ${isPx ? 'pixels' : ul} (optional)` : 'Output size in pixels (optional)');
+  const setUnit = (u: Unit) => {
+    const fill = u !== 'px' && form.dpi.trim() === '';
+    if (fill) autoDpi.current = true;
+    const clear = u === 'px' && autoDpi.current; // a DPI the tool filled in is taken back; one the user typed stays
+    if (clear) autoDpi.current = false;
+    update({ unit: u, width: '', height: '', maxWidth: '', maxHeight: '', ...(fill ? { dpi: '300' } : {}), ...(clear ? { dpi: '' } : {}) });
+  };
+  const lenOf = (raw: string) => parseNumber(isPx ? raw : raw.replace(/\s*(cm|mm|inch|inches|in)$/i, ''), isPx ? 'px' : null);
+  const dpiP = parseNumber(form.dpi);
+  const dpiNum = dpiP.kind === 'ok' && Number.isInteger(dpiP.value) && dpiP.value >= 1 ? dpiP.value : 0;
+  const pxOf = (raw: string) => { const p = lenOf(raw); return !isPx && p.kind === 'ok' && p.value > 0 && dpiNum > 0 ? toPixels(p.value, unit, dpiNum) : null; };
+  const autoDpi = useRef(false);
+  const both = lenOf(form.width).kind === 'ok' && lenOf(form.height).kind === 'ok';
+  const oneOnly = !both && (lenOf(form.width).kind === 'ok' || lenOf(form.height).kind === 'ok');
+  const wPx = pxOf(form.width); const hPx = pxOf(form.height);
+  const previewShown = wPx != null || hPx != null;
+
   const phW = form.lockAspect && basis ? derivedDimension(form.height, basis.width, basis.height, 'width') : null;
   const phH = form.lockAspect && basis ? derivedDimension(form.width, basis.width, basis.height, 'height') : null;
   return (
     <fieldset className={fieldsetCls} data-testid="dimensions">
-      <legend className={legendCls}>{legend}</legend>
+      <legend className={legendCls}>{legendText}</legend>
+      {print && (
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label htmlFor={`${id}-unit`} className={labelCls}>Unit</label>
+            <SelectBox>
+              <select id={`${id}-unit`} data-testid="unit" className={`${inputCls} ${selectCls}`} value={form.unit} onChange={(e) => setUnit(e.currentTarget.value as Unit)}>
+                {UNITS.map((u) => <option key={u.value} value={u.value}>{u.label}</option>)}
+              </select>
+            </SelectBox>
+          </div>
+          <NumberField id={`${id}-dpi`} testId="dpi" label={isPx ? 'DPI tag (optional)' : 'DPI'} value={form.dpi} error={errors.dpi} placeholder={isPx ? 'not written' : '300'} onChange={(v) => { autoDpi.current = false; update({ dpi: v }); }}
+            hint={isPx ? 'Writes this DPI into the JPEG or PNG file. Some portals check pixels, not DPI.' : 'Converts the size to pixels and is written into the JPEG or PNG file. Some portals check pixels, not DPI.'} />
+        </div>
+      )}
       <div className="grid grid-cols-2 gap-3">
-        <NumberField id={`${id}-w`} testId="width" label="Width (px)" value={form.width} error={errors.width} placeholder={phW ? String(phW) : 'auto'} onChange={(v) => update({ width: v })} />
-        <NumberField id={`${id}-h`} testId="height" label="Height (px)" value={form.height} error={errors.height} placeholder={phH ? String(phH) : 'auto'} onChange={(v) => update({ height: v })} />
+        <NumberField id={`${id}-w`} testId="width" label={`Width (${ul})`} value={form.width} error={errors.width} placeholder={isPx && phW ? String(phW) : 'auto'} onChange={(v) => update({ width: v })} decimal={!isPx} describedBy={previewShown ? `${id}-pxp` : undefined} />
+        <NumberField id={`${id}-h`} testId="height" label={`Height (${ul})`} value={form.height} error={errors.height} placeholder={isPx && phH ? String(phH) : 'auto'} onChange={(v) => update({ height: v })} decimal={!isPx} describedBy={previewShown ? `${id}-pxp` : undefined} />
       </div>
+      {previewShown && (
+        <p id={`${id}-pxp`} className={hintCls} data-testid="px-preview">That is {wPx != null ? wPx.toLocaleString('en-US') : 'auto'} × {hPx != null ? hPx.toLocaleString('en-US') : 'auto'} pixels at {dpiNum} DPI.</p>
+      )}
       <label className="flex min-h-11 items-center gap-2 text-sm text-slate-900">
         <input type="checkbox" data-testid="lock-aspect" className="size-5 accent-teal-700" checked={form.lockAspect} onChange={(e) => update({ lockAspect: e.currentTarget.checked })} />
         <span>Keep the aspect ratio</span>
@@ -127,8 +170,8 @@ export function DimensionFields({ form, errors, update, basis, showMax, legend =
       )}
       {showMax && (
         <div className="grid grid-cols-2 gap-3">
-          <NumberField id={`${id}-mw`} testId="max-width" label="Largest width (px)" value={form.maxWidth} error={errors.maxWidth} placeholder="no limit" onChange={(v) => update({ maxWidth: v })} />
-          <NumberField id={`${id}-mh`} testId="max-height" label="Largest height (px)" value={form.maxHeight} error={errors.maxHeight} placeholder="no limit" onChange={(v) => update({ maxHeight: v })} />
+          <NumberField id={`${id}-mw`} testId="max-width" label={`Largest width (${ul})`} value={form.maxWidth} error={errors.maxWidth} placeholder="no limit" onChange={(v) => update({ maxWidth: v })} decimal={!isPx} />
+          <NumberField id={`${id}-mh`} testId="max-height" label={`Largest height (${ul})`} value={form.maxHeight} error={errors.maxHeight} placeholder="no limit" onChange={(v) => update({ maxHeight: v })} decimal={!isPx} />
         </div>
       )}
     </fieldset>
