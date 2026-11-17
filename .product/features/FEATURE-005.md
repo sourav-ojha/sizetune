@@ -3,6 +3,7 @@ type: feature-spec
 id: FEATURE-005
 opportunity: OPP-006
 status: ready
+delivery: partial
 product_revision: 3
 created: 2026-11-17
 ---
@@ -137,3 +138,8 @@ Data handled: user images, processed locally; no retention beyond the page sessi
 - **Definition of done:** all acceptance criteria pass; no out-of-scope work; no new unresolved decisions invented.
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** AC-1 to AC-4, AC-6 to AC-8 via Playwright e2e on the image tool; AC-5 via a network-log test; AC-9 via `pnpm run verify:html`; AC-10 manual on devices.
+
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-17 | feat/zip-bulk-and-favicon (commits c1fab82 and the review-fix commit) | AC-1 to AC-8 and AC-9 in the browser: several files in one selection or drop form a batch, processed one at a time, per-file status, cancel, caps, individual downloads, one ZIP plus a report; single file unchanged | AC-10 is not code: it needs the device test | AC-10 real-device test (iPhone, low-RAM Android) at the cap; confirm or change the proposed caps (10 files, 60 MB total, in src/components/tool/batch.ts); owner review of copy; analytics decision for usage | Left `ready` because AC-10 is open. ZIP holds only files that reached the target, plus a report; files that missed the target have their own download. Deviation from NFR-1: the build gates forbid dynamic import, so batch and ZIP code ship in the ImageTool chunk on every tool page (about +3.2 KB gzip, 4.2 to 7.4 KB), not loaded on batch start. Two dropped files used to give an 'only the first file' notice; one e2e test was updated to the batch behaviour |

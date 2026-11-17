@@ -169,7 +169,7 @@ The owner asked about Bulk Image Compressor, Bulk Image Converter, Image Rotator
 | OPP-014 | Image rotator and flipper | Implemented | 50 | Low | Backlog | S | 2026-11-17 | FEATURE-007 |
 | OPP-015 | "Will this file pass?" image checker (format, KB, pixels, type) | Implemented | 60 | Low | Needs evidence | M | 2026-11-17 | FEATURE-008 |
 | OPP-016 | Social media (Instagram, LinkedIn, YouTube) image resizers | Implemented | 46 | Low | Backlog | S | 2026-11-17 | FEATURE-009 |
-| OPP-017 | Favicon and app icon generator | Ready for Implementation | 49 | Low | Backlog | M | 2026-11-17 | FEATURE-010 |
+| OPP-017 | Favicon and app icon generator | Implemented | 49 | Low | Backlog | M | 2026-11-17 | FEATURE-010 |
 
 ## Review Summary
 
