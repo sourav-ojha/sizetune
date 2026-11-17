@@ -10,7 +10,8 @@ import FormatPicker from './tool/FormatPicker';
 import ProgressBar from './tool/Progress';
 import ResultPanel from './tool/ResultPanel';
 import SizePicker from './tool/SizePicker';
-import { getLimits, processImage } from './tool/engine';
+import { getLimits } from './tool/engine';
+import { processWithDpi } from './tool/dpi';
 import { formatCap, formatDims, formatSize } from './tool/format';
 import { ensureVisible, useForm, useScrollAnchor, useWebpSupport } from './tool/hooks';
 import { buildOptions, type FormState } from './tool/options';
@@ -30,7 +31,7 @@ export interface ImageToolProps {
   label?: string;
 }
 
-const ADVANCED_FIELDS = ['minKb', 'width', 'height', 'maxWidth', 'maxHeight'] as const;
+const ADVANCED_FIELDS = ['minKb', 'width', 'height', 'maxWidth', 'maxHeight', 'dpi'] as const;
 
 export default function ImageTool({ defaultMaxKb = 50, defaultFormat, defaultNoLimit = false, label }: ImageToolProps) {
   const { session, state } = useToolSession();
@@ -40,7 +41,7 @@ export default function ImageTool({ defaultMaxKb = 50, defaultFormat, defaultNoL
   const manyRef = useRef<((files: File[]) => void) | undefined>(undefined);
   const { inputRef, onPick } = useIntake(session, (files) => manyRef.current?.(files));
   // Several files at once go to a batch: one queue, one file at a time, one ZIP. A single file keeps using the single-file view above.
-  const [batch] = useState(() => new BatchRunner({ process: processImage, createObjectURL: (b) => URL.createObjectURL(b), revokeObjectURL: (u) => URL.revokeObjectURL(u) }));
+  const [batch] = useState(() => new BatchRunner({ process: processWithDpi, createObjectURL: (b) => URL.createObjectURL(b), revokeObjectURL: (u) => URL.revokeObjectURL(u) }));
   const batchState = useSyncExternalStore(batch.subscribe, batch.getSnapshot, batch.getSnapshot);
   const [batchNote, setBatchNote] = useState<string | null>(null);
   const [zipError, setZipError] = useState<string | null>(null);
@@ -252,7 +253,7 @@ export default function ImageTool({ defaultMaxKb = 50, defaultFormat, defaultNoL
 
           <AdvancedBlock forceOpen={advancedError || linkedMin}>
             <MinimumField form={effective} errors={errors} update={update} />
-            <DimensionFields form={effective} errors={errors} update={update} basis={state.natural} showMax />
+            <DimensionFields form={effective} errors={errors} update={update} basis={state.natural} showMax print />
             <StrategyField form={effective} update={update} />
           </AdvancedBlock>
 

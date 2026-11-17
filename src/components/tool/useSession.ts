@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'preact/hooks';
 import { useSyncExternalStore } from 'preact/compat';
-import { getLimits, inspectSize, processImage } from './engine';
+import { getLimits, inspectSize } from './engine';
+import { processWithDpi } from './dpi';
 import { ToolSession, type SessionState } from './session';
 import { makeThumbnail } from './thumb';
 
@@ -8,7 +9,7 @@ import { makeThumbnail } from './thumb';
 export function useToolSession(): { session: ToolSession; state: SessionState } {
   const [session] = useState(
     () => new ToolSession({
-      process: processImage,
+      process: processWithDpi,
       createObjectURL: (b) => URL.createObjectURL(b),
       revokeObjectURL: (u) => URL.revokeObjectURL(u),
       maxFileBytes: getLimits().maxFileBytes,
