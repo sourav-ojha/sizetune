@@ -1,0 +1,100 @@
+---
+import Base from '../layouts/Base.astro';
+import CheckerTool from '../components/CheckerTool.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Check Image Type, KB Size and Pixels | SizeTune';
+const description =
+  'See what an image really is: its true file type, size in KB and pixel dimensions. Enter your form rules to get a pass or fail, all in your browser.';
+const jsonLd = webApplicationLd('SizeTune: check image type, size and pixels', '/check-image-size/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/check-image-size/" jsonLd={jsonLd}>
+  <Hero title="Will this image pass the form?" lead="Add a picture to see its real file type, size in KB and pixel dimensions. Type in your form's limits and get a pass or fail for each one. Nothing is uploaded." />
+
+  <CheckerTool client:load />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This checker reads your file inside your browser, so it will not run while JavaScript is turned off. Enable
+      JavaScript and reload to use it. The notes below on why uploads get rejected still apply.
+    </p>
+  </noscript>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>What the checker tells you</h2>
+    <p>
+      For a picture you choose, the page reads the first part of the file and reports four things: the real file type,
+      the size in kilobytes, the width and height in pixels, and the print resolution if the file records one. It does
+      this without decoding the whole picture, so it is quick even on a large photo.
+    </p>
+    <p>
+      If you type in the limits from your form, each one gets its own pass or fail line with the number measured from
+      your file next to the number the rule asks for. The page has no list of exam or portal rules. You enter what
+      your own form says, so the answer matches the form in front of you and not an old copy of someone else's.
+    </p>
+
+    <h2>Why the real type matters</h2>
+    <p>
+      A file name is only a label. Renaming a PNG to end in .jpg changes the label and nothing else, and a picture
+      saved from a messaging app can arrive as WebP even though it is called .jpg. Some upload systems look at the
+      contents rather than the name, and they reject a file whose contents do not match what the form accepts. The
+      checker reads the opening bytes of the file, which identify the format, and warns you when the name and the
+      contents disagree.
+    </p>
+    <p>
+      It can also recognise a few formats it cannot measure, such as GIF, PDF, HEIC or SVG. For those it names the type
+      so you know what you have, and says that the pixel rules cannot be applied.
+    </p>
+
+    <h2>How kilobytes are counted</h2>
+    <p>
+      A kilobyte is 1,000 bytes on some systems and 1,024 on others. A file of 50,500 bytes is under a 50 KB limit
+      counted the second way and over it counted the first way. When your file lands in that gap the checker marks the
+      rule as borderline and explains which counting passes, instead of calling it a pass. If the answer matters, make
+      the file a little smaller than the limit so it passes under either count.
+    </p>
+
+    <h2>A note on resolution</h2>
+    <p>
+      Some forms mention dots per inch. That number is a label inside the file and does not change how many pixels the
+      picture has. The checker shows it only when the file records one in a place it reads: the JFIF header or the EXIF
+      resolution fields of a JPEG, or the physical size chunk of a PNG. If it says the resolution was not found, that is
+      exactly what it found, and it does not guess a value. WebP resolution and other metadata are not read, and your
+      computer may show a default such as 72 or 96 that the file itself does not contain.
+    </p>
+
+    <h2>If a rule fails</h2>
+    <p>
+      When a size rule fails, the page offers a link to the <a href="/">resizer on the home page</a> with your size
+      limit already filled in. The picture itself does not travel between pages, because nothing is stored, so you add it
+      again there. Pixel rules are not carried across; set them in the resizer's advanced options. If your picture is
+      the wrong way up, <a href="/rotate-image/">turn it first</a>.
+    </p>
+    <p>
+      Passing here is useful but not a promise. A portal may check a colour mode, a transparent background or the
+      width of the margins, none of which this page can see.
+    </p>
+
+    <h2>Frequently asked questions about checking an image</h2>
+    <h3>Is the file type taken from the name?</h3>
+    <p>No. It is read from the first bytes of the file, which is why a renamed file is caught.</p>
+    <h3>Why does the page say borderline?</h3>
+    <p>
+      Your file's size passes if the portal counts 1,000 bytes per kilobyte or 1,024, but not both. Shrink it a little
+      to be safe.
+    </p>
+    <h3>Why is the resolution missing?</h3>
+    <p>
+      Screenshots, WebP files and many edited pictures do not store one in the places the checker reads. It shows what
+      is present and never invents a number.
+    </p>
+    <h3>Can it check a PDF?</h3>
+    <p>
+      No. It can tell you the file is a PDF, but it only measures JPEG, PNG and WebP pictures. For PDFs, read{' '}
+      <a href="/guides/reduce-pdf-to-100kb/">how to get a PDF under 100 KB</a>.
+    </p>
+    <h3>Is my picture uploaded?</h3>
+    <p>
+      No. The checking happens in your browser. Read the <a href="/privacy/">privacy page</a> for details.
+    </p>
+  </div>
+</Base>

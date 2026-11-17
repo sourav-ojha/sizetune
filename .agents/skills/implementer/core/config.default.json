@@ -1,0 +1,10 @@
+{
+  "$comment": "Tier -> Claude Code model alias. Override per project by editing a copy and passing --config to install-agents.mjs.",
+  "models": {
+    "claude-code": {
+      "reasoning": "opus",
+      "standard": "sonnet",
+      "fast": "haiku"
+    }
+  }
+}

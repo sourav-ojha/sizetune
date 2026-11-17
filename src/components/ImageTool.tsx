@@ -11,6 +11,7 @@ import { getLimits } from './tool/engine';
 import { formatCap, formatDims, formatSize } from './tool/format';
 import { ensureVisible, useForm, useScrollAnchor, useWebpSupport } from './tool/hooks';
 import { buildOptions, type FormState } from './tool/options';
+import { targetFromSearch } from './tool/query';
 import { statusText, useIntake } from './tool/useIntake';
 import { useToolSession } from './tool/useSession';
 import { btnPrimary, btnSecondary, panelCls } from './tool/ui';
@@ -18,20 +19,26 @@ import { btnPrimary, btnSecondary, panelCls } from './tool/ui';
 export interface ImageToolProps {
   /** Maximum size (KB) preselected when the tool opens. */
   defaultMaxKb?: number;
+  /** Output format preselected when the tool opens (the converter pages use 'jpeg'). The user can still change it. */
+  defaultFormat?: OutputFormat;
+  /** Open with "No limit" selected, so the file is converted at the default quality (85 out of 100). A KB limit can still be chosen. */
+  defaultNoLimit?: boolean;
+  /** Accessible name and hidden heading of the tool region (default: the resizer wording). */
+  label?: string;
 }
 
 const ADVANCED_FIELDS = ['minKb', 'width', 'height', 'maxWidth', 'maxHeight'] as const;
 
-export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
+export default function ImageTool({ defaultMaxKb = 50, defaultFormat, defaultNoLimit = false, label }: ImageToolProps) {
   const { session, state } = useToolSession();
-  const [form, setForm] = useForm({ maxKb: String(defaultMaxKb) });
+  const [form, setForm] = useForm({ maxKb: String(defaultMaxKb), noLimit: defaultNoLimit });
   const webp = useWebpSupport();
   const anchor = useScrollAnchor();
   const { inputRef, onPick } = useIntake(session);
   const runRef = useRef<HTMLButtonElement>(null);
   const cap = getLimits().maxFileBytes;
 
-  const [userFormat, setUserFormat] = useState<OutputFormat | null>(null);
+  const [userFormat, setUserFormat] = useState<OutputFormat | null>(defaultFormat ?? null);
   // An opaque PNG with a size limit is preselected as JPEG (visible note, one click to undo); transparent PNGs keep Auto.
   const autoJpeg = userFormat === null && state.sniff?.kind === 'png' && state.alpha === false && !form.noLimit;
   const format: OutputFormat = userFormat ?? (autoJpeg ? 'jpeg' : 'auto');
@@ -41,6 +48,14 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
   const hasAlpha = state.result?.data.source.hasAlpha ?? state.alpha;
   const busy = state.phase === 'processing';
   const advancedError = ADVANCED_FIELDS.some((k) => errors[k]);
+  // A size target handed over by another page (the file checker links to "/?max=50&min=20"). Applied after mount so the server HTML stays identical.
+  const [linkedMin, setLinkedMin] = useState(false);
+  useEffect(() => {
+    const t = targetFromSearch(window.location.search);
+    if (!t.maxKb && !t.minKb) return;
+    setForm({ ...(t.maxKb ? { maxKb: t.maxKb, noLimit: false } : {}), ...(t.minKb ? { minKb: t.minKb } : {}) });
+    if (t.minKb) setLinkedMin(true);
+  }, []);
 
   // Auto-run: a run starts by itself when a file is accepted and whenever the settings change (typing is debounced).
   // `ranFor` remembers the file + settings a run was started for, so Cancel or a failed run never loops; the Resize button then offers a manual retry.
@@ -115,8 +130,8 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
   };
 
   return (
-    <section ref={anchor.ref} data-testid="tool" aria-label="Image resizer" className={`${panelCls} lg:p-8`}>
-      <h2 className="sr-only">Resize your image</h2>
+    <section ref={anchor.ref} data-testid="tool" aria-label={label ?? 'Image resizer'} className={`${panelCls} lg:p-8`}>
+      <h2 className="sr-only">{label ?? 'Resize your image'}</h2>
       <div role="status" aria-live="polite" data-testid="status" className="sr-only">{statusText(state, true)}</div>
 
       {/* One column on a phone, two from lg: picture and result on the left, settings on the right. DOM order is the reading and tab order. */}
@@ -180,7 +195,7 @@ export default function ImageTool({ defaultMaxKb = 50 }: ImageToolProps) {
           <SizePicker form={effective} errors={errors} update={update} sourceKind={state.sniff?.kind ?? null} />
           <FormatPicker form={effective} errors={errors} update={update} formats={['auto', 'jpeg', 'png', 'webp']} webp={webp} hasAlpha={hasAlpha} hasFile={!!state.file} defaultNote={autoJpeg ? 'Your PNG will be saved as a JPEG: smaller files keep more detail. Choose PNG to keep the format.' : undefined} />
 
-          <AdvancedBlock forceOpen={advancedError}>
+          <AdvancedBlock forceOpen={advancedError || linkedMin}>
             <MinimumField form={effective} errors={errors} update={update} />
             <DimensionFields form={effective} errors={errors} update={update} basis={state.natural} showMax />
             <StrategyField form={effective} update={update} />

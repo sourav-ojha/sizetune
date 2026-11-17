@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-009
 opportunity: OPP-016
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-17
 ---
@@ -124,3 +125,7 @@ Local processing; no retention; no new trust boundary.
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** AC-1, AC-2 via Playwright e2e; AC-3 network log; AC-4 by reviewer; AC-5 pages count in build; AC-6 `pnpm run verify:html`.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-17 | feat/social-resizers (commits 7b16ad2 and the review-fix commit) | AC-1 to AC-6: /instagram-image-resizer/, /linkedin-image-resizer/, /youtube-thumbnail-resizer/ plus a sources guide /guides/social-image-sizes/ (9 presets, each from an official help page read 2026-11-17) | none | owner decision: who maintains the presets and how often (spec section 18); owner review of page copy; Search Console impressions; real-device check of large-photo decode | Deviation: AC-5 source link goes to the on-site sources guide, not the official page, because verify-privacy forbids third-party URLs on tool pages. Left out on purpose: Instagram Stories and profile picture (no size on the official pages read), LinkedIn Page cover (sources disagree), LinkedIn profile photo (no verified page). YouTube default cap 2,000 KB (mobile 2 MB, desktop 50 MB). Crop, pad and blur are new canvas code, not engine options. JPEG output only |

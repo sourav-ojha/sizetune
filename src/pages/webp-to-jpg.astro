@@ -1,0 +1,80 @@
+---
+import Base from '../layouts/Base.astro';
+import ImageTool from '../components/ImageTool.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Convert WebP to JPG Online, No Upload | SizeTune';
+const description =
+  'Turn a WebP image into a JPG in your browser, with no upload and no sign-up. Learn why sites give you WebP, what changes, and what to do if a form refuses it.';
+const jsonLd = webApplicationLd('SizeTune: convert WebP to JPG', '/webp-to-jpg/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/webp-to-jpg/" jsonLd={jsonLd}>
+  <Hero title="Convert WebP to JPG" lead="Add a WebP picture and download it as a JPG. The tool opens with JPEG chosen and no size limit. If a form also states a limit in KB, set it in the tool." />
+
+  <ImageTool client:load defaultFormat="jpeg" defaultNoLimit label="WebP to JPG converter" />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This converter works inside your browser, so it will not run while JavaScript is turned off. Enable JavaScript and
+      reload to convert your WebP file. The notes below on why WebP files appear still apply with any other tool.
+    </p>
+  </noscript>
+  <p class="mx-auto mt-6 max-w-3xl text-center text-base text-slate-700">
+    Need the JPG under a size limit for a form? <a data-testid="to-resizer" class="font-medium text-teal-800 underline underline-offset-4" href="/">Open the KB resizer</a>.
+  </p>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>Why you end up with a WebP file</h2>
+    <p>
+      WebP is an image format made to keep pictures small on the web. Many websites now serve it automatically, so when
+      you right-click a picture and choose "save image as", you can get a .webp file even though the page looked like
+      it showed an ordinary photo. Some chat apps and screenshot tools also produce it. The format is perfectly good, but
+      plenty of upload forms, older office programs and print services were built around JPG and PNG and refuse
+      anything else.
+    </p>
+
+    <h2>What changes when WebP becomes JPG</h2>
+    <p>
+      A WebP picture can be saved in two ways, with some detail thrown away to save space or with every pixel kept. A JPG
+      always throws some detail away. Converting a lossy WebP to a JPG therefore compresses the picture a second time, and
+      the new file may show faint blockiness around sharp edges that was not there before. The converter saves at quality 85
+      out of 100, a common good-quality setting, to keep that change small, and the preview lets you compare before you download.
+    </p>
+    <p>
+      JPG cannot store transparency. If your WebP has see-through areas, such as a cut-out logo, those areas are filled
+      with a colour you choose. White is the default, and black or a custom colour are also offered. If the picture
+      must stay transparent, convert it to PNG instead on the <a href="/">main tool</a>.
+    </p>
+    <p>
+      The file size can go either way. A photo often grows a little, because WebP is usually more compact than JPG at a
+      similar look. A flat graphic can grow a lot more.
+    </p>
+
+    <h2>Steps</h2>
+    <ol>
+      <li>Add the .webp file by dragging it onto the box or choosing it.</li>
+      <li>Leave the output as JPEG. Choose a background colour if the picture has transparent parts.</li>
+      <li>Look at the preview and download the result when it looks right.</li>
+      <li>If your form states a limit, type it as the maximum size and the tool converts again to fit.</li>
+    </ol>
+
+    <h2>If the form still rejects the file</h2>
+    <ul>
+      <li>Check the name ends in .jpg or .jpeg. The tool names the download with the right ending.</li>
+      <li>Read the limit again. A form that wants 100 KB or less will refuse a 400 KB file whatever its format.</li>
+      <li>Check the pixel size the form asks for. Format and size are separate rules.</li>
+      <li>See <a href="/check-image-size/">the image checker</a> to compare the file with your form's rules.</li>
+    </ul>
+
+    <h2>Frequently asked questions about WebP to JPG</h2>
+    <h3>Is converting WebP to JPG lossless?</h3>
+    <p>No. JPG always discards some detail, and a WebP that was already compressed loses a little more. At the high quality used here the change is small.</p>
+    <h3>Why is my JPG bigger than the WebP?</h3>
+    <p>WebP usually stores the same picture in fewer bytes. A larger JPG is normal, and you can set a size limit in the tool if a form needs it smaller.</p>
+    <h3>Can I convert an animated WebP?</h3>
+    <p>The tool makes a single still picture from the first frame. It does not keep animation.</p>
+    <h3>Does the picture get uploaded?</h3>
+    <p>No. The conversion runs in your browser. Read the <a href="/privacy/">privacy page</a> for details.</p>
+    <h3>Can I convert PNG files too?</h3>
+    <p>Yes. Use the <a href="/png-to-jpg/">PNG to JPG page</a>.</p>
+  </div>
+</Base>

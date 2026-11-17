@@ -1,0 +1,5 @@
+interface:
+  display_name: "Product Intelligence"
+  short_description: "Understand a product, research its market, prioritize opportunities, and write approved feature specs."
+policy:
+  allow_implicit_invocation: true

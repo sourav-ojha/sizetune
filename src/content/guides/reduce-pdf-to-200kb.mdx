@@ -1,0 +1,55 @@
+---
+title: "How to Get a PDF Under 200 KB"
+description: "What to try when a multi-page PDF or scanned certificate is over 200 KB: scan settings, page count, fonts and pictures, and when compression stops helping."
+updated: 2026-11-17
+---
+
+If a form caps a PDF at 200 KB, as a certificate, letter or mark sheet upload might, that is more room than 100 KB, but a colour scan of even one page can still be ten times too large. SizeTune does not compress PDFs yet, so this guide covers practical ways to reach the limit with tools you already have, and says plainly when a document is simply too heavy to fit.
+
+*Published and last updated 17 November 2026 by SizeTune.*
+
+## Start by finding where the bytes are
+
+Before changing settings, work out what your PDF contains. Open its properties and note the size and page count. Divide one by the other. A result around 20 to 40 KB per page suggests typed text and is easy to keep under 200 KB for several pages. A result of 500 KB or more per page means each page is a picture, and the picture's pixels are the problem.
+
+You can confirm this by trying to select a word. If nothing highlights, the page is a scan. Scans need to be reduced, while text PDFs mostly need extra pages, fonts or pictures removed.
+
+## A budget for several pages
+
+The limit is for the whole file, which changes the arithmetic. At 200 KB, a three-page scan has roughly 65 KB per page, and a ten-page one has about 20. That is why a document that fits at one page can fail at four. Work out your per-page budget first, then decide whether the pages can be scanned plainly enough to meet it.
+
+- One page can be a reasonable grey scan at moderate resolution.
+- Two to four pages need black and white or low resolution for every page.
+- More than that may not fit at readable quality, and it is better to ask whether the form accepts a split upload.
+
+## Scan settings that matter most
+
+Scanner and phone apps hide the settings that decide size. Look for three things.
+
+- **Resolution.** 150 dots per inch is often enough for reading, while 300 doubles the width and height and multiplies the pixel count by four.
+- **Colour mode.** Colour, grey and black and white store different amounts of information per pixel. Use the simplest mode that keeps stamps and signatures legible.
+- **Compression or quality.** Many apps offer low, medium and high. Pick medium first and open the result at reading size before going lower.
+
+## Documents you wrote yourself
+
+If a document began as a file in a word processor or spreadsheet, export it directly. The result keeps real text, embeds only the fonts it uses and is usually small. Avoid the roundabout way of printing it, signing, scanning and uploading unless the form needs a wet signature. If a signature image has to appear on a typed page, prepare it separately with the [signature tool](/resize-signature/) and insert the small result.
+
+## Fonts and pictures
+
+Two things surprise people with text documents. Some programs embed a full set of a font's characters, which adds hundreds of kilobytes. And a logo or photograph placed on the page may be stored at its original resolution even when it is displayed small. Reduce inserted images before placing them, and check your export dialog for options about embedding fonts or compressing pictures.
+
+## What if it still will not fit
+
+Some documents will not reach 200 KB without becoming unreadable. Signs that you are there: small print is smudged, stamps lose their outlines, or each page needs resolution you cannot afford. Options then are to ask whether the form accepts another format for that field, whether a larger limit applies, or whether several uploads are allowed. Renaming a file's extension does not change its real contents or size, and portals check the real file.
+
+## Check before you submit
+
+Read the final size in the file properties and keep a small margin under 200 KB, since systems count kilobytes in different ways. View the file at normal zoom on a phone as well as a computer. Confirm the page order and that nothing important is cut off. For a smaller target, see [how to get a PDF under 100 KB](/guides/reduce-pdf-to-100kb/). For pictures that sit inside a document, the [100 KB image page](/resize-image-to-100kb/) shows how a photo is prepared.
+
+## Frequently asked questions
+
+**Will SizeTune add a PDF compressor?** That depends on whether people look for it. We are publishing these guides first to learn that before building anything.
+
+**Is it safe to use a website that compresses PDFs?** It depends on the site. Some process files on your device and others upload them. For anything personal, check how a site handles files, or use software already installed on your computer. Our [privacy page](/privacy/) explains how SizeTune handles the images it does process.
+
+**Why did my PDF get bigger after I edited it?** Some editors save the original plus the changes, or embed fonts and pictures at full size. Exporting a fresh copy often removes the extra weight.

@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-006
 opportunity: OPP-012
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-17
 ---
@@ -126,3 +127,7 @@ User images processed locally; no retention. No new trust boundary.
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** AC-1 to AC-4 via Playwright e2e on each page; AC-3 via network log; AC-5 via `pnpm run verify:html`; AC-6 by reviewer.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-17 | feat/tools-converter-rotator-checker (commits 6d7050d, 0885e42) | AC-1 to AC-6: /webp-to-jpg/ and /png-to-jpg/ | none | owner review of both pages' copy; Search Console indexing and impressions | Deviation: JPEG is preselected, not locked, so the user can still change format (spec said fixed). White fill for transparent PNG (default). Animated input becomes first frame. Run-cancel e2e flake did not recur in the final full run (239/239) |

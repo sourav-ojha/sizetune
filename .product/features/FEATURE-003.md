@@ -3,6 +3,7 @@ type: feature-spec
 id: FEATURE-003
 opportunity: OPP-003
 status: ready
+delivery: partial
 product_revision: 3
 created: 2026-11-17
 ---
@@ -124,3 +125,8 @@ Data: the user's PDF, which may be an ID or financial document; processed locall
 - **Definition of done:** all acceptance criteria pass; no out-of-scope work; no new unresolved decisions invented.
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** AC-1 Search Console readout; AC-2 owner decision record; AC-3 Playwright network log; AC-4 to AC-6 engine fixtures and e2e.
+
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-17 | PR #19, squash c8ad91f (commits d2a7242, 8aed0f8) | FR-1 pages only: /guides/reduce-pdf-to-100kb/ and /guides/reduce-pdf-to-200kb/ (no tool) | AC-2 to AC-6 (Phase 1 tool; gated by FR-5) | AC-1 readout: indexing and Search Console impressions for both guides; Phase 1 go/no-go; permissive PDF library proof; tool location decision | Phase 0 only; no tool, library or engine code added |

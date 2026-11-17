@@ -178,11 +178,11 @@ New owner direction in the command: do not judge ideas only by competition; the 
 | OPP-009 | Serve minimum-size forms when the source is too small | Discovered | 56 | Low | Needs evidence | S | 2026-11-17 | - |
 | OPP-010 | Localised pages for other languages | Discovered | 55 | Low | Needs evidence | L | 2026-11-17 | - |
 | OPP-011 | Exam-form preset pack with a pixel, KB and file-type compliance check | Deferred | 63 | Low | Needs evidence | M | 2026-11-17 | - |
-| OPP-012 | Client-side image format converters (WebP and PNG to JPG) | Ready for Implementation | 57 | Low | Needs evidence | S | 2026-11-17 | FEATURE-006 |
+| OPP-012 | Client-side image format converters (WebP and PNG to JPG) | Implemented | 57 | Low | Needs evidence | S | 2026-11-17 | FEATURE-006 |
 | OPP-013 | Client-side image-to-PDF and JPG-to-PDF | Discovered | 53 | Low | Backlog | M | 2026-11-17 | - |
-| OPP-014 | Image rotator and flipper | Ready for Implementation | 50 | Low | Backlog | S | 2026-11-17 | FEATURE-007 |
-| OPP-015 | "Will this file pass?" image checker (format, KB, pixels, type) | Ready for Implementation | 60 | Low | Needs evidence | M | 2026-11-17 | FEATURE-008 |
-| OPP-016 | Social media (Instagram, LinkedIn, YouTube) image resizers | Ready for Implementation | 46 | Low | Backlog | S | 2026-11-17 | FEATURE-009 |
+| OPP-014 | Image rotator and flipper | Implemented | 50 | Low | Backlog | S | 2026-11-17 | FEATURE-007 |
+| OPP-015 | "Will this file pass?" image checker (format, KB, pixels, type) | Implemented | 60 | Low | Needs evidence | M | 2026-11-17 | FEATURE-008 |
+| OPP-016 | Social media (Instagram, LinkedIn, YouTube) image resizers | Implemented | 46 | Low | Backlog | S | 2026-11-17 | FEATURE-009 |
 | OPP-017 | Favicon and app icon generator | Ready for Implementation | 49 | Low | Backlog | M | 2026-11-17 | FEATURE-010 |
 | OPP-018 | Print-unit and DPI controls (cm, inch, mm plus KB) | Ready for Implementation | 62 | Low | Needs evidence | S | 2026-11-17 | FEATURE-013 |
 | OPP-019 | PDF page tools: merge, split, extract pages, rotate, page numbers | Discovered | 51 | Low | Backlog | M | 2026-11-17 | - |
