@@ -235,7 +235,7 @@ test.describe('image tool', () => {
     await expect(page.getByTestId('dropzone')).toHaveAttribute('data-over', 'false');
   });
 
-  test('a second dropped file is ignored with a notice', async ({ page }) => {
+  test('two dropped files start a batch, one row per file (replaces the old "only the first file" behaviour, FEATURE-005)', async ({ page }) => {
     await openTool(page);
     const dt = await page.evaluateHandle(async () => {
       const d = new DataTransfer();
@@ -246,8 +246,9 @@ test.describe('image tool', () => {
       return d;
     });
     await page.getByTestId('dropzone').dispatchEvent('drop', { dataTransfer: dt });
-    await expect(page.getByTestId('file-info')).toContainText('a.png');
-    await expect(page.getByTestId('notice')).toContainText('first file');
+    await expect(page.getByTestId('batch-row')).toHaveCount(2);
+    await expect(page.getByTestId('batch-row').first()).toHaveAttribute('data-name', 'a.png');
+    await expect(page.getByTestId('file-info')).toHaveCount(0);
   });
 
   test('non-image content is rejected immediately', async ({ page }) => {
