@@ -2,8 +2,8 @@
 type: opportunity-registry
 last_research: 2026-11-17
 review_mode: independent
-decision_count: 23
-decision_head: 4dfaa32dc1c2
+decision_count: 46
+decision_head: 827ac7afed63
 ---
 # Opportunities
 
@@ -163,6 +163,39 @@ New owner direction in the command: do not judge ideas only by competition; the 
 - **Open-source and platform facts.** tesseract.js is Apache-2.0 and active. [E: fact; high; https://api.github.com/repos/naptha/tesseract.js; 2026-11-17] The imgly background-removal library is AGPL. [E: fact; high; https://github.com/imgly/background-removal-js; 2026-11-17] BRIA RMBG-1.4 is non-commercial. [E: fact; high; https://huggingface.co/briaai/RMBG-1.4; 2026-11-17] The ffmpeg.wasm core follows FFmpeg's LGPL or GPL terms. [E: fact; high; https://ffmpegwasm.netlify.app/docs/faq; 2026-11-17] WebCodecs reaches 95.92% of users globally and is partial or missing on some mobile browsers. [E: fact; medium; https://caniuse.com/webcodecs; 2026-11-17]
 - **Negative results.** No SERP-weakness study, keyword-difficulty cutoff, per-category RPM benchmark, bundle size for any library, or traffic figure for TinyWow or 123apps beyond estimates was found. [E: unknown; low; search:SERP weakness new domain tool keyword difficulty; 2026-11-17]
 
+### Competitor catalogue: image.pi7.org (2026-11-18, owner-supplied link)
+
+Read from the homepage text only (sitemap 404; no tool page opened; no traffic, ranking or revenue data). The homepage lists roughly 200 tool links across image, PDF, GIF, audio and invoice sub-sites. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+
+- **How it is built.** About 25 separate "compress to N KB" pages (5 KB to 2 MB), a "JPG to PDF under N KB" page for each of about ten sizes, passport and official-size pages (SSC, PAN, UPSC, PSC), and per-unit resize pages. This is the same per-size pattern as FEATURE-001, so it also carries the doorway risk in A-002. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Processing.** The page says compressed images are deleted from its server after 30 minutes, so compression uploads files; it also says some tools run in the browser, without saying which. SizeTune's no-upload design is a real difference, unconfirmed for individual pi7 tools. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Money.** A paid plan (Rs 49 per month, Rs 299 per year) is sold as "no ads", which implies the free tier shows ads; ad scripts were not inspected. [E: fact; low; https://image.pi7.org/; 2026-11-18]
+- **Tools it has that SizeTune has no registered idea for (related ones):** signature maker (typed or drawn), add name and date on photo, join images and merge photo with signature (the combiner dropped earlier), photo collage, JPG to PDF under a KB limit, increase PDF size (for minimum-KB forms), Word to PDF and Word to JPG, round corners, change aspect ratio, square and freehand crop, colour picker, text to handwriting, blur or pixelate face, remove text, logo or object (needs an AI model), AI enhance and upscale (model licences unverified).
+- **Already registered here:** crop and circle crop and grayscale (OPP-022), image to text (OPP-024), PDF to JPG (OPP-020), PDF page tools (OPP-019), metadata (OPP-021), DPI and units (OPP-018), passport (OPP-008), background remover (OPP-031), favicon (OPP-017), grid splitter (OPP-023), converters (OPP-012), image to PDF (OPP-013), bulk (OPP-006).
+- **Weak-link tools it has (skip under the relatedness lens):** GIF, audio, video slideshow, invoice, AI face generator.
+- **Caution.** A competitor listing a tool shows the tool is buildable, not that people search for it. [E: inference; medium; https://image.pi7.org/; 2026-11-18]
+
+**Full read of the pi7 network (2026-11-18, three fetch agents; page text only, no traffic or ranking data).**
+
+- **Scale.** The English sitemap lists about 188 URLs, all flat tool pages with no blog or guides section, dated 2022-07-22 to 2026-10-26; Indonesian, Spanish and Russian sitemaps add about 49 translated pages. [E: fact; medium; https://image.pi7.org/static/sitemap.xml; 2026-11-18] The tool list shows 47 catalogue tools plus about 26 menu tools. [E: fact; medium; https://image.pi7.org/image-tool-list; 2026-11-18] pdf.pi7.org has about 100 PDF tools, audio.pi7.org about 30 and gif.pi7.org about 20. [E: fact; medium; https://pdf.pi7.org/; 2026-11-18]
+- **Per-size pattern.** About 25 compress-to-N-KB pages (5 KB to 2 MB, plus range pages), about ten JPG-to-PDF-under-N-KB pages, about 25 pixel, cm and inch size pages, and about eight exam pages (SSC, PAN, UPSC, PSC, TNPSC photo and signature, NEET, GATE). No Aadhaar page was seen. [E: fact; medium; https://image.pi7.org/static/sitemap.xml; 2026-11-18] The sample compress page has 350 to 400 words and 3 steps, no FAQ; the JPG-to-PDF page has about 650 words and 3 FAQs; the signature maker has about 1,000 words and 3 FAQs. Content depth is therefore well below the 1,200 to 3,300 words seen on other competitors, which bears on the A-002 word floor. [E: fact; low; https://image.pi7.org/compress-image-to-50kb; 2026-11-18]
+- **Processing is mixed and its claims conflict.** Signature maker, merge photo and signature, image to text (about 4 MB OCR engine download), and JPG to PDF say they run in the browser; compress and the AI enhancer upload to a server (25 MB cap, deleted after 20 or 30 minutes); the bulk resizer, collage and GIF sites say nothing is uploaded. Every page footer still says files are removed from a server after 30 minutes, and the privacy page says 20 to 25. [E: fact; medium; https://image.pi7.org/policy; 2026-11-18] A verified no-upload claim is a real edge for SizeTune.
+- **Money.** Free users see ads and a 5 to 7 second wait on compressor results; Pi7+ (Rs 49 per month, Rs 299 per year, UPI Autopay or card) removes ads and waiting and covers only image and PDF sites. [E: fact; medium; https://pro.pi7.org/plus; 2026-11-18] The policy names Google DoubleClick DART cookies and still contains a template placeholder. [E: fact; medium; https://image.pi7.org/policy; 2026-11-18] The terms limit use to personal, non-commercial and cap liability at 50 USD. [E: fact; medium; https://image.pi7.org/terms; 2026-11-18] SizeTune has no accounts or backend, so a paid tier is not a fit without new infrastructure. [E: fact; low; repo:.product/PRODUCT.md; 2026-11-18]
+- **Structure.** The collage, bulk resizer, GIF and audio sites link back to image.pi7.org, a cross-site linking pattern; the invoice and SmallJPG sites do not link back. [E: fact; medium; https://collage.pi7.org/; 2026-11-18]
+- **Regional language and exam tilt.** Hindi, Marathi and Tamil signature makers exist as separate pages; autocomplete returns suggestions for "hindi signature maker" and "tamil signature generator". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=hindi+signature+maker; 2026-11-18]
+- **More tools seen that map to existing specs** (no new opportunity needed, listed in A-022): colour palette from image, mirror, invert and black-to-white (effects), increase or reduce image resolution, increase size in MB, increase image DPI, Facebook profile and 512 by 512 sizes, passport photos by country and background colour, GIF compression for Discord, audio cutter, merge and converter.
+- **Not matched by any registered idea (registered now as Discovered):** PDF protect, unlock, redact and sign (OPP-055), Indian-language signature fonts (OPP-056), skin, wrinkle and blemish retouching (OPP-057).
+
+### Relatedness lens (2026-11-18, `full auto widen override`, added constraint: "the tool should be related to our other tools")
+
+New owner constraint: every tool should relate to the existing tools. No new research was run for this lens; it re-sorts the registry by how closely each idea shares the user task (preparing a photo, signature or document for a form upload), the engine (browser-side image or file processing) and the audience (people filling in exam or job forms). The grouping is my reading of the registry text, not measured user behaviour. [E: inference; low; repo:.product/opportunities.md; 2026-11-18]
+
+- **Core (same user task: get an image into upload limits):** OPP-001, 006, 008, 012, 014, 015, 016, 017, 018, 021, 022, 023, 031.
+- **Adjacent (same upload flow, different file type: documents):** OPP-003, 013, 019, 020, 024.
+- **Weak link (shares only the site, or only the audience):** OPP-027 date and time, OPP-028 text tools, OPP-030 QR, OPP-029 developer converters, OPP-032 small generators, OPP-033 audio and video. OPP-025 and OPP-026 (calculators, deferred) are the same: audience overlap at most.
+- **Effect:** no status, score or decision was changed. OPP-027, 028 and 030 are Ready for Implementation but weakly related; whether they stay is the owner's call (A-019).
+- **Not registered:** further core and adjacent candidates (for example a photo plus signature sheet for one upload, scanned-document cleanup, image DPI changer) have no evidence yet; the photo-and-signature combiner was dropped earlier for no demand evidence. [E: unknown; low; search:none run this pass; 2026-11-18]
+
 ## Registry
 
 | ID | Title | Status | Score | Confidence | Tier | Effort | Updated | Feature |
@@ -201,6 +234,29 @@ New owner direction in the command: do not judge ideas only by competition; the 
 | OPP-032 | Small generators: Roman numerals, number to words (rupees), random name picker | Discovered | 53 | Low | Backlog | S | 2026-11-17 | - |
 | OPP-033 | In-browser audio and video trim and convert | Discovered | 48 | Low | Backlog | L | 2026-11-17 | - |
 | OPP-034 | Tool hub, per-tool guide template and directory listings | Ready for Implementation | 67 | Low | Needs evidence | M | 2026-11-17 | FEATURE-012 |
+| OPP-035 | Signature maker (typed or drawn signature as a ready-to-resize image) | Ready for Implementation | 63 | Low | Needs evidence | M | 2026-11-18 | FEATURE-020 |
+| OPP-036 | Image or JPG to PDF under a KB limit | Ready for Implementation | 76 | Low | Needs evidence | M | 2026-11-18 | FEATURE-021 |
+| OPP-037 | Increase PDF size to a minimum KB | Ready for Implementation | 61 | Low | Needs evidence | M | 2026-11-18 | FEATURE-022 |
+| OPP-038 | Add name and date on a photo (exam photo caption) | Ready for Implementation | 68 | Low | Needs evidence | S | 2026-11-18 | FEATURE-023 |
+| OPP-039 | Merge photo and signature into one image | Ready for Implementation | 48 | Low | Backlog | S | 2026-11-18 | FEATURE-024 |
+| OPP-040 | Crop shapes and aspect ratio workbench (freehand, square, rounded corners, change aspect ratio, zoom out) | Ready for Implementation | 63 | Low | Needs evidence | M | 2026-11-18 | FEATURE-025 |
+| OPP-041 | Join images, photo collage and side-by-side | Ready for Implementation | 59 | Low | Needs evidence | M | 2026-11-18 | FEATURE-026 |
+| OPP-042 | Pixelate, blur and censor regions of an image | Ready for Implementation | 59 | Low | Needs evidence | S | 2026-11-18 | FEATURE-027 |
+| OPP-043 | Photo effects, borders and logo overlay (black and white, pixel art, border, white border, add logo) | Ready for Implementation | 59 | Low | Needs evidence | M | 2026-11-18 | FEATURE-028 |
+| OPP-044 | Colour picker from an image | Ready for Implementation | 58 | Low | Needs evidence | S | 2026-11-18 | FEATURE-029 |
+| OPP-045 | KB and MB size converter | Ready for Implementation | 57 | Low | Needs evidence | S | 2026-11-18 | FEATURE-030 |
+| OPP-046 | More format converters: AVIF and JFIF to JPG | Ready for Implementation | 63 | Low | Needs evidence | S | 2026-11-18 | FEATURE-031 |
+| OPP-047 | More social sizes: WhatsApp DP, YouTube banner and Instagram no-crop | Ready for Implementation | 53 | Low | Backlog | S | 2026-11-18 | FEATURE-032 |
+| OPP-048 | PDF layout tools: multiple pages per sheet and shipping-label cropper | Ready for Implementation | 60 | Low | Needs evidence | M | 2026-11-18 | FEATURE-033 |
+| OPP-049 | Word and PDF document conversion (Word to PDF, PDF to Word, Word to JPG, image to Word) | Approved | 52 | Low | Backlog | L | 2026-11-18 | FEATURE-034 |
+| OPP-050 | AI object, text and logo remover (and blemish or retouch) | Approved | 58 | Low | Needs evidence | L | 2026-11-18 | FEATURE-035 |
+| OPP-051 | AI image enhance: upscale, unblur and super-resolution | Approved | 58 | Low | Needs evidence | L | 2026-11-18 | FEATURE-036 |
+| OPP-052 | Photos to video, slideshow, JPG to MP4 and MP4 to JPG | Approved | 43 | Low | Backlog | L | 2026-11-18 | FEATURE-037 |
+| OPP-053 | Text to handwriting | Ready for Implementation | 47 | Low | Backlog | M | 2026-11-18 | FEATURE-038 |
+| OPP-054 | GIF tools, audio tool and invoice generator | Approved | 39 | Low | Backlog | L | 2026-11-18 | FEATURE-039 |
+| OPP-055 | PDF security and signing tools (protect, unlock, redact, sign) | Approved | 58 | Low | Needs evidence | L | 2026-11-18 | FEATURE-040 |
+| OPP-056 | Indian-language signature fonts (Hindi, Marathi, Tamil and others) | Ready for Implementation | 60 | Low | Needs evidence | S | 2026-11-18 | FEATURE-041 |
+| OPP-057 | Face and skin retouching (skin smoothing, wrinkles, blemishes) | Approved | 43 | Low | Backlog | L | 2026-11-18 | FEATURE-042 |
 
 ## Review Summary
 
@@ -242,6 +298,29 @@ Independent review by separate sub-agents (general-purpose agent following the i
 | 2026-11-17 | OPP-028 | approve | sourav | User: 'Defer Grade calculators, Finance calculators; Rest can be approved' (reply to the portfolio-pass decision sheet, 2026-11-17) | 0c5c13ffd3c9 | 0be57f486642 |
 | 2026-11-17 | OPP-030 | approve | sourav | User: 'Defer Grade calculators, Finance calculators; Rest can be approved' (reply to the portfolio-pass decision sheet, 2026-11-17) | 31576ee09635 | 1f828b01e1e7 |
 | 2026-11-17 | OPP-031 | approve | sourav | User: 'Defer Grade calculators, Finance calculators; Rest can be approved' (reply to the portfolio-pass decision sheet, 2026-11-17) | 7fdfeda84780 | 4dfaa32dc1c2 |
+| 2026-11-18 | OPP-035 | approve | sourav | User 2026-11-18: 'I approve all these - I would add all other as well from the https://image.pi7.org/' | fc73f9360c74 | 4b6962446cab |
+| 2026-11-18 | OPP-036 | approve | sourav | User 2026-11-18: 'I approve all these - I would add all other as well from the https://image.pi7.org/' | 3eaa999f7a72 | b6f958ff6df2 |
+| 2026-11-18 | OPP-037 | approve | sourav | User 2026-11-18: 'I approve all these - I would add all other as well from the https://image.pi7.org/' | 9734747608b7 | 67743bf563ac |
+| 2026-11-18 | OPP-038 | approve | sourav | User 2026-11-18: 'I approve all these - I would add all other as well from the https://image.pi7.org/' | 1a0d00b86bc2 | 25c12c1d94a2 |
+| 2026-11-18 | OPP-039 | approve | sourav | User 2026-11-18: 'I approve all these - I would add all other as well from the https://image.pi7.org/' | 15a938ad2969 | e95e028ebffc |
+| 2026-11-18 | OPP-040 | approve | sourav | User 2026-11-18: 'I approve all these - I would add all other as well from the https://image.pi7.org/' | 343490501d0d | 454374cfa536 |
+| 2026-11-18 | OPP-041 | approve | sourav | User 2026-11-18: 'I approve all these - I would add all other as well from the https://image.pi7.org/' | 1dbdbe8faba2 | 6af55ce2bbac |
+| 2026-11-18 | OPP-042 | approve | sourav | User 2026-11-18: 'I approve all these - I would add all other as well from the https://image.pi7.org/' | a9df4f6d477f | 480a45cca9e6 |
+| 2026-11-18 | OPP-043 | approve | sourav | User 2026-11-18: 'I approve all these - I would add all other as well from the https://image.pi7.org/' | bc5d683167d7 | 935b9df47d16 |
+| 2026-11-18 | OPP-044 | approve | sourav | User 2026-11-18: 'I approve all these - I would add all other as well from the https://image.pi7.org/' | fa9dc6d8435a | ace4b8a94691 |
+| 2026-11-18 | OPP-045 | approve | sourav | User 2026-11-18: 'I approve all these - I would add all other as well from the https://image.pi7.org/' | 108cb8045693 | 5bfcad05ad9a |
+| 2026-11-18 | OPP-046 | approve | sourav | User 2026-11-18: 'I approve all these - I would add all other as well from the https://image.pi7.org/' | bea8e55be8ab | daf037f5f9d6 |
+| 2026-11-18 | OPP-047 | approve | sourav | User 2026-11-18: 'I approve all these - I would add all other as well from the https://image.pi7.org/' | 8f5944168506 | c36055f66102 |
+| 2026-11-18 | OPP-048 | approve | sourav | User 2026-11-18: 'I approve all these - I would add all other as well from the https://image.pi7.org/' | baeaeb26cdb5 | 81a483abe444 |
+| 2026-11-18 | OPP-049 | approve | sourav | User 2026-11-18: 'Approve all six' | a84b219728e7 | c9616d48fa81 |
+| 2026-11-18 | OPP-050 | approve | sourav | User 2026-11-18: 'Approve all six' | 4fefb8cf149d | c3994c868c3b |
+| 2026-11-18 | OPP-051 | approve | sourav | User 2026-11-18: 'Approve all six' | 3ea1882b7452 | 4ad0e04ae73e |
+| 2026-11-18 | OPP-052 | approve | sourav | User 2026-11-18: 'Approve all six' | 6c4bf62f2d9f | df079896b561 |
+| 2026-11-18 | OPP-053 | approve | sourav | User 2026-11-18: 'Approve all six' | 81a0e9c9afc6 | 7a5048341968 |
+| 2026-11-18 | OPP-054 | approve | sourav | User 2026-11-18: 'Approve all six' | 4988136c64c8 | 8d176983b9ef |
+| 2026-11-18 | OPP-055 | approve | sourav | User 2026-11-18: 'Approve all three' | 680d678df9e5 | 850e7874b876 |
+| 2026-11-18 | OPP-056 | approve | sourav | User 2026-11-18: 'Approve all three' | 3c622bef4be0 | 9eae534ba639 |
+| 2026-11-18 | OPP-057 | approve | sourav | User 2026-11-18: 'Approve all three' | 86a7b9c2382e | 827ac7afed63 |
 
 ## Opportunity Details
 
@@ -791,3 +870,371 @@ Independent review by separate sub-agents (general-purpose agent following the i
 - **Dependencies:** OPP-001, OPP-004, OPP-005.
 - **Ratings:** user_value=3,strategic_alignment=5,market_opportunity=3,competitive_differentiation=2,business_impact=3,implementation_feasibility=4
 - **Reviewer notes:**  Independent review (round 6): absence claim re-tagged as inference; the 'sitemap and trust pages missing' claim was partly false and is removed; passes admission as foundation work only. Ratings lowered; score recomputed.
+
+### OPP-035 — Signature maker (typed or drawn signature as a ready-to-resize image)
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** People filling forms need a signature image and some have none to scan; autocomplete shows "signature maker online", "signature maker online jpg" and "signature maker online handwritten". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=signature+maker+online; 2026-11-18]
+- **Proposed solution:** Draw or type a signature in the browser, export a transparent PNG or a white-background JPG, and hand it straight to the signature resizer.
+- **Why it matters:** It feeds the existing signature tool, so a user with no scan finishes in one site. pi7 lists a signature maker. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Evidence:** Autocomplete shows the query exists; no volume, no page-one read, no pi7 usage data. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and generic signature generators; strength not assessed.
+- **Expected value:** Unknown; likely low.
+- **Effort:** M
+- **Risks:** Many incumbents; a typed-font signature may not be accepted as a valid signature on some forms; font licences need checking.
+- **Dependencies:** OPP-005 (hub).
+- **Ratings:** user_value=3,strategic_alignment=4,market_opportunity=3,competitive_differentiation=2,business_impact=3,implementation_feasibility=4
+- **Reviewer notes:** Not independently reviewed; registered at owner request after the pi7 catalogue read (2026-11-18). Stays Discovered until reviewed.
+
+### OPP-036 — Image or JPG to PDF under a KB limit
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Forms ask for a document as a PDF under a size cap; autocomplete shows "jpg to pdf under 100kb" with many variants ("within 100kb", "less than 100kb", "under 100kb without losing quality"). [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=jpg+to+pdf+under+100kb; 2026-11-18]
+- **Proposed solution:** Turn one or more images into a PDF and tune image quality until the PDF fits a chosen KB cap, in the browser, using the existing KB-targeting engine and a permissive PDF library.
+- **Why it matters:** It joins what SizeTune does best (hit a KB target) to the PDF step. pi7 runs about ten separate "JPG to PDF under N KB" pages. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Evidence:** Autocomplete only; no volume or page-one read. Overlaps OPP-013 (image-to-PDF, Discovered) and FEATURE-003 (PDF compression). [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7, ilovepdf and similar; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** M
+- **Risks:** Sequencing: A-003 asks PDF work to wait for FEATURE-003 Phase 0; page-per-size copies repeat the doorway risk (A-002, A-013); a PDF library licence must be permissive.
+- **Dependencies:** OPP-003, OPP-013, OPP-005.
+- **Ratings:** user_value=4,strategic_alignment=5,market_opportunity=4,competitive_differentiation=3,business_impact=3,implementation_feasibility=3
+- **Reviewer notes:** Not independently reviewed; registered at owner request after the pi7 catalogue read (2026-11-18). Stays Discovered until reviewed.
+
+### OPP-037 — Increase PDF size to a minimum KB
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Some forms require a PDF of at least a minimum size; autocomplete shows "increase pdf size to 200kb" and "change pdf size to 200kb". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=increase+pdf+size+to+200kb; 2026-11-18]
+- **Proposed solution:** Pad a PDF to a chosen minimum KB in the browser without changing how it looks, as SizeTune already does for images.
+- **Why it matters:** It mirrors the minimum-KB feature SizeTune has for images. pi7 lists an "Increase PDF Size" tool. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Evidence:** Autocomplete only; no volume or page-one read. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and generic PDF sites; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** M
+- **Risks:** Padding must not corrupt the file or trip a portal's validator; the audience is narrow; needs the same PDF library decision as OPP-036.
+- **Dependencies:** OPP-003, OPP-036.
+- **Ratings:** user_value=3,strategic_alignment=4,market_opportunity=3,competitive_differentiation=3,business_impact=2,implementation_feasibility=3
+- **Reviewer notes:** Not independently reviewed; registered at owner request after the pi7 catalogue read (2026-11-18). Stays Discovered until reviewed.
+
+### OPP-038 — Add name and date on a photo (exam photo caption)
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Several exam bodies ask for a photo with the candidate name and date printed below; autocomplete shows "add name and date on photo for psc" and "add name and date in photo for tnpsc". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=add+name+and+date+on+photo; 2026-11-18]
+- **Proposed solution:** Place a name and date caption strip below or on a photo in the browser, with font and size controls, then run it through the KB resizer.
+- **Why it matters:** It is a form-photo step that sits next to resizing. pi7 lists "Add Name and Date on Photo". [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Evidence:** Autocomplete only; the exam names suggest a regional audience; no volume or page-one read. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and small tools; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** S
+- **Risks:** Caption layout rules differ by exam and I have not verified any; wrong layout would get a form rejected.
+- **Dependencies:** OPP-022 (canvas text tools) could share code.
+- **Ratings:** user_value=4,strategic_alignment=4,market_opportunity=3,competitive_differentiation=2,business_impact=3,implementation_feasibility=4
+- **Reviewer notes:** Not independently reviewed; registered at owner request after the pi7 catalogue read (2026-11-18). Stays Discovered until reviewed.
+
+### OPP-039 — Merge photo and signature into one image
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Some forms want photo and signature in a single image; autocomplete for "merge photo and signature in one image" returned no suggestions, so there is no query evidence. [E: unknown; low; https://suggestqueries.google.com/complete/search?client=firefox&q=merge+photo+and+signature+in+one+image; 2026-11-18]
+- **Proposed solution:** Stack a photo and a signature on one canvas at set sizes and export under a KB cap.
+- **Why it matters:** It fits the form workflow, but pi7 listing it is the only signal. [E: fact; low; https://image.pi7.org/; 2026-11-18]
+- **Evidence:** No demand signal. It was dropped in the portfolio pass for the same reason; registered now at your request. [E: unknown; low; search:none; 2026-11-18]
+- **Competitive context:** pi7 and a few tools; strength not assessed.
+- **Expected value:** Unknown; likely very low.
+- **Effort:** S
+- **Risks:** No demand evidence; narrow use.
+- **Dependencies:** OPP-001.
+- **Ratings:** user_value=2,strategic_alignment=3,market_opportunity=2,competitive_differentiation=2,business_impact=2,implementation_feasibility=4
+- **Reviewer notes:** Not independently reviewed; registered at owner request after the pi7 catalogue read (2026-11-18). Stays Discovered until reviewed.
+
+### OPP-040 — Crop shapes and aspect ratio workbench (freehand, square, rounded corners, change aspect ratio, zoom out)
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Users crop to free shapes, round corners or a new aspect ratio; autocomplete returns suggestions for "freehand crop image online", "round corners image online" and "change aspect ratio of image online". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=freehand+crop+image+online; 2026-11-18]
+- **Proposed solution:** One crop-and-shape workbench with mode tabs, not one page per query.
+- **Why it matters:** Shares the crop UI already in the tool and the KB engine. pi7 lists this tool. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Evidence:** No volume, SERP or user statement was gathered. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and others; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** M
+- **Risks:** Overlaps OPP-022 (circle crop); per-query pages would repeat the doorway risk (A-013).
+- **Dependencies:** OPP-022, OPP-005.
+- **Ratings:** user_value=3,strategic_alignment=4,market_opportunity=3,competitive_differentiation=2,business_impact=3,implementation_feasibility=4
+- **Reviewer notes:** Not independently reviewed; registered at owner request after the pi7 catalogue read (2026-11-18). Stays Discovered until reviewed.
+
+### OPP-041 — Join images, photo collage and side-by-side
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Users combine several photos into one image; autocomplete returns suggestions for "join images online" and "photo collage maker online". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=join+images+online; 2026-11-18]
+- **Proposed solution:** One workbench that joins images horizontally, vertically or in a grid, then exports under a KB cap.
+- **Why it matters:** Reuses canvas and KB code; fits form photos (OPP-039). pi7 lists this tool. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Evidence:** No volume, SERP or user statement was gathered. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and others; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** M
+- **Risks:** Collage makers are crowded; grid templates add design work; overlaps OPP-022 side-by-side.
+- **Dependencies:** OPP-022, OPP-039.
+- **Ratings:** user_value=3,strategic_alignment=3,market_opportunity=3,competitive_differentiation=2,business_impact=3,implementation_feasibility=4
+- **Reviewer notes:** Not independently reviewed; registered at owner request after the pi7 catalogue read (2026-11-18). Stays Discovered until reviewed.
+
+### OPP-042 — Pixelate, blur and censor regions of an image
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Users hide parts of an image; autocomplete returns suggestions for "pixelate image online" and "blur face in photo online". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=pixelate+image+online; 2026-11-18]
+- **Proposed solution:** User-drawn rectangles or brush regions that are pixelated, blurred or blacked out. Automatic face detection is out of scope until a permissive in-browser detector is verified.
+- **Why it matters:** Small canvas tool beside the resizer. pi7 lists this tool. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Evidence:** No volume, SERP or user statement was gathered. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and others; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** S
+- **Risks:** Overlaps OPP-022 (blur); face auto-detect needs a model with unverified licence; do not call it a security redaction tool.
+- **Dependencies:** OPP-022.
+- **Ratings:** user_value=3,strategic_alignment=3,market_opportunity=3,competitive_differentiation=2,business_impact=3,implementation_feasibility=4
+- **Reviewer notes:** Not independently reviewed; registered at owner request after the pi7 catalogue read (2026-11-18). Stays Discovered until reviewed.
+
+### OPP-043 — Photo effects, borders and logo overlay (black and white, pixel art, border, white border, add logo)
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Users add frames and effects; autocomplete returns suggestions for "add border to photo online". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=add+border+to+photo+online; 2026-11-18]
+- **Proposed solution:** One effects workbench: borders, grayscale, pixel art and a logo overlay, exported under a KB cap.
+- **Why it matters:** Cheap canvas operations on the shared engine. pi7 lists this tool. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Evidence:** No volume, SERP or user statement was gathered. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and others; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** M
+- **Risks:** Crowded and low differentiation; overlaps OPP-022 (watermark, grayscale).
+- **Dependencies:** OPP-022.
+- **Ratings:** user_value=3,strategic_alignment=3,market_opportunity=3,competitive_differentiation=2,business_impact=3,implementation_feasibility=4
+- **Reviewer notes:** Not independently reviewed; registered at owner request after the pi7 catalogue read (2026-11-18). Stays Discovered until reviewed.
+
+### OPP-044 — Colour picker from an image
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Users read a colour code from an image; autocomplete returns suggestions for "color picker from image" and "color picker from image online". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=color+picker+from+image; 2026-11-18]
+- **Proposed solution:** Click a pixel to get HEX, RGB and HSL values, with a copy button.
+- **Why it matters:** Tiny, in-browser, no upload. pi7 lists this tool. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Evidence:** No volume, SERP or user statement was gathered. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and others; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** S
+- **Risks:** Many extensions and sites exist; weak tie to KB resizing; low differentiation.
+- **Dependencies:** OPP-005.
+- **Ratings:** user_value=3,strategic_alignment=3,market_opportunity=3,competitive_differentiation=2,business_impact=2,implementation_feasibility=5
+- **Reviewer notes:** Not independently reviewed; registered at owner request after the pi7 catalogue read (2026-11-18). Stays Discovered until reviewed.
+
+### OPP-045 — KB and MB size converter
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Users convert file sizes; autocomplete returns "convert mb to kb" with "pdf" and "photo" variants. [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=convert+mb+to+kb; 2026-11-18]
+- **Proposed solution:** A small converter tied to size limits, with a link to the resizer. Single page, no per-unit variants.
+- **Why it matters:** Directly about KB limits, the site's core topic. pi7 lists this tool. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Evidence:** No volume, SERP or user statement was gathered. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and others; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** S
+- **Risks:** Search results are dominated by Google's own converter box; likely very low click-through.
+- **Dependencies:** OPP-005.
+- **Ratings:** user_value=2,strategic_alignment=4,market_opportunity=3,competitive_differentiation=2,business_impact=2,implementation_feasibility=5
+- **Reviewer notes:** Not independently reviewed; registered at owner request after the pi7 catalogue read (2026-11-18). Stays Discovered until reviewed.
+
+### OPP-046 — More format converters: AVIF and JFIF to JPG
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Users convert newer formats; autocomplete returns suggestions for "avif to jpg" and "jfif to jpg". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=avif+to+jpg; 2026-11-18]
+- **Proposed solution:** Extend the converters (FEATURE-006) with AVIF and JFIF input; reuse the same workbench. HEIC stays deferred (OPP-002), PNG to ICO is covered by OPP-017.
+- **Why it matters:** Reuses shipped converter code. pi7 lists this tool. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Evidence:** No volume, SERP or user statement was gathered. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and others; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** S
+- **Risks:** The engine rejected AVIF before (R-003); AVIF decode support differs by browser; many converters exist.
+- **Dependencies:** OPP-012 (implemented), OPP-002.
+- **Ratings:** user_value=3,strategic_alignment=4,market_opportunity=3,competitive_differentiation=2,business_impact=3,implementation_feasibility=4
+- **Reviewer notes:** Not independently reviewed; registered at owner request after the pi7 catalogue read (2026-11-18). Stays Discovered until reviewed.
+
+### OPP-047 — More social sizes: WhatsApp DP, YouTube banner and Instagram no-crop
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Users resize for social images; autocomplete returns suggestions for "whatsapp dp size" and "youtube banner size". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=whatsapp+dp+size; 2026-11-18]
+- **Proposed solution:** Add presets to the existing social resizers (FEATURE-009); no new pages beyond what the hub needs.
+- **Why it matters:** Reuses shipped resizer code. pi7 lists this tool. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Evidence:** No volume, SERP or user statement was gathered. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and others; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** S
+- **Risks:** Weak tie to forms; strong incumbents (Canva); thin-page risk.
+- **Dependencies:** OPP-016 (implemented).
+- **Ratings:** user_value=2,strategic_alignment=3,market_opportunity=3,competitive_differentiation=2,business_impact=2,implementation_feasibility=5
+- **Reviewer notes:** Not independently reviewed; registered at owner request after the pi7 catalogue read (2026-11-18). Stays Discovered until reviewed.
+
+### OPP-048 — PDF layout tools: multiple pages per sheet and shipping-label cropper
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Users lay out PDF pages; autocomplete returns suggestions for "multiple pages per sheet pdf" and "flipkart label cropper". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=multiple+pages+per+sheet+pdf; 2026-11-18]
+- **Proposed solution:** In-browser N-up page layout and a label cropper for seller labels using a permissive PDF library. The pi7 PDF editor is out of scope (too large).
+- **Why it matters:** Extends the PDF family. pi7 lists this tool. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Evidence:** No volume, SERP or user statement was gathered. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and others; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** M
+- **Risks:** Depends on the PDF library choice and sequencing (A-003); label cropper has an e-commerce seller audience; overlaps OPP-019.
+- **Dependencies:** OPP-019, OPP-003, OPP-036.
+- **Ratings:** user_value=3,strategic_alignment=3,market_opportunity=3,competitive_differentiation=3,business_impact=3,implementation_feasibility=3
+- **Reviewer notes:** Not independently reviewed; registered at owner request after the pi7 catalogue read (2026-11-18). Stays Discovered until reviewed.
+
+### OPP-049 — Word and PDF document conversion (Word to PDF, PDF to Word, Word to JPG, image to Word)
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Users convert Word and PDF files; autocomplete returns suggestions for "word to pdf online". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=word+to+pdf+online; 2026-11-18]
+- **Proposed solution:** Document conversion between Word, PDF and images.
+- **Why it matters:** pi7 lists these tools on a separate PDF site. pi7 lists this tool. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Evidence:** No volume, SERP or user statement was gathered. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and others; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** L
+- **Risks:** Faithful Word rendering is not realistically client-side; a server would break the no-upload design; strong incumbents.
+- **Dependencies:** OPP-003.
+- **Ratings:** user_value=3,strategic_alignment=2,market_opportunity=4,competitive_differentiation=2,business_impact=3,implementation_feasibility=1
+- **Reviewer notes:** Not independently reviewed; registered at owner request after the pi7 catalogue read (2026-11-18). Stays Discovered until reviewed.
+
+### OPP-050 — AI object, text and logo remover (and blemish or retouch)
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Users remove objects from photos; autocomplete returns suggestions for "remove object from photo online free". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=remove+object+from+photo+online; 2026-11-18]
+- **Proposed solution:** In-browser inpainting to remove selected objects, text or logos.
+- **Why it matters:** pi7 hosts this on a separate vision subdomain. pi7 lists this tool. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Evidence:** No volume, SERP or user statement was gathered. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and others; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** L
+- **Risks:** Needs an in-browser inpainting model; weight licences, size and quality are unverified; weak tie to the core.
+- **Dependencies:** OPP-031.
+- **Ratings:** user_value=3,strategic_alignment=3,market_opportunity=4,competitive_differentiation=2,business_impact=3,implementation_feasibility=2
+- **Reviewer notes:** Not independently reviewed; registered at owner request after the pi7 catalogue read (2026-11-18). Stays Discovered until reviewed.
+
+### OPP-051 — AI image enhance: upscale, unblur and super-resolution
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Users enlarge and sharpen images; autocomplete returns suggestions for "upscale image online free". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=upscale+image+online+free; 2026-11-18]
+- **Proposed solution:** In-browser upscaling and sharpening with a self-hosted model.
+- **Why it matters:** pi7 lists upscale, unblur and super resolution. pi7 lists this tool. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Evidence:** No volume, SERP or user statement was gathered. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and others; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** L
+- **Risks:** Model weight licences unverified (an upscaler was dropped earlier for this); download size and mobile memory unknown; heavy competition.
+- **Dependencies:** OPP-031.
+- **Ratings:** user_value=3,strategic_alignment=3,market_opportunity=4,competitive_differentiation=2,business_impact=3,implementation_feasibility=2
+- **Reviewer notes:** Not independently reviewed; registered at owner request after the pi7 catalogue read (2026-11-18). Stays Discovered until reviewed.
+
+### OPP-052 — Photos to video, slideshow, JPG to MP4 and MP4 to JPG
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Users make videos from photos; autocomplete returns suggestions for "photos to video online". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=photos+to+video+online; 2026-11-18]
+- **Proposed solution:** In-browser video from images and frames from video.
+- **Why it matters:** pi7 lists these tools. pi7 lists this tool. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Evidence:** No volume, SERP or user statement was gathered. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and others; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** L
+- **Risks:** Weak link to the core (relatedness lens); needs a video encoder or WebCodecs; codec licence questions (OPP-033).
+- **Dependencies:** OPP-033.
+- **Ratings:** user_value=2,strategic_alignment=2,market_opportunity=3,competitive_differentiation=2,business_impact=2,implementation_feasibility=2
+- **Reviewer notes:** Not independently reviewed; registered at owner request after the pi7 catalogue read (2026-11-18). Stays Discovered until reviewed.
+
+### OPP-053 — Text to handwriting
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Users render text as handwriting; autocomplete returns suggestions for "text to handwriting online". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=text+to+handwriting+online; 2026-11-18]
+- **Proposed solution:** Turn typed text into a handwriting-style image or PDF page.
+- **Why it matters:** pi7 lists it among its most-used tools. pi7 lists this tool. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Evidence:** No volume, SERP or user statement was gathered. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and others; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** M
+- **Risks:** Weak link to the core; font licences; strong incumbents.
+- **Dependencies:** OPP-035.
+- **Ratings:** user_value=2,strategic_alignment=2,market_opportunity=3,competitive_differentiation=2,business_impact=2,implementation_feasibility=4
+- **Reviewer notes:** Not independently reviewed; registered at owner request after the pi7 catalogue read (2026-11-18). Stays Discovered until reviewed.
+
+### OPP-054 — GIF tools, audio tool and invoice generator
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** pi7 runs separate GIF, audio and invoice sub-sites. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Proposed solution:** GIF maker or compressor, audio tools and an invoice generator.
+- **Why it matters:** pi7 lists them as other sites. pi7 lists this tool. [E: fact; medium; https://image.pi7.org/; 2026-11-18]
+- **Evidence:** No volume, SERP or user statement was gathered. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and others; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** L
+- **Risks:** Unrelated to the core under the relatedness lens; GIF encoding and audio need heavy libraries; no demand check run.
+- **Dependencies:** OPP-033.
+- **Ratings:** user_value=2,strategic_alignment=1,market_opportunity=3,competitive_differentiation=2,business_impact=2,implementation_feasibility=2
+- **Reviewer notes:** Not independently reviewed; registered at owner request after the pi7 catalogue read (2026-11-18). Stays Discovered until reviewed.
+
+### OPP-055 — PDF security and signing tools (protect, unlock, redact, sign)
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Users lock, unlock and sign PDFs; autocomplete returns suggestions for "protect pdf with password online", "unlock pdf online" and "sign pdf online free". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=sign+pdf+online+free; 2026-11-18]
+- **Proposed solution:** In-browser PDF sign (draw or typed signature from OPP-035), redact, and open password-protected PDFs.
+- **Why it matters:** pdf.pi7.org lists sign, protect, unlock and redact tools. [E: fact; medium; https://pdf.pi7.org/; 2026-11-18]
+- **Evidence:** No volume, SERP or user statement was gathered. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and others; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** L
+- **Risks:** Encrypting needs a library that supports it (pdf-lib does not encrypt); redaction must truly remove content; heavy incumbents.
+- **Dependencies:** OPP-035, OPP-003, OPP-019.
+- **Ratings:** user_value=3,strategic_alignment=3,market_opportunity=4,competitive_differentiation=2,business_impact=3,implementation_feasibility=2
+- **Reviewer notes:** Not independently reviewed; registered after the full pi7 read (2026-11-18). Stays Discovered until you decide.
+
+### OPP-056 — Indian-language signature fonts (Hindi, Marathi, Tamil and others)
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Users want a signature in their own script; autocomplete returns suggestions for "hindi signature maker" and "tamil signature generator". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=hindi+signature+maker; 2026-11-18]
+- **Proposed solution:** Add a language and script selector with open-licence Indic fonts to the signature maker (FEATURE-020), as one tool with a selector, not one page per language.
+- **Why it matters:** pi7 runs separate Hindi, Marathi and Tamil signature pages. [E: fact; medium; https://image.pi7.org/image-tool-list; 2026-11-18]
+- **Evidence:** No volume, SERP or user statement was gathered. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and others; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** S
+- **Risks:** Font licences and quality of Indic handwriting fonts are unchecked; per-language pages would repeat the doorway risk.
+- **Dependencies:** OPP-035.
+- **Ratings:** user_value=3,strategic_alignment=4,market_opportunity=3,competitive_differentiation=2,business_impact=2,implementation_feasibility=4
+- **Reviewer notes:** Not independently reviewed; registered after the full pi7 read (2026-11-18). Stays Discovered until you decide.
+
+### OPP-057 — Face and skin retouching (skin smoothing, wrinkles, blemishes)
+
+- **Category:** product extension
+- **Source direction:** competitor gap
+- **Problem:** Users retouch portraits; autocomplete returns suggestions for "skin retouching online free" and "skin smoothing online free". [E: fact; low; https://suggestqueries.google.com/complete/search?client=firefox&q=skin+retouching+online+free; 2026-11-18]
+- **Proposed solution:** Simple in-browser skin smoothing and blemish removal on a brushed area.
+- **Why it matters:** pi7 lists skin, facial and wrinkle retouching pages. [E: fact; medium; https://image.pi7.org/image-tool-list; 2026-11-18]
+- **Evidence:** No volume, SERP or user statement was gathered. [E: unknown; low; search:none beyond autocomplete; 2026-11-18]
+- **Competitive context:** pi7 and others; strength not assessed.
+- **Expected value:** Unknown.
+- **Effort:** L
+- **Risks:** Weak tie to the core; face editing is sensitive and non-trivial; may need a model with unverified licence.
+- **Dependencies:** OPP-050.
+- **Ratings:** user_value=2,strategic_alignment=2,market_opportunity=3,competitive_differentiation=2,business_impact=2,implementation_feasibility=2
+- **Reviewer notes:** Not independently reviewed; registered after the full pi7 read (2026-11-18). Stays Discovered until you decide.
