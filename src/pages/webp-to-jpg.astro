@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
 import ImageTool from '../components/ImageTool.tsx';
 import Hero from '../components/Hero.astro';
 import { webApplicationLd, proseClass } from './_seo';
@@ -77,4 +78,5 @@ const jsonLd = webApplicationLd('SizeTune: convert WebP to JPG', '/webp-to-jpg/'
     <h3>Can I convert PNG files too?</h3>
     <p>Yes. Use the <a href="/png-to-jpg/">PNG to JPG page</a>.</p>
   </div>
+  <RelatedTools path="/webp-to-jpg/" />
 </Base>

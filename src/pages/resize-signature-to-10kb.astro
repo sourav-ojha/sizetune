@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
 import SignatureTool from '../components/SignatureTool.tsx';
 import Hero from '../components/Hero.astro';
 import { webApplicationLd, proseClass } from './_seo';
@@ -103,4 +104,5 @@ const jsonLd = webApplicationLd('SizeTune: resize signature to 10 KB', '/resize-
       <a href="/">SizeTune home page</a> for the general image tool.
     </p>
   </div>
+  <RelatedTools path="/resize-signature-to-10kb/" />
 </Base>

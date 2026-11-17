@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
 import SignatureTool from '../components/SignatureTool.tsx';
 import Hero from '../components/Hero.astro';
 import { webApplicationLd, proseClass } from './_seo';
@@ -139,4 +140,5 @@ const jsonLd = webApplicationLd('SizeTune: resize signature', '/resize-signature
       cropping. If your form caps a signature at 10 KB, there is a <a href="/resize-signature-to-10kb/">page that starts at that limit</a>.
     </p>
   </div>
+  <RelatedTools path="/resize-signature/" />
 </Base>

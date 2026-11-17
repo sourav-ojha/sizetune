@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
 import ImageTool from '../components/ImageTool.tsx';
 import Hero from '../components/Hero.astro';
 import { webApplicationLd, proseClass } from './_seo';
@@ -76,4 +77,5 @@ const jsonLd = webApplicationLd('SizeTune: convert PNG to JPG', '/png-to-jpg/', 
     <h3>Why does the quality look slightly different?</h3>
     <p>JPG compresses by discarding fine detail. The tool saves at quality 85 out of 100, but a close look at sharp edges can show small differences from the PNG.</p>
   </div>
+  <RelatedTools path="/png-to-jpg/" />
 </Base>

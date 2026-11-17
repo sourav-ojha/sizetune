@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
 import RotateTool from '../components/RotateTool.tsx';
 import Hero from '../components/Hero.astro';
 import { webApplicationLd, proseClass } from './_seo';
@@ -101,4 +102,5 @@ const jsonLd = webApplicationLd('SizeTune: rotate or flip an image', '/rotate-im
       No. The turning happens in your browser. Read the <a href="/privacy/">privacy page</a> for details.
     </p>
   </div>
+  <RelatedTools path="/rotate-image/" />
 </Base>
