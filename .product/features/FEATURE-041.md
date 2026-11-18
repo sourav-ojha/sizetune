@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-041
 opportunity: OPP-056
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-18
 ---
@@ -111,3 +112,7 @@ Processed locally in the browser; no file content leaves the device; no retentio
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** Each AC via unit tests, Playwright e2e and the network log; NFR via `pnpm run verify:html` and `verify:privacy`.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-19 | feat/feature-041-indian-language-signature-fonts | AC-1 to AC-4: a Language selector in the Type mode of the signature maker (English, Hindi, Marathi, Tamil in that order); Hindi and Marathi draw in Kalam (Devanagari), Tamil in Kavivanar; the chosen font's file is requested only after its language is chosen and text typed (network-tested); a note lists letters from another script and a fallback font draws them; the name box carries the language code; page copy and the fonts FAQ updated; no new page (FR-4) | none | owner review of page copy and of the two font choices; a native-speaker look at how Kalam and Kavivanar render real names (only rendering and the font being applied were tested, not typographic quality); decide whether to measure usage and which languages come next | rulings: fonts are Kalam and Kavivanar, both SIL OFL 1.1, added as @fontsource/kalam and @fontsource/kavivanar 5.3.0 (the same publisher and version as the three fonts already shipped): this is the one new dependency of the run, made because the spec requires self-hosted open-licence fonts and asks the implementer to propose them, so please review it; only the devanagari and tamil subsets are imported (no Latin subset), so Latin letters in an Indian-script name use the fallback and the note says so; the font-face rules are in the signature maker page only and the browser downloads a font file only when text in it is drawn; Indic fonts live in INDIC_FONTS apart from FONTS so the other tools that list FONTS are unchanged. also changed: tests/engine/audit3.test.ts fuzz test got a 60 s timeout (about 2 s alone, 5.7 s under the full parallel suite, over the 5 s default). verified: check 0 errors, build 0, verify:html(:strict) OK, verify:privacy OK, 1118 unit pass, e2e signature-maker 14/14 on each of chrome, webkit and firefox, axe desktop and mobile on all three; no independent reviewer was used, self-review only |

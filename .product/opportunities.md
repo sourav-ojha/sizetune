@@ -255,7 +255,7 @@ New owner constraint: every tool should relate to the existing tools. No new res
 | OPP-053 | Text to handwriting | Implemented | 47 | Low | Backlog | M | 2026-11-19 | FEATURE-038 |
 | OPP-054 | GIF tools, audio tool and invoice generator | Approved | 39 | Low | Backlog | L | 2026-11-18 | FEATURE-039 |
 | OPP-055 | PDF security and signing tools (protect, unlock, redact, sign) | Approved | 58 | Low | Needs evidence | L | 2026-11-18 | FEATURE-040 |
-| OPP-056 | Indian-language signature fonts (Hindi, Marathi, Tamil and others) | Ready for Implementation | 60 | Low | Needs evidence | S | 2026-11-18 | FEATURE-041 |
+| OPP-056 | Indian-language signature fonts (Hindi, Marathi, Tamil and others) | Implemented | 60 | Low | Needs evidence | S | 2026-11-19 | FEATURE-041 |
 | OPP-057 | Face and skin retouching (skin smoothing, wrinkles, blemishes) | Approved | 43 | Low | Backlog | L | 2026-11-18 | FEATURE-042 |
 
 ## Review Summary
