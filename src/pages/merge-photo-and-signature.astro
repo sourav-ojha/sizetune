@@ -1,0 +1,68 @@
+---
+import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import MergeTool from '../components/MergeTool.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Merge Photo and Signature into One Image | SizeTune';
+const description =
+  'Put a photo and a signature on one picture, stacked or side by side, then shrink it to the KB limit an upload form asks for. Done in your browser.';
+const jsonLd = webApplicationLd('SizeTune: merge photo and signature', '/merge-photo-and-signature/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/merge-photo-and-signature/" jsonLd={jsonLd}>
+  <Hero title="Merge a photo and a signature" lead="Some forms want your photo and signature as a single image. Add both, choose stacked or side by side, set a size limit, and download one picture. Nothing is uploaded." />
+
+  <MergeTool client:load />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This tool works inside your browser, so it will not run while JavaScript is turned off. Enable JavaScript and
+      reload to merge your pictures. The notes below explain how the layouts work.
+    </p>
+  </noscript>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>When you need one picture</h2>
+    <p>
+      Most upload forms take a photo and a signature as two separate files, and for those the <a href="/resize-image-to-50kb/">photo resizer</a> and the <a href="/resize-signature/">signature resizer</a> are
+      the right tools. A few forms ask for both on a single image, often with one size limit. This page puts the two
+      pictures together without overlapping them and then shrinks the result to your limit.
+    </p>
+
+    <h2>Stacked or side by side</h2>
+    <ul>
+      <li><strong>Photo above signature.</strong> Both pictures are scaled to the output width you choose, with the photo on top and the signature below. A wide signature keeps its shape and the whole image is taller than it is wide.</li>
+      <li><strong>Side by side.</strong> Both pictures sit on one row at the same height, and together they fill the output width. This gives a wide, short image, but each picture gets less room, so a small signature can become hard to read.</li>
+    </ul>
+
+    <h2>Output width and size limit</h2>
+    <p>
+      The output width sets how many pixels wide the merged picture is. Wider means more detail and a larger file. The
+      size limit is passed to the resizer on this page, which lowers the JPEG quality and then the pixel size until the
+      file fits. If the limit is too small for the picture, the resizer tells you what it reached instead of pretending.
+    </p>
+
+    <h2>Tips</h2>
+    <ul>
+      <li>Crop the signature to its ink first with the <a href="/resize-signature/">signature resizer</a> so it is not mostly white space.</li>
+      <li>Check your form's rules: some want the signature in a fixed position or size, which this page does not set.</li>
+      <li>A white background is added behind both pictures. Transparent parts of a PNG become white.</li>
+    </ul>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Does the merged picture lose quality?</h3>
+    <p>
+      The pictures are drawn onto a new canvas and saved as a JPEG, so some detail is lost, and more is lost the lower
+      your size limit is. Keep the original files.
+    </p>
+    <h3>Can I change which one goes first?</h3>
+    <p>
+      The photo is always first, above or on the left. If your form needs the other order, merge them here and tell the
+      form where each part is, or ask whether it accepts two files.
+    </p>
+    <h3>Are my pictures uploaded?</h3>
+    <p>
+      No. They are merged in your browser and gone when you close or reload the page. Read the <a href="/privacy/">privacy page</a> for details.
+    </p>
+  </div>
+  <RelatedTools path="/merge-photo-and-signature/" />
+</Base>

@@ -41,6 +41,7 @@ export const TOOLS: Tool[] = [
   { href: '/qr-code-generator/', title: 'QR code generator', family: 'generators', blurb: 'Make a QR code for a web address, text or Wi-Fi network and download it as PNG or SVG.', related: ['/text-tools/', '/', '/check-image-size/'] },
   { href: '/signature-maker/', title: 'Signature maker', family: 'signature', blurb: 'Draw or type a signature, save it as a transparent PNG or white JPG, and resize it to a size in KB.' },
   { href: '/add-name-date-to-photo/', title: 'Add name and date to a photo', family: 'convert', blurb: 'Put a name and date on a strip under a photo or on the photo, then save a JPG or resize it to a size in KB.', related: ['/', '/rotate-image/', '/check-image-size/'] },
+  { href: '/merge-photo-and-signature/', title: 'Merge photo and signature', family: 'signature', blurb: 'Put a photo and a signature on one picture, stacked or side by side, and shrink it to a size limit.', related: ['/resize-signature/', '/signature-maker/', '/'] },
 ];
 
 const byHref = new Map(TOOLS.map((t) => [t.href, t]));
