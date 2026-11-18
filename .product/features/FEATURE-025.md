@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-025
 opportunity: OPP-040
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-18
 ---
@@ -114,3 +115,7 @@ Processed locally in the browser; no file content leaves the device; no retentio
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** Each AC via unit tests, Playwright e2e and the network log; NFR via `pnpm run verify:html` and `verify:privacy`.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-18 | feat/feature-025-crop-shapes-and-aspect-ratio-workbench (head 76866a4) | AC-1 to AC-5: /crop-shapes/ with a freehand cut-out (transparent outside the drawn line, cropped to its box), a centred square with a corner radius up to a circle, and an aspect ratio by cropping (focus sliders) or by adding a border (transparent, white or black) without scaling the picture; PNG and JPG download | none | owner review of page copy; circle crop (OPP-022) is covered by the square at maximum radius, so confirm it does not need its own page; decide whether to measure usage | rulings: geometry is pure and unit tested (src/lib/crop-geometry.ts); the existing CropEditor was not reused because it is tied to the resizer's crop box, so this tool has its own small canvas code; the drawn line is closed automatically and a new line replaces the old one; the drawing canvas has no keyboard path, so the square and ratio modes are the accessible alternative and the page says so; padding never scales the picture, which the e2e proves with single pixels; no resize-to-KB embed (not in the criteria): the page links to the KB resizer. verified: check 0 errors, build 0, verify:html(:strict) OK, verify:privacy OK, 985 unit pass, e2e crop-shapes 10/10 on each of chrome, webkit and firefox (4 repeats), axe on the page; drawing tested with the mouse only; no independent reviewer was used, self-review only |
