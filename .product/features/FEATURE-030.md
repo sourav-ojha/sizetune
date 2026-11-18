@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-030
 opportunity: OPP-045
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-18
 ---
@@ -106,3 +107,7 @@ No files involved; no data collected.
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** Each AC via unit tests, Playwright e2e and the network log; NFR via `pnpm run verify:html` and `verify:privacy`.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-19 | feat/feature-030-kb-and-mb-size-converter | AC-1 to AC-3: /kb-mb-size-converter/ converts B, KB, MB and GB with the 1,000 and 1,024 answers side by side and labelled (2 MB shows 2,000 KB and 2,048 KB), inline messages for invalid input, a message instead of a wrong figure for sizes above about 9 PB, and a resizer link (/?max=N) | none | owner review of page copy; decide whether to measure usage | rulings: the resizer link uses whole KB of 1,000 bytes rounded down (the smaller, safer figure) and is hidden under 1 KB or above 100,000 KB; the page opens with the spec's 2 MB example already worked out; floating-point noise is removed to 15 significant digits so 0.1 MB shows 100 KB; thousands commas are accepted only in groups of three, so 2,5 is refused rather than guessed; the page sits in the 'size' family; the per-route CSP test in tests/verify-privacy.test.ts got a 60 s timeout because it runs the verifier once per tool route and had reached the 5 s default. verified: check 0 errors, build 0, verify:html(:strict) OK, verify:privacy OK, 1076 unit pass, e2e size-converter 8/8 on each of chrome, webkit and firefox, axe desktop and mobile on all three; no independent reviewer was used, self-review only |
