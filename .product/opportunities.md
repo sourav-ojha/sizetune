@@ -245,7 +245,7 @@ New owner constraint: every tool should relate to the existing tools. No new res
 | OPP-043 | Photo effects, borders and logo overlay (black and white, pixel art, border, white border, add logo) | Implemented | 59 | Low | Needs evidence | M | 2026-11-18 | FEATURE-028 |
 | OPP-044 | Colour picker from an image | Implemented | 58 | Low | Needs evidence | S | 2026-11-18 | FEATURE-029 |
 | OPP-045 | KB and MB size converter | Implemented | 57 | Low | Needs evidence | S | 2026-11-19 | FEATURE-030 |
-| OPP-046 | More format converters: AVIF and JFIF to JPG | Ready for Implementation | 63 | Low | Needs evidence | S | 2026-11-18 | FEATURE-031 |
+| OPP-046 | More format converters: AVIF and JFIF to JPG | Implemented | 63 | Low | Needs evidence | S | 2026-11-19 | FEATURE-031 |
 | OPP-047 | More social sizes: WhatsApp DP, YouTube banner and Instagram no-crop | Ready for Implementation | 53 | Low | Backlog | S | 2026-11-18 | FEATURE-032 |
 | OPP-048 | PDF layout tools: multiple pages per sheet and shipping-label cropper | Ready for Implementation | 60 | Low | Needs evidence | M | 2026-11-18 | FEATURE-033 |
 | OPP-049 | Word and PDF document conversion (Word to PDF, PDF to Word, Word to JPG, image to Word) | Approved | 52 | Low | Backlog | L | 2026-11-18 | FEATURE-034 |
