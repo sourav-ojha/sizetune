@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "github": { "account": "your-github-login", "host": "github.com" },
+  "base": "develop",
+  "branch_prefix": "feat/",
+  "features_dir": ".product/features",
+  "protected_branches": ["main", "master", "prod", "production", "release/*"],
+  "merge": { "mode": "squash", "allow_tier3": false },
+  "checks": {
+    "required": ["unit-tests", "build"],
+    "ignored": ["e2e", "e2e-*"],
+    "allow_without_ci": false
+  },
+  "local_checks": [
+    { "name": "unit tests", "command": ["npm", "test"], "timeout_s": 900 }
+  ],
+  "hold_paths": ["migrations/", "infra/"],
+  "limits": { "max_fix_rounds": 2, "max_failures": 2, "ci_budget_s": 1800 },
+  "implementer_notes": "No e2e infrastructure here: unit and integration tests only."
+}

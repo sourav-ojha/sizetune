@@ -1,6 +1,13 @@
 {
   "version": 2,
   "skills": {
+    "delivery-orchestrator": {
+      "source": "sourav-ojha/agent-skills",
+      "commit": "e5510a06ee1470acd7759ca986d80b1f5064a04e",
+      "sourceType": "github",
+      "skillPath": "skills/delivery-orchestrator/SKILL.md",
+      "computedHash": "9d0faca0b125970dcfcabc0007fe317ed0fe2c01d9ffa7c1790ccbc4700b4cc8"
+    },
     "implementer": {
       "source": "sourav-ojha/agent-skills",
       "commit": "cd034041ee58380ee5e3c29c0a0610c5fdd9a5f2",

@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "github": { "account": "sourav-ojha", "host": "github.com" },
+  "base": "dev",
+  "branch_prefix": "feat/",
+  "features_dir": ".product/features",
+  "protected_branches": ["main", "master", "prod", "production", "release/*"],
+  "merge": { "mode": "squash", "allow_tier3": false },
+  "checks": {
+    "required": ["unit-tests", "build", "e2e", "tests"],
+    "ignored": [],
+    "allow_without_ci": false
+  },
+  "local_checks": [
+    { "name": "unit tests", "command": ["pnpm", "test"], "timeout_s": 1800 },
+{ "name": "e2e tests", "command": ["pnpm", "test:e2e"], "timeout_s": 1800 }
+  ],
+  "hold_paths": ["migrations/", "infra/"],
+  "limits": { "max_fix_rounds": 2, "max_failures": 2, "ci_budget_s": 1800 },
+  "implementer_notes": "All test, prefer quaity of test over quantity"
+}
