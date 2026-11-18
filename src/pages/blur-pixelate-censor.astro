@@ -1,0 +1,69 @@
+---
+import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import RedactTool from '../components/RedactTool.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Blur, Pixelate or Black Out Parts of a Photo | SizeTune';
+const description =
+  'Hide faces, numbers or text in a picture: draw a rectangle or paint with a brush, then pixelate, blur or black it out. Done in your browser, nothing uploaded.';
+const jsonLd = webApplicationLd('SizeTune: blur, pixelate and censor', '/blur-pixelate-censor/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/blur-pixelate-censor/" jsonLd={jsonLd}>
+  <Hero title="Blur, pixelate or black out" lead="Hide a face, a number plate, an address or a line of text. Draw a rectangle or paint with a brush, choose how to hide it, and save the picture. Nothing is uploaded." />
+
+  <RedactTool client:load />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This tool works inside your browser, so it will not run while JavaScript is turned off. Enable JavaScript and
+      reload to hide parts of your picture. The notes below explain how strong each option is.
+    </p>
+  </noscript>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>Choosing how to hide something</h2>
+    <ul>
+      <li><strong>Black out.</strong> The area is replaced by a solid colour. Nothing of what was underneath is kept, so this is the strongest choice and the one to use for anything sensitive, such as an ID number or an address.</li>
+      <li><strong>Pixelate.</strong> The area becomes large flat squares. It hides detail well at a high strength, but a pixelated face or line of text can sometimes be partly recovered, especially at a low strength.</li>
+      <li><strong>Blur.</strong> The area is smoothed. It looks gentler than pixelating, and the same warning applies: a light blur can be undone or guessed at, so do not trust it with anything private.</li>
+    </ul>
+
+    <h2>This is not guaranteed secure redaction</h2>
+    <p>
+      The tool changes the pixels of the picture you save, and it checks nothing for you. It cannot tell whether the
+      area you hid is the only place a secret appears, and it does not look for faces or text by itself. Look at the
+      finished picture carefully, at full size, before you share it. Details can also appear somewhere you did not notice,
+      such as a reflection, a name on a badge or a number in the background.
+    </p>
+
+    <h2>Rectangle or brush</h2>
+    <p>
+      A rectangle is quick for a straight line of text or a number plate. The brush follows an outline, so it suits a
+      face or a hand-written note. Each area you draw is added to the picture in order, and Undo removes the last one.
+      An area you draw over again is hidden twice, which makes blur and pixelate stronger.
+    </p>
+
+    <h2>What is saved</h2>
+    <p>
+      The saved file is a new picture drawn from your original. It does not carry over the original's hidden details such
+      as the place a photo was taken or the camera's name. Your original file is never changed. If the picture also has
+      to fit a size limit, enter it and choose "Resize to KB", and the result opens in the resizer further down this page.
+    </p>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Can it find faces or text for me?</h3>
+    <p>
+      No. You choose every area yourself. Automatic detection is not included.
+    </p>
+    <h3>Why is my picture a different size after I resize it?</h3>
+    <p>
+      To fit a small size limit the resizer lowers the quality and then the pixel size. A hidden area stays hidden, but a
+      very small limit makes the whole picture rougher.
+    </p>
+    <h3>Is my picture uploaded?</h3>
+    <p>
+      No. It is processed in your browser and gone when you close or reload the page. Read the <a href="/privacy/">privacy page</a> for details.
+    </p>
+  </div>
+  <RelatedTools path="/blur-pixelate-censor/" />
+</Base>
