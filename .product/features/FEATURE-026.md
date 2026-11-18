@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-026
 opportunity: OPP-041
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-18
 ---
@@ -110,3 +111,7 @@ Processed locally in the browser; no file content leaves the device; no retentio
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** Each AC via unit tests, Playwright e2e and the network log; NFR via `pnpm run verify:html` and `verify:privacy`.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-18 | feat/feature-026-join-images-photo-collage-and-side-by-si (head 4986f4c) | AC-1 to AC-4: /join-images/ joins 2 to 12 pictures side by side, one under another, or in a grid (templates of 2, 3 or 4 columns, equal square cells), in a reorderable list, with spacing, a background colour and an output width, and sends the result to the image resizer on the same page with a KB limit | none | owner review of page copy; confirm the 12-picture and 60 MB limits on a real iPhone and a low-RAM Android (they are starting values, as the spec says to set them after a device test); decide whether to measure usage | rulings: same in-page resizer approach as FEATURE-020, 023 and 024 (cross-page transport is blocked by verify:privacy); layout rounds sizes down so a row can never be wider than its canvas (a unit test caught an overshoot of 1 px); grid cells are square with the picture fitted inside; the limit is also enforced as a total file size; files are skipped one by one with a message naming each. verified: check 0 errors, build 0, verify:html(:strict) OK, verify:privacy OK, 1000 unit pass, e2e join-tool 12/12 on each of chrome, webkit and firefox (6 repeats), axe on the page; no independent reviewer was used, self-review only |
