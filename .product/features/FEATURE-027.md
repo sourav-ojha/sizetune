@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-027
 opportunity: OPP-042
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-18
 ---
@@ -110,3 +111,7 @@ Processed locally in the browser; no file content leaves the device; no retentio
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** Each AC via unit tests, Playwright e2e and the network log; NFR via `pnpm run verify:html` and `verify:privacy`.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-18 | feat/feature-027-pixelate-blur-and-censor-regions (head 6d951ee) | AC-1 to AC-4: /blur-pixelate-censor/ with rectangle and brush regions; pixelate, blur or black out (black or white) with a strength control; Undo and Clear; PNG and JPG download; Resize to KB; the not-guaranteed-redaction warning shown next to the controls and in the page copy | none | owner review of page copy and of the warning wording; face detection is out of scope (spec: licence check first); decide whether to measure usage | rulings: masks are binary, so a black-out pixel is entirely inside or outside a region and no edge pixel keeps the original (unit tests: two different pictures give byte-identical black-out regions; every masked pixel is the fill colour); pixel operations are in src/lib/redact.ts and run on the pixel buffer, not through canvas filters, because ctx.filter is missing in Safari; a new region is applied on top of the previous result and Undo or Clear rebuild from the original; the saved file is a new picture without the original's EXIF; Resize to KB embeds the image resizer on the same page as in FEATURE-020 to 026; the brush and rectangle need a pointer (mouse, pen or finger) and the page says so. verified: check 0 errors, build 0, verify:html(:strict) OK, verify:privacy OK, 1018 unit pass, e2e redact-tool 12/12 on each of chrome, webkit and firefox (5 repeats) incl. downloaded PNG and JPG pixel checks, axe on the page; drawing tested with the mouse only | 

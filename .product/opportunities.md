@@ -241,7 +241,7 @@ New owner constraint: every tool should relate to the existing tools. No new res
 | OPP-039 | Merge photo and signature into one image | Implemented | 48 | Low | Backlog | S | 2026-11-18 | FEATURE-024 |
 | OPP-040 | Crop shapes and aspect ratio workbench (freehand, square, rounded corners, change aspect ratio, zoom out) | Implemented | 63 | Low | Needs evidence | M | 2026-11-18 | FEATURE-025 |
 | OPP-041 | Join images, photo collage and side-by-side | Implemented | 59 | Low | Needs evidence | M | 2026-11-18 | FEATURE-026 |
-| OPP-042 | Pixelate, blur and censor regions of an image | Ready for Implementation | 59 | Low | Needs evidence | S | 2026-11-18 | FEATURE-027 |
+| OPP-042 | Pixelate, blur and censor regions of an image | Implemented | 59 | Low | Needs evidence | S | 2026-11-18 | FEATURE-027 |
 | OPP-043 | Photo effects, borders and logo overlay (black and white, pixel art, border, white border, add logo) | Ready for Implementation | 59 | Low | Needs evidence | M | 2026-11-18 | FEATURE-028 |
 | OPP-044 | Colour picker from an image | Ready for Implementation | 58 | Low | Needs evidence | S | 2026-11-18 | FEATURE-029 |
 | OPP-045 | KB and MB size converter | Ready for Implementation | 57 | Low | Needs evidence | S | 2026-11-18 | FEATURE-030 |
