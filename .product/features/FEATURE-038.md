@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-038
 opportunity: OPP-053
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-18
 ---
@@ -111,3 +112,7 @@ Processed locally in the browser; no file content leaves the device; no retentio
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** Each AC via unit tests, Playwright e2e and the network log; NFR via `pnpm run verify:html` and `verify:privacy`.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-19 | feat/feature-038-text-to-handwriting | AC-1 to AC-4: /text-to-handwriting/ writes typed text (up to 5,000 characters) in Caveat, Dancing Script or Homemade Apple, in black or blue ink, on plain, ruled or squared A4-shaped paper (1240 x 1754 px) in three writing sizes; long text paginates (up to 10 pages) with page buttons; PNG or JPG of the page, a ZIP of all pages, and Resize to KB through the resizer on the page; characters outside the fonts are listed and drawn in a fallback font; the fair-use note (FR-4) | none | owner review of page copy and the fair-use wording (the spec's open academic-integrity wording); decide whether to measure usage | rulings: the three fonts already shipped for FEATURE-020 are reused, so no new dependency and no new licence notice (the page states their licences as the signature maker does); the fonts are declared only on the signature maker and this page (tests/handwriting-build.test.ts); a KB cap is applied to one page at a time through the resizer, the ZIP carries uncapped PNGs; layout is pure (src/lib/handwriting.ts) and measures with the real font in the browser; text lines are not jittered, so it reads as a handwriting font, not as a person's hand (stated on the page). verified: check 0 errors, build 0, verify:html(:strict) OK, verify:privacy OK, 1108 unit pass, e2e handwriting-tool 10/10 on each of chrome, webkit and firefox, axe desktop and mobile on all three; no independent reviewer was used, self-review only |
