@@ -43,6 +43,7 @@ export const TOOLS: Tool[] = [
   { href: '/add-name-date-to-photo/', title: 'Add name and date to a photo', family: 'convert', blurb: 'Put a name and date on a strip under a photo or on the photo, then save a JPG or resize it to a size in KB.', related: ['/', '/rotate-image/', '/check-image-size/'] },
   { href: '/merge-photo-and-signature/', title: 'Merge photo and signature', family: 'signature', blurb: 'Put a photo and a signature on one picture, stacked or side by side, and shrink it to a size limit.', related: ['/resize-signature/', '/signature-maker/', '/'] },
   { href: '/crop-shapes/', title: 'Crop shapes and aspect ratio', family: 'convert', blurb: 'Cut a photo out along a drawn line, round the corners of a square, or change the aspect ratio by cropping or adding a border.', related: ['/', '/rotate-image/', '/resize-signature/'] },
+  { href: '/join-images/', title: 'Join images', family: 'convert', blurb: 'Join several pictures into one, side by side, one under another or in a grid, then shrink it to a KB limit.', related: ['/merge-photo-and-signature/', '/', '/crop-shapes/'] },
 ];
 
 const byHref = new Map(TOOLS.map((t) => [t.href, t]));
