@@ -29,6 +29,7 @@ export const TOOLS: Tool[] = [
   { href: '/resize-signature/', title: 'Resize a signature (20 KB)', family: 'signature', blurb: 'Crop a signature to the ink, put it on white and shrink it to your limit.' },
   { href: '/resize-signature-to-10kb/', title: 'Signature to 10 KB', family: 'signature', blurb: 'The signature tool with a 10 KB maximum already set.' },
   { href: '/webp-to-jpg/', title: 'WebP to JPG', family: 'convert', blurb: 'Turn a WebP picture into a JPG, with an optional size limit.', related: ['/png-to-jpg/', '/check-image-size/', '/'] },
+  { href: '/avif-jfif-to-jpg/', title: 'AVIF and JFIF to JPG', family: 'convert', blurb: 'Turn an AVIF or JFIF picture into a JPG or PNG in your browser, when a form will not take it.', related: ['/webp-to-jpg/', '/png-to-jpg/', '/'] },
   { href: '/png-to-jpg/', title: 'PNG to JPG', family: 'convert', blurb: 'Turn a PNG into a JPG on a background colour you pick, with an optional size limit.', related: ['/webp-to-jpg/', '/check-image-size/', '/'] },
   { href: '/rotate-image/', title: 'Rotate or flip an image', family: 'convert', blurb: 'Turn a picture the right way up or mirror it, then save it under a size limit.', related: ['/', '/check-image-size/', '/webp-to-jpg/'] },
   { href: '/check-image-size/', title: 'Check an image', family: 'convert', blurb: 'See whether a file passes a size, pixel and format rule before you upload it.', related: ['/', '/rotate-image/', '/resize-image-to-100kb/'] },

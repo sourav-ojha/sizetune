@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-031
 opportunity: OPP-046
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-18
 ---
@@ -110,3 +111,7 @@ Processed locally in the browser; no file content leaves the device; no retentio
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** Each AC via unit tests, Playwright e2e and the network log; NFR via `pnpm run verify:html` and `verify:privacy`.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-19 | feat/feature-031-avif-and-jfif-to-jpg-converters | AC-1 to AC-5: /avif-jfif-to-jpg/ opens AVIF (decoded by the browser, then passed to the shipped converter as PNG) and JFIF (a JPEG, read as is), and downloads JPG or PNG; a clear message when the browser cannot decode AVIF or the file is damaged; first frame of an animated AVIF with a note; a warning above 8 MB; HEIC and other files refused with their own messages | none | owner review of page copy; decide whether to measure usage | rulings: no self-hosted AVIF decoder was added (the spec's open question): the browser decoder is used and the failure message covers an old browser; AVIF is detected by the ftyp box brands (avif, avis) in src/lib/avif.ts and HEIC brands are refused; the existing ImageTool is reused through initialFile (FR-3) and its engine still rejects AVIF itself; transparent AVIF becomes white in JPG and the page says to choose PNG to keep it; 16 MP canvas guard applies. verified: check 0 errors, build 0, verify:html(:strict) OK, verify:privacy OK, 1084 unit pass, e2e avif-tool 8/8 on each of chrome, webkit and firefox (none skipped: all three decode AVIF), axe desktop and mobile on all three; no independent reviewer was used, self-review only |
