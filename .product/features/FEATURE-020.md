@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-020
 opportunity: OPP-035
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-18
 ---
@@ -116,3 +117,7 @@ Processed locally in the browser; no file content leaves the device; no retentio
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** Each AC via unit tests, Playwright e2e and the network log; NFR via `pnpm run verify:html` and `verify:privacy`.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-18 | feat/feature-020-signature-maker-typed-or-drawn (commits cd4a836..1e5bede) | AC-1 to AC-5: /signature-maker/ with draw (mouse, pen, touch; undo; clear), type (3 fonts), two inks, PNG (transparent) and JPG (white) download, and Resize to KB | none | owner review of page copy; decide whether to add Indian-language fonts (FEATURE-041); third-party font licence notices if the site publishes them; decide whether to measure usage | rulings: AC-3 is met on the same page, not by opening /resize-signature/: every way to carry an image between pages (sessionStorage, IndexedDB, BroadcastChannel, window.open, a URL) is flagged by verify:privacy and the privacy page promises none is used, so Resize to KB loads the exported JPG into the signature resizer embedded below the maker (SignatureTool gets an optional initialFile prop); fonts: Caveat and Dancing Script (OFL-1.1) and Homemade Apple (Apache-2.0) from @fontsource 5.3.0, latin subset, self-hosted, declared only in this page's HTML (tested); names are limited to 40 Latin characters; the drawing area has no keyboard path, so Type is the accessible alternative and the page says so; no clipboard use. verified: check 0 errors, build 0, verify:html(:strict) OK, verify:privacy OK, 938 unit pass, e2e signature-maker 21/21 on each of chrome, webkit and firefox (3 repeats), axe on the page, existing signature specs pass; no independent reviewer was used, self-review only |

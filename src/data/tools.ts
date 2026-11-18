@@ -39,6 +39,7 @@ export const TOOLS: Tool[] = [
   { href: '/date-calculators/', title: 'Date and time calculators', family: 'calculators', blurb: 'Age from a date of birth, days between two dates, and Unix timestamps with a time zone.', related: ['/', '/check-image-size/', '/resize-image-to-20kb/'] },
   { href: '/text-tools/', title: 'Word counter, case converter and filler text', family: 'text', blurb: 'Count words and characters as you type, change the case of a text, or make neutral filler text of a set length.', related: ['/date-calculators/', '/', '/check-image-size/'] },
   { href: '/qr-code-generator/', title: 'QR code generator', family: 'generators', blurb: 'Make a QR code for a web address, text or Wi-Fi network and download it as PNG or SVG.', related: ['/text-tools/', '/', '/check-image-size/'] },
+  { href: '/signature-maker/', title: 'Signature maker', family: 'signature', blurb: 'Draw or type a signature, save it as a transparent PNG or white JPG, and resize it to a size in KB.' },
 ];
 
 const byHref = new Map(TOOLS.map((t) => [t.href, t]));

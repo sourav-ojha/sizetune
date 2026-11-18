@@ -1,0 +1,71 @@
+---
+import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import SignatureMaker from '../components/SignatureMaker.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Signature Maker: Draw or Type a Signature Online | SizeTune';
+const description =
+  'Draw your signature with a mouse or finger, or type it in a handwriting font, then save it as a transparent PNG or a white JPG and resize it to a size in KB.';
+const jsonLd = webApplicationLd('SizeTune: signature maker', '/signature-maker/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/signature-maker/" jsonLd={jsonLd}>
+  <Hero badge="Free · Your signature stays on this device · No sign-up" title="Make a signature" lead="Draw your signature or type it in a handwriting style, save it as a transparent PNG or a white JPG, and shrink it to the size an upload form asks for. Nothing is uploaded." />
+
+  <SignatureMaker client:load />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      The signature maker runs inside your browser, so it will not work while JavaScript is turned off. Enable
+      JavaScript and reload to use it. The notes below explain which kind of signature suits an upload form.
+    </p>
+  </noscript>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>Drawn or typed</h2>
+    <p>
+      A drawn signature is your own hand and is the safest choice when a form asks for "a scan of your signature". It
+      works with a mouse, a trackpad, a stylus or a finger. A typed signature is made from your name in a handwriting
+      font. It is quick and tidy, and it is the option to use if you cannot draw on your device, but some portals and
+      employers want a hand-signed image and reject anything that looks typed. Check the form's wording before you
+      choose.
+    </p>
+
+    <h2>PNG or JPG</h2>
+    <ul>
+      <li><strong>PNG, transparent.</strong> Only your ink is saved, with nothing behind it, so you can place it on a document or a form. Many upload forms do not accept PNG.</li>
+      <li><strong>JPG, white.</strong> Your ink on a plain white background. This is the format most upload forms ask for, and it is the one the resize step uses.</li>
+    </ul>
+
+    <h2>Getting it under a size limit</h2>
+    <p>
+      Forms often limit a signature to a small size such as 20 KB. Choose "Resize to KB" and the signature you just made
+      opens in the signature resizer further down this page, with no file to pick. Set the limit, and the tool lowers
+      the quality and then the pixel size until the file fits. A signature is mostly white space, so it usually shrinks
+      well, but a very small limit on a large picture can make thin strokes look rough.
+    </p>
+
+    <h2>Tips for a clean result</h2>
+    <ul>
+      <li>Sign slowly and fill the box. A larger signature stays readable after it is shrunk.</li>
+      <li>Use black or dark blue. Pale ink can fail a form's contrast check.</li>
+      <li>Undo removes the last stroke, so you can fix one slip without starting over.</li>
+    </ul>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Will a typed signature be accepted?</h3>
+    <p>
+      It depends on the portal. Some accept any image of a signature and some ask for a hand-signed one. This page
+      cannot know which, so if the form says "handwritten" or "scanned", draw it or sign on paper and use the <a href="/resize-signature/">signature resizer</a>.
+    </p>
+    <h3>Are the fonts free to use?</h3>
+    <p>
+      Yes. Caveat and Dancing Script are published under the SIL Open Font License and Homemade Apple under the Apache
+      License 2.0. They are served from this site, not from an outside font service.
+    </p>
+    <h3>Is my signature uploaded or saved?</h3>
+    <p>
+      No. It is drawn and saved in your browser and is gone when you close or reload the page. Read the <a href="/privacy/">privacy page</a> for details.
+    </p>
+  </div>
+  <RelatedTools path="/signature-maker/" />
+</Base>
