@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-023
 opportunity: OPP-038
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-18
 ---
@@ -111,3 +112,7 @@ Processed locally in the browser; no file content leaves the device; no retentio
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** Each AC via unit tests, Playwright e2e and the network log; NFR via `pnpm run verify:html` and `verify:privacy`.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-18 | feat/feature-023-add-name-and-date-to-a-photo (commits since 2119361..c94d5b2) | AC-1 to AC-5: /add-name-date-to-photo/ with strip below or text on the photo, name and date (calendar picker in five styles, or typed), one or two lines, text size and strip height as % of photo height, text and strip colours, live preview, JPG download, Resize to KB | none | owner review of page copy; exam-specific layouts are not included (spec: need verified exam rules); decide whether to measure usage | rulings: as in FEATURE-020, Resize to KB loads the captioned JPG into the image resizer embedded on the same page (every cross-page transport is flagged by verify:privacy), ImageTool gets an optional initialFile prop; the photo is turned upright using EXIF before captioning; result is always a JPG; photos over the 16 MP canvas limit (including the strip) get a message; the e2e found and fixed a real bug (changing date style wiped the picked date). verified: check 0 errors, build 0, verify:html(:strict) OK, verify:privacy OK, 952 unit pass, e2e caption-tool 10/10 on each of chrome, webkit and firefox (8 repeats), axe on the page, existing image-tool specs pass; no independent reviewer was used, self-review only |

@@ -1,0 +1,73 @@
+---
+import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import CaptionTool from '../components/CaptionTool.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Add Name and Date to a Photo Online | SizeTune';
+const description =
+  'Put your name and date on a strip under a photo, or on the photo itself, check the preview live, then save it as a JPG or resize it to a size in KB.';
+const jsonLd = webApplicationLd('SizeTune: add name and date to a photo', '/add-name-date-to-photo/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/add-name-date-to-photo/" jsonLd={jsonLd}>
+  <Hero title="Add a name and date to a photo" lead="Add a caption with your name and the date under a photo, or on it, see the result as you type, then save a JPG or shrink it to the size an upload form asks for. Your photo stays on this device." />
+
+  <CaptionTool client:load />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This tool works inside your browser, so it will not run while JavaScript is turned off. Enable JavaScript and
+      reload to add a caption. The notes below explain how to set the caption up.
+    </p>
+  </noscript>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>When a form asks for a name and date on the photo</h2>
+    <p>
+      Some application forms ask for a photograph with the applicant's name and the date it was taken printed along the
+      bottom. This page adds exactly that. Choose a photo, type the name, pick the date, and the caption appears in the
+      preview straight away. Change the text size, the strip height or the colours until it looks the way the form
+      describes, then save the picture.
+    </p>
+
+    <h2>Strip below, or text on the photo</h2>
+    <ul>
+      <li><strong>Strip below the photo.</strong> A band is added under the picture and the caption goes on it, so the photo itself is not covered. The finished picture is taller than the original by the height of the strip.</li>
+      <li><strong>Text on the photo.</strong> The caption is drawn along the bottom edge of the photo with a thin outline so it stays readable. The picture keeps its original size, but the text covers part of it.</li>
+    </ul>
+
+    <h2>Setting the date</h2>
+    <p>
+      Pick the date from the calendar and choose how it should read, such as 07/03/2024 or 07 Mar 2024. Day first and
+      month first look different and are easy to mix up, so check the preview against what the form shows. If the form
+      wants words or a range instead, choose "Type it myself" and write it exactly as it should appear.
+    </p>
+
+    <h2>Sizes and limits</h2>
+    <p>
+      The text size and strip height are set as a percentage of the photo's height, so the caption looks the same on a
+      small photo and a large one. Text that is too long for the width shrinks until it fits. SizeTune does not include
+      layouts for particular exams, because the rules differ and change, so follow the instructions on your own form.
+    </p>
+    <p>
+      Many forms also limit the file size. Choose "Resize to KB" and the captioned photo opens in the resizer further
+      down this page, with nothing to pick again. Set the limit and download the result.
+    </p>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Does adding the caption change my photo?</h3>
+    <p>
+      The photo is drawn onto a new picture and saved again as a JPG, which can cost a little detail. A photo that was
+      taken on its side is turned upright first, the way your phone shows it, so the caption sits along the bottom.
+    </p>
+    <h3>Can I use a PNG or WebP photo?</h3>
+    <p>
+      Yes. JPEG, PNG and WebP photos can be opened. The captioned result is saved as a JPG, which is what most forms
+      accept.
+    </p>
+    <h3>Is my photo uploaded or saved?</h3>
+    <p>
+      No. The caption is added in your browser and the picture is gone when you close or reload the page. Read the <a href="/privacy/">privacy page</a> for details.
+    </p>
+  </div>
+  <RelatedTools path="/add-name-date-to-photo/" />
+</Base>

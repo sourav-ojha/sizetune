@@ -40,6 +40,7 @@ export const TOOLS: Tool[] = [
   { href: '/text-tools/', title: 'Word counter, case converter and filler text', family: 'text', blurb: 'Count words and characters as you type, change the case of a text, or make neutral filler text of a set length.', related: ['/date-calculators/', '/', '/check-image-size/'] },
   { href: '/qr-code-generator/', title: 'QR code generator', family: 'generators', blurb: 'Make a QR code for a web address, text or Wi-Fi network and download it as PNG or SVG.', related: ['/text-tools/', '/', '/check-image-size/'] },
   { href: '/signature-maker/', title: 'Signature maker', family: 'signature', blurb: 'Draw or type a signature, save it as a transparent PNG or white JPG, and resize it to a size in KB.' },
+  { href: '/add-name-date-to-photo/', title: 'Add name and date to a photo', family: 'convert', blurb: 'Put a name and date on a strip under a photo or on the photo, then save a JPG or resize it to a size in KB.', related: ['/', '/rotate-image/', '/check-image-size/'] },
 ];
 
 const byHref = new Map(TOOLS.map((t) => [t.href, t]));

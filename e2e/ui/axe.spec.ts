@@ -10,7 +10,7 @@ async function expectClean(page: Page, label: string, scope?: string) {
 }
 
 const expectCleanIn = expectClean;
-const PAGES = ['/', '/resize-image-to-20kb/', '/resize-image-to-100kb/', '/resize-signature/', '/resize-signature-to-10kb/', '/rotate-image/', '/check-image-size/', '/webp-to-jpg/', '/png-to-jpg/', '/instagram-image-resizer/', '/linkedin-image-resizer/', '/youtube-thumbnail-resizer/', '/guides/photo-size-for-online-forms/', '/guides/reduce-pdf-to-100kb/', '/guides/social-image-sizes/', '/favicon-generator/', '/guides/icon-sizes-and-sources/', '/guides/reduce-pdf-to-200kb/', '/tools/', '/date-calculators/', '/text-tools/', '/qr-code-generator/', '/signature-maker/', '/privacy/', '/about/', '/terms/', '/definitely-missing/'];
+const PAGES = ['/', '/resize-image-to-20kb/', '/resize-image-to-100kb/', '/resize-signature/', '/resize-signature-to-10kb/', '/rotate-image/', '/check-image-size/', '/webp-to-jpg/', '/png-to-jpg/', '/instagram-image-resizer/', '/linkedin-image-resizer/', '/youtube-thumbnail-resizer/', '/guides/photo-size-for-online-forms/', '/guides/reduce-pdf-to-100kb/', '/guides/social-image-sizes/', '/favicon-generator/', '/guides/icon-sizes-and-sources/', '/guides/reduce-pdf-to-200kb/', '/tools/', '/date-calculators/', '/text-tools/', '/qr-code-generator/', '/signature-maker/', '/add-name-date-to-photo/', '/privacy/', '/about/', '/terms/', '/definitely-missing/'];
 const VIEWPORTS = [{ name: 'desktop', width: 1280, height: 800 }, { name: 'mobile 375', width: 375, height: 800 }];
 
 for (const vp of VIEWPORTS) {
