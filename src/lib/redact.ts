@@ -23,7 +23,9 @@ export function rectMask(w: number, h: number, r: Rect): Mask {
 export function strokeMask(w: number, h: number, points: Pt[], radius: number): Mask {
   const m = emptyMask(w, h);
   if (points.length === 0) return m;
-  const r = Math.max(0.5, radius), r2 = r * r;
+  // Cover every pixel the round pen touches at all, not only pixels whose centre is inside it: widen by half a pixel's diagonal. For a redaction tool
+  // hiding a sliver too much is right and hiding a sliver too little is not.
+  const r = Math.max(0.5, radius) + 0.71, r2 = r * r;
   const stamp = (a: Pt, b: Pt) => {
     const x0 = Math.max(0, Math.floor(Math.min(a.x, b.x) - r) - 1), x1 = Math.min(w - 1, Math.ceil(Math.max(a.x, b.x) + r) + 1);
     const y0 = Math.max(0, Math.floor(Math.min(a.y, b.y) - r) - 1), y1 = Math.min(h - 1, Math.ceil(Math.max(a.y, b.y) + r) + 1);
@@ -127,5 +129,6 @@ export function boxBlur(img: Pixels, m: Mask, radius: number): void {
 /** The pixelate block size for a strength level (1 to 30), scaled to the picture so the effect looks the same on a small and a large photo. */
 export function levelToBlock(level: number, w: number, h: number): number {
   const l = Number.isFinite(level) ? Math.min(30, Math.max(1, level)) : 5;
-  return Math.max(3, Math.round((l * Math.max(w, h)) / 300));
+  // never below 6: with tiny squares a lone masked pixel could be worked out from its visible neighbours and the square's average
+  return Math.max(6, Math.round((l * Math.max(w, h)) / 300));
 }

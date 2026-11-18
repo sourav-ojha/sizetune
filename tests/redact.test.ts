@@ -29,6 +29,14 @@ describe('masks', () => {
     const edge = strokeMask(20, 20, [{ x: 0, y: 0 }, { x: 19, y: 19 }], 40); // a huge pen near the corners must not throw or leave the picture
     expect(edge.data.length).toBe(400);
   });
+  it('covers every pixel the pen touches at all, so no sliver of the outline is left visible', () => {
+    // a dot of radius 5 at (20.5, 20.5): any pixel whose square overlaps the circle must be in the mask
+    const m = strokeMask(41, 41, [{ x: 20.5, y: 20.5 }], 5);
+    for (let y = 0; y < 41; y++) for (let x = 0; x < 41; x++) {
+      const nx = Math.max(x, Math.min(20.5, x + 1)), ny = Math.max(y, Math.min(20.5, y + 1)); // nearest point of the pixel square to the centre
+      if (Math.hypot(nx - 20.5, ny - 20.5) < 5) expect(m.data[y * 41 + x], `${x},${y}`).toBe(1);
+    }
+  });
   it('a single tap makes a round dot, and no points make nothing', () => {
     const dot = strokeMask(30, 30, [{ x: 15, y: 15 }], 5);
     expect(dot.data[15 * 30 + 15]).toBe(1);
@@ -196,10 +204,10 @@ describe('boxBlur', () => {
 });
 
 describe('levelToBlock', () => {
-  it('grows with the level and with the picture size, and is never below 3', () => {
-    expect(levelToBlock(1, 400, 300)).toBeGreaterThanOrEqual(3);
+  it('grows with the level and with the picture size, and is never below 6', () => {
+    expect(levelToBlock(1, 400, 300)).toBeGreaterThanOrEqual(6);
     expect(levelToBlock(10, 4000, 3000)).toBeGreaterThan(levelToBlock(10, 400, 300));
     expect(levelToBlock(20, 800, 600)).toBeGreaterThan(levelToBlock(5, 800, 600));
-    expect(levelToBlock(Number.NaN, 800, 600)).toBeGreaterThanOrEqual(3);
+    expect(levelToBlock(Number.NaN, 800, 600)).toBeGreaterThanOrEqual(6);
   });
 });
