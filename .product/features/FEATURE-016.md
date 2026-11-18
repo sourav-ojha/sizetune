@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-016
 opportunity: OPP-027
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-17
 ---
@@ -119,3 +120,7 @@ No personal data stored or sent; no new trust boundary.
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** AC-1 to AC-3 via unit tests; AC-4 network log; AC-5 build check; AC-6 `pnpm run verify:html`.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-18 | feat/feature-016-date-and-time-calculators-age-days-betwe (commits 849a709..d3dea45) | AC-1 to AC-6: /date-calculators/ with age, days between dates, timestamp converter in one island | none | owner review of page copy; decide whether to measure usage | rulings: month-end clamping rule for age (29 Feb birthday reached 28 Feb in common years); copy buttons omitted because verify:privacy flags navigator.clipboard (gate not loosened); Hero got an optional badge prop. verified: check 0 errors, build 0, verify:html(:strict) OK, verify:privacy OK, 888 unit pass, e2e date-tools 6/6, axe/hub/mobile 99 pass (chrome only); no independent reviewer was available, self-review only |
