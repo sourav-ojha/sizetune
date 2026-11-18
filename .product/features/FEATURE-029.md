@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-029
 opportunity: OPP-044
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-18
 ---
@@ -108,3 +109,7 @@ Processed locally in the browser; no file content leaves the device; no retentio
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** Each AC via unit tests, Playwright e2e and the network log; NFR via `pnpm run verify:html` and `verify:privacy`.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-18 | feat/feature-029-colour-picker-from-an-image | AC-1 to AC-4: /colour-picker-from-image/ reads the exact pixel under a click, a drag or the arrow keys (Shift = 10 px) and shows HEX, RGB and HSL (alpha forms for transparent pixels), a Copy button per value, and the last 8 picked colours | none | owner review of page copy; decide whether to measure usage | rulings: Copy uses a read-only field and document.execCommand('copy') because verify:privacy forbids navigator.clipboard; when it fails the text stays selected and a hand-copy notice shows (the spec's blocked-clipboard case); swatches are drawn on small canvases because the CSP forbids inline styles; the marker ring is drawn on the canvas over a kept copy of the pixels so it never changes a reading; pointer to pixel mapping is a pure function (src/lib/colour.ts) that uses the shown size against the picture size so scaled and high-density displays pick the right pixel; the page sits in the convert family. verified: check 0 errors, build 0, verify:html(:strict) OK, verify:privacy OK, 1060 unit pass, e2e colour-picker 10/10 on each of chrome, webkit and firefox, axe desktop and mobile on all three; no independent reviewer was used, self-review only |
