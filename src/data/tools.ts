@@ -1,12 +1,13 @@
 // The single list of published tools (FEATURE-012 FR-5). The hub page, the related-tools block and the tests read it.
 // Add a tool here once its page exists; the hub and the sitemap pick it up. No URLs to other sites belong in this file.
-export type FamilyKey = 'size' | 'signature' | 'convert' | 'social';
+export type FamilyKey = 'size' | 'signature' | 'convert' | 'social' | 'calculators';
 
 export const FAMILIES: Record<FamilyKey, { label: string; blurb: string }> = {
   size: { label: 'Resize a photo to a size in KB', blurb: 'For forms that name a maximum file size.' },
   signature: { label: 'Signatures', blurb: 'Crop to the ink and fit a small limit.' },
   convert: { label: 'Convert, rotate and check', blurb: 'Change a format, fix the direction or test a file before you upload.' },
   social: { label: 'Social images and icons', blurb: 'Sizes for feeds, thumbnails and websites.' },
+  calculators: { label: 'Date and time calculators', blurb: 'Work out an age, the days between two dates or a Unix timestamp.' },
 };
 
 export interface Tool {
@@ -33,6 +34,7 @@ export const TOOLS: Tool[] = [
   { href: '/linkedin-image-resizer/', title: 'LinkedIn image sizes', family: 'social', blurb: 'Fit a picture to common LinkedIn profile, banner and post shapes.' },
   { href: '/youtube-thumbnail-resizer/', title: 'YouTube thumbnail resizer', family: 'social', blurb: 'Make a 16:9 thumbnail and keep it under the upload limit.' },
   { href: '/favicon-generator/', title: 'Favicon and app icon generator', family: 'social', blurb: 'Make an ICO, a PNG set, a web manifest and a ZIP from one image.', related: ['/instagram-image-resizer/', '/linkedin-image-resizer/', '/'] },
+  { href: '/date-calculators/', title: 'Date and time calculators', family: 'calculators', blurb: 'Age from a date of birth, days between two dates, and Unix timestamps with a time zone.', related: ['/', '/check-image-size/', '/resize-image-to-20kb/'] },
 ];
 
 const byHref = new Map(TOOLS.map((t) => [t.href, t]));
