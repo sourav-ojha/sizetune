@@ -2,8 +2,8 @@
 type: feature-spec
 id: FEATURE-001
 opportunity: OPP-001
-status: ready
-delivery: partial
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-17
 ---
@@ -139,3 +139,4 @@ No new data or trust boundary: static pages on the existing client-side tool; no
 | Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
 |---|---|---|---|---|---|
 | 2026-11-17 | PR #19, squash c8ad91f (commits d2a7242, 8aed0f8) | AC-1, AC-2, AC-3, AC-4, AC-5, AC-7, AC-8 for 2 pages: /resize-image-to-100kb/, /resize-signature-to-10kb/ (AC-6 not triggered) | FR-1 minimum: wave ships 2 of the 3 to 5 required pages | owner copy curation of both pages (FR-3); Search Console indexing and impressions (gate for wave 2); owner to confirm sizes and pick or drop a third page | no ledger (impl report not run); delivery backfilled from PR evidence: check, build, 717 unit, verify:html(:strict), verify:privacy OK; one unrelated flaky e2e (preact-semantics.spec.ts:132) not investigated |
+| 2026-11-18 | feat/feature-001-per-size-landing-pages-for-image-and-sig (verification only, no code change; pages from PR #19 and PR #28) | AC-1 to AC-8 across 3 pages: /resize-image-to-50kb/, /resize-image-to-100kb/, /resize-signature-to-10kb/ (AC-6 not triggered) | none | owner copy curation of the pages (FR-3); Search Console indexing and impressions (gate for wave 2); owner to confirm the final size set | verified: build 0, verify:html:strict OK, verify:privacy OK, 870 unit pass, e2e size-pages 3/3 (chrome); sitemap lists all 3 plus 20 KB; the 50 KB page shipped in PR #28, so FR-1 minimum of 3 is met; full e2e and Firefox/WebKit not rerun here |

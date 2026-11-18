@@ -200,7 +200,7 @@ New owner constraint: every tool should relate to the existing tools. No new res
 
 | ID | Title | Status | Score | Confidence | Tier | Effort | Updated | Feature |
 |---|---|---|---|---|---|---|---|---|
-| OPP-001 | Per-size landing pages for image and signature KB limits | Ready for Implementation | 69 | Medium | Consider | S | 2026-11-17 | FEATURE-001 |
+| OPP-001 | Per-size landing pages for image and signature KB limits | Implemented | 69 | Medium | Consider | S | 2026-11-18 | FEATURE-001 |
 | OPP-002 | Accept HEIC photos and convert them in the browser | Deferred | 61 | Low | Needs evidence | M | 2026-11-17 | FEATURE-004 |
 | OPP-003 | Client-side PDF compression to a target KB | Ready for Implementation | 63 | Low | Needs evidence | L | 2026-11-17 | FEATURE-003 |
 | OPP-004 | Ad and consent foundation for content pages | Ready for Implementation | 57 | Medium | Consider | M | 2026-11-17 | FEATURE-002 |
