@@ -7,7 +7,7 @@
   "protected_branches": ["main", "master", "prod", "production", "release/*"],
   "merge": { "mode": "squash", "allow_tier3": false },
   "checks": {
-    "required": ["unit-tests", "build", "e2e", "tests"],
+    "required": ["verify"],
     "ignored": [],
     "allow_without_ci": false
   },
