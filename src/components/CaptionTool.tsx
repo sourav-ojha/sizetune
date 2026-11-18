@@ -160,17 +160,17 @@ export default function CaptionTool() {
                   <input id="cap-name" data-testid="cap-name" type="text" maxLength={80} autoComplete="off" className={inputCls} value={name} onInput={(e) => setName((e.target as HTMLInputElement).value)} />
                 </div>
                 {style === 'typed' ? (
-                  <div>
+                  <div key="date-typed">
                     <label htmlFor="cap-date-text" className={labelCls}>Date, as you want it to read</label>
                     <input id="cap-date-text" data-testid="cap-date-text" type="text" maxLength={40} autoComplete="off" className={inputCls} value={date} onInput={(e) => setDate((e.target as HTMLInputElement).value)} />
                   </div>
                 ) : (
-                  <div>
+                  <div key="date-picker">
                     <label htmlFor="cap-date" className={labelCls}>Date</label>
                     <input id="cap-date" data-testid="cap-date" type="date" className={inputCls} value={date} onInput={(e) => setDate((e.target as HTMLInputElement).value)} />
                   </div>
                 )}
-                {sel('cap-style', 'Date style', style, (v) => { setStyle(v as DateStyleId); setDate(''); }, DATE_STYLES.map((s) => [s.id, s.label] as const))}
+                {sel('cap-style', 'Date style', style, (v) => { if ((v === 'typed') !== (style === 'typed')) setDate(''); setStyle(v as DateStyleId); } /* a picked date survives a change between calendar styles; it only resets when switching to or from typed text */, DATE_STYLES.map((s) => [s.id, s.label] as const))}
                 <fieldset className={fieldsetCls}>
                   <legend className={legendCls}>Where the caption goes</legend>
                   <div className="flex flex-wrap gap-2">
