@@ -46,6 +46,7 @@ export const TOOLS: Tool[] = [
   { href: '/join-images/', title: 'Join images', family: 'convert', blurb: 'Join several pictures into one, side by side, one under another or in a grid, then shrink it to a KB limit.', related: ['/merge-photo-and-signature/', '/', '/crop-shapes/'] },
   { href: '/blur-pixelate-censor/', title: 'Blur, pixelate or black out', family: 'convert', blurb: 'Hide a face, number or text in a photo with a rectangle or brush, then pixelate, blur or black it out.', related: ['/crop-shapes/', '/', '/check-image-size/'] },
   { href: '/photo-effects/', title: 'Photo effects, border and logo', family: 'convert', blurb: 'Turn a photo grayscale, black and white or pixel art, add a border, and place your logo, then resize it to a KB limit.', related: ['/add-name-date-to-photo/', '/', '/crop-shapes/'] },
+  { href: '/colour-picker-from-image/', title: 'Colour picker from an image', family: 'convert', blurb: 'Click any spot on a picture to read its colour as HEX, RGB and HSL, then copy it.', related: ['/photo-effects/', '/crop-shapes/', '/'] },
 ];
 
 const byHref = new Map(TOOLS.map((t) => [t.href, t]));

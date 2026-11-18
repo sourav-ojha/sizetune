@@ -243,7 +243,7 @@ New owner constraint: every tool should relate to the existing tools. No new res
 | OPP-041 | Join images, photo collage and side-by-side | Implemented | 59 | Low | Needs evidence | M | 2026-11-18 | FEATURE-026 |
 | OPP-042 | Pixelate, blur and censor regions of an image | Implemented | 59 | Low | Needs evidence | S | 2026-11-18 | FEATURE-027 |
 | OPP-043 | Photo effects, borders and logo overlay (black and white, pixel art, border, white border, add logo) | Implemented | 59 | Low | Needs evidence | M | 2026-11-18 | FEATURE-028 |
-| OPP-044 | Colour picker from an image | Ready for Implementation | 58 | Low | Needs evidence | S | 2026-11-18 | FEATURE-029 |
+| OPP-044 | Colour picker from an image | Implemented | 58 | Low | Needs evidence | S | 2026-11-18 | FEATURE-029 |
 | OPP-045 | KB and MB size converter | Ready for Implementation | 57 | Low | Needs evidence | S | 2026-11-18 | FEATURE-030 |
 | OPP-046 | More format converters: AVIF and JFIF to JPG | Ready for Implementation | 63 | Low | Needs evidence | S | 2026-11-18 | FEATURE-031 |
 | OPP-047 | More social sizes: WhatsApp DP, YouTube banner and Instagram no-crop | Ready for Implementation | 53 | Low | Backlog | S | 2026-11-18 | FEATURE-032 |
