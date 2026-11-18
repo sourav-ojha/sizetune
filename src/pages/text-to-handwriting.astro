@@ -1,0 +1,71 @@
+---
+import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import HandwritingTool from '../components/HandwritingTool.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Text to Handwriting Online: Ruled Paper Pages | SizeTune';
+const description =
+  'Type your text and get it written out in a handwriting font on plain, ruled or squared paper, one picture per page. Save as PNG or JPG. Runs in your browser.';
+const jsonLd = webApplicationLd('SizeTune: text to handwriting', '/text-to-handwriting/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/text-to-handwriting/" jsonLd={jsonLd}>
+  <Hero badge="Free · Your text stays on this device · No sign-up" title="Text to handwriting" lead="Type or paste your text, choose a handwriting style, an ink colour and a paper, and save each page as a picture. Long text runs on to more pages. Nothing is uploaded." />
+
+  <HandwritingTool client:load />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This tool runs inside your browser, so it will not work while JavaScript is turned off. Enable JavaScript and
+      reload to use it. The notes below explain the options.
+    </p>
+  </noscript>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>How it works</h2>
+    <p>
+      Your text is laid out on an A4-shaped page, line by line, in the handwriting font you pick. When a page is full the
+      rest of the text goes on the next one, up to ten pages. Use the page buttons under the preview to look at each page,
+      then save the one you want as a PNG or a JPG, or take all of them in one ZIP file.
+    </p>
+
+    <h2>The options</h2>
+    <ul>
+      <li><strong>Handwriting.</strong> Three styles: Caveat, which is plain and upright, Dancing Script, which joins its letters, and Homemade Apple, which looks like a felt pen.</li>
+      <li><strong>Ink.</strong> Black or blue.</li>
+      <li><strong>Paper.</strong> Plain white, ruled lines with a margin, or squared like a maths notebook. The text sits on the lines of ruled paper.</li>
+      <li><strong>Writing size.</strong> A smaller size fits more lines on a page.</li>
+    </ul>
+
+    <h2>Letters the fonts cannot draw</h2>
+    <p>
+      The three fonts cover Latin letters, including accents, along with digits and common punctuation. Letters from other
+      scripts, such as Devanagari or Chinese, are not in them. The page lists any such characters and draws them in a plain
+      fallback font instead of leaving a gap.
+    </p>
+
+    <h2>Fair use</h2>
+    <p>
+      The result is typed text in a handwriting font, not your own handwriting. Please do not hand it in where a school,
+      college or employer requires work written by your own hand. Use it for notes, cards, mock-ups, practice sheets and
+      similar things.
+    </p>
+
+    <h2>Size limit</h2>
+    <p>
+      If a page has to fit a size limit, choose "Resize this page to KB". The page opens in the resizer further down, which
+      lowers the quality and then the pixel size until the file fits. A JPG is smaller than a PNG for a page like this.
+    </p>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Are the fonts free to use?</h3>
+    <p>
+      Yes. Caveat and Dancing Script are published under the SIL Open Font License and Homemade Apple under the Apache
+      License 2.0. They are served from this site, not from an outside font service.
+    </p>
+    <h3>Is my text uploaded?</h3>
+    <p>
+      No. It is written out in your browser and gone when you close or reload the page. Read the <a href="/privacy/">privacy page</a> for details.
+    </p>
+  </div>
+  <RelatedTools path="/text-to-handwriting/" />
+</Base>
