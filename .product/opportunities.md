@@ -234,7 +234,7 @@ New owner constraint: every tool should relate to the existing tools. No new res
 | OPP-032 | Small generators: Roman numerals, number to words (rupees), random name picker | Discovered | 53 | Low | Backlog | S | 2026-11-17 | - |
 | OPP-033 | In-browser audio and video trim and convert | Discovered | 48 | Low | Backlog | L | 2026-11-17 | - |
 | OPP-034 | Tool hub, per-tool guide template and directory listings | Ready for Implementation | 67 | Low | Needs evidence | M | 2026-11-17 | FEATURE-012 |
-| OPP-035 | Signature maker (typed or drawn signature as a ready-to-resize image) | Ready for Implementation | 63 | Low | Needs evidence | M | 2026-11-18 | FEATURE-020 |
+| OPP-035 | Signature maker (typed or drawn signature as a ready-to-resize image) | Implemented | 63 | Low | Needs evidence | M | 2026-11-18 | FEATURE-020 |
 | OPP-036 | Image or JPG to PDF under a KB limit | Ready for Implementation | 76 | Low | Needs evidence | M | 2026-11-18 | FEATURE-021 |
 | OPP-037 | Increase PDF size to a minimum KB | Ready for Implementation | 61 | Low | Needs evidence | M | 2026-11-18 | FEATURE-022 |
 | OPP-038 | Add name and date on a photo (exam photo caption) | Ready for Implementation | 68 | Low | Needs evidence | S | 2026-11-18 | FEATURE-023 |
