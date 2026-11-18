@@ -1,0 +1,62 @@
+---
+import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import SizeConverter from '../components/SizeConverter.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'KB to MB Converter: Bytes, KB, MB and GB | SizeTune';
+const description =
+  'Convert bytes, KB, MB and GB and see both the 1000 and the 1024 answers side by side, so you know the limit a form really means. Runs in your browser.';
+const jsonLd = webApplicationLd('SizeTune: KB and MB size converter', '/kb-mb-size-converter/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/kb-mb-size-converter/" jsonLd={jsonLd}>
+  <Hero badge="Free · Calculated on this device · No sign-up" title="KB and MB size converter" lead="Type a file size, pick the units, and read the answer both ways: counting 1,000 bytes to a KB and counting 1,024. Nothing you type leaves your browser." />
+
+  <SizeConverter client:load />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This converter runs inside your browser, so it will not work while JavaScript is turned off. Enable JavaScript and
+      reload to use it. The notes below explain the two ways of counting.
+    </p>
+  </noscript>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>Why there are two answers</h2>
+    <p>
+      A kilobyte is 1,000 bytes in the metric system, and that is how disk and phone makers count. Computers count in
+      powers of two, so for them a kilobyte is 1,024 bytes. Windows, most upload forms and most image tools use the
+      1,024 count. The gap grows with each step: a megabyte is 1,000,000 bytes by one count and 1,048,576 by the other,
+      and a gigabyte differs by about 7 per cent.
+    </p>
+    <p>
+      This page shows both, side by side, so you can see the size a limit really allows. For 2 MB that is 2,000 KB by
+      the first count and 2,048 KB by the second.
+    </p>
+
+    <h2>Which one should I use for a form limit?</h2>
+    <p>
+      If a form says "up to 2 MB" and you cannot tell how it counts, treat the smaller figure as your limit. A file that
+      fits the smaller count also fits the larger one. The link under the answer uses the 1,000 count, rounded down to
+      a whole number of KB, for that reason.
+    </p>
+
+    <h2>Using the converter</h2>
+    <ul>
+      <li>Type the size in the first box. Whole numbers, decimals such as 1.5, and commas such as 1,500 are accepted.</li>
+      <li>Choose the unit you have and the unit you want. Both answers update as you type.</li>
+      <li>Empty input shows nothing. Negative numbers, letters and sizes beyond about 9 petabytes show a message instead of a result.</li>
+    </ul>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Why does my 2 MB file show as 1.9 MB on my computer?</h3>
+    <p>
+      The file is probably 2,000,000 bytes, which is 2 MB by the 1,000 count and about 1.91 MB by the 1,024 count.
+      Neither tool is wrong; they count differently.
+    </p>
+    <h3>Is anything stored or sent?</h3>
+    <p>
+      No. The numbers stay in the page while it is open. Read the <a href="/privacy/">privacy page</a> for details.
+    </p>
+  </div>
+  <RelatedTools path="/kb-mb-size-converter/" />
+</Base>

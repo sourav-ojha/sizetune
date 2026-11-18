@@ -99,7 +99,7 @@ describe('P2 CSP strictness on tool routes', () => {
     const d = copyDist(); const tools = pagesOf(d, ['home', 'tool']); expect(tools.length).toBeGreaterThan(1);
     for (const f of tools) { const fails = withDist((x) => edit(x, f, (s) => s.replace("connect-src 'self'", 'connect-src *')), (x) => verifyPrivacy(x).fails as string[]); has(fails, new RegExp(`/${f.replace(/index\.html$/, '')}: CSP`)); }
     rmSync(d, { recursive: true, force: true });
-  });
+  }, 60_000); // runs the whole verifier once per tool route, so it grows with every new tool page
 });
 
 describe('P3 ad / analytics identifiers anywhere in dist', () => {
