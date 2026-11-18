@@ -1,4 +1,4 @@
-import { DRAW_H, DRAW_W, EXPORT_PAD, FONTS, LINE, smoothPath, strokeBounds, type FontId, type Stroke } from '../../lib/signature-maker';
+import { ALL_FONTS, DRAW_H, DRAW_W, EXPORT_PAD, LINE, smoothPath, strokeBounds, type AnyFontId, type Stroke } from '../../lib/signature-maker';
 
 type Ctx = CanvasRenderingContext2D;
 
@@ -49,15 +49,15 @@ export function renderDrawn(strokes: Stroke[], color: string, background: string
   return made.canvas;
 }
 
-const fontCss = (id: FontId, px: number) => `${px}px "${FONTS.find((f) => f.id === id)!.family}", cursive`;
+const fontCss = (id: AnyFontId, px: number) => `${px}px "${ALL_FONTS.find((f) => f.id === id)!.family}", cursive`;
 
 /** Makes sure the web font is ready before it is drawn on a canvas, which does not wait for it by itself. */
-export async function ensureFont(id: FontId): Promise<void> {
-  try { await document.fonts.load(fontCss(id, 64), 'Abc'); } catch { /* the fallback cursive font is drawn instead */ }
+export async function ensureFont(id: AnyFontId, sample = 'Abc'): Promise<void> {
+  try { await document.fonts.load(fontCss(id, 64), sample); } catch { /* the fallback cursive font is drawn instead */ }
 }
 
 /** Typed text in a handwriting font, cropped to the text plus padding. Transparent unless a background is given. Null for empty text. */
-export function renderTyped(text: string, id: FontId, color: string, background: string | null, px = 140): HTMLCanvasElement | null {
+export function renderTyped(text: string, id: AnyFontId, color: string, background: string | null, px = 140): HTMLCanvasElement | null {
   const t = text.trim();
   if (t === '') return null;
   const probe = canvasOf(10, 10, null);
