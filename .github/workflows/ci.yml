@@ -67,7 +67,21 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with: { node-version-file: .nvmrc, cache: pnpm }
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
+      # The Ubuntu mirror is sometimes extremely slow: ~250 WebKit packages took 20+ minutes and the job was cancelled before any test ran
+      # (normally ~45 s). Cap each attempt and retry. Downloaded .deb files stay in the apt cache, so a retry only fetches what is missing.
+      - name: Install browser and system libraries (capped, retried)
+        run: |
+          for attempt in 1 2 3; do
+            # the last attempt is uncapped (the job timeout still applies); earlier ones give up after 4 minutes
+            limit=240; [ "$attempt" = 3 ] && limit=0
+            if timeout --kill-after=15 "$limit" pnpm exec playwright install --with-deps ${{ matrix.browser }}; then exit 0; fi
+            echo "::warning::browser install attempt $attempt did not finish; retrying"
+            # an orphaned apt-get would hold the lock for the next attempt; killing it during the download phase is safe
+            sudo pkill -x apt-get || true
+            sudo pkill -x dpkg || true
+            sleep 5
+          done
+          exit 1
       - run: PW_ALL_BROWSERS=1 CI=1 pnpm exec playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}/${{ matrix.total }}
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: failure()
