@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-017
 opportunity: OPP-028
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-17
 ---
@@ -118,3 +119,7 @@ User text is processed locally and not stored.
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** AC-1 to AC-3 via unit tests; AC-4 network log; AC-5 build check; AC-6 `pnpm run verify:html`.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-18 | feat/feature-017-text-counters-and-converters (commits c88a5bd..70ff014) | AC-1 to AC-6: /text-tools/ with live counts, case converter and filler text in one island | none | owner review of page copy; decide whether to measure usage | rulings: hyphenated or apostrophe words count as one word; spaceless scripts use Intl.Segmenter; filler uses a fixed neutral word list (no placeholder phrase) with limits 5,000 words, 500 sentences, 50,000 characters; no copy button (verify:privacy flags navigator.clipboard, gate unchanged). verified: check 0 errors, build 0, verify:html(:strict) OK, verify:privacy OK, 908 unit pass, e2e text-tools 15/15 on chrome and webkit (3 repeats), axe on the page; no independent reviewer was available, self-review only |
