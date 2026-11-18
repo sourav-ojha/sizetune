@@ -66,9 +66,9 @@ export function toSvg(matrix: boolean[][], margin = 4): string {
 }
 
 /** RGBA pixels, `cell` pixels per module, with a quiet zone of `margin` modules. Used for the PNG and for scanning in tests. */
-export function toPixels(matrix: boolean[][], cell: number, margin = 4): { width: number; height: number; data: Uint8ClampedArray } {
+export function toPixels(matrix: boolean[][], cell: number, margin = 4): { width: number; height: number; data: Uint8ClampedArray<ArrayBuffer> } {
   const n = matrix.length, side = (n + margin * 2) * cell;
-  const data = new Uint8ClampedArray(side * side * 4).fill(255);
+  const data = new Uint8ClampedArray(new ArrayBuffer(side * side * 4)).fill(255);
   for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
     if (!matrix[r][c]) continue;
     for (let y = 0; y < cell; y++) for (let x = 0; x < cell; x++) {

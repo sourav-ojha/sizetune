@@ -1,0 +1,75 @@
+---
+import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import QrTool from '../components/QrTool.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'QR Code Generator for Links, Text and Wi-Fi | SizeTune';
+const description =
+  'Make a QR code for a web address, some text or your Wi-Fi network and download it as PNG or SVG. It is made in your browser and never sent anywhere.';
+const jsonLd = webApplicationLd('SizeTune: QR code generator', '/qr-code-generator/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/qr-code-generator/" jsonLd={jsonLd}>
+  <Hero badge="Free · Made on this device · No sign-up" title="QR code generator" lead="Make a QR code for a web address, some text or your Wi-Fi network, then download it as a PNG or an SVG. The code is made in your browser, so what you type is never sent anywhere." />
+
+  <QrTool client:load />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This generator runs inside your browser, so it will not work while JavaScript is turned off. Enable JavaScript and
+      reload to make a code. The notes below explain how to get a code that scans reliably.
+    </p>
+  </noscript>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>What these codes are</h2>
+    <p>
+      The codes made here are static. The web address, text or Wi-Fi details you enter are stored inside the pattern of
+      squares itself. There is no short link in between, no account and no counter, so the code keeps working for as
+      long as the thing it points to does, and nobody can switch it off or see who scans it.
+    </p>
+
+    <h2>Web address, text and Wi-Fi</h2>
+    <ul>
+      <li><strong>Web address.</strong> It is encoded exactly as you type it, so include the https:// at the start. A code that holds a shorter address is simpler and easier to scan.</li>
+      <li><strong>Text.</strong> Any plain text up to about 2,000 characters, including accents, other scripts and emoji. A phone camera shows the text and lets you copy it.</li>
+      <li><strong>Wi-Fi.</strong> Enter the network name and password, and the phone camera offers to join the network. Choose "No password" for an open network. Tick "Hidden network" only if the network does not broadcast its name.</li>
+    </ul>
+
+    <h2>Getting a code that scans</h2>
+    <p>
+      The error-correction setting decides how much of the code can be dirty or covered and still be read. Low gives the
+      smallest, simplest pattern. High survives the most damage, such as a scuff on a printed label, but it is denser, so
+      it needs to be printed larger. Medium suits most uses.
+    </p>
+    <ul>
+      <li>Keep dark squares on a light background. Inverted or low-contrast colours fail on many scanners.</li>
+      <li>Leave the white border around the code. It is part of what the scanner looks for.</li>
+      <li>Print it at least 2 centimetres across for close scanning, and larger for a poster or a sign.</li>
+      <li>Always scan the final printed copy with a phone before you make many copies.</li>
+    </ul>
+
+    <h2>PNG or SVG</h2>
+    <p>
+      A PNG is a fixed-size picture that works everywhere, such as in a document or a message. An SVG is drawn from
+      shapes, so it stays sharp at any size and suits printing or a design file. Both contain the same code.
+    </p>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Does the code expire?</h3>
+    <p>
+      No. Nothing is hosted, so there is nothing to expire. If the web address you encoded stops working, the code will
+      lead to the same dead address, so use an address you plan to keep.
+    </p>
+    <h3>Is what I type uploaded or saved?</h3>
+    <p>
+      No. The code is made in your browser and is gone when you close or reload the page. Read the <a href="/privacy/">privacy page</a> for details.
+    </p>
+    <h3>Why does my long text fail?</h3>
+    <p>
+      A QR code can hold a limited amount of data, and the more it holds the denser the pattern. Past about 2,000
+      characters the page asks you to shorten the text.
+    </p>
+    <p class="text-sm">QR Code is a registered trademark of Denso Wave Incorporated.</p>
+  </div>
+  <RelatedTools path="/qr-code-generator/" />
+</Base>

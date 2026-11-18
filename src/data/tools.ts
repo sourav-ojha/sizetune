@@ -1,6 +1,6 @@
 // The single list of published tools (FEATURE-012 FR-5). The hub page, the related-tools block and the tests read it.
 // Add a tool here once its page exists; the hub and the sitemap pick it up. No URLs to other sites belong in this file.
-export type FamilyKey = 'size' | 'signature' | 'convert' | 'social' | 'calculators' | 'text';
+export type FamilyKey = 'size' | 'signature' | 'convert' | 'social' | 'calculators' | 'text' | 'generators';
 
 export const FAMILIES: Record<FamilyKey, { label: string; blurb: string }> = {
   size: { label: 'Resize a photo to a size in KB', blurb: 'For forms that name a maximum file size.' },
@@ -8,6 +8,7 @@ export const FAMILIES: Record<FamilyKey, { label: string; blurb: string }> = {
   convert: { label: 'Convert, rotate and check', blurb: 'Change a format, fix the direction or test a file before you upload.' },
   social: { label: 'Social images and icons', blurb: 'Sizes for feeds, thumbnails and websites.' },
   text: { label: 'Text tools', blurb: 'Count words and characters, change case or make filler text.' },
+  generators: { label: 'Generators', blurb: 'Make a code you can print or share.' },
   calculators: { label: 'Date and time calculators', blurb: 'Work out an age, the days between two dates or a Unix timestamp.' },
 };
 
@@ -37,6 +38,7 @@ export const TOOLS: Tool[] = [
   { href: '/favicon-generator/', title: 'Favicon and app icon generator', family: 'social', blurb: 'Make an ICO, a PNG set, a web manifest and a ZIP from one image.', related: ['/instagram-image-resizer/', '/linkedin-image-resizer/', '/'] },
   { href: '/date-calculators/', title: 'Date and time calculators', family: 'calculators', blurb: 'Age from a date of birth, days between two dates, and Unix timestamps with a time zone.', related: ['/', '/check-image-size/', '/resize-image-to-20kb/'] },
   { href: '/text-tools/', title: 'Word counter, case converter and filler text', family: 'text', blurb: 'Count words and characters as you type, change the case of a text, or make neutral filler text of a set length.', related: ['/date-calculators/', '/', '/check-image-size/'] },
+  { href: '/qr-code-generator/', title: 'QR code generator', family: 'generators', blurb: 'Make a QR code for a web address, text or Wi-Fi network and download it as PNG or SVG.', related: ['/text-tools/', '/', '/check-image-size/'] },
 ];
 
 const byHref = new Map(TOOLS.map((t) => [t.href, t]));
