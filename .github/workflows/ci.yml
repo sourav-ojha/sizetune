@@ -46,14 +46,18 @@ jobs:
         with: { name: playwright-results, path: test-results/ }
   cross-browser:
     # Firefox + WebKit (Playwright builds), one job per browser shard. The suite is ~400 tests at workers: 1 (~9 min serial);
-    # install overhead is only ~1 min, so the win is parallelism, not caching/Docker. Firefox runs 2 shards and WebKit 3, so each job
+    # parallelism is the win. Firefox runs 2 shards and WebKit 3, so each job
     # stays near the `verify` job's runtime and cross-browser stays off the critical path. Test files, projects, retries and env are unchanged.
     name: cross-browser (${{ matrix.browser }} ${{ matrix.shard }}/${{ matrix.total }})
     runs-on: ubuntu-24.04
-    # The test run is ~4 minutes. `playwright install --with-deps` is the variable part: it normally takes under a minute, but on a slow
-    # runner the ~250 apt packages WebKit needs have taken 17 to 23+ minutes (observed 2026-11-18, cancelled at the old 20 minute limit
-    # with a few packages left, before any test ran). The limit leaves room for that; healthy runs are unaffected.
-    timeout-minutes: 35
+    # Runs inside the official Playwright image so Firefox, WebKit and their ~250 system packages are already installed. The old
+    # `playwright install --with-deps` step downloaded those from the runner's apt mirror; on 2026-11-18 some runners were assigned a slow
+    # mirror (us-east-2.ec2.archive.ubuntu.com, ~80 kB/s) and that one step took 6 to 27 minutes while the tests took ~4. The image
+    # tag MUST match the @playwright/test version in pnpm-lock.yaml (bump both together); a mismatch fails fast with
+    # "Executable doesn't exist" instead of silently downloading.
+    container:
+      image: mcr.microsoft.com/playwright:v1.65.0-noble
+    timeout-minutes: 20
     strategy:
       fail-fast: false   # let every browser/shard finish so one failure doesn't hide others
       matrix:
@@ -70,7 +74,6 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with: { node-version-file: .nvmrc, cache: pnpm }
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
       - run: PW_ALL_BROWSERS=1 CI=1 pnpm exec playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}/${{ matrix.total }}
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: failure()
