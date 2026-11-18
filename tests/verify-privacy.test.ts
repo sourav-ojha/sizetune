@@ -9,6 +9,7 @@ import { verifyPrivacy } from '../scripts/verify-privacy.mjs';
 import { scanJs, jsIssues, cssIssues, cspIssues, parseCsp, findTrackers, findPlaceholders, parseSrcset, classifyUrl, workerRefs, JS_PRIMITIVE_ALLOWLIST } from '../scripts/verify-lib.mjs';
 import { requireDist, copyDist, htmlFiles, pagesOf, edit, read, write, has, hasNot, withDist, firstOf, toolFile, headEnd, mainEnd, appChunk, preactChunk, clientChunk, jsChunks, cssChunk } from './verify-helpers';
 
+const qrChunk = (d: string) => jsChunks(d).find((f) => /_astro\/QrTool\./.test(f))!;
 const vp = (fn: (d: string) => void) => withDist(fn, (d) => verifyPrivacy(d).fails as string[]);
 const onTool = (fn: (s: string) => string) => vp((d) => edit(d, toolFile(d), fn));
 const onHome = (fn: (s: string) => string) => vp((d) => edit(d, 'index.html', fn));
@@ -30,6 +31,7 @@ describe('verify-privacy: real build', () => {
     for (const line of r) {
       if (/_astro\/client\./.test(line)) expect(line, line).toMatch(/: dyn-importx1$/);
       else if (/_astro\/preact\./.test(line)) expect(line, line).toMatch(/: external-urlx6$/);
+      else if (/_astro\/QrTool\./.test(line)) expect(line, line).toMatch(/: external-urlx2$/);
       else expect(line, line).toMatch(/no flagged primitives/);
     }
   });
@@ -163,6 +165,11 @@ describe('P5 network primitives in JS loaded by tool pages', () => {
   it('allowances are pinned to their audited file: an app chunk carrying the signature strings gets nothing', () => {
     has(vp((d) => edit(d, appChunk(d), (s) => s + ';var q="foreignObject dangerouslySetInnerHTML http://www.w3.org/1998/Math/MathML http://www.w3.org/2000/svg";')), /\[js\].*external-url/);
     has(vp((d) => edit(d, appChunk(d), (s) => s + ';var q="data-preact-island-id";import(`./' + sigName(d) + '`);')), /\[js\].*dyn-import/);
+  });
+  it('the QR chunk may carry only its two audited SVG namespace strings (FEATURE-018)', () => {
+    has(vp((d) => edit(d, qrChunk(d), (x) => x + ';var u="https://collect.example.com/x";')), /\[js\].*external-url/);
+    has(vp((d) => edit(d, qrChunk(d), (x) => x + ';var n="http://www.w3.org/2000/svg";')), /re-audit|external-url/);
+    has(vp((d) => edit(d, qrChunk(d), (x) => x + ';fetch("/x");')), /\[js\].*'fetch'/);
   });
   it('F3: an island carrying data-preact-signals fails the privacy verifier itself', () => has(onHome((s) => s.replace('<astro-island ', '<astro-island data-preact-signals="{}" ')), /data-preact-signals/));
   it('allow-listed Preact tokens are not a free pass in app code', () => has(vp((d) => edit(d, appChunk(d), (s) => s + ';var u="http://www.w3.org/2000/svg";import("./signals.module.x.js");')), /\[js\]/));
