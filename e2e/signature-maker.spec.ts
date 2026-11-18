@@ -140,3 +140,110 @@ test('AC-4: making, saving and resizing a signature sends no request that carrie
   expect(seen.filter((r) => r.method !== 'GET' || r.post)).toEqual([]);
   expect(seen.filter((r) => !r.url.startsWith(origin) && !r.url.startsWith('blob:') && !r.url.startsWith('data:'))).toEqual([]);
 });
+
+// ---- FEATURE-041: Indian-language names ----
+const fontFiles = (urls: string[], re: RegExp) => urls.filter((u) => re.test(u));
+const loaded = (page: Page, family: string) => page.evaluate((f) => [...document.fonts].some((x) => x.family.replace(/"/g, '') === f && x.status === 'loaded'), family);
+const inkPixels = (page: Page) => page.getByTestId('type-preview').evaluate((c: HTMLCanvasElement) => {
+  const d = c.getContext('2d')!.getImageData(0, 0, c.width, c.height).data;
+  let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 40) n++; return n;
+});
+
+test('FEATURE-041 FR-1: the language list offers English, Hindi, Marathi and Tamil in that order', async ({ page }) => {
+  await page.getByTestId('mode-type').click();
+  await expect(page.getByTestId('sig-lang').locator('option')).toHaveText(['English (Latin letters)', 'Hindi (हिन्दी)', 'Marathi (मराठी)', 'Tamil (தமிழ்)']);
+});
+
+test('FEATURE-041 AC-2: no Indian-script font file is requested until its language is chosen', async ({ page }) => {
+  const urls: string[] = [];
+  page.on('request', (r) => urls.push(r.url()));
+  await page.reload();
+  await page.waitForFunction(() => { const i = document.querySelector('astro-island'); return !!i && !i.hasAttribute('ssr'); });
+  await page.getByTestId('mode-type').click();
+  await page.getByTestId('sig-text').fill('Ravi Kumar');
+  await expect(page.getByTestId('type-preview')).toBeVisible();
+  await expect.poll(() => loaded(page, 'Caveat')).toBe(true); // the English font did load, so the wait above means something
+  expect(fontFiles(urls, /kalam|kavivanar/i), 'English only: no Indian font files').toEqual([]);
+  await page.getByTestId('sig-lang').selectOption('hi');
+  await page.getByTestId('sig-text').fill('रवि कुमार');
+  await expect.poll(() => loaded(page, 'Kalam')).toBe(true);
+  expect(fontFiles(urls, /kalam.*devanagari.*\.woff2?/i).length).toBeGreaterThan(0);
+  expect(fontFiles(urls, /kavivanar/i), 'Tamil font still not requested').toEqual([]);
+  await page.getByTestId('sig-lang').selectOption('ta');
+  await page.getByTestId('sig-text').fill('சுரேஷ் குமார்');
+  await expect.poll(() => loaded(page, 'Kavivanar')).toBe(true);
+  expect(fontFiles(urls, /kavivanar.*tamil.*\.woff2?/i).length).toBeGreaterThan(0);
+});
+
+test('FEATURE-041 AC-1: a Hindi, Marathi and Tamil name is drawn in the script font and saves as a PNG', async ({ page }) => {
+  await page.getByTestId('mode-type').click();
+  for (const [lang, name, family] of [['hi', 'रवि कुमार', 'Kalam'], ['mr', 'सुनीता पाटील', 'Kalam'], ['ta', 'சுரேஷ் குமார்', 'Kavivanar']] as const) {
+    await page.getByTestId('sig-lang').selectOption(lang);
+    await page.getByTestId('sig-text').fill(name);
+    await expect.poll(() => loaded(page, family)).toBe(true);
+    await expect.poll(() => inkPixels(page)).toBeGreaterThan(500);
+    await expect(page.getByTestId('sig-foreign')).toHaveCount(0);
+    await expect(page.getByTestId(`font-${family.toLowerCase()}`)).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.getByTestId('sig-text')).toHaveAttribute('lang', lang);
+  }
+  const [dl] = await Promise.all([page.waitForEvent('download'), page.getByTestId('save-png').click()]);
+  const buf = fs.readFileSync((await dl.path())!);
+  expect(buf.subarray(1, 4).toString('ascii')).toBe('PNG');
+});
+
+test('FEATURE-041: the script font changes the drawing (it is not the Latin fallback)', async ({ page }) => {
+  await page.getByTestId('mode-type').click();
+  await page.getByTestId('sig-lang').selectOption('hi');
+  await page.getByTestId('sig-text').fill('रवि');
+  await expect.poll(() => loaded(page, 'Kalam')).toBe(true);
+  await expect.poll(() => inkPixels(page)).toBeGreaterThan(300);
+  const withFont = await page.getByTestId('type-preview').evaluate((c: HTMLCanvasElement) => c.toDataURL());
+  // the same word drawn with the font stack minus Kalam looks different, so the font really took part
+  const without = await page.evaluate(async () => {
+    const c = document.createElement('canvas'); c.width = 600; c.height = 160;
+    const x = c.getContext('2d')!; x.font = '90px cursive'; x.fillText('रवि', 10, 110);
+    return c.toDataURL();
+  });
+  expect(withFont).not.toBe(without);
+});
+
+test('FEATURE-041 edge: a mixed-script name lists the letters the font cannot draw', async ({ page }) => {
+  await page.getByTestId('mode-type').click();
+  await page.getByTestId('sig-lang').selectOption('hi');
+  await page.getByTestId('sig-text').fill('Ravi रवि');
+  await expect(page.getByTestId('sig-foreign')).toContainText('R');
+  await page.getByTestId('sig-text').fill('रवि');
+  await expect(page.getByTestId('sig-foreign')).toHaveCount(0);
+  await page.getByTestId('sig-lang').selectOption('en');
+  await page.getByTestId('sig-text').fill('Ravi रवि');
+  await expect(page.getByTestId('sig-foreign')).toContainText('र');
+});
+
+test('FEATURE-041: switching language picks that language’s font and keeps the English choices for English', async ({ page }) => {
+  await page.getByTestId('mode-type').click();
+  await expect(page.getByTestId('font-dancing')).toBeVisible();
+  await page.getByTestId('sig-lang').selectOption('ta');
+  await expect(page.getByTestId('font-dancing')).toHaveCount(0);
+  await expect(page.getByTestId('font-kavivanar')).toHaveAttribute('aria-pressed', 'true');
+  await page.getByTestId('sig-lang').selectOption('en');
+  await expect(page.getByTestId('font-caveat')).toHaveAttribute('aria-pressed', 'true');
+});
+
+test('FEATURE-041 AC-3: no request leaves the page and none carries the typed name', async ({ page, baseURL }) => {
+  const origin = new URL(baseURL!).origin;
+  const bad: string[] = [];
+  const bodies: string[] = [];
+  page.context().on('request', (r) => {
+    const u = new URL(r.url());
+    if (!['blob:', 'data:'].includes(u.protocol) && u.origin !== origin) bad.push(r.url());
+    if (r.method() !== 'GET') bad.push(`${r.method()} ${r.url()}`);
+    if (r.postData()) bodies.push(r.postData()!);
+    if (/रवि|%E0%A4%B0|சுரே/.test(decodeURIComponent(u.pathname + u.search))) bad.push(`name in URL ${r.url()}`);
+  });
+  await page.getByTestId('mode-type').click();
+  await page.getByTestId('sig-lang').selectOption('hi');
+  await page.getByTestId('sig-text').fill('रवि कुमार');
+  await expect.poll(() => loaded(page, 'Kalam')).toBe(true);
+  expect(bad).toEqual([]);
+  expect(bodies).toEqual([]);
+});

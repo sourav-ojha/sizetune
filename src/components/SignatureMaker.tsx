@@ -2,10 +2,12 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import '@fontsource/caveat/latin-400.css';
 import '@fontsource/dancing-script/latin-400.css';
 import '@fontsource/homemade-apple/latin-400.css';
+import '@fontsource/kalam/devanagari-400.css'; // declared here, fetched by the browser only when a Hindi or Marathi name is drawn
+import '@fontsource/kavivanar/tamil-400.css'; // likewise for Tamil
 import SignatureTool from './SignatureTool';
 import { ensureFont, renderDrawn, renderTyped, repaint, toBlob } from './signature/render';
 import { btnPrimary, btnSecondary, btnToggleOff, btnToggleOn, errCls, fieldsetCls, hintCls, inputCls, labelCls, legendCls, panelCls } from './tool/ui';
-import { DRAW_H, DRAW_W, FONTS, INKS, undoStroke, type FontId, type InkId, type Pt, type Stroke } from '../lib/signature-maker';
+import { DRAW_H, DRAW_W, INKS, LANGUAGES, fontsFor, foreignChars, languageById, sampleFor, undoStroke, type AnyFontId, type InkId, type Pt, type Stroke } from '../lib/signature-maker';
 
 type Mode = 'draw' | 'type';
 const MAX_TYPED = 40;
@@ -16,7 +18,8 @@ export default function SignatureMaker() {
   const [ink, setInk] = useState<InkId>('black');
   const [strokes, setStrokes] = useState<Stroke[]>([]);
   const [text, setText] = useState('');
-  const [font, setFont] = useState<FontId>('caveat');
+  const [lang, setLang] = useState('en');
+  const [font, setFont] = useState<AnyFontId>('caveat');
   const [fontReady, setFontReady] = useState(0); // bumps when a font finishes loading so the typed preview repaints
   const [message, setMessage] = useState('');
   const [resize, setResize] = useState<{ file: File; key: number } | null>(null);
@@ -26,6 +29,9 @@ export default function SignatureMaker() {
   const resizeRef = useRef<HTMLDivElement>(null);
   const color = INKS.find((i) => i.id === ink)!.value;
   const typed = text.slice(0, MAX_TYPED);
+  const language = languageById(lang);
+  const foreign = foreignChars(typed, language.script);
+  const chooseLang = (id: string) => { setLang(id); setFont(fontsFor(id)[0].id); };
 
   // Repaint the drawing area whenever the strokes or the ink change.
   useEffect(() => { if (drawRef.current) repaint(drawRef.current, strokes, color); }, [strokes, color, mode]);
@@ -33,9 +39,10 @@ export default function SignatureMaker() {
   // Typed preview: wait for the font, then draw. A stale font load must not paint over a newer choice.
   useEffect(() => {
     let alive = true;
-    void ensureFont(font).then(() => { if (alive) setFontReady((n) => n + 1); });
+    // Loads the font file that covers the typed letters (or a sample of the script), so only the chosen language's file is ever fetched.
+    void ensureFont(font, typed.trim() || sampleFor(lang)).then(() => { if (alive) setFontReady((n) => n + 1); });
     return () => { alive = false; };
-  }, [font]);
+  }, [font, typed, lang, mode]);
   useEffect(() => {
     const cv = previewRef.current;
     if (!cv) return;
@@ -72,7 +79,7 @@ export default function SignatureMaker() {
 
   const hasContent = mode === 'draw' ? strokes.length > 0 : typed.trim() !== '';
   const build = async (background: string | null) => {
-    if (mode === 'type') { await ensureFont(font); return renderTyped(typed, font, color, background); }
+    if (mode === 'type') { await ensureFont(font, typed.trim() || sampleFor(lang)); return renderTyped(typed, font, color, background); }
     return renderDrawn(strokes, color, background);
   };
   const download = async (kind: 'png' | 'jpg') => {
@@ -123,14 +130,21 @@ export default function SignatureMaker() {
         ) : (
           <div className="space-y-4">
             <div>
+              <label htmlFor="sig-lang" className={labelCls}>Language</label>
+              <select id="sig-lang" data-testid="sig-lang" className={inputCls} value={lang} onChange={(e) => chooseLang((e.target as HTMLSelectElement).value)}>
+                {LANGUAGES.map((l) => <option key={l.id} value={l.id}>{l.label}</option>)}
+              </select>
+            </div>
+            <div>
               <label htmlFor="sig-text" className={labelCls}>Your name</label>
-              <input id="sig-text" data-testid="sig-text" type="text" maxLength={MAX_TYPED} autoComplete="off" className={inputCls} value={text} onInput={(e) => setText((e.target as HTMLInputElement).value)} />
-              <p className={hintCls}>Up to {MAX_TYPED} characters. The handwriting fonts cover Latin letters (A to Z with accents).</p>
+              <input id="sig-text" data-testid="sig-text" type="text" lang={lang} maxLength={MAX_TYPED} autoComplete="off" placeholder={lang === 'en' ? undefined : `For example ${sampleFor(lang)}`} className={inputCls} value={text} onInput={(e) => setText((e.target as HTMLInputElement).value)} />
+              <p className={hintCls}>Up to {MAX_TYPED} characters. {lang === 'en' ? 'These fonts cover Latin letters (A to Z with accents).' : `This font draws ${language.script === 'tamil' ? 'Tamil' : 'Devanagari'} letters. Type with your device's ${language.label.split(' ')[0]} keyboard.`}</p>
+              {foreign.length > 0 && <p role="status" data-testid="sig-foreign" className="mt-2 rounded-lg border border-amber-400 bg-amber-50 p-3 text-amber-950">These characters are from another script, so this font cannot draw them and a plain fallback font is used: {foreign.slice(0, 12).join(' ')}{foreign.length > 12 ? ' …' : ''}</p>}
             </div>
             <fieldset className={fieldsetCls}>
               <legend className={legendCls}>Handwriting style</legend>
               <div className="flex flex-wrap gap-2">
-                {FONTS.map((f) => (
+                {fontsFor(lang).map((f) => (
                   <button key={f.id} type="button" data-testid={`font-${f.id}`} aria-pressed={font === f.id} className={font === f.id ? btnToggleOn : btnToggleOff} onClick={() => setFont(f.id)}>{f.label}</button>
                 ))}
               </div>
