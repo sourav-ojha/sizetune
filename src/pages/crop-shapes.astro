@@ -1,0 +1,69 @@
+---
+import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import CropShapesTool from '../components/CropShapesTool.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Crop a Photo to a Shape or Aspect Ratio Online | SizeTune';
+const description =
+  'Draw a freehand cut-out, crop to a square with rounded corners, or change a photo to a new aspect ratio by cropping or adding a border. Done in your browser.';
+const jsonLd = webApplicationLd('SizeTune: crop shapes and aspect ratio', '/crop-shapes/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/crop-shapes/" jsonLd={jsonLd}>
+  <Hero title="Crop to a shape or ratio" lead="Cut a photo out along a line you draw, make a square with rounded corners, or change the aspect ratio by cropping or adding a border. Your photo stays on this device." />
+
+  <CropShapesTool client:load />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This tool works inside your browser, so it will not run while JavaScript is turned off. Enable JavaScript and
+      reload to crop your picture. The notes below explain the three options.
+    </p>
+  </noscript>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>Three ways to change the shape</h2>
+    <ul>
+      <li><strong>Draw a cut-out.</strong> Trace around the part of the picture you want to keep with a mouse, a pen or a finger. The line is closed for you, everything outside it becomes transparent, and the result is cropped to the shape. Save it as a PNG to keep the transparency.</li>
+      <li><strong>Square and rounded corners.</strong> Crop to a centred square if you like, then set how round the corners are. At the largest setting a square becomes a circle. The corners are transparent, so save a PNG.</li>
+      <li><strong>Aspect ratio.</strong> Pick a ratio such as 1:1, 4:5 or 16:9, or type your own. You can crop the edges away or add a border so that the whole picture fits.</li>
+    </ul>
+
+    <h2>Crop or add a border</h2>
+    <p>
+      Cropping removes part of the picture, and the sliders choose which part stays. Adding a border keeps all of the
+      picture at its own size and puts space around it until the shape is right, so nothing is stretched or squashed. The
+      border can be transparent, white or black. Transparent needs a PNG, and a JPG draws it as white.
+    </p>
+
+    <h2>PNG or JPG</h2>
+    <p>
+      A PNG keeps transparent areas, which you need for a cut-out or rounded corners. A JPG has no transparency, so the
+      JPG button fills those areas with white. A JPG is usually smaller, and it is what most upload forms ask for. If the
+      result has to fit a size limit, use the <a href="/">KB resizer</a> afterwards.
+    </p>
+
+    <h2>Tips for a clean cut-out</h2>
+    <ul>
+      <li>Draw slowly and keep the line just inside the edge of the thing you are keeping, so no background shows.</li>
+      <li>On a phone, use one finger and keep it on the screen until the shape is finished. Lifting your finger closes the line.</li>
+      <li>If you cannot draw a line, the square and aspect ratio options work with taps and sliders only.</li>
+    </ul>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Can I fix the line after I draw it?</h3>
+    <p>
+      Not point by point. If the line is wrong, press "Start again" and draw it again. Drawing a new line also replaces
+      the old one.
+    </p>
+    <h3>Is the picture stretched when I change the ratio?</h3>
+    <p>
+      No. Cropping cuts a window out of the picture and adding a border places the whole picture, unscaled, on a larger
+      canvas. Neither one changes the shape of what is in the photo.
+    </p>
+    <h3>Is my photo uploaded?</h3>
+    <p>
+      No. It is cropped in your browser and gone when you close or reload the page. Read the <a href="/privacy/">privacy page</a> for details.
+    </p>
+  </div>
+  <RelatedTools path="/crop-shapes/" />
+</Base>
