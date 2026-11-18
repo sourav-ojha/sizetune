@@ -1,0 +1,79 @@
+---
+import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import TextTools from '../components/TextTools.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Word Counter, Case Converter and Filler Text | SizeTune';
+const description =
+  'Count words, characters and sentences as you type, change text to upper, lower, title or sentence case, and make neutral filler text. Runs in your browser.';
+const jsonLd = webApplicationLd('SizeTune: word counter, case converter and filler text', '/text-tools/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/text-tools/" jsonLd={jsonLd}>
+  <Hero badge="Free · Your text stays on this device · No sign-up" title="Count, convert and fill text" lead="Three small text tools on one page: live word and character counts, a case converter, and a filler text maker. Nothing you type leaves your browser." />
+
+  <TextTools client:load />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      These tools run inside your browser, so they will not work while JavaScript is turned off. Enable JavaScript and
+      reload to use them. The notes below explain how the counts and conversions are worked out.
+    </p>
+  </noscript>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>How the counts are worked out</h2>
+    <p>
+      A word is a run of letters or digits between spaces, so "don't" and "well-known" each count as one word, and a
+      dash on its own does not count at all. Languages such as Chinese, Japanese and Thai do not put spaces between
+      words, so for those the page asks your browser to find the word boundaries instead. Where the browser cannot, a
+      run of such text counts as one word.
+    </p>
+    <p>
+      Characters are counted the way a reader sees them. A letter with an accent added after it, or an emoji with a skin
+      tone, counts once, not twice. "Without spaces" removes spaces, tabs and line breaks before counting. A sentence is
+      a stretch of text that ends in a full stop, question mark or exclamation mark, and a paragraph is a block of text
+      separated from the next by a blank line.
+    </p>
+
+    <h2>Why the numbers can differ from another tool</h2>
+    <ul>
+      <li><strong>Hyphens and apostrophes.</strong> Some counters split "well-known" into two words. This page keeps it as one, which is also how most word processors count it.</li>
+      <li><strong>Line breaks.</strong> A line break counts as one character in the total and none in the "without spaces" figure.</li>
+      <li><strong>Form limits.</strong> A portal that limits an essay to a set number of characters may count line breaks as two characters. If you are close to a limit, leave a small margin.</li>
+    </ul>
+
+    <h2>Case conversion</h2>
+    <p>
+      Upper and lower case change every letter, including accented ones, so "école" becomes "ÉCOLE". Title case capitalises
+      the first letter of each word and lowers the rest, and it does not try to leave small words such as "of" or "the"
+      in lower case, because the right choice depends on the style guide you follow. Sentence case lowers everything,
+      then capitalises the first letter of the text and the first letter after each full stop, question mark or
+      exclamation mark. Names and acronyms are lowered too, so check them before you use the result.
+    </p>
+
+    <h2>Filler text</h2>
+    <p>
+      The filler maker writes plain, neutral sentences made from a fixed list of everyday words. Ask for a number of
+      words, sentences or characters and you get exactly that many, and the same request always gives the same text. It
+      is meant for filling a layout or testing a form field, not for publishing. The limits are 5,000 words, 500
+      sentences or 50,000 characters at a time, so the page stays quick on a phone.
+    </p>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Is my text uploaded or saved?</h3>
+    <p>
+      No. The text stays in the page while it is open and is gone when you close or reload it. Read the <a href="/privacy/">privacy page</a> for details.
+    </p>
+    <h3>Is there a limit on how much text I can paste?</h3>
+    <p>
+      There is no fixed limit, but a very large paste can slow down an older phone, because the counts are recalculated
+      as the text changes.
+    </p>
+    <h3>Why does the paragraph count ignore single line breaks?</h3>
+    <p>
+      A single line break usually continues the same paragraph, as in an address. A blank line starts a new one, which
+      matches how most editors treat the two.
+    </p>
+  </div>
+  <RelatedTools path="/text-tools/" />
+</Base>
