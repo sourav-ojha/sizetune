@@ -19,6 +19,42 @@ export const FONTS = [
 ] as const;
 export type FontId = (typeof FONTS)[number]['id'];
 
+/** Fonts for the Indian scripts, kept apart from FONTS so the other tools that use FONTS stay as they were. */
+export const INDIC_FONTS = [
+  { id: 'kalam', label: 'Kalam', family: 'Kalam' },
+  { id: 'kavivanar', label: 'Kavivanar', family: 'Kavivanar' },
+] as const;
+export const ALL_FONTS = [...FONTS, ...INDIC_FONTS] as const;
+export type AnyFontId = (typeof ALL_FONTS)[number]['id'];
+
+export type ScriptId = 'latin' | 'devanagari' | 'tamil';
+export interface Language { id: string; label: string; script: ScriptId; fonts: readonly AnyFontId[]; /** A short sample in the script: loads the right font file and fills the name box's hint. */ sample: string }
+/** English first for the existing tool, then Hindi, Marathi and Tamil. Marathi is written in Devanagari, like Hindi. */
+export const LANGUAGES: readonly Language[] = [
+  { id: 'en', label: 'English (Latin letters)', script: 'latin', fonts: FONTS.map((f) => f.id), sample: 'Abc' },
+  { id: 'hi', label: 'Hindi (हिन्दी)', script: 'devanagari', fonts: ['kalam'], sample: 'रवि कुमार' },
+  { id: 'mr', label: 'Marathi (मराठी)', script: 'devanagari', fonts: ['kalam'], sample: 'सुनीता पाटील' },
+  { id: 'ta', label: 'Tamil (தமிழ்)', script: 'tamil', fonts: ['kavivanar'], sample: 'சுரேஷ் குமார்' },
+];
+export const languageById = (id: string): Language => LANGUAGES.find((l) => l.id === id) ?? LANGUAGES[0];
+export const fontsFor = (id: string) => languageById(id).fonts.map((f) => ALL_FONTS.find((a) => a.id === f)!);
+export const sampleFor = (id: string): string => languageById(id).sample;
+
+// What each script's font can draw, as Unicode ranges: the script's own block, plus the marks every script shares.
+const SHARED = '\\s0-9\\u200c\\u200d.,\\-\'’“”"()/&:;!?';
+const OWN: Record<ScriptId, string> = {
+  latin: 'A-Za-z\\u00c0-\\u024f',
+  devanagari: '\\u0900-\\u097f\\ua8e0-\\ua8ff',
+  tamil: '\\u0b80-\\u0bff',
+};
+const ALLOWED: Record<ScriptId, RegExp> = Object.fromEntries((Object.keys(OWN) as ScriptId[]).map((k) => [k, new RegExp(`^[${OWN[k]}${SHARED}]$`, 'u')])) as Record<ScriptId, RegExp>;
+/** Characters of `text` that the chosen script's font cannot draw (letters of another script, symbols), each once, in order of first use. */
+export function foreignChars(text: string, script: ScriptId): string[] {
+  const seen = new Set<string>();
+  for (const ch of text) if (!ALLOWED[script].test(ch)) seen.add(ch);
+  return [...seen];
+}
+
 export const INKS = [
   { id: 'black', label: 'Black', value: '#111827' },
   { id: 'blue', label: 'Blue', value: '#1e40af' },
