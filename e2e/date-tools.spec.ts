@@ -5,6 +5,8 @@ const PAGE = '/date-calculators/';
 test.beforeEach(async ({ page }) => {
   await page.goto(PAGE);
   await expect(page.getByTestId('tool')).toBeVisible();
+  // The tool is server-rendered, so it is visible before the island hydrates. Input typed before then is lost; wait for hydration.
+  await page.waitForFunction(() => { const i = document.querySelector('astro-island'); return !!i && !i.hasAttribute('ssr'); });
 });
 
 test('AC-1: age is exact in years, months and days, including a leap-day birth', async ({ page }) => {
