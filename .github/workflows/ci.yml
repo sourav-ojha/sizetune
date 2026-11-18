@@ -50,7 +50,10 @@ jobs:
     # stays near the `verify` job's runtime and cross-browser stays off the critical path. Test files, projects, retries and env are unchanged.
     name: cross-browser (${{ matrix.browser }} ${{ matrix.shard }}/${{ matrix.total }})
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    # The test run is ~4 minutes. `playwright install --with-deps` is the variable part: it normally takes under a minute, but on a slow
+    # runner the ~250 apt packages WebKit needs have taken 17 to 23+ minutes (observed 2026-11-18, cancelled at the old 20 minute limit
+    # with a few packages left, before any test ran). The limit leaves room for that; healthy runs are unaffected.
+    timeout-minutes: 35
     strategy:
       fail-fast: false   # let every browser/shard finish so one failure doesn't hide others
       matrix:
