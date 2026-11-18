@@ -53,10 +53,10 @@ jobs:
     # Runs inside the official Playwright image so Firefox, WebKit and their ~250 system packages are already installed. The old
     # `playwright install --with-deps` step downloaded those from the runner's apt mirror; on 2026-11-18 some runners were assigned a slow
     # mirror (us-east-2.ec2.archive.ubuntu.com, ~80 kB/s) and that one step took 6 to 27 minutes while the tests took ~4. The image
-    # tag MUST match the @playwright/test version in pnpm-lock.yaml (bump both together); a mismatch fails fast with
+    # tag MUST match the @playwright/test version in pnpm-lock.yaml (bump tag and digest together); a mismatch fails fast with
     # "Executable doesn't exist" instead of silently downloading.
     container:
-      image: mcr.microsoft.com/playwright:v1.65.0-noble
+      image: mcr.microsoft.com/playwright:v1.65.0-noble@sha256:9beb546099e11f52d62e505537914870e01a67e0e6b00ae41da4775324e73dbe
     timeout-minutes: 20
     strategy:
       fail-fast: false   # let every browser/shard finish so one failure doesn't hide others
