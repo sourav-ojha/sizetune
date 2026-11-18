@@ -56,6 +56,8 @@ test('AC-1: plain text works and the error-correction choice changes the code, n
   await page.getByTestId('kind-text').click();
   await page.getByTestId('qr-text').fill('Hello, नमस्ते 👍');
   await expect(page.getByTestId('qr-info')).toBeVisible();
+  const widthNow = () => page.getByTestId('qr-canvas').evaluate((c: HTMLCanvasElement) => c.width);
+  await expect.poll(widthNow).not.toBe(300); // the canvas is drawn just after the status text; 300 is the unset default
   const low = await canvasPixels(page);
   await expect.poll(async () => decodePx(await canvasPixels(page))).toBe('Hello, नमस्ते 👍');
   await page.getByTestId('qr-ecl').selectOption('H');
@@ -98,11 +100,31 @@ test('AC-3: the PNG size option changes the picture size', async ({ page }) => {
   await expect.poll(width).toBeGreaterThan(900);
 });
 
-test('text too long for a QR code is explained and no download is offered', async ({ page }) => {
+test('text too long for the chosen error correction is explained, and a lower level fixes it', async ({ page }) => {
   await page.getByTestId('kind-text').click();
-  await page.getByTestId('qr-text').fill('x'.repeat(2500));
+  await page.getByTestId('qr-text').fill('x'.repeat(1500)); // fits at Medium, not at High
+  await expect(page.getByTestId('qr-png')).toHaveAttribute('href', /^blob:/);
+  await page.getByTestId('qr-ecl').selectOption('H');
+  await expect(page.getByTestId('qr-error')).toContainText(/high error correction/i);
+  await expect(page.getByTestId('qr-png')).toHaveCount(0);
+  await page.getByTestId('qr-ecl').selectOption('L');
+  await expect(page.getByTestId('qr-error')).toHaveCount(0);
+  await expect(page.getByTestId('qr-png')).toHaveAttribute('href', /^blob:/);
+});
+
+test('text far past any limit is refused with the same explanation', async ({ page }) => {
+  await page.getByTestId('kind-text').click();
+  await page.getByTestId('qr-text').fill('x'.repeat(6000));
   await expect(page.getByTestId('qr-error')).toBeVisible();
   await expect(page.getByTestId('qr-png')).toHaveCount(0);
+});
+
+test('a Wi-Fi code with no password says so', async ({ page }) => {
+  await page.getByTestId('kind-wifi').click();
+  await page.getByTestId('qr-ssid').fill('Cafe');
+  await expect(page.getByTestId('qr-nopass')).toBeVisible();
+  await page.getByTestId('qr-pass').fill('secret');
+  await expect(page.getByTestId('qr-nopass')).toHaveCount(0);
 });
 
 test('a warning to test the printed code is shown with every code', async ({ page }) => {

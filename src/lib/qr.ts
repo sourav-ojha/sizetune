@@ -8,8 +8,12 @@ export type WifiSecurity = 'WPA' | 'WEP' | 'nopass';
 // The library turns text into bytes one character at a time; make it UTF-8 so accents, scripts and emoji scan back correctly.
 qrcode.stringToBytes = (s: string) => Array.from(new TextEncoder().encode(s));
 
-/** More text than any QR code can hold at the lowest error correction (version 40, byte mode, level L is 2,953 bytes). */
-export const MAX_QR_CHARS = 2000;
+/**
+ * Input above this many UTF-16 units is refused without trying, to keep the page quick. It is not the real capacity: that depends on the
+ * error-correction level and on how many bytes the text needs (version 40, byte mode holds 2,953 / 2,331 / 1,663 / 1,273 bytes at L / M / Q / H,
+ * and accents, other scripts and emoji take 2 to 4 bytes per character). The library throws when the data does not fit, and that is handled.
+ */
+export const MAX_QR_CHARS = 5000;
 
 /** The text is encoded exactly as typed, trimmed. Null when empty. */
 export function urlPayload(input: string): string | null {
@@ -26,8 +30,8 @@ export interface WifiInput { ssid: string; password: string; security: WifiSecur
 
 /** The widely supported WIFI:T:<type>;S:<name>;P:<password>;H:true;; format that phone cameras offer to join. Null without a network name. */
 export function wifiPayload(w: WifiInput): string | null {
-  const ssid = w.ssid.trim();
-  if (ssid === '') return null;
+  const ssid = w.ssid; // as typed: a network name may legitimately start or end with a space
+  if (ssid.trim() === '') return null;
   const parts = [`T:${w.security}`, `S:${escapeWifi(ssid)}`];
   if (w.security !== 'nopass') parts.push(`P:${escapeWifi(w.password)}`);
   if (w.hidden) parts.push('H:true');

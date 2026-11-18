@@ -45,6 +45,17 @@ describe('limits and output', () => {
     expect(buildMatrix('x'.repeat(MAX_QR_CHARS + 500), 'H')).toBeNull();
     expect(buildMatrix('', 'M')).toBeNull();
   });
+  it('capacity depends on the error-correction level: the library overflow is handled, not only the length guard', () => {
+    // 1,500 plain characters fit at Low (2,953 bytes), Medium (2,331) and Quartile (1,663) but not at High (1,273)
+    expect(buildMatrix('x'.repeat(1500), 'H')).toBeNull();
+    for (const l of ['L', 'M', 'Q'] as const) expect(buildMatrix('x'.repeat(1500), l), l).not.toBeNull();
+    // non-Latin text needs several bytes per character, so far fewer characters fit
+    expect(buildMatrix('नमस्ते'.repeat(120), 'L')).not.toBeNull(); // ~2,160 bytes
+    expect(buildMatrix('नमस्ते'.repeat(200), 'L')).toBeNull(); // ~3,600 bytes in only 1,200 characters
+  });
+  it('a network name keeps its spaces as typed', () => {
+    expect(wifiPayload({ ssid: ' Home ', password: 'p', security: 'WPA', hidden: false })).toBe('WIFI:T:WPA;S: Home ;P:p;;');
+  });
   it('SVG output is well formed, scalable, black on white and decodes (AC-3)', () => {
     const m = buildMatrix('https://example.com', 'M')!;
     const svg = toSvg(m, 4);

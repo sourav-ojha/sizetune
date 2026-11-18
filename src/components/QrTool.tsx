@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { buildMatrix, toPixels, toSvg, urlPayload, wifiPayload, MAX_QR_CHARS, type Ecl, type WifiSecurity } from '../lib/qr';
+import { buildMatrix, toPixels, toSvg, urlPayload, wifiPayload, type Ecl, type WifiSecurity } from '../lib/qr';
 import { btnSecondary, btnToggleOff, btnToggleOn, errCls, fieldsetCls, hintCls, inputCls, labelCls, legendCls, panelCls } from './tool/ui';
 
 type Kind = 'url' | 'text' | 'wifi';
@@ -25,10 +25,15 @@ export default function QrTool() {
   const payload = kind === 'url' ? urlPayload(url) : kind === 'text' ? urlPayload(text) : wifiPayload({ ssid, password, security, hidden });
   const matrix = useMemo(() => (payload ? buildMatrix(payload, ecl) : null), [payload, ecl]);
   const tooLong = payload !== null && matrix === null;
+  const eclName = ECLS.find(([v]) => v === ecl)![1].split(' ')[0].toLowerCase();
+  const pngSide = matrix ? (matrix.length + 8) * Math.max(1, Math.floor(size / (matrix.length + 8))) : 0;
+  const needsPassword = kind === 'wifi' && security !== 'nopass' && password === '' && payload !== null;
 
   // Preview and download files. Object URLs are revoked when the code changes and when the tool goes away.
   useEffect(() => {
-    if (!matrix) { setPngUrl(''); setSvgUrl(''); return; }
+    // Clear first: the cleanup below revokes the previous links, so a stale one must never be offered while the new file is made.
+    setPngUrl(''); setSvgUrl('');
+    if (!matrix) return;
     const made: string[] = [];
     let alive = true;
     const cell = Math.max(1, Math.floor(size / (matrix.length + 8)));
@@ -106,10 +111,11 @@ export default function QrTool() {
 
         <div className="space-y-4">
           <div role="status" aria-live="polite" data-testid="qr-status">
-            {tooLong && <p className={errCls} data-testid="qr-error">That is more than a QR code can hold ({MAX_QR_CHARS.toLocaleString('en-US')} characters at most). Shorten it.</p>}
+            {tooLong && <p className={errCls} data-testid="qr-error">That is too much for a QR code at {eclName} error correction. Shorten it, or choose a lower error correction. Accents, other scripts and emoji take more room than plain letters.</p>}
             {!payload && <p className={hintCls} data-testid="qr-empty">Enter {kind === 'wifi' ? 'the network name' : kind === 'url' ? 'a web address' : 'some text'} to make a code.</p>}
-            {matrix && <p className={hintCls} data-testid="qr-info">{matrix.length} × {matrix.length} squares. Scan it with a phone camera to check it.</p>}
+            {needsPassword && <p className={hintCls} data-testid="qr-nopass">No password entered yet. Add it, or choose "No password" if the network is open, or phones will not be able to join.</p>}
           </div>
+          {matrix && <p className={hintCls} data-testid="qr-info">{matrix.length} × {matrix.length} squares, PNG {pngSide} × {pngSide} px. Scan it with a phone camera to check it.</p>}
           <div className={matrix ? 'flex justify-center rounded-2xl border border-slate-200 bg-white p-4' : 'hidden'}>
             <canvas ref={canvasRef} data-testid="qr-canvas" role="img" aria-label="The QR code" className="size-64 max-w-full [image-rendering:pixelated]" />
           </div>

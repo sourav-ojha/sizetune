@@ -31,7 +31,7 @@ const jsonLd = webApplicationLd('SizeTune: QR code generator', '/qr-code-generat
     <h2>Web address, text and Wi-Fi</h2>
     <ul>
       <li><strong>Web address.</strong> It is encoded exactly as you type it, so include the https:// at the start. A code that holds a shorter address is simpler and easier to scan.</li>
-      <li><strong>Text.</strong> Any plain text up to about 2,000 characters, including accents, other scripts and emoji. A phone camera shows the text and lets you copy it.</li>
+      <li><strong>Text.</strong> Plain text up to a little over 2,000 characters at the default Medium setting, including accents, other scripts and emoji. Those take more room than plain letters, and a higher error-correction level holds less, so the limit is lower for them. A phone camera shows the text and lets you copy it.</li>
       <li><strong>Wi-Fi.</strong> Enter the network name and password, and the phone camera offers to join the network. Choose "No password" for an open network. Tick "Hidden network" only if the network does not broadcast its name.</li>
     </ul>
 
@@ -66,8 +66,9 @@ const jsonLd = webApplicationLd('SizeTune: QR code generator', '/qr-code-generat
     </p>
     <h3>Why does my long text fail?</h3>
     <p>
-      A QR code can hold a limited amount of data, and the more it holds the denser the pattern. Past about 2,000
-      characters the page asks you to shorten the text.
+      A QR code can hold a limited amount of data, and the more it holds the denser the pattern. Plain text tops out
+      between about 1,200 and 2,900 characters depending on the error-correction level, and much less for other
+      scripts or emoji. When the text does not fit, the page says so and suggests a lower error-correction level.
     </p>
     <p class="text-sm">QR Code is a registered trademark of Denso Wave Incorporated.</p>
   </div>
