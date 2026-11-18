@@ -45,6 +45,7 @@ export const TOOLS: Tool[] = [
   { href: '/crop-shapes/', title: 'Crop shapes and aspect ratio', family: 'convert', blurb: 'Cut a photo out along a drawn line, round the corners of a square, or change the aspect ratio by cropping or adding a border.', related: ['/', '/rotate-image/', '/resize-signature/'] },
   { href: '/join-images/', title: 'Join images', family: 'convert', blurb: 'Join several pictures into one, side by side, one under another or in a grid, then shrink it to a KB limit.', related: ['/merge-photo-and-signature/', '/', '/crop-shapes/'] },
   { href: '/blur-pixelate-censor/', title: 'Blur, pixelate or black out', family: 'convert', blurb: 'Hide a face, number or text in a photo with a rectangle or brush, then pixelate, blur or black it out.', related: ['/crop-shapes/', '/', '/check-image-size/'] },
+  { href: '/photo-effects/', title: 'Photo effects, border and logo', family: 'convert', blurb: 'Turn a photo grayscale, black and white or pixel art, add a border, and place your logo, then resize it to a KB limit.', related: ['/add-name-date-to-photo/', '/', '/crop-shapes/'] },
 ];
 
 const byHref = new Map(TOOLS.map((t) => [t.href, t]));

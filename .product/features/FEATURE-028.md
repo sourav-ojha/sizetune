@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-028
 opportunity: OPP-043
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-18
 ---
@@ -111,3 +112,7 @@ Processed locally in the browser; no file content leaves the device; no retentio
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** Each AC via unit tests, Playwright e2e and the network log; NFR via `pnpm run verify:html` and `verify:privacy`.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-18 | feat/feature-028-photo-effects-borders-and-logo-overlay (head 4fb0d11) | AC-1 to AC-5: /photo-effects/ with grayscale, black and white (cut-off slider) and pixel art (pixel size and palette), a border of 0 to 500 px in six colours, an optional logo (corner or centre, 5 to 60% of the width), PNG and JPG download and Resize to KB | none | owner review of page copy; decide whether to merge with the crop workbench (the spec's open question: left as separate pages); decide whether to measure usage | rulings: effects are applied to the photo only, then the border, then the logo on top, so neither keeps an effect; logo position is relative to the whole picture including the border, margin 2% of the shorter side; effects are pure pixel functions in src/lib/effects.ts (the pixel-art step reuses pixelate from the redaction library); the same in-page resizer approach as FEATURE-020 to 027; a border over the 16 MP canvas limit gets a message. verified: check 0 errors, build 0, verify:html(:strict) OK, verify:privacy OK, 1043 unit pass, e2e effects-tool 12/12 on each of chrome, webkit and firefox (6 repeats) incl. downloaded PNG and JPG pixel checks, axe on the page; no independent reviewer was used, self-review only |
