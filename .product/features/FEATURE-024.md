@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-024
 opportunity: OPP-039
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-18
 ---
@@ -109,3 +110,7 @@ Processed locally in the browser; no file content leaves the device; no retentio
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** Each AC via unit tests, Playwright e2e and the network log; NFR via `pnpm run verify:html` and `verify:privacy`.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-18 | feat/feature-024-merge-photo-and-signature-into-one-image (head 5e7c27c) | AC-1 to AC-4: /merge-photo-and-signature/ with two image slots, stacked or side-by-side layout (no overlap, shapes kept), output width, size limit, live preview, and the merged JPG loaded into the image resizer on the same page | none | owner review of page copy; spec says to stop if there is no real demand, so check Search Console after launch; decide whether to measure usage | rulings: as in FEATURE-020 and FEATURE-023, the KB limit is applied by the image resizer embedded on this page (ImageTool initialFile and defaultMaxKb) because moving an image between pages is blocked by verify:privacy; the photo always goes first (above or left); a white background is drawn behind both pictures; output width 200 to 4,000 px, with a message when photo plus signature would exceed the 16 MP canvas limit. The resizer's own 'not reached' wording is what shows when a limit cannot be met (Chrome and Firefox reach 1 KB on random pixels by shrinking to a few dozen pixels, WebKit misses and says by how much). verified: check 0 errors, build 0, verify:html(:strict) OK, verify:privacy OK, 965 unit pass, e2e merge-tool 9/9 on each of chrome, webkit and firefox (6 repeats), axe on the page; no independent reviewer was used, self-review only |

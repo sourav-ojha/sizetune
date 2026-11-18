@@ -238,7 +238,7 @@ New owner constraint: every tool should relate to the existing tools. No new res
 | OPP-036 | Image or JPG to PDF under a KB limit | Ready for Implementation | 76 | Low | Needs evidence | M | 2026-11-18 | FEATURE-021 |
 | OPP-037 | Increase PDF size to a minimum KB | Ready for Implementation | 61 | Low | Needs evidence | M | 2026-11-18 | FEATURE-022 |
 | OPP-038 | Add name and date on a photo (exam photo caption) | Implemented | 68 | Low | Needs evidence | S | 2026-11-18 | FEATURE-023 |
-| OPP-039 | Merge photo and signature into one image | Ready for Implementation | 48 | Low | Backlog | S | 2026-11-18 | FEATURE-024 |
+| OPP-039 | Merge photo and signature into one image | Implemented | 48 | Low | Backlog | S | 2026-11-18 | FEATURE-024 |
 | OPP-040 | Crop shapes and aspect ratio workbench (freehand, square, rounded corners, change aspect ratio, zoom out) | Ready for Implementation | 63 | Low | Needs evidence | M | 2026-11-18 | FEATURE-025 |
 | OPP-041 | Join images, photo collage and side-by-side | Ready for Implementation | 59 | Low | Needs evidence | M | 2026-11-18 | FEATURE-026 |
 | OPP-042 | Pixelate, blur and censor regions of an image | Ready for Implementation | 59 | Low | Needs evidence | S | 2026-11-18 | FEATURE-027 |
