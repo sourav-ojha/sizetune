@@ -1,0 +1,79 @@
+---
+import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import DateTools from '../components/DateTools.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Age, Date Difference and Timestamp Calculator | SizeTune';
+const description =
+  'Work out an exact age in years, months and days, count the days between two dates, or convert a Unix timestamp to a date in any time zone. Runs in your browser.';
+const jsonLd = webApplicationLd('SizeTune: age, date difference and timestamp calculator', '/date-calculators/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/date-calculators/" jsonLd={jsonLd}>
+  <Hero badge="Free · Calculated on this device · No sign-up" title="Age, dates and timestamps" lead="Three small calculators on one page: an exact age, the number of days between two dates, and Unix timestamps with a time zone. Nothing you type leaves your browser." />
+
+  <DateTools client:load />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      These calculators run inside your browser, so they will not work while JavaScript is turned off. Enable JavaScript
+      and reload to use them. The notes below explain how each answer is worked out.
+    </p>
+  </noscript>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>How the age is counted</h2>
+    <p>
+      The age calculator counts complete years first, then complete months, then the days left over. It starts from the
+      date of birth and moves forward one month at a time. If a month is shorter than the birth day, the count lands on
+      the last day of that month, so someone born on 31 January reaches one month on 28 February in an ordinary year, and
+      on 29 February in a leap year.
+    </p>
+    <p>
+      A person born on 29 February reaches each birthday on 28 February in years that have no leap day. If a form asks
+      for age "as on" a closing date, type that date in the second box instead of leaving it empty. Leaving it empty uses
+      today's date from your device.
+    </p>
+
+    <h2>Days between two dates</h2>
+    <p>
+      The result is the number of midnights between the two calendar days. The first day is not counted and the last day
+      is, so from 1 March to 2 March is one day. Leap days are included, which is why 1 January to 1 March is 60 days in
+      2024 and 59 in 2023. The answer is the same whichever date you enter first, and the note beside it tells you which
+      date is later. Dates are compared as calendar days, so a daylight-saving change in your time zone cannot add or
+      remove a day.
+    </p>
+
+    <h2>Unix timestamps and time zones</h2>
+    <p>
+      A Unix timestamp is the number of seconds since midnight UTC on 1 January 1970. It names a single moment, and the
+      date you see depends on the time zone you read it in. The same timestamp can fall on different calendar days in
+      Auckland and in Los Angeles, so the converter shows the zone next to the result.
+    </p>
+    <ul>
+      <li><strong>Seconds or milliseconds.</strong> A number with 13 digits, such as one from a browser or a JavaScript program, is read as milliseconds. A 10-digit number is read as seconds.</li>
+      <li><strong>Date to timestamp.</strong> Pick the zone first, then enter the local date and time in that zone. The answer is given in seconds and in milliseconds.</li>
+      <li><strong>Daylight saving.</strong> A time that does not exist because clocks jumped forward is read with the offset from before the change. A time that happens twice when clocks go back uses its first occurrence.</li>
+    </ul>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Does this use a live clock or any online data?</h3>
+    <p>
+      No. Every answer comes from your input and your browser's built-in date and time-zone data. The only thing read
+      from your device is today's date when you leave the "age on" box empty.
+    </p>
+    <h3>Why is my age one day different from another calculator?</h3>
+    <p>
+      Tools differ on how they treat month ends and 29 February. This page uses the month-end rule described above and
+      says so, so you can check the result by hand against the date your form asks for.
+    </p>
+    <h3>What is the largest date I can enter?</h3>
+    <p>
+      Dates are accepted from the year 0000 to 9999. A timestamp outside that range shows a message instead of a wrong date.
+    </p>
+    <h3>Is anything stored or sent?</h3>
+    <p>
+      No. The values stay in the page while it is open. Read the <a href="/privacy/">privacy page</a> for details.
+    </p>
+  </div>
+  <RelatedTools path="/date-calculators/" />
+</Base>

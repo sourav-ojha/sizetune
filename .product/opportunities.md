@@ -226,7 +226,7 @@ New owner constraint: every tool should relate to the existing tools. No new res
 | OPP-024 | Image to text (OCR) in the browser | Ready for Implementation | 58 | Low | Needs evidence | M | 2026-11-17 | FEATURE-015 |
 | OPP-025 | Academic grade calculators (CGPA to percentage, SGPA to CGPA, marks percentage, attendance, GPA) | Deferred | 62 | Low | Needs evidence | S | 2026-11-17 | - |
 | OPP-026 | Finance calculators (SIP, EMI, GST, compound interest) | Deferred | 56 | Low | Needs evidence | M | 2026-11-17 | - |
-| OPP-027 | Date and time calculators (age, days between dates, timestamp converter) | Ready for Implementation | 55 | Low | Needs evidence | S | 2026-11-17 | FEATURE-016 |
+| OPP-027 | Date and time calculators (age, days between dates, timestamp converter) | Implemented | 55 | Low | Needs evidence | S | 2026-11-18 | FEATURE-016 |
 | OPP-028 | Text counters and converters (word counter, character counter, case converter, dummy text) | Ready for Implementation | 55 | Low | Needs evidence | S | 2026-11-17 | FEATURE-017 |
 | OPP-029 | Developer and encoder converters (base64 image and text, hex to RGBA, JSON formatter, UUID and hash) | Discovered | 51 | Low | Backlog | S | 2026-11-17 | - |
 | OPP-030 | QR code generator | Ready for Implementation | 56 | Low | Needs evidence | M | 2026-11-17 | FEATURE-018 |
