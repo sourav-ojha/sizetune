@@ -267,5 +267,5 @@ describe('verify-html: HUMAN placeholders and strictness levels', () => {
     const f = go(['--final']); expect(f.status).toBe(1); expect(f.stderr).toMatch(/\[PLACEHOLDER\] \/privacy\/: owner contact email/);
     const g = go([], { STRICT: '2' }); expect(g.status).toBe(1);
     rmSync(root, { recursive: true, force: true }); rmSync(d, { recursive: true, force: true });
-  });
+  }, 30_000); // copies dist and starts the verifier five times; the 5 s default is too tight on a busy machine
 });
