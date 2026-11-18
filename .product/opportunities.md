@@ -252,7 +252,7 @@ New owner constraint: every tool should relate to the existing tools. No new res
 | OPP-050 | AI object, text and logo remover (and blemish or retouch) | Approved | 58 | Low | Needs evidence | L | 2026-11-18 | FEATURE-035 |
 | OPP-051 | AI image enhance: upscale, unblur and super-resolution | Approved | 58 | Low | Needs evidence | L | 2026-11-18 | FEATURE-036 |
 | OPP-052 | Photos to video, slideshow, JPG to MP4 and MP4 to JPG | Approved | 43 | Low | Backlog | L | 2026-11-18 | FEATURE-037 |
-| OPP-053 | Text to handwriting | Ready for Implementation | 47 | Low | Backlog | M | 2026-11-18 | FEATURE-038 |
+| OPP-053 | Text to handwriting | Implemented | 47 | Low | Backlog | M | 2026-11-19 | FEATURE-038 |
 | OPP-054 | GIF tools, audio tool and invoice generator | Approved | 39 | Low | Backlog | L | 2026-11-18 | FEATURE-039 |
 | OPP-055 | PDF security and signing tools (protect, unlock, redact, sign) | Approved | 58 | Low | Needs evidence | L | 2026-11-18 | FEATURE-040 |
 | OPP-056 | Indian-language signature fonts (Hindi, Marathi, Tamil and others) | Ready for Implementation | 60 | Low | Needs evidence | S | 2026-11-18 | FEATURE-041 |
