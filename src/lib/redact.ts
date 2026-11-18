@@ -25,12 +25,13 @@ export function strokeMask(w: number, h: number, points: Pt[], radius: number): 
   if (points.length === 0) return m;
   const r = Math.max(0.5, radius), r2 = r * r;
   const stamp = (a: Pt, b: Pt) => {
-    const x0 = Math.max(0, Math.floor(Math.min(a.x, b.x) - r)), x1 = Math.min(w - 1, Math.ceil(Math.max(a.x, b.x) + r));
-    const y0 = Math.max(0, Math.floor(Math.min(a.y, b.y) - r)), y1 = Math.min(h - 1, Math.ceil(Math.max(a.y, b.y) + r));
+    const x0 = Math.max(0, Math.floor(Math.min(a.x, b.x) - r) - 1), x1 = Math.min(w - 1, Math.ceil(Math.max(a.x, b.x) + r) + 1);
+    const y0 = Math.max(0, Math.floor(Math.min(a.y, b.y) - r) - 1), y1 = Math.min(h - 1, Math.ceil(Math.max(a.y, b.y) + r) + 1);
     const dx = b.x - a.x, dy = b.y - a.y, len2 = dx * dx + dy * dy;
     for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) {
-      const t = len2 === 0 ? 0 : Math.max(0, Math.min(1, ((x - a.x) * dx + (y - a.y) * dy) / len2)); // nearest point on the segment
-      const ex = x - (a.x + t * dx), ey = y - (a.y + t * dy);
+      const cx = x + 0.5, cy = y + 0.5; // test the pixel's centre, so the mask matches the round pen the user sees
+      const t = len2 === 0 ? 0 : Math.max(0, Math.min(1, ((cx - a.x) * dx + (cy - a.y) * dy) / len2)); // nearest point on the segment
+      const ex = cx - (a.x + t * dx), ey = cy - (a.y + t * dy);
       if (ex * ex + ey * ey <= r2) m.data[y * w + x] = 1;
     }
   };
@@ -58,19 +59,37 @@ export function blackout(img: Pixels, m: Mask, rgb: Rgb): void {
   for (let i = 0; i < m.data.length; i++) if (m.data[i]) { const o = i * 4; img.data[o] = rgb[0]; img.data[o + 1] = rgb[1]; img.data[o + 2] = rgb[2]; img.data[o + 3] = 255; }
 }
 
-/** Replaces the masked pixels by flat `block` x `block` squares holding the average colour of the masked pixels under each square. Squares start at the region's top-left. */
+/** Block edges along one axis: every `size`, but a leftover shorter than half a block joins the block before it, so no block is ever tiny. */
+function edges(length: number, size: number): number[] {
+  const e = [0];
+  for (let p = size; p < length; p += size) e.push(p);
+  if (e.length > 1 && length - e[e.length - 1] < size / 2) e.pop();
+  e.push(length);
+  return e;
+}
+
+/**
+ * Replaces the masked pixels by flat squares. The squares are laid on a fixed grid over the whole picture, and each holds the average of ALL the pixels
+ * in its square (masked or not), so a masked pixel can never keep its own value: the smallest square is at least half a block wide and tall (never one
+ * pixel), and it is written only to the masked pixels. Pixels outside the mask are not changed.
+ */
 export function pixelate(img: Pixels, m: Mask, block: number): void {
   const b = Math.round(block);
   const box = maskBounds(m);
   if (!box || !(b > 1)) return;
-  const { width: W } = img;
-  for (let by = box.y; by < box.y + box.h; by += b) for (let bx = box.x; bx < box.x + box.w; bx += b) {
-    const xe = Math.min(bx + b, box.x + box.w), ye = Math.min(by + b, box.y + box.h);
-    let r = 0, g = 0, bl = 0, a = 0, n = 0;
-    for (let y = by; y < ye; y++) for (let x = bx; x < xe; x++) if (m.data[y * W + x]) { const o = (y * W + x) * 4; r += img.data[o]; g += img.data[o + 1]; bl += img.data[o + 2]; a += img.data[o + 3]; n++; }
-    if (!n) continue;
+  const { width: W, height: H } = img;
+  const xs = edges(W, b), ys = edges(H, b);
+  const bx0 = Math.max(0, xs.findIndex((_e, i) => i + 1 < xs.length && xs[i + 1] > box.x)), by0 = Math.max(0, ys.findIndex((_e, i) => i + 1 < ys.length && ys[i + 1] > box.y));
+  for (let yi = by0; yi + 1 < ys.length && ys[yi] < box.y + box.h; yi++) for (let xi = bx0; xi + 1 < xs.length && xs[xi] < box.x + box.w; xi++) {
+    const xa = xs[xi], xb = xs[xi + 1], ya = ys[yi], yb = ys[yi + 1];
+    let any = false;
+    for (let y = ya; y < yb && !any; y++) for (let x = xa; x < xb; x++) if (m.data[y * W + x]) { any = true; break; }
+    if (!any) continue;
+    let r = 0, g = 0, bl = 0, a = 0;
+    const n = (xb - xa) * (yb - ya);
+    for (let y = ya; y < yb; y++) for (let x = xa; x < xb; x++) { const o = (y * W + x) * 4; r += img.data[o]; g += img.data[o + 1]; bl += img.data[o + 2]; a += img.data[o + 3]; }
     const R = Math.round(r / n), G = Math.round(g / n), B = Math.round(bl / n), A = Math.round(a / n);
-    for (let y = by; y < ye; y++) for (let x = bx; x < xe; x++) if (m.data[y * W + x]) { const o = (y * W + x) * 4; img.data[o] = R; img.data[o + 1] = G; img.data[o + 2] = B; img.data[o + 3] = A; }
+    for (let y = ya; y < yb; y++) for (let x = xa; x < xb; x++) if (m.data[y * W + x]) { const o = (y * W + x) * 4; img.data[o] = R; img.data[o + 1] = G; img.data[o + 2] = B; img.data[o + 3] = A; }
   }
 }
 
@@ -82,9 +101,10 @@ export function boxBlur(img: Pixels, m: Mask, radius: number): void {
   const x0 = Math.max(0, box.x - r * 3), y0 = Math.max(0, box.y - r * 3);
   const x1 = Math.min(img.width, box.x + box.w + r * 3), y1 = Math.min(img.height, box.y + box.h + r * 3);
   const w = x1 - x0, h = y1 - y0;
-  let src = new Float32Array(w * h * 4), tmp = new Float32Array(w * h * 4);
+  // 8-bit buffers: a quarter of the memory of floats, which matters for a 16 MP picture on a phone. Three passes round slightly; that is not visible.
+  let src = new Uint8ClampedArray(w * h * 4), tmp = new Uint8ClampedArray(w * h * 4);
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const o = ((y + y0) * img.width + x + x0) * 4, p = (y * w + x) * 4; for (let c = 0; c < 4; c++) src[p + c] = img.data[o + c]; }
-  const pass = (from: Float32Array, to: Float32Array, horizontal: boolean) => {
+  const pass = (from: Uint8ClampedArray, to: Uint8ClampedArray, horizontal: boolean) => {
     const len = horizontal ? w : h, lines = horizontal ? h : w, win = 2 * r + 1;
     for (let l = 0; l < lines; l++) for (let c = 0; c < 4; c++) {
       const idx = (i: number) => (horizontal ? (l * w + i) : (i * w + l)) * 4 + c;
@@ -100,7 +120,7 @@ export function boxBlur(img: Pixels, m: Mask, radius: number): void {
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
     if (!m.data[(y + y0) * img.width + x + x0]) continue;
     const o = ((y + y0) * img.width + x + x0) * 4, p = (y * w + x) * 4;
-    for (let c = 0; c < 4; c++) img.data[o + c] = Math.round(src[p + c]);
+    for (let c = 0; c < 4; c++) img.data[o + c] = src[p + c];
   }
 }
 

@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import fs from 'node:fs';
-import { NOISE } from './ui/helpers';
+import { NOISE, file, makePng } from './ui/helpers';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/blur-pixelate-censor/');
@@ -37,11 +37,23 @@ const roughness = (page: Page, x0: number, y0: number, x1: number, y1: number) =
   return s;
 }, [x0, y0, x1, y1]);
 
-/** Drags a rectangle over the overlay, given as fractions of the picture. */
-async function dragRect(page: Page, fx0: number, fy0: number, fx1: number, fy1: number) {
+/** The overlay's position once the page has stopped scrolling or reflowing (two identical readings in a row). */
+async function steadyBox(page: Page) {
   const o = page.getByTestId('redact-overlay');
   await o.scrollIntoViewIfNeeded(); // the canvas can sit below a short window, where the mouse sends nothing
-  const b = (await o.boundingBox())!;
+  let prev = JSON.stringify(await o.boundingBox());
+  for (let i = 0; i < 20; i++) {
+    await page.waitForTimeout(50);
+    const cur = JSON.stringify(await o.boundingBox());
+    if (cur === prev) break;
+    prev = cur;
+  }
+  return (await o.boundingBox())!;
+}
+
+/** Drags a rectangle over the overlay, given as fractions of the picture. */
+async function dragRect(page: Page, fx0: number, fy0: number, fx1: number, fy1: number) {
+  const b = await steadyBox(page);
   await page.mouse.move(b.x + b.width * fx0, b.y + b.height * fy0);
   await page.mouse.down();
   await page.mouse.move(b.x + b.width * ((fx0 + fx1) / 2), b.y + b.height * ((fy0 + fy1) / 2), { steps: 4 });
@@ -49,9 +61,7 @@ async function dragRect(page: Page, fx0: number, fy0: number, fx1: number, fy1: 
   await page.mouse.up();
 }
 async function dragLine(page: Page, fx0: number, fy: number, fx1: number) {
-  const o = page.getByTestId('redact-overlay');
-  await o.scrollIntoViewIfNeeded();
-  const b = (await o.boundingBox())!;
+  const b = await steadyBox(page);
   await page.mouse.move(b.x + b.width * fx0, b.y + b.height * fy);
   await page.mouse.down();
   for (let i = 1; i <= 12; i++) await page.mouse.move(b.x + b.width * (fx0 + ((fx1 - fx0) * i) / 12), b.y + b.height * fy);
@@ -71,7 +81,8 @@ test('AC-1: pixelate flattens the area into blocks and leaves the rest of the pi
   await dragRect(page, 0.25, 0.25, 0.5, 0.5); // about x 200..400, y 150..300
   await expect(page.getByTestId('count')).toContainText('1 area hidden');
   await expect.poll(async () => (await sum(page, 205, 155, 395, 295)) !== insideBefore).toBe(true);
-  expect((await colours(page, 203, 153, 215, 165)).length, 'the first 27 px block is one flat colour').toBe(1);
+  // squares sit on a fixed 27 px grid over the whole picture (x 189..216, y 162..189 is one of them, inside the area): one flat colour
+  expect((await colours(page, 203, 163, 215, 175)).length, 'a 27 px square is one flat colour').toBe(1);
   expect([await sum(page, 0, 0, 800, 140), await sum(page, 0, 310, 800, 600), await sum(page, 0, 140, 190, 310), await sum(page, 410, 140, 800, 310)], 'everything outside the area is unchanged').toEqual(outsideBefore);
 });
 
@@ -200,4 +211,22 @@ test('AC-3: hiding, saving and resizing send no request that carries the picture
   const origin = new URL(page.url()).origin;
   expect(seen.filter((r) => r.method !== 'GET' || r.post)).toEqual([]);
   expect(seen.filter((r) => !r.url.startsWith(origin) && !r.url.startsWith('blob:') && !r.url.startsWith('data:'))).toEqual([]);
+});
+
+test('review finding: pixelating with the brush leaves no pixel of the original inside the stroke', async ({ page }) => {
+  // a black and white checkerboard: every pixel is 0 or 255, while any block average is about 128, so a kept pixel is easy to spot
+  await page.getByTestId('file').setInputFiles(file('checker.png', makePng(400, 300, (x, y) => ((x + y) % 2 ? [255, 255, 255, 255] : [0, 0, 0, 255]))));
+  await expect(page.getByTestId('redact-canvas')).toBeVisible();
+  await expect.poll(() => size(page)).toEqual({ w: 400, h: 300 });
+  await page.getByTestId('tool-brush').click(); // pixelate is the default effect
+  await dragLine(page, 0.2, 0.5, 0.8); // y = 150, x 80..320, a brush about 6 px in radius
+  await expect(page.getByTestId('count')).toContainText('1 area hidden');
+  const kept = () => page.getByTestId('redact-canvas').evaluate((c: HTMLCanvasElement) => {
+    const d = c.getContext('2d')!.getImageData(86, 145, 228, 10).data; // the middle of the stroke
+    let n = 0;
+    for (let i = 0; i < d.length; i += 4) if (d[i] === 0 || d[i] === 255) n++;
+    return n;
+  });
+  await expect.poll(async () => { const c = await page.getByTestId('redact-canvas').evaluate((cv: HTMLCanvasElement) => cv.getContext('2d')!.getImageData(150, 148, 1, 1).data[0]); return c !== 0 && c !== 255; }).toBe(true);
+  expect(await kept(), 'no pixel along the stroke kept its black or white value').toBe(0);
 });

@@ -32,7 +32,7 @@ export default function RedactTool() {
   const resizeRef = useRef<HTMLDivElement>(null);
   const serial = useRef(0);
   const base = useRef<Pixels | null>(null); // the picture as loaded
-  const work = useRef<{ px: Pixels; applied: number } | null>(null); // the picture with the regions applied so far
+  const work = useRef<{ px: Pixels; applied: Region[] } | null>(null); // the picture with these regions applied, in order
   const drag = useRef<{ start: Pt; cur: Pt; pts: Pt[] } | null>(null);
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [regions, setRegions] = useState<Region[]>([]);
@@ -90,9 +90,15 @@ export default function RedactTool() {
     const c = canvasRef.current, b = base.current;
     if (!c || !b || !loaded) return;
     let w = work.current;
-    if (!w || regions.length < w.applied || regions.length > w.applied + 1) w = null;
-    if (!w) { w = { px: { width: b.width, height: b.height, data: new Uint8ClampedArray(b.data) }, applied: 0 }; for (const r of regions) apply(w.px, r); w.applied = regions.length; }
-    else if (regions.length === w.applied + 1) { apply(w.px, regions[regions.length - 1]); w.applied = regions.length; }
+    // Apply only the newest region on top of the cached result when the cache holds exactly the same earlier regions (compared by identity,
+    // not by count). Anything else (undo, clear, a new picture) starts again from the original.
+    const extendsCache = !!w && regions.length === w.applied.length + 1 && w.applied.every((r, i) => r === regions[i]);
+    if (w && extendsCache) { apply(w.px, regions[regions.length - 1]); w.applied = regions.slice(); }
+    else if (!w || w.applied.length !== regions.length || !w.applied.every((r, i) => r === regions[i])) {
+      w = { px: { width: b.width, height: b.height, data: new Uint8ClampedArray(b.data) }, applied: [] };
+      for (const r of regions) apply(w.px, r);
+      w.applied = regions.slice();
+    }
     work.current = w;
     c.width = b.width; c.height = b.height;
     c.getContext('2d')?.putImageData(new ImageData(w.px.data as Uint8ClampedArray<ArrayBuffer>, b.width, b.height), 0, 0);
@@ -153,6 +159,13 @@ export default function RedactTool() {
     }
   };
 
+  /** The browser took the pointer away (a call, a scroll, a gesture): drop the half-drawn area instead of hiding something nobody finished choosing. */
+  const cancel = () => {
+    drag.current = null;
+    const o = overlayRef.current;
+    o?.getContext('2d')?.clearRect(0, 0, o.width, o.height);
+  };
+
   const toBlob = (kind: 'png' | 'jpg') => new Promise<Blob | null>((resolve) => canvasRef.current ? canvasRef.current.toBlob((b) => resolve(b), kind === 'jpg' ? 'image/jpeg' : 'image/png', kind === 'jpg' ? 0.95 : undefined) : resolve(null));
   const download = async (kind: 'png' | 'jpg') => {
     const blob = await toBlob(kind);
@@ -193,7 +206,7 @@ export default function RedactTool() {
                   <canvas
                     ref={overlayRef} data-testid="redact-overlay" aria-label="Drawing area. Drag over the part of the picture to hide. If you cannot drag, this tool needs a mouse, pen or finger."
                     className="absolute inset-0 h-full w-full touch-none cursor-crosshair"
-                    onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up}
+                    onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={cancel}
                   />
                 </div>
                 <div className="flex flex-wrap items-center gap-3">

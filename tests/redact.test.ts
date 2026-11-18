@@ -106,7 +106,74 @@ describe('pixelate (AC-1)', () => {
   });
 });
 
+/** Every pixel is pure 0 or pure 255 in each channel, so a pixel that keeps its original value is detectable: any real block average is about 128. */
+function checker(w: number, h: number): Pixels {
+  const data = new Uint8ClampedArray(w * h * 4);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const v = (x + y) % 2 ? 255 : 0, o = (y * w + x) * 4; data[o] = data[o + 1] = data[o + 2] = v; data[o + 3] = 255; }
+  return { width: w, height: h, data };
+}
+const keepsOriginal = (img: Pixels, m: { data: Uint8Array }) => { let n = 0; for (let i = 0; i < m.data.length; i++) if (m.data[i] && (img.data[i * 4] === 0 || img.data[i * 4] === 255)) n++; return n; };
+
+describe('pixelate never leaves an original pixel inside the region (review finding)', () => {
+  it('a brush area: no masked pixel keeps its value, over many random strokes', () => {
+    let seed = 7; const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 2 ** 32; };
+    for (let k = 0; k < 200; k++) {
+      const img = checker(240, 180);
+      const pts = Array.from({ length: 2 + Math.floor(rnd() * 5) }, () => ({ x: rnd() * 240, y: rnd() * 180 }));
+      const m = strokeMask(240, 180, pts, 4 + rnd() * 14);
+      pixelate(img, m, 3 + Math.floor(rnd() * 30));
+      expect(keepsOriginal(img, m), `stroke ${k}`).toBe(0);
+    }
+  });
+  it('a rectangle whose size leaves a remainder of 1 on the block grid has no lone corner pixel', () => {
+    const img = checker(120, 120);
+    const m = rectMask(120, 120, { x: 0, y: 0, w: 3 * 27 + 1, h: 3 * 27 + 1 });
+    pixelate(img, m, 27);
+    expect(keepsOriginal(img, m)).toBe(0);
+  });
+  it('rectangles of many sizes and positions, including ones touching the picture edge', () => {
+    for (const [x, y, w, h] of [[0, 0, 5, 5], [118, 118, 2, 2], [60, 60, 1, 1], [3, 97, 40, 23], [100, 0, 20, 120], [0, 0, 120, 120]]) {
+      for (const block of [3, 8, 27, 50]) {
+        const img = checker(120, 120);
+        const m = rectMask(120, 120, { x, y, w, h });
+        pixelate(img, m, block);
+        expect(keepsOriginal(img, m), `${x},${y} ${w}x${h} block ${block}`).toBe(0);
+      }
+    }
+  });
+  it('a one-pixel region is still averaged with its neighbours, not kept', () => {
+    const img = checker(60, 60);
+    const m = rectMask(60, 60, { x: 31, y: 31, w: 1, h: 1 });
+    pixelate(img, m, 20);
+    expect(keepsOriginal(img, m)).toBe(0);
+  });
+  it('pixels outside the region are still left exactly as they were', () => {
+    const img = checker(120, 120), before = clone(img);
+    const m = strokeMask(120, 120, [{ x: 30, y: 30 }, { x: 90, y: 70 }], 10);
+    pixelate(img, m, 20);
+    for (let i = 0; i < m.data.length; i++) if (!m.data[i]) expect(img.data.slice(i * 4, i * 4 + 4)).toEqual(before.data.slice(i * 4, i * 4 + 4));
+  });
+});
+
+describe('pictures with transparency', () => {
+  const transparent = (w: number, h: number): Pixels => ({ width: w, height: h, data: new Uint8ClampedArray(w * h * 4) }); // all pixels fully transparent
+  it('black out makes the region opaque, so nothing shows through', () => {
+    const img = transparent(20, 20);
+    const m = rectMask(20, 20, { x: 4, y: 4, w: 10, h: 10 });
+    blackout(img, m, [0, 0, 0]);
+    for (let i = 0; i < m.data.length; i++) if (m.data[i]) expect(img.data[i * 4 + 3]).toBe(255);
+  });
+});
+
 describe('boxBlur', () => {
+  it('changes (almost) every pixel of a noisy region, so no area is left sharp', () => {
+    const img = noise(60, 40, 9), before = clone(img);
+    const m = rectMask(60, 40, { x: 10, y: 8, w: 40, h: 24 });
+    boxBlur(img, m, 4);
+    let same = 0, total = 0;
+    for (let i = 0; i < m.data.length; i++) if (m.data[i]) { total++; if (img.data[i * 4] === before.data[i * 4] && img.data[i * 4 + 1] === before.data[i * 4 + 1] && img.data[i * 4 + 2] === before.data[i * 4 + 2]) same++; }
+    expect(same / total).toBeLessThan(0.01);
+  });
   it('smooths the region (less spread between neighbours) and leaves the outside alone', () => {
     const img = noise(40, 30), before = clone(img);
     const m = rectMask(40, 30, { x: 8, y: 8, w: 20, h: 14 });
