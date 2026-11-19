@@ -1,0 +1,141 @@
+{
+  "version": 1,
+  "created": "2026-11-19",
+  "baseline": {
+    "name": "SizeTune",
+    "url": "https://sizetune.com",
+    "category": "free browser-only image utilities: resize to KB, converters, social resizers",
+    "audience": [
+      "people uploading photos/signatures/ID images to forms (government, exam, job, bank) that cap file size in KB",
+      "social-media users resizing images to platform sizes",
+      "privacy-conscious users who do not want images uploaded to a server"
+    ],
+    "goals": [
+      "grow organic search traffic to tool and guide pages",
+      "reach AdSense-ready state and earn ad revenue (owner-stated goal)"
+    ],
+    "geographies": [
+      "Any (owner: not a constraint)"
+    ],
+    "languages": [
+      "en",
+      "more langs in scope"
+    ],
+    "monetization": [
+      "display-ads (AdSense); tool pages ok, not near tool"
+    ],
+    "constraints": [
+      "no backend: static Astro site on Cloudflare, all processing client-side",
+      "live since 2026-11-17: no Search Console or traffic data yet (about 2 days old)",
+      "portfolio site; no paid acquisition",
+      "ads allowed on tool pages but never adjacent to the tool UI; privacy copy must be updated first",
+      "research and strategy only: no code edits, posting or signups"
+    ],
+    "status": "approved",
+    "content_hash": "1f0114800d96f6fe5188f554a8d9156c67aac1d52b1531a59db7aa1768316dc6",
+    "approved_by": "sourav",
+    "approved_at": "2026-11-19",
+    "approved_note": "approve baseline"
+  },
+  "phases": {
+    "audit": {
+      "done_at": "2026-11-19",
+      "stale": false,
+      "baseline_hash": "1f0114800d96f6fe5188f554a8d9156c67aac1d52b1531a59db7aa1768316dc6"
+    },
+    "research": {
+      "done_at": "2026-11-19",
+      "stale": false,
+      "baseline_hash": "1f0114800d96f6fe5188f554a8d9156c67aac1d52b1531a59db7aa1768316dc6"
+    },
+    "plan": {
+      "done_at": "2026-11-19",
+      "stale": false,
+      "baseline_hash": "1f0114800d96f6fe5188f554a8d9156c67aac1d52b1531a59db7aa1768316dc6"
+    }
+  },
+  "reviews": [
+    {
+      "id": "R-001",
+      "at": "2026-11-19T09:41:14.862Z",
+      "mode": "independent",
+      "reviewer": "growth plan reviewer subagent",
+      "plan_hash": "b8c64932c118f84b6438fb103509cdc179d1db396da01cc736d91c31703eb9f7",
+      "verdict": "PASS WITH CHANGES",
+      "file_sha256": "89f3f968fb65ab1bcf535bde9b9d0ce8edd19ce829e68a1569770e605423927e",
+      "counts": {
+        "Critical": 0,
+        "High": 0,
+        "Medium": 5,
+        "Low": 5
+      }
+    }
+  ],
+  "decisions": [
+    {
+      "at": "2026-11-19T04:51:44.292Z",
+      "target": "baseline",
+      "decision": "approve",
+      "by": "sourav",
+      "note": "approve baseline"
+    },
+    {
+      "at": "2026-11-19T10:39:12.895Z",
+      "target": "GRO-001",
+      "decision": "approve",
+      "by": "sourav",
+      "note": "Approve weeks 1-4",
+      "content": "93a00f99602dcfdd9a6c59d3b882d522f296281a0a45a8370f8b9f407e653a4e"
+    },
+    {
+      "at": "2026-11-19T10:39:12.896Z",
+      "target": "GRO-002",
+      "decision": "approve",
+      "by": "sourav",
+      "note": "Approve weeks 1-4",
+      "content": "26d395d354edc05d9469247402f09094426bfb12d2ed8536c8017a66df23222e"
+    },
+    {
+      "at": "2026-11-19T10:39:12.896Z",
+      "target": "GRO-003",
+      "decision": "approve",
+      "by": "sourav",
+      "note": "Approve weeks 1-4",
+      "content": "5a0d12700cf4429742fd9c4755102f81ff5c87ef481b1fd3ccd7af103089621b"
+    },
+    {
+      "at": "2026-11-19T10:39:12.896Z",
+      "target": "GRO-004",
+      "decision": "approve",
+      "by": "sourav",
+      "note": "Approve weeks 1-4",
+      "content": "910de0efce1fbd6ae1e4149acbb92c28cff5a0beaff2b546475dd15d434b4c37"
+    },
+    {
+      "at": "2026-11-19T10:39:12.896Z",
+      "target": "GRO-005",
+      "decision": "approve",
+      "by": "sourav",
+      "note": "Approve weeks 1-4",
+      "content": "d8b25d498e36a8cd0bf564efdfd7323d210c382609d134653e022daa1a31026d"
+    },
+    {
+      "at": "2026-11-19T10:39:12.896Z",
+      "target": "GRO-006",
+      "decision": "approve",
+      "by": "sourav",
+      "note": "Approve weeks 1-4",
+      "content": "2f3874f82487d8d6711b9f92ddfb03299d2b74d08625205d92de44bcc8209a5a"
+    },
+    {
+      "at": "2026-11-19T10:39:12.896Z",
+      "target": "GRO-007",
+      "decision": "approve",
+      "by": "sourav",
+      "note": "Approve weeks 1-4",
+      "content": "e14915cc4a1b09d57acc833b7bf10b83687eac382614a6e64bb15628fb3e7b99"
+    }
+  ],
+  "refreshes": [],
+  "performance": []
+}

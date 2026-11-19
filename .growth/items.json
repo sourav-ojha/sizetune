@@ -1,0 +1,485 @@
+[
+  {
+    "type": "measurement",
+    "title": "Update privacy copy and add privacy-friendly usage analytics",
+    "rationale": "No analytics or tool events exist, so organic landing pages, tool success and download rates cannot be measured; referrals from distribution cannot be attributed. Privacy copy must change before any analytics or ads, per the owner constraint.",
+    "keywords": [],
+    "sources": [
+      "S-036",
+      "S-038",
+      "S-045"
+    ],
+    "evidence": "fact",
+    "confidence": "high",
+    "impact": "H",
+    "effort": "M",
+    "window": "weeks 1-4",
+    "owner": "implementer",
+    "risks": [
+      "Tool choice (cookieless analytics vs GA4 with consent) changes the consent needs; \"nothing is uploaded\" trust copy must stay true"
+    ],
+    "acceptance": [
+      "Given the privacy page is updated, When a visitor reads it, Then it states which analytics run, what is collected and that images are never sent anywhere",
+      "Given a visitor completes a resize, When the tool succeeds or fails or the file is downloaded, Then an event with tool name and outcome (no file data) is recorded",
+      "Given the network tab is open on a tool page, When an image is processed, Then no request carries image bytes"
+    ],
+    "needs_design": true,
+    "id": "GRO-001",
+    "status": "handed-off"
+  },
+  {
+    "type": "internal-linking",
+    "title": "Link every tool page to its guide and link the orphan guide",
+    "rationale": "The live 50 KB page links only to the guides hub; about 24 tool pages have no specific guide link and the 200 KB PDF guide has only guide-to-guide inbound links. Tool to guide to tool links help crawling and ad-quality content depth.",
+    "keywords": [],
+    "sources": [
+      "S-037",
+      "S-040",
+      "S-043"
+    ],
+    "evidence": "fact",
+    "confidence": "medium",
+    "impact": "M",
+    "effort": "S",
+    "window": "weeks 1-4",
+    "owner": "implementer",
+    "risks": [
+      "Links added to unrelated guides add noise; keep them topical"
+    ],
+    "acceptance": [
+      "Given any tool page, When it renders, Then it shows at least one link to a relevant specific guide, not only the hub",
+      "Given the reduce-pdf-to-200kb guide, When the site is built, Then at least one non-guide page links to it",
+      "Given the build, When verify:html runs, Then it passes"
+    ],
+    "id": "GRO-002",
+    "status": "handed-off"
+  },
+  {
+    "type": "technical-seo",
+    "title": "Fix sitemap lastmod, guide authorship and stale SEO doc",
+    "rationale": "Sitemap has no lastmod, guide Article markup names only an Organization author, and SEO_ARCHITECTURE.md still says preset pages are held back and og:image is missing. Small hygiene that supports freshness signals and keeps team docs true.",
+    "keywords": [],
+    "sources": [
+      "S-035",
+      "S-041",
+      "S-042"
+    ],
+    "evidence": "fact",
+    "confidence": "high",
+    "impact": "L",
+    "effort": "S",
+    "window": "weeks 1-4",
+    "owner": "implementer",
+    "risks": [
+      "Do not invent an author; owner must supply a real name and bio"
+    ],
+    "acceptance": [
+      "Given the built sitemap, When an entry is read, Then it carries a lastmod date from content",
+      "Given a guide page, When its JSON-LD is read, Then author is a real Person only if the owner approves, else the Organization stays",
+      "Given SEO_ARCHITECTURE.md, When read, Then it matches live state for preset pages and og:image"
+    ],
+    "id": "GRO-003",
+    "status": "handed-off"
+  },
+  {
+    "type": "measurement",
+    "title": "Run the measurement routine: Search Console, India SERP check, Keyword Planner",
+    "rationale": "No query data exists at about 2 days old. Everything volume-related is unknown. A monthly Search Console export, a Keyword Planner export and an India-side check of six queries are the cheapest way to turn unknowns into evidence for refresh.",
+    "keywords": [],
+    "sources": [
+      "S-035",
+      "S-001",
+      "S-004"
+    ],
+    "evidence": "fact",
+    "confidence": "high",
+    "impact": "H",
+    "effort": "S",
+    "window": "weeks 1-4",
+    "owner": "human",
+    "risks": [
+      "Search Console shows little until indexing happens; give it about 4 weeks before judging"
+    ],
+    "acceptance": [
+      "Done when the sitemap is submitted in Search Console, the owner has saved a query export to .growth/performance/ (or noted none exists yet), the six India queries are checked and recorded, and a Keyword Planner export is saved or declined"
+    ],
+    "id": "GRO-004",
+    "status": "approved"
+  },
+  {
+    "type": "landing-page",
+    "title": "Add /resize-signature-to-20kb and signature KB presets",
+    "rationale": "Autocomplete shows \"signature resize to 20 kb\" first and the SERP has only small tools, no big platform. SizeTune has a 10 KB signature page and a signature tool but no 20 KB page. Cover 15/30/50 KB as presets on the tool, not separate pages.",
+    "keywords": [
+      "signature resize to 20 kb",
+      "signature resize to 30 kb",
+      "signature resize tool"
+    ],
+    "sources": [
+      "S-007",
+      "S-002",
+      "S-027",
+      "S-033"
+    ],
+    "evidence": "inference",
+    "confidence": "medium",
+    "impact": "H",
+    "effort": "S",
+    "window": "weeks 1-4",
+    "owner": "implementer",
+    "risks": [
+      "Near-duplicate of the 10 KB page; needs unique copy (when to use 10 vs 20 KB, examples)"
+    ],
+    "acceptance": [
+      "Given /resize-signature-to-20kb, When it loads, Then the signature tool opens preset to 20 KB with its own heading, title, copy and FAQ distinct from the 10 KB page",
+      "Given the signature tool, When the user picks 15, 30 or 50 KB, Then the target updates without a new page",
+      "Given the sitemap, When built, Then the new page is listed and verify:html passes"
+    ],
+    "id": "GRO-005",
+    "status": "handed-off"
+  },
+  {
+    "type": "content",
+    "title": "Make preset pages (20/50/100 KB, signature 10 KB) unique and useful",
+    "rationale": "These four pages are presets of one tool and risk thin or doorway judgement (also for ad approval). Give each its own spec guidance, before/after example, common-form notes and FAQ; do not add FAQPage markup.",
+    "keywords": [
+      "resize image to 20kb",
+      "resize image to 50kb",
+      "resize image to 100kb",
+      "resize signature to 10kb"
+    ],
+    "sources": [
+      "S-041",
+      "S-001",
+      "S-003",
+      "S-016"
+    ],
+    "evidence": "inference",
+    "confidence": "medium",
+    "impact": "H",
+    "effort": "M",
+    "window": "weeks 1-4",
+    "owner": "implementer",
+    "risks": [
+      "Padding with generic text does not help; content must be genuinely useful"
+    ],
+    "acceptance": [
+      "Given any of the four preset pages, When its text is compared to the others, Then it has at least a section of unique guidance not shared with the others",
+      "Given each page, When read, Then it states what the limit is typically used for without claiming exam specs as fact",
+      "Given verify:html near-duplicate checks, When run, Then they pass"
+    ],
+    "id": "GRO-006",
+    "status": "handed-off"
+  },
+  {
+    "type": "landing-page",
+    "title": "Verify official photo/signature specs for four forms (SSC, IBPS, India Post GDS, PAN)",
+    "rationale": "Competitor exam pages disagree on limits (for example signature 10-20 vs 20-100 KB). SizeTune should publish only what official notices say. A person must read current official notifications and record the spec, source URL and date per form.",
+    "keywords": [],
+    "sources": [
+      "S-004",
+      "S-014",
+      "S-015",
+      "S-018"
+    ],
+    "evidence": "inference",
+    "confidence": "medium",
+    "impact": "H",
+    "effort": "S",
+    "window": "weeks 1-4",
+    "owner": "human",
+    "risks": [
+      "Specs change per notification cycle; record the notification date"
+    ],
+    "acceptance": [
+      "Done when each of the four forms has a recorded spec (photo and signature size in KB and pixels), the official notification URL and its date"
+    ],
+    "id": "GRO-007",
+    "status": "approved"
+  },
+  {
+    "type": "landing-page",
+    "title": "Ship four per-form pages (SSC, IBPS, GDS, PAN) using verified specs",
+    "rationale": "Exam-specific queries are served by one-page-per-exam sites that disagree on specs, and SizeTune has no such pages. India vantage not observed. Start with four pages, each with a verified spec table, preset and steps; check indexing before adding more.",
+    "keywords": [
+      "signature size for ssc",
+      "signature size for gds post office",
+      "signature size for ibps clerk",
+      "photo size for pan card",
+      "photo and signature resizer for government exam form"
+    ],
+    "sources": [
+      "S-004",
+      "S-014",
+      "S-015",
+      "S-018",
+      "S-020"
+    ],
+    "evidence": "inference",
+    "confidence": "medium",
+    "impact": "H",
+    "effort": "M",
+    "window": "weeks 5-8",
+    "owner": "implementer",
+    "risks": [
+      "Doorway risk; depends on the spec verification item; India SERP unobserved; ship few then check Search Console"
+    ],
+    "acceptance": [
+      "Given the human spec verification is recorded, When each page is built, Then it shows the official spec with source and date and a preset that matches it",
+      "Given the four pages, When read, Then each has unique instructions, not only a changed number",
+      "Given the hub or tools page, When built, Then it links all four exam pages"
+    ],
+    "needs_design": true,
+    "id": "GRO-008",
+    "status": "proposed"
+  },
+  {
+    "type": "landing-page",
+    "title": "Add an \"increase image size in KB\" tool and page",
+    "rationale": "Forms with a minimum size reject small files; autocomplete shows ten phrasings and the SERP has mid-size tools, no big platform. Product notes say the engine avoids metadata padding to hit minimums, so approach (higher quality, upscaling) needs a product decision.",
+    "keywords": [
+      "increase image size in kb",
+      "increase image size in kb without changing pixels"
+    ],
+    "sources": [
+      "S-017",
+      "S-023",
+      "S-045"
+    ],
+    "evidence": "inference",
+    "confidence": "medium",
+    "impact": "H",
+    "effort": "M",
+    "window": "weeks 5-8",
+    "owner": "implementer",
+    "risks": [
+      "Padding to fake size may violate product principles; some forms may reject padded files"
+    ],
+    "acceptance": [
+      "Given a photo below a form minimum, When the user sets a minimum KB, Then the output is at or above it using a documented, honest method",
+      "Given the result, When shown, Then the page states how the size was reached and the real byte size",
+      "Given the build, When verify:html and verify:privacy run, Then both pass"
+    ],
+    "needs_design": true,
+    "id": "GRO-009",
+    "status": "proposed"
+  },
+  {
+    "type": "landing-page",
+    "title": "Add KB preset pages 30 KB and 15 KB, then 200 KB if indexed",
+    "rationale": "Autocomplete lists 30, 40, 15 and 200 KB; competitors have dedicated pages for 15 and 25 KB. Add only after the first batch shows indexing, each with unique guidance, to avoid doorway pages.",
+    "keywords": [
+      "resize image to 30kb",
+      "resize image to 15kb",
+      "compress jpg to 200kb"
+    ],
+    "sources": [
+      "S-019",
+      "S-029",
+      "S-030",
+      "S-005"
+    ],
+    "evidence": "inference",
+    "confidence": "medium",
+    "impact": "M",
+    "effort": "S",
+    "window": "weeks 9-13",
+    "owner": "implementer",
+    "risks": [
+      "Do not ship if earlier pages are not getting indexed"
+    ],
+    "acceptance": [
+      "Given earlier new pages are indexed, When 30 and 15 KB pages are added, Then each has its own use cases and FAQ",
+      "Given the sitemap, When built, Then they are listed and linked from related tools"
+    ],
+    "id": "GRO-010",
+    "status": "proposed"
+  },
+  {
+    "type": "content",
+    "title": "Write guides: reduce image size in KB without losing quality, and form-spec how-to",
+    "rationale": "The how-to SERP is blogs and one forum thread, no big tool platform; guides add ad-quality content and link to tools. Current guides total about 4,400 words.",
+    "keywords": [
+      "how to reduce image size in kb without losing quality",
+      "reduce image size in kb"
+    ],
+    "sources": [
+      "S-011",
+      "S-040"
+    ],
+    "evidence": "inference",
+    "confidence": "medium",
+    "impact": "M",
+    "effort": "M",
+    "window": "weeks 5-8",
+    "owner": "implementer",
+    "risks": [
+      "Generic AI-style text will not help; needs real examples from the tool"
+    ],
+    "acceptance": [
+      "Given the new guide, When published, Then it has original steps, before/after examples and links to at least three tool pages",
+      "Given the guides hub, When built, Then the guide is listed"
+    ],
+    "id": "GRO-011",
+    "status": "proposed"
+  },
+  {
+    "type": "monetization",
+    "title": "Prepare AdSense readiness: contact page, consent tool, policy copy, ad slots away from the tool",
+    "rationale": "No contact page (404), no consent tool, no ads.txt, privacy copy promises an update first. Owner allows ads on tool pages but never adjacent to the tool UI. Do not add ads.txt or ad code before an ad account exists.",
+    "keywords": [],
+    "sources": [
+      "S-039",
+      "S-038",
+      "S-045"
+    ],
+    "evidence": "fact",
+    "confidence": "high",
+    "impact": "H",
+    "effort": "M",
+    "window": "weeks 5-8",
+    "owner": "implementer",
+    "risks": [
+      "Ads can hurt page speed and layout shift; start conservative",
+      "Requires a Google-certified CMP choice by the owner"
+    ],
+    "acceptance": [
+      "Given the site, When visited, Then a contact page exists and is linked in the footer",
+      "Given the privacy and terms pages, When updated, Then they describe ads, cookies and consent accurately",
+      "Given a visitor in a consent region, When the consent tool is installed, Then ads and analytics wait for consent",
+      "Given any tool page, When ad slots are defined, Then none is placed adjacent to the tool controls or result"
+    ],
+    "needs_design": true,
+    "id": "GRO-012",
+    "status": "proposed"
+  },
+  {
+    "type": "monetization",
+    "title": "Apply for AdSense once content, policy and consent items are done",
+    "rationale": "Approval outcome is unknown; thin content is a common rejection reason. Owner applies personally. Never click own ads or ask others to.",
+    "keywords": [],
+    "sources": [
+      "S-040",
+      "S-045"
+    ],
+    "evidence": "assumption",
+    "confidence": "low",
+    "impact": "M",
+    "effort": "S",
+    "window": "weeks 9-13",
+    "owner": "human",
+    "risks": [
+      "Rejection possible; use feedback to expand content"
+    ],
+    "acceptance": [
+      "Done when the owner has applied and recorded the outcome (approved, rejected with reason, or pending)"
+    ],
+    "id": "GRO-013",
+    "status": "proposed"
+  },
+  {
+    "type": "distribution",
+    "title": "Post one Show HN and suggest AlternativeTo after owner reads their rules",
+    "rationale": "Show HN rules favour tools people can try without signup, which fits SizeTune. AlternativeTo accepts free suggestions with nofollow links. Both need a person; no fake accounts or upvote requests.",
+    "keywords": [],
+    "sources": [
+      "S-046",
+      "S-047",
+      "S-050"
+    ],
+    "evidence": "fact",
+    "confidence": "low",
+    "impact": "M",
+    "effort": "S",
+    "window": "weeks 5-8",
+    "owner": "human",
+    "risks": [
+      "One-time spike, no durable ranking effect promised",
+      "AlternativeTo needs an account, against brand-first anonymity"
+    ],
+    "acceptance": [
+      "Done when the owner has read both rule pages and either posted or decided not to, and recorded the result and referral source"
+    ],
+    "id": "GRO-014",
+    "status": "proposed"
+  },
+  {
+    "type": "distribution",
+    "title": "Read the rules of target Reddit, Quora and exam-forum communities, then answer questions",
+    "rationale": "These communities hold the audience but their rules could not be read by research. A person should read each sidebar, answer form-size questions fully without links by default, and link only where allowed, disclosing affiliation.",
+    "keywords": [],
+    "sources": [
+      "S-056",
+      "S-057",
+      "S-004"
+    ],
+    "evidence": "hypothesis",
+    "confidence": "low",
+    "impact": "L",
+    "effort": "M",
+    "window": "weeks 5-8",
+    "owner": "human",
+    "risks": [
+      "High spam and ban risk for new brand accounts",
+      "Low confidence in effect"
+    ],
+    "acceptance": [
+      "Done when the owner has listed which communities allow links and answered at least five questions, or decided to skip"
+    ],
+    "id": "GRO-015",
+    "status": "proposed"
+  },
+  {
+    "type": "content",
+    "title": "Check demand and quality bar for Hindi and other-language pages before building",
+    "rationale": "Other languages are in scope but no evidence exists that the audience searches in them for these tasks. Check Hindi query phrasing and SERPs, and plan real translations only, never machine-translated thin copies.",
+    "keywords": [],
+    "sources": [
+      "S-020",
+      "S-045"
+    ],
+    "evidence": "hypothesis",
+    "confidence": "low",
+    "impact": "M",
+    "effort": "S",
+    "window": "weeks 9-13",
+    "owner": "human",
+    "risks": [
+      "Hreflang and translation maintenance cost if demand is thin"
+    ],
+    "acceptance": [
+      "Done when Hindi (and any other) query phrasing and SERPs are checked and a go/no-go note is saved with sources"
+    ],
+    "id": "GRO-016",
+    "status": "proposed"
+  },
+  {
+    "type": "landing-page",
+    "title": "Decide whether to build JPG-to-PDF under X KB",
+    "rationale": "Autocomplete shows jpg to pdf under 100/200/500 KB and mid-size vendor tools rank; SizeTune has no PDF tool. A new client-side tool is a product decision after the core pages show traction.",
+    "keywords": [
+      "jpg to pdf under 100kb",
+      "jpg to pdf under 200kb"
+    ],
+    "sources": [
+      "S-008",
+      "S-022"
+    ],
+    "evidence": "inference",
+    "confidence": "medium",
+    "impact": "M",
+    "effort": "L",
+    "window": "weeks 9-13",
+    "owner": "implementer",
+    "risks": [
+      "Large build; PDF vendors dominate compress-PDF but not this long-tail; no traction data yet"
+    ],
+    "acceptance": [
+      "Given the owner approves, When the tool is built, Then it converts JPG to PDF in the browser and hits a stated KB target with real size shown",
+      "Given verify:privacy, When run, Then no image leaves the browser"
+    ],
+    "needs_design": true,
+    "id": "GRO-017",
+    "status": "proposed"
+  }
+]

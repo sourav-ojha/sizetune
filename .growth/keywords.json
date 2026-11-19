@@ -1,0 +1,1452 @@
+[
+  {
+    "keyword": "resize image to 20kb",
+    "cluster": "photo-to-KB",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete #1 for 'resize image to'. SERP: Zamzar, imresizer, Cloudinary, originality.ai plus about 8 small clone tool pages (pages.dev/vercel). Many are server-side; some claim browser-only. Intent 3, product 3, winnability 1-2.",
+    "competitors": [
+      "imresizer.com",
+      "zamzar.com",
+      "cloudinary.com",
+      "mb2kb.com"
+    ],
+    "target_page": "existing: /resize-image-to-20kb",
+    "priority": "P1",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-001",
+      "S-019",
+      "S-030"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "resize image to 50kb",
+    "cluster": "photo-to-KB",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete #3. SERP: many imresizer variants, imageonline.io, codia, clone sites. Intent 3, product 3, winnability 1-2.",
+    "competitors": [
+      "imresizer.com",
+      "imageonline.io"
+    ],
+    "target_page": "existing: /resize-image-to-50kb",
+    "priority": "P1",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-003",
+      "S-019",
+      "S-029"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "resize image to 100kb",
+    "cluster": "photo-to-KB",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete #2. SERP: Zamzar, Cloudinary, ShortPixel guide, Wondershare, imresizer, clones. Intent 3, product 3, winnability 1-2.",
+    "competitors": [
+      "zamzar.com",
+      "cloudinary.com",
+      "imresizer.com"
+    ],
+    "target_page": "existing: /resize-image-to-100kb",
+    "priority": "P1",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-016",
+      "S-019"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "reduce image size to 20kb jpg",
+    "cluster": "photo-to-KB",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete 'resize image to 20kb jpg' and 'compress image to 20 kb jpg format'. Secondary phrase for the 20 KB page.",
+    "competitors": [
+      "imageonline.io"
+    ],
+    "target_page": "existing: /resize-image-to-20kb (secondary)",
+    "priority": "P2",
+    "evidence": "inference",
+    "confidence": "low",
+    "sources": [
+      "S-019",
+      "S-021"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "resize image to 20kb to 50kb",
+    "cluster": "photo-to-KB-range",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete #4 plus '50kb to 100kb' #10: min-max range phrasing. imageonline.io has a 20-50 KB page. Forms with a minimum are underserved by fixed-target pages.",
+    "competitors": [
+      "imageonline.io"
+    ],
+    "target_page": "existing: add min/max range mode to /resize-image-to-50kb; or new: /resize-image-20kb-to-50kb",
+    "priority": "P2",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-010",
+      "S-019"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "resize image to 30kb",
+    "cluster": "KB-presets-new",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete #6; imageonline.io has a 30KB page. Fewer big-brand pages than 20/100. Intent 3, product 3, winnability 2.",
+    "competitors": [
+      "imageonline.io"
+    ],
+    "target_page": "new: /resize-image-to-30kb",
+    "priority": "P2",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-010",
+      "S-019",
+      "S-029"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "resize image to 15kb",
+    "cluster": "KB-presets-new",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete #9; imresizer has dedicated page /resize-image-to-15kb and variants.",
+    "competitors": [
+      "imresizer.com"
+    ],
+    "target_page": "new: /resize-image-to-15kb",
+    "priority": "P2",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-010",
+      "S-019",
+      "S-030"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "resize image to 40kb",
+    "cluster": "KB-presets-new",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete #8 and 'signature resize to 40kb'. imageonline.io only offers it as a button.",
+    "competitors": [
+      "imageonline.io"
+    ],
+    "target_page": "new: /resize-image-to-40kb",
+    "priority": "P3",
+    "evidence": "inference",
+    "confidence": "low",
+    "sources": [
+      "S-019",
+      "S-027",
+      "S-029"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "compress image to 25kb",
+    "cluster": "KB-presets-new",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "SERP has imageonline.io /compress-image-to-25kb and imresizer variants. Not seen in autocomplete.",
+    "competitors": [
+      "imageonline.io",
+      "imresizer.com"
+    ],
+    "target_page": "new: /resize-image-to-25kb",
+    "priority": "P3",
+    "evidence": "inference",
+    "confidence": "low",
+    "sources": [
+      "S-010"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "compress jpg to 200kb",
+    "cluster": "KB-presets-new",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete #5 for 'resize image to'. SERP: Smallpdf, signNow, CapCut, Zamzar, 11zon, iformat, compresto. Big brands present, so winnability 1.",
+    "competitors": [
+      "smallpdf.com",
+      "zamzar.com",
+      "iformat.io",
+      "imresizer.com"
+    ],
+    "target_page": "new: /resize-image-to-200kb",
+    "priority": "P2",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-005",
+      "S-019",
+      "S-031"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "resize image to 500kb",
+    "cluster": "KB-presets-new",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "imresizer has /resize-image-to-500kb. Not in autocomplete top 10. Likely lower fit for exam forms, more for job and visa portals.",
+    "competitors": [
+      "imresizer.com"
+    ],
+    "target_page": "new: /resize-image-to-500kb",
+    "priority": "P3",
+    "evidence": "hypothesis",
+    "confidence": "low",
+    "sources": [
+      "S-030"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "compress image to 1mb",
+    "cluster": "KB-presets-new",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "imageonline.io has 1MB/2MB pages. Not checked on SERP directly.",
+    "competitors": [
+      "imageonline.io"
+    ],
+    "target_page": "new: /resize-image-to-1mb",
+    "priority": "P3",
+    "evidence": "hypothesis",
+    "confidence": "low",
+    "sources": [
+      "S-029"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "how to compress image to 30 kb",
+    "cluster": "KB-presets-new",
+    "intent": "informational",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete for 'compress image to kb for'. How-to phrasing; answer on the 30 KB page FAQ rather than a separate page.",
+    "competitors": [],
+    "target_page": "new: /resize-image-to-30kb (FAQ section)",
+    "priority": "P3",
+    "evidence": "inference",
+    "confidence": "low",
+    "sources": [
+      "S-021"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "compress image to required kb",
+    "cluster": "photo-to-KB-generic",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete. Custom-target phrasing fits a tool with any-KB input.",
+    "competitors": [
+      "imresizer.com"
+    ],
+    "target_page": "existing: home or /tools (custom KB input)",
+    "priority": "P3",
+    "evidence": "inference",
+    "confidence": "low",
+    "sources": [
+      "S-021",
+      "S-030"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "resize signature to 10kb",
+    "cluster": "signature-KB",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete 'signature resize to 10 kb' #6. SERP (reduce signature size to 10kb): signNow doc-type spam first, then 7xtools, imageonline.io, exammint signature compressor. Small tools only, no big platform. Intent 3, product 3, winnability 2-3.",
+    "competitors": [
+      "imageonline.io",
+      "7xtools.vercel.app",
+      "resizer.exammint.in"
+    ],
+    "target_page": "existing: /resize-signature-to-10kb",
+    "priority": "P1",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-002",
+      "S-027"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "signature resize to 20 kb",
+    "cluster": "signature-KB",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete #1 for 'signature resize to'. SERP (resize signature to 20kb): signNow, imageonline.io/resize-signature, edesy.in, passportphotosnap, how-to guide. No big platform. Intent 3, product 3, winnability 2-3.",
+    "competitors": [
+      "imageonline.io",
+      "passportphotosnap.com",
+      "edesy.in"
+    ],
+    "target_page": "new: /resize-signature-to-20kb",
+    "priority": "P1",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-007",
+      "S-027"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "signature resize tool",
+    "cluster": "signature-KB",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete #2. Head term for the signature cluster.",
+    "competitors": [
+      "imageonline.io",
+      "edesy.in"
+    ],
+    "target_page": "existing: /resize-signature",
+    "priority": "P2",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-007",
+      "S-027"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "signature resize to 30 kb",
+    "cluster": "signature-KB",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete #3; also 15, 40, 50, 100, 35 KB variants. Cover with a preset selector on /resize-signature, not separate pages.",
+    "competitors": [],
+    "target_page": "existing: /resize-signature (preset selector 15/20/30/50 KB)",
+    "priority": "P2",
+    "evidence": "inference",
+    "confidence": "low",
+    "sources": [
+      "S-027"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "signature resize to 50kb",
+    "cluster": "signature-KB",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete #4.",
+    "competitors": [],
+    "target_page": "existing: /resize-signature (preset)",
+    "priority": "P3",
+    "evidence": "inference",
+    "confidence": "low",
+    "sources": [
+      "S-027"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "signature resize to 15 kb",
+    "cluster": "signature-KB",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete #5.",
+    "competitors": [],
+    "target_page": "existing: /resize-signature (preset)",
+    "priority": "P3",
+    "evidence": "inference",
+    "confidence": "low",
+    "sources": [
+      "S-027"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "signature size for ssc",
+    "cluster": "exam-presets",
+    "intent": "informational",
+    "geo": "IN",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete 'signature size for' #4 and #5 (ssc chsl). SERP (served from US, India not observed): docset.in/resize/ssc-cgl, dockera.vercel.app, iformat blog, imgpace, photosignresizer. 10+ dedicated pages; specs conflict across sites (10-20 vs 20-50 KB). Intent 3, product 3, winnability 2.",
+    "competitors": [
+      "docset.in",
+      "dockera.vercel.app",
+      "iformat.io",
+      "onlineresult.in"
+    ],
+    "target_page": "new: /resize-photo-signature-for-ssc",
+    "priority": "P1",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-004",
+      "S-020"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "signature size for gds post office",
+    "cluster": "exam-presets",
+    "intent": "informational",
+    "geo": "IN",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete 'signature size for' #1 and #9; 'photo resize for' #1 and #4 (gds). SERP: pw.live, examdetail, onlineresult, sarkari-pixel clone, askfilo. Sources disagree (10-20 vs 20-50 vs 20-100 KB). Served from US.",
+    "competitors": [
+      "examdetail.in",
+      "onlineresult.in",
+      "pw.live"
+    ],
+    "target_page": "new: /resize-photo-signature-for-india-post-gds",
+    "priority": "P1",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-014",
+      "S-020",
+      "S-028"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "signature size for ibps clerk",
+    "cluster": "exam-presets",
+    "intent": "informational",
+    "geo": "IN",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete 'signature size for' #6, #7; 'photo resize for' #8-10 (ibps, bank exam). SERP: careerpower, iformat, docset (sbi-clerk), onlineresult, dockera, mergeimages. Third-party specs: photo 200x230 20-50 KB, signature 140x60 10-20 KB.",
+    "competitors": [
+      "docset.in",
+      "onlineresult.in",
+      "dockera.vercel.app",
+      "mergeimages.net",
+      "careerpower.in"
+    ],
+    "target_page": "new: /resize-photo-signature-for-ibps",
+    "priority": "P1",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-015",
+      "S-020",
+      "S-028"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "photo size for pan card",
+    "cluster": "exam-presets",
+    "intent": "informational",
+    "geo": "IN",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete 'photo size for' #6, 'signature size for' #3, 'photo resize for' #2. SERP: docset, pancardresizer, onlineresult, mergeimages, iformat, passportsizephoto.in. Specs (about 50 KB, 2.5x3.5 cm) conflict. Served from US.",
+    "competitors": [
+      "docset.in",
+      "onlineresult.in",
+      "mergeimages.net",
+      "iformat.io"
+    ],
+    "target_page": "new: /resize-photo-signature-for-pan-card",
+    "priority": "P1",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-018",
+      "S-020",
+      "S-024",
+      "S-028"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "upsc photo and signature size",
+    "cluster": "exam-presets",
+    "intent": "informational",
+    "geo": "IN",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "SERP: vajiram, visionias, examdetail (several UPSC pages), iformat, examresizer, docset. Exam-prep publishers rank. Third-party sources say CSE 2026 photo 20-200 KB, signature 20-100 KB; not verified against upsconline.nic.in. Seasonal. Not in autocomplete.",
+    "competitors": [
+      "examdetail.in",
+      "iformat.io",
+      "docset.in",
+      "vajiramandravi.com"
+    ],
+    "target_page": "new: /resize-photo-signature-for-upsc",
+    "priority": "P2",
+    "evidence": "inference",
+    "confidence": "low",
+    "sources": [
+      "S-009"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "signature size for rrb",
+    "cluster": "exam-presets",
+    "intent": "informational",
+    "geo": "IN",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete 'signature size for' #2 only; SERP not checked.",
+    "competitors": [],
+    "target_page": "new: /resize-photo-signature-for-rrb",
+    "priority": "P2",
+    "evidence": "inference",
+    "confidence": "low",
+    "sources": [
+      "S-020"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "signature size for driving licence",
+    "cluster": "exam-presets",
+    "intent": "informational",
+    "geo": "IN",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete #10 only. SERP not checked.",
+    "competitors": [],
+    "target_page": "new: /resize-photo-signature-for-driving-licence (hypothesis)",
+    "priority": "P3",
+    "evidence": "hypothesis",
+    "confidence": "low",
+    "sources": [
+      "S-020"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "photo size for voter id",
+    "cluster": "exam-presets",
+    "intent": "informational",
+    "geo": "IN",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete 'photo resize for' #5. SERP not checked.",
+    "competitors": [],
+    "target_page": "new: /resize-photo-for-voter-id (hypothesis)",
+    "priority": "P3",
+    "evidence": "hypothesis",
+    "confidence": "low",
+    "sources": [
+      "S-028"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "photo and signature resizer for government exam form",
+    "cluster": "exam-presets",
+    "intent": "transactional",
+    "geo": "IN",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Hub phrasing; SERP full of exam resizer clones (imageconverter-521, govtools, photosignresizer, sscphotoresize, docset). Use as hub page linking exam pages.",
+    "competitors": [
+      "docset.in",
+      "onlineresult.in",
+      "examdetail.in"
+    ],
+    "target_page": "new: /exam-photo-signature-resizer (hub)",
+    "priority": "P2",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-004",
+      "S-015"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "photo size for ssc cgl 20kb to 50kb",
+    "cluster": "exam-presets",
+    "intent": "informational",
+    "geo": "IN",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "SSC photo 20-50 KB is the consensus across third-party sites; per-exam page (CGL/CHSL/MTS) at dockera and docset. Secondary for the SSC page.",
+    "competitors": [
+      "dockera.vercel.app",
+      "docset.in"
+    ],
+    "target_page": "new: /resize-photo-signature-for-ssc (secondary)",
+    "priority": "P2",
+    "evidence": "inference",
+    "confidence": "low",
+    "sources": [
+      "S-004"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "increase image size in kb",
+    "cluster": "increase-KB",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete shows 10 variants (online, jpg, without changing pixels, pdf, free). SERP: imresizer, imageonline.io, wps, pythonware, increase-image-size.pages.dev, blogspot. Mid-size tools plus clones; no big platform. Pads file to meet a minimum-KB rule. Intent 3, product 3 (new feature), winnability 2.",
+    "competitors": [
+      "imresizer.com",
+      "imageonline.io",
+      "wps.com"
+    ],
+    "target_page": "new: /increase-image-size-in-kb",
+    "priority": "P1",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-017",
+      "S-023",
+      "S-030"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "increase image size in kb without changing pixels",
+    "cluster": "increase-KB",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete variant; padding approach (keep dimensions).",
+    "competitors": [
+      "imresizer.com"
+    ],
+    "target_page": "new: /increase-image-size-in-kb (secondary)",
+    "priority": "P2",
+    "evidence": "inference",
+    "confidence": "low",
+    "sources": [
+      "S-017",
+      "S-023"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "increase image size in kb and dimensions in cm",
+    "cluster": "increase-KB",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete variant; pairs KB and cm sizes (an exam-form need).",
+    "competitors": [],
+    "target_page": "new: /increase-image-size-in-kb (secondary)",
+    "priority": "P3",
+    "evidence": "inference",
+    "confidence": "low",
+    "sources": [
+      "S-023"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "increase pdf size in kb",
+    "cluster": "increase-KB",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete variant 'increase image size in kb pdf'. No PDF tool in the product.",
+    "competitors": [],
+    "target_page": "none (no PDF tool)",
+    "priority": "P3",
+    "evidence": "hypothesis",
+    "confidence": "low",
+    "sources": [
+      "S-023"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "jpg to pdf under 100kb",
+    "cluster": "jpg-to-pdf-under-KB",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete shows 200/300/500/100/50/150 KB variants. SERP: usesignhouse, duplichecker, 11zon, swifdoo, wondershare, pdfsimpli, minitool. Mid-size vendor tools. Product fit is 1: a new JPG-to-PDF tool is needed.",
+    "competitors": [
+      "11zon.com",
+      "duplichecker.com",
+      "pdfsimpli.com",
+      "wondershare"
+    ],
+    "target_page": "new: /jpg-to-pdf-under-100kb (needs new tool)",
+    "priority": "P2",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-008",
+      "S-022"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "jpg to pdf under 200kb",
+    "cluster": "jpg-to-pdf-under-KB",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete #1 for 'jpg to pdf under'. Same tool and page family as 100 KB.",
+    "competitors": [
+      "11zon.com"
+    ],
+    "target_page": "new: /jpg-to-pdf-under-200kb (needs new tool)",
+    "priority": "P3",
+    "evidence": "inference",
+    "confidence": "low",
+    "sources": [
+      "S-008",
+      "S-022"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "jpg to pdf under 500kb",
+    "cluster": "jpg-to-pdf-under-KB",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete #3.",
+    "competitors": [],
+    "target_page": "new: /jpg-to-pdf-under-500kb (needs new tool)",
+    "priority": "P3",
+    "evidence": "inference",
+    "confidence": "low",
+    "sources": [
+      "S-022"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "compress pdf to 100kb",
+    "cluster": "pdf-to-KB",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete #2 (200 KB #1). SERP: Adobe, Smallpdf, HiPDF, Wondershare, signNow, compresto, Odoo. Big brands dominate (winnability 1) and no PDF tool in the product.",
+    "competitors": [
+      "adobe.com",
+      "smallpdf.com",
+      "hipdf.com"
+    ],
+    "target_page": "none (no PDF tool)",
+    "priority": "P3",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-006",
+      "S-026"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "compress pdf to 200kb",
+    "cluster": "pdf-to-KB",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete #1 for 'compress pdf to'. Same dominance by PDF suites.",
+    "competitors": [
+      "smallpdf.com",
+      "adobe.com"
+    ],
+    "target_page": "none (no PDF tool)",
+    "priority": "P3",
+    "evidence": "inference",
+    "confidence": "low",
+    "sources": [
+      "S-026"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "kb to mb converter",
+    "cluster": "kb-mb-converter",
+    "intent": "informational",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete #2, with a Google featured answer ('= 0.001 megabytes'), which limits clicks. SERP: gigacalculator, omnicalculator, inchcalculator and many pages.dev clones. Calculator brands dominate; low commercial value. Intent 2, product 3, winnability 1-2.",
+    "competitors": [
+      "gigacalculator.com",
+      "omnicalculator.com",
+      "inchcalculator.com"
+    ],
+    "target_page": "existing: /kb-mb-size-converter",
+    "priority": "P2",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-013",
+      "S-025"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "kb to mb converter image",
+    "cluster": "kb-mb-converter",
+    "intent": "informational",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete #4; also 'converter photo', 'converter pdf', 'converter jpg'. File-oriented variants are closer to SizeTune's audience than the generic unit queries.",
+    "competitors": [],
+    "target_page": "existing: /kb-mb-size-converter (secondary)",
+    "priority": "P2",
+    "evidence": "inference",
+    "confidence": "low",
+    "sources": [
+      "S-025"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "reduce image size in kb",
+    "cluster": "generic-reduce-KB",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete variants ('reduce image kb for free'). SERP: Cloudinary, dzine, blur.me, imresizer, resizepixel. Mixed tools and guides.",
+    "competitors": [
+      "cloudinary.com",
+      "imresizer.com",
+      "resizepixel.com"
+    ],
+    "target_page": "existing: home or /tools (custom KB)",
+    "priority": "P2",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-011",
+      "S-021",
+      "S-032"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "how to reduce image size in kb without losing quality",
+    "cluster": "generic-reduce-KB",
+    "intent": "informational",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "SERP: imagify, huckabuy, Microsoft Tech Community thread, helpdeskgeek, dev.to, duplichecker. Blog guides and a forum thread, no big tool platform. Guide opportunity linking to the tools.",
+    "competitors": [
+      "imagify.io",
+      "duplichecker.com"
+    ],
+    "target_page": "new: /guides/reduce-image-size-in-kb-without-losing-quality",
+    "priority": "P2",
+    "evidence": "inference",
+    "confidence": "medium",
+    "sources": [
+      "S-011"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "reduce image size without uploading",
+    "cluster": "privacy-no-upload",
+    "intent": "informational",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Thin autocomplete (3 suggestions). SERP: dev.to build-posts, orthogonal.info, scanapp, Squoosh. Developer posts rather than form-applicant queries. Useful as a trust angle on tool pages.",
+    "competitors": [
+      "squoosh.app",
+      "orthogonal.info"
+    ],
+    "target_page": "existing: home (trust copy); new guide optional",
+    "priority": "P3",
+    "evidence": "inference",
+    "confidence": "low",
+    "sources": [
+      "S-012"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "photo size for instagram post",
+    "cluster": "social-dimensions",
+    "intent": "informational",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete 'photo size for' #8 and 'photo resize for' #6, #7. SERP not checked; likely large platforms and social tools.",
+    "competitors": [],
+    "target_page": "existing: /instagram-image-resizer",
+    "priority": "P3",
+    "evidence": "hypothesis",
+    "confidence": "low",
+    "sources": [
+      "S-024",
+      "S-028"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "whatsapp dp size resize photo",
+    "cluster": "social-dimensions",
+    "intent": "transactional",
+    "geo": "IN",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete 'photo resize for' #3 only. SERP not checked; no matching SizeTune page.",
+    "competitors": [],
+    "target_page": "new: /whatsapp-dp-resizer (hypothesis)",
+    "priority": "P3",
+    "evidence": "hypothesis",
+    "confidence": "low",
+    "sources": [
+      "S-028"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "photo size for passport",
+    "cluster": "id-dimensions",
+    "intent": "informational",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Autocomplete 'photo size for' #2, plus Schengen, Japan and US visa, marriage certificate. Dimension-based (cm and pixels), mostly not KB; acceptance risk. Outside the core KB audience, so low fit.",
+    "competitors": [
+      "imresizer.com"
+    ],
+    "target_page": "none (hypothesis)",
+    "priority": "P3",
+    "evidence": "hypothesis",
+    "confidence": "low",
+    "sources": [
+      "S-010",
+      "S-024"
+    ],
+    "researched": "2026-11-19"
+  },
+  {
+    "keyword": "png to jpg under 100kb",
+    "cluster": "format-conversion",
+    "intent": "transactional",
+    "geo": "US",
+    "language": "en",
+    "volume": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "difficulty": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    },
+    "serp_notes": "Not directly checked. Guides say convert PNG to JPG as the main size lever. Existing /png-to-jpg and /webp-to-jpg pages; test whether a KB target adds value.",
+    "competitors": [],
+    "target_page": "existing: /png-to-jpg (add KB target)",
+    "priority": "P3",
+    "evidence": "hypothesis",
+    "confidence": "low",
+    "sources": [
+      "S-011"
+    ],
+    "researched": "2026-11-19"
+  }
+]
