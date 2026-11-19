@@ -17,7 +17,15 @@ Impact is a qualitative judgment, not a traffic forecast. Owner `human` items ar
 
 ## Weeks 5-8
 
-_No approved items._
+| ID | Type | Item | Owner | Effort | Impact | Evidence | Status | Sources |
+|---|---|---|---|---|---|---|---|---|
+| GRO-008 | landing-page | Ship four per-form pages (SSC, IBPS, GDS, PAN) using verified specs | implementer | M | H | inference, medium | approved | [S-004](https://www.google.com/search?q=SSC+photo+signature+size+requirement+kb+resize+tool), [S-014](https://www.google.com/search?q=signature+size+for+gds+post+office+photo+signature+kb), [S-015](https://www.google.com/search?q=IBPS+clerk+photo+signature+size+kb+resize), [S-018](https://www.google.com/search?q=PAN+card+photo+signature+size+kb+resize+online+NSDL), [S-020](https://suggestqueries.google.com/complete/search?client=firefox&q=signature%20size%20for%20) |
+| GRO-009 | landing-page | Add an "increase image size in KB" tool and page (only if GRO-019 decides a method) | implementer | M | M | inference, medium | approved | [S-017](https://www.google.com/search?q=increase+image+size+in+kb+online), [S-023](https://suggestqueries.google.com/complete/search?client=firefox&q=increase%20image%20size%20in%20kb), S-045 |
+| GRO-011 | content | Write the guide: reduce image size in KB without losing quality; extend the forms guide | implementer | M | M | inference, medium | approved | [S-011](https://www.google.com/search?q=how+to+reduce+image+size+in+kb+without+losing+quality), S-040 |
+| GRO-012 | monetization | Prepare AdSense readiness: contact page, consent tool, policy copy, ad slots away from the tool | implementer | M | H | fact, high | approved | [S-039](https://sizetune.com/ads.txt), [S-038](https://sizetune.com/privacy/), S-045 |
+| GRO-014 | distribution | Post one Show HN and suggest AlternativeTo after owner reads their rules | human | S | M | fact, low | approved | [S-046](https://news.ycombinator.com/showhn.html), [S-047](https://alternativeto.net/faq), [S-050](http://help.producthunt.com/en/articles/17734384-5-how-to-promote-your-launch-and-what-to-avoid) |
+| GRO-015 | distribution | Read the rules of target Reddit, Quora and exam-forum communities, then answer questions | human | M | L | hypothesis, low | approved | [S-056](https://redship.io/blog/reddit-self-promotion-rules), [S-057](https://www.singlegrain.com/search-everywhere-optimization/12-common-quora-marketing-mistakes-that-damage-brand-reputation/), [S-004](https://www.google.com/search?q=SSC+photo+signature+size+requirement+kb+resize+tool) |
+| GRO-019 | landing-page | Decide how an "increase image size in KB" tool should reach a minimum size | human | S | M | inference, medium | approved | [S-017](https://www.google.com/search?q=increase+image+size+in+kb+online), [S-023](https://suggestqueries.google.com/complete/search?client=firefox&q=increase%20image%20size%20in%20kb), S-045 |
 
 ## Weeks 9-13
 
@@ -105,19 +113,97 @@ Owner: human. Done when:
 Risks:
 - Specs change per notification cycle; record the notification date
 
+### GRO-008: Ship four per-form pages (SSC, IBPS, GDS, PAN) using verified specs
+
+Exam-specific queries are served by one-page-per-exam sites that disagree on specs; SizeTune has none. India SERPs are unobserved, so build only after GRO-004 records them and GRO-007 verifies specs. Start with four pages, each with a spec table, preset and steps; check indexing before adding more.
+
+Owner: implementer. Acceptance:
+- Given GRO-004 has recorded India-served results for the four exam queries, When a query is dominated by national exam publishers, Then that page is dropped or deferred
+- Given the human spec verification is recorded, When each page is built, Then it shows the official spec with source and date and a preset that matches it
+- Given the four pages, When read, Then each has unique instructions, not only a changed number
+- Given the hub or tools page, When built, Then it links all four exam pages
+
+Risks:
+- Doorway risk; depends on the spec verification item; India SERP unobserved; ship few then check Search Console
+
+### GRO-009: Add an "increase image size in KB" tool and page (only if GRO-019 decides a method)
+
+Forms with a minimum size reject small files; autocomplete shows ten phrasings and the SERP has mid-size tools, no big platform. Keyword is P2: the engine avoids metadata padding, so build only after the owner records a method in GRO-019.
+
+Owner: implementer. Acceptance:
+- Given a photo below a form minimum, When the user sets a minimum KB, Then the output is at or above it using a documented, honest method
+- Given the result, When shown, Then the page states how the size was reached and the real byte size
+- Given the build, When verify:html and verify:privacy run, Then both pass
+
+Risks:
+- Padding to fake size may violate product principles; some forms may reject padded files
+
+### GRO-011: Write the guide: reduce image size in KB without losing quality; extend the forms guide
+
+The how-to SERP is blogs and one forum thread, no big tool platform. Add one new guide and extend the existing photo-size-for-online-forms guide instead of a second form-spec guide, to avoid overlap with the exam hub. Current guides total about 4,400 words.
+
+Owner: implementer. Acceptance:
+- Given the new guide, When published, Then it has original steps, before/after examples and links to at least three tool pages
+- Given the existing photo-size-for-online-forms guide, When extended, Then no second guide targets the same intent
+- Given the guides hub, When built, Then the new guide is listed
+
+Risks:
+- Generic AI-style text will not help; needs real examples from the tool
+
+### GRO-012: Prepare AdSense readiness: contact page, consent tool, policy copy, ad slots away from the tool
+
+No contact page (404), no consent tool, no ads.txt, privacy copy promises an update first. Owner allows ads on tool pages but never adjacent to the tool UI. Do not add ads.txt or ad code before an ad account exists.
+
+Owner: implementer. Acceptance:
+- Given the privacy page says tools are meant to stay free of ads, When ads are planned on tool pages, Then the owner has approved changing that sentence and the page is updated before any tool-page slot ships (otherwise ads stay on guides only)
+- Given the site, When visited, Then a contact page exists and is linked in the footer
+- Given the privacy and terms pages, When updated, Then they describe ads, cookies and consent accurately
+- Given a visitor in a consent region, When the consent tool is installed, Then ads and analytics wait for consent
+- Given any tool page, When ad slots are defined, Then none is placed adjacent to the tool controls or result
+
+Risks:
+- Ads can hurt page speed and layout shift; start conservative
+- Requires a Google-certified CMP choice by the owner
+- Public promise "tools meant to stay free of ads" on the privacy page conflicts with tool-page ads until the owner changes it
+
+### GRO-014: Post one Show HN and suggest AlternativeTo after owner reads their rules
+
+Show HN rules favour tools people can try without signup, which fits SizeTune. AlternativeTo accepts free suggestions with nofollow links. Both need a person; no fake accounts or upvote requests.
+
+Owner: human. Done when:
+- Done when the owner has read both rule pages and either posted or decided not to, and recorded the result and referral source
+
+Risks:
+- One-time spike, no durable ranking effect promised
+- AlternativeTo needs an account, against brand-first anonymity
+
+### GRO-015: Read the rules of target Reddit, Quora and exam-forum communities, then answer questions
+
+These communities hold the audience but their rules could not be read by research. A person should read each sidebar, answer form-size questions fully without links by default, and link only where allowed, disclosing affiliation.
+
+Owner: human. Done when:
+- Done when the owner has listed which communities allow links and answered at least five questions, or decided to skip
+
+Risks:
+- High spam and ban risk for new brand accounts
+- Low confidence in effect
+
+### GRO-019: Decide how an "increase image size in KB" tool should reach a minimum size
+
+The engine avoids metadata padding to hit minimums. Options: re-encode at higher quality, upscale dimensions, or do not build. Check that forms accept the result. Owner records the method before GRO-009 is built.
+
+Owner: human. Done when:
+- Done when the owner records the chosen method (or no-go), why it is honest, and any form acceptance check done
+
+Risks:
+- Padding to fake size may violate product principles
+
 ## Not approved (recommendations only)
 
 | ID | Type | Item | Owner | Effort | Impact | Evidence | Status | Sources |
 |---|---|---|---|---|---|---|---|---|
-| GRO-008 | landing-page | Ship four per-form pages (SSC, IBPS, GDS, PAN) using verified specs | implementer | M | H | inference, medium | proposed | [S-004](https://www.google.com/search?q=SSC+photo+signature+size+requirement+kb+resize+tool), [S-014](https://www.google.com/search?q=signature+size+for+gds+post+office+photo+signature+kb), [S-015](https://www.google.com/search?q=IBPS+clerk+photo+signature+size+kb+resize), [S-018](https://www.google.com/search?q=PAN+card+photo+signature+size+kb+resize+online+NSDL), [S-020](https://suggestqueries.google.com/complete/search?client=firefox&q=signature%20size%20for%20) |
-| GRO-009 | landing-page | Add an "increase image size in KB" tool and page (only if GRO-019 decides a method) | implementer | M | M | inference, medium | proposed | [S-017](https://www.google.com/search?q=increase+image+size+in+kb+online), [S-023](https://suggestqueries.google.com/complete/search?client=firefox&q=increase%20image%20size%20in%20kb), S-045 |
 | GRO-010 | landing-page | Add KB preset pages 30 KB and 15 KB, then 200 KB if indexed | implementer | S | M | inference, medium | proposed | [S-019](https://suggestqueries.google.com/complete/search?client=firefox&q=resize%20image%20to%20), [S-029](https://imageonline.io/compress-image-to-50kb/), [S-030](https://imresizer.com/resize-image-to-50kb), [S-005](https://www.google.com/search?q=compress+jpg+to+200kb+online) |
-| GRO-011 | content | Write the guide: reduce image size in KB without losing quality; extend the forms guide | implementer | M | M | inference, medium | proposed | [S-011](https://www.google.com/search?q=how+to+reduce+image+size+in+kb+without+losing+quality), S-040 |
-| GRO-012 | monetization | Prepare AdSense readiness: contact page, consent tool, policy copy, ad slots away from the tool | implementer | M | H | fact, high | proposed | [S-039](https://sizetune.com/ads.txt), [S-038](https://sizetune.com/privacy/), S-045 |
 | GRO-013 | monetization | Apply for AdSense once content, policy and consent items are done | human | S | M | assumption, low | proposed | S-040, S-045 |
-| GRO-014 | distribution | Post one Show HN and suggest AlternativeTo after owner reads their rules | human | S | M | fact, low | proposed | [S-046](https://news.ycombinator.com/showhn.html), [S-047](https://alternativeto.net/faq), [S-050](http://help.producthunt.com/en/articles/17734384-5-how-to-promote-your-launch-and-what-to-avoid) |
-| GRO-015 | distribution | Read the rules of target Reddit, Quora and exam-forum communities, then answer questions | human | M | L | hypothesis, low | proposed | [S-056](https://redship.io/blog/reddit-self-promotion-rules), [S-057](https://www.singlegrain.com/search-everywhere-optimization/12-common-quora-marketing-mistakes-that-damage-brand-reputation/), [S-004](https://www.google.com/search?q=SSC+photo+signature+size+requirement+kb+resize+tool) |
 | GRO-016 | content | Check demand and quality bar for Hindi and other-language pages before building | human | S | M | hypothesis, low | proposed | [S-020](https://suggestqueries.google.com/complete/search?client=firefox&q=signature%20size%20for%20), S-045 |
 | GRO-017 | landing-page | Build JPG-to-PDF under X KB tool (only if GRO-018 decides yes) | implementer | L | M | inference, medium | proposed | [S-008](https://www.google.com/search?q=convert+jpg+to+pdf+under+100kb), [S-022](https://suggestqueries.google.com/complete/search?client=firefox&q=jpg%20to%20pdf%20under%20) |
 | GRO-018 | landing-page | Decide whether to build JPG-to-PDF under X KB | human | S | M | inference, medium | proposed | [S-008](https://www.google.com/search?q=convert+jpg+to+pdf+under+100kb), [S-022](https://suggestqueries.google.com/complete/search?client=firefox&q=jpg%20to%20pdf%20under%20) |
-| GRO-019 | landing-page | Decide how an "increase image size in KB" tool should reach a minimum size | human | S | M | inference, medium | proposed | [S-017](https://www.google.com/search?q=increase+image+size+in+kb+online), [S-023](https://suggestqueries.google.com/complete/search?client=firefox&q=increase%20image%20size%20in%20kb), S-045 |

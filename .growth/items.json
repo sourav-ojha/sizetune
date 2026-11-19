@@ -232,7 +232,7 @@
     ],
     "needs_design": true,
     "id": "GRO-008",
-    "status": "proposed"
+    "status": "handed-off"
   },
   {
     "type": "landing-page",
@@ -263,7 +263,7 @@
     ],
     "needs_design": true,
     "id": "GRO-009",
-    "status": "proposed"
+    "status": "handed-off"
   },
   {
     "type": "landing-page",
@@ -322,7 +322,7 @@
       "Given the guides hub, When built, Then the new guide is listed"
     ],
     "id": "GRO-011",
-    "status": "proposed"
+    "status": "handed-off"
   },
   {
     "type": "monetization",
@@ -354,7 +354,7 @@
     ],
     "needs_design": true,
     "id": "GRO-012",
-    "status": "proposed"
+    "status": "handed-off"
   },
   {
     "type": "monetization",
@@ -404,7 +404,7 @@
       "Done when the owner has read both rule pages and either posted or decided not to, and recorded the result and referral source"
     ],
     "id": "GRO-014",
-    "status": "proposed"
+    "status": "approved"
   },
   {
     "type": "distribution",
@@ -430,7 +430,7 @@
       "Done when the owner has listed which communities allow links and answered at least five questions, or decided to skip"
     ],
     "id": "GRO-015",
-    "status": "proposed"
+    "status": "approved"
   },
   {
     "type": "content",
@@ -532,6 +532,6 @@
       "Padding to fake size may violate product principles"
     ],
     "id": "GRO-019",
-    "status": "proposed"
+    "status": "approved"
   }
 ]
