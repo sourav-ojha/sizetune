@@ -1,0 +1,23 @@
+{
+  "name": "Example Tools",
+  "url": "https://example.com",
+  "category": "online file utilities",
+  "audience": [
+    "people converting files for online forms"
+  ],
+  "goals": [
+    "grow organic search traffic to tool pages"
+  ],
+  "geographies": [
+    "US"
+  ],
+  "languages": [
+    "en"
+  ],
+  "monetization": [
+    "display-ads"
+  ],
+  "constraints": [
+    "no paid acquisition in the first 90 days"
+  ]
+}

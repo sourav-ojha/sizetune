@@ -1,0 +1,32 @@
+{
+  "keyword": "example keyword",
+  "cluster": "example cluster",
+  "intent": "transactional",
+  "geo": "US",
+  "language": "en",
+  "volume": {
+    "value": null,
+    "min": 1000,
+    "max": 10000,
+    "kind": "estimate",
+    "source": "S-001",
+    "note": "keyword planner range exported by the user"
+  },
+  "difficulty": {
+    "value": null,
+    "kind": "unknown",
+    "source": null
+  },
+  "serp_notes": "what ranks and in which format",
+  "competitors": [
+    "competitor.example"
+  ],
+  "target_page": "new: /example-page",
+  "priority": "P2",
+  "evidence": "inference",
+  "confidence": "medium",
+  "sources": [
+    "S-001"
+  ],
+  "researched": "2026-11-18"
+}

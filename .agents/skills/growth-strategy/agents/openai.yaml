@@ -1,0 +1,5 @@
+interface:
+  display_name: "Growth Strategy"
+  short_description: "Evidence-backed SEO, keyword, distribution and monetization-readiness research ending in an approved 90-day growth roadmap."
+policy:
+  allow_implicit_invocation: true

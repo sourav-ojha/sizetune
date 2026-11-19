@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "growth-strategy config (.growth/config.json, optional). Omitted keys fall back to core/config.default.json.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "freshness": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_max_age_days": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "keyword_max_age_days": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "phase_refresh_days": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "research": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_parallel_agents": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "min_sources_spot_checked": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "require_independent_review": {
+          "type": "boolean"
+        }
+      }
+    },
+    "models": {
+      "type": "object"
+    }
+  }
+}

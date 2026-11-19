@@ -1,0 +1,29 @@
+{
+  "$comment": "Single source of truth for growth-strategy roles. Agent files for Claude Code (.md) and Codex (.toml) are generated from this by core/scripts/install-agents.mjs. tier = reasoning | standard | fast (mapped to concrete models in config).",
+  "roles": [
+    {
+      "name": "product-seo-auditor",
+      "description": "Read-only audit of a website's product structure, page inventory, indexability, metadata, structured data, internal linking and analytics/consent instrumentation for growth gaps, with cited evidence. Never edits files or submits forms.",
+      "tier": "standard",
+      "capabilities": ["read", "search", "web", "shell-readonly"]
+    },
+    {
+      "name": "search-researcher",
+      "description": "Keyword discovery, search intent, SERP checks, clustering, competitor coverage, geography and landing-page opportunities, with source URLs and access dates. Never fabricates volume, difficulty or traffic: unknown unless a tool export or Search Console data supports it. Read-only.",
+      "tier": "standard",
+      "capabilities": ["read", "search", "web"]
+    },
+    {
+      "name": "distribution-researcher",
+      "description": "Researches communities, social platforms, tool directories, backlink and partnership opportunities, platform self-promotion rules and spam risks, with cited rule pages. Never posts, signs up or submits anything. Read-only.",
+      "tier": "standard",
+      "capabilities": ["read", "search", "web"]
+    },
+    {
+      "name": "growth-reviewer",
+      "description": "Independent fresh-context reviewer of a growth plan: challenges weak evidence and fabricated numbers, finds keyword cannibalization, thin-content and doorway risks, unrealistic expectations, poor effort-versus-impact and non-actionable items. Returns graded findings as JSON. Read-only.",
+      "tier": "reasoning",
+      "capabilities": ["read", "search", "web"]
+    }
+  ]
+}

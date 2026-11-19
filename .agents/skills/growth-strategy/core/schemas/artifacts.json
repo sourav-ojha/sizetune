@@ -1,0 +1,92 @@
+{
+  "$comment": "Markdown artifacts in .growth/ and their required sections (## headings). Templates in templates/ must contain them; gs phase done checks them. Which phase owns which file.",
+  "markdown": {
+    "seo-audit.md": [
+      "Summary",
+      "Page inventory",
+      "Indexability",
+      "Metadata and structured data",
+      "Internal linking",
+      "Analytics and consent",
+      "Gaps",
+      "Not verified"
+    ],
+    "competitors.md": [
+      "Summary",
+      "Competitors",
+      "SERP observations",
+      "Not verified"
+    ],
+    "distribution.md": [
+      "Summary",
+      "Channels",
+      "Directories",
+      "Backlinks and partnerships",
+      "Risks",
+      "Not verified"
+    ],
+    "content-strategy.md": [
+      "Summary",
+      "Topic clusters",
+      "Landing-page roadmap",
+      "Internal linking plan",
+      "Content quality rules"
+    ],
+    "measurement-plan.md": [
+      "Summary",
+      "Search Console",
+      "GA4 events",
+      "Referral sources",
+      "Landing-page performance",
+      "Tool usage funnel",
+      "Conversion and retention"
+    ],
+    "monetization.md": [
+      "Summary",
+      "Readiness",
+      "Content quality",
+      "User experience",
+      "Consent and policy readiness",
+      "Ad placement trade-offs"
+    ]
+  },
+  "phases": {
+    "audit": {
+      "markdown": [
+        "seo-audit.md"
+      ],
+      "needs": []
+    },
+    "research": {
+      "markdown": [
+        "competitors.md",
+        "distribution.md"
+      ],
+      "needs": [],
+      "records": [
+        "keywords"
+      ]
+    },
+    "plan": {
+      "markdown": [
+        "content-strategy.md",
+        "measurement-plan.md",
+        "monetization.md"
+      ],
+      "needs": [
+        "audit",
+        "research"
+      ],
+      "records": [
+        "items"
+      ]
+    }
+  },
+  "plan_hash_inputs": [
+    "items.json (content fields)",
+    "keywords.json (without performance)",
+    "content-strategy.md",
+    "measurement-plan.md",
+    "monetization.md"
+  ]
+}
