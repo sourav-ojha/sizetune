@@ -294,7 +294,7 @@
       "Given the sitemap, When built, Then they are listed and linked from related tools"
     ],
     "id": "GRO-010",
-    "status": "proposed"
+    "status": "handed-off"
   },
   {
     "type": "content",
@@ -378,7 +378,7 @@
       "Done when the owner has applied and recorded the outcome (approved, rejected with reason, or pending)"
     ],
     "id": "GRO-013",
-    "status": "proposed"
+    "status": "approved"
   },
   {
     "type": "distribution",
@@ -454,7 +454,7 @@
       "Done when Hindi (and any other) query phrasing and SERPs are checked and a go/no-go note is saved with sources"
     ],
     "id": "GRO-016",
-    "status": "proposed"
+    "status": "approved"
   },
   {
     "type": "landing-page",
@@ -483,7 +483,7 @@
     ],
     "needs_design": true,
     "id": "GRO-017",
-    "status": "proposed"
+    "status": "handed-off"
   },
   {
     "type": "landing-page",
@@ -507,7 +507,7 @@
       "No traction data yet"
     ],
     "id": "GRO-018",
-    "status": "proposed"
+    "status": "approved"
   },
   {
     "type": "landing-page",
