@@ -235,7 +235,7 @@
       "kind": "unknown",
       "source": null
     },
-    "serp_notes": "Autocomplete #8 and 'signature resize to 40kb'. imageonline.io only offers it as a button.",
+    "serp_notes": "Autocomplete #8. imageonline.io has a dedicated /compress-image-to-40kb/ page (reviewer check), so winnability is lower than first noted.",
     "competitors": [
       "imageonline.io"
     ],
@@ -445,7 +445,7 @@
       "kind": "unknown",
       "source": null
     },
-    "serp_notes": "Autocomplete 'signature resize to 10 kb' #6. SERP (reduce signature size to 10kb): signNow doc-type spam first, then 7xtools, imageonline.io, exammint signature compressor. Small tools only, no big platform. Intent 3, product 3, winnability 2-3.",
+    "serp_notes": "Autocomplete 'signature resize to 10 kb' #6. SERP (reduce signature size to 10kb): signNow doc-type spam first, then 7xtools, imageonline.io, exammint signature compressor. Small tools only, no big platform. Intent 3, product 3, winnability 2-3. Reviewer: signNow programmatic pages are prominent; US vantage only.",
     "competitors": [
       "imageonline.io",
       "7xtools.vercel.app",
@@ -477,7 +477,7 @@
       "kind": "unknown",
       "source": null
     },
-    "serp_notes": "Autocomplete #1 for 'signature resize to'. SERP (resize signature to 20kb): signNow, imageonline.io/resize-signature, edesy.in, passportphotosnap, how-to guide. No big platform. Intent 3, product 3, winnability 2-3.",
+    "serp_notes": "Autocomplete #1 for 'signature resize to'. SERP (resize signature to 20kb): signNow, imageonline.io/resize-signature, edesy.in, passportphotosnap, how-to guide. No big platform. Intent 3, product 3, winnability 2-3. Reviewer: signNow holds about 12 of 20 US results with programmatic 20kb pages; small tools fill the rest. India unobserved.",
     "competitors": [
       "imageonline.io",
       "passportphotosnap.com",
@@ -932,14 +932,14 @@
       "kind": "unknown",
       "source": null
     },
-    "serp_notes": "Autocomplete shows 10 variants (online, jpg, without changing pixels, pdf, free). SERP: imresizer, imageonline.io, wps, pythonware, increase-image-size.pages.dev, blogspot. Mid-size tools plus clones; no big platform. Pads file to meet a minimum-KB rule. Intent 3, product 3 (new feature), winnability 2.",
+    "serp_notes": "Autocomplete shows 10 variants (online, jpg, without changing pixels, pdf, free). SERP: imresizer, imageonline.io, wps, pythonware, increase-image-size.pages.dev, blogspot. Mid-size tools plus clones; no big platform. Pads file to meet a minimum-KB rule. Intent 3, product 3 (new feature), winnability 2. Lowered to P2: engine does not pad files, so product does not yet solve it (needs owner decision).",
     "competitors": [
       "imresizer.com",
       "imageonline.io",
       "wps.com"
     ],
     "target_page": "new: /increase-image-size-in-kb",
-    "priority": "P1",
+    "priority": "P2",
     "evidence": "inference",
     "confidence": "medium",
     "sources": [

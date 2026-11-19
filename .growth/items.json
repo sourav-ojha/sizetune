@@ -200,7 +200,7 @@
   {
     "type": "landing-page",
     "title": "Ship four per-form pages (SSC, IBPS, GDS, PAN) using verified specs",
-    "rationale": "Exam-specific queries are served by one-page-per-exam sites that disagree on specs, and SizeTune has no such pages. India vantage not observed. Start with four pages, each with a verified spec table, preset and steps; check indexing before adding more.",
+    "rationale": "Exam-specific queries are served by one-page-per-exam sites that disagree on specs; SizeTune has none. India SERPs are unobserved, so build only after GRO-004 records them and GRO-007 verifies specs. Start with four pages, each with a spec table, preset and steps; check indexing before adding more.",
     "keywords": [
       "signature size for ssc",
       "signature size for gds post office",
@@ -225,6 +225,7 @@
       "Doorway risk; depends on the spec verification item; India SERP unobserved; ship few then check Search Console"
     ],
     "acceptance": [
+      "Given GRO-004 has recorded India-served results for the four exam queries, When a query is dominated by national exam publishers, Then that page is dropped or deferred",
       "Given the human spec verification is recorded, When each page is built, Then it shows the official spec with source and date and a preset that matches it",
       "Given the four pages, When read, Then each has unique instructions, not only a changed number",
       "Given the hub or tools page, When built, Then it links all four exam pages"
@@ -236,7 +237,7 @@
   {
     "type": "landing-page",
     "title": "Add an \"increase image size in KB\" tool and page",
-    "rationale": "Forms with a minimum size reject small files; autocomplete shows ten phrasings and the SERP has mid-size tools, no big platform. Product notes say the engine avoids metadata padding to hit minimums, so approach (higher quality, upscaling) needs a product decision.",
+    "rationale": "Forms with a minimum size reject small files; autocomplete shows ten phrasings and the SERP has mid-size tools, no big platform. Keyword is P2: the engine avoids metadata padding, so the method (higher quality, upscaling) needs an owner decision first.",
     "keywords": [
       "increase image size in kb",
       "increase image size in kb without changing pixels"
@@ -297,11 +298,10 @@
   },
   {
     "type": "content",
-    "title": "Write guides: reduce image size in KB without losing quality, and form-spec how-to",
-    "rationale": "The how-to SERP is blogs and one forum thread, no big tool platform; guides add ad-quality content and link to tools. Current guides total about 4,400 words.",
+    "title": "Write the guide: reduce image size in KB without losing quality; extend the forms guide",
+    "rationale": "The how-to SERP is blogs and one forum thread, no big tool platform. Add one new guide and extend the existing photo-size-for-online-forms guide instead of a second form-spec guide, to avoid overlap with the exam hub. Current guides total about 4,400 words.",
     "keywords": [
-      "how to reduce image size in kb without losing quality",
-      "reduce image size in kb"
+      "how to reduce image size in kb without losing quality"
     ],
     "sources": [
       "S-011",
@@ -318,7 +318,8 @@
     ],
     "acceptance": [
       "Given the new guide, When published, Then it has original steps, before/after examples and links to at least three tool pages",
-      "Given the guides hub, When built, Then the guide is listed"
+      "Given the existing photo-size-for-online-forms guide, When extended, Then no second guide targets the same intent",
+      "Given the guides hub, When built, Then the new guide is listed"
     ],
     "id": "GRO-011",
     "status": "proposed"
@@ -455,8 +456,8 @@
   },
   {
     "type": "landing-page",
-    "title": "Decide whether to build JPG-to-PDF under X KB",
-    "rationale": "Autocomplete shows jpg to pdf under 100/200/500 KB and mid-size vendor tools rank; SizeTune has no PDF tool. A new client-side tool is a product decision after the core pages show traction.",
+    "title": "Build JPG-to-PDF under X KB tool (only if GRO-018 decides yes)",
+    "rationale": "Autocomplete shows jpg to pdf under 100/200/500 KB and mid-size vendor tools rank; SizeTune has no PDF tool. Build only if the owner decides yes in GRO-018.",
     "keywords": [
       "jpg to pdf under 100kb",
       "jpg to pdf under 200kb"
@@ -480,6 +481,30 @@
     ],
     "needs_design": true,
     "id": "GRO-017",
+    "status": "proposed"
+  },
+  {
+    "type": "landing-page",
+    "title": "Decide whether to build JPG-to-PDF under X KB",
+    "rationale": "A new client-side PDF tool is a product decision. Decide after the first new pages show indexing and impressions in Search Console; compare effort with other items.",
+    "keywords": [],
+    "sources": [
+      "S-008",
+      "S-022"
+    ],
+    "evidence": "inference",
+    "confidence": "medium",
+    "impact": "M",
+    "effort": "S",
+    "window": "weeks 9-13",
+    "owner": "human",
+    "acceptance": [
+      "Done when the owner records go or no-go for the JPG-to-PDF tool with the Search Console evidence used"
+    ],
+    "risks": [
+      "No traction data yet"
+    ],
+    "id": "GRO-018",
     "status": "proposed"
   }
 ]
