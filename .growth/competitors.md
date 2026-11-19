@@ -30,4 +30,11 @@ All served from the US via a search tool; India was not observed. Autocomplete c
 - Reddit/Quora thread presence for these queries.
 
 ## Ranked results per query (served from US)
+- S-001 "resize image to 20kb online": Zamzar, Cloudinary, imresizer, originality.ai, clone pages. S-003 "photo size 50kb": imresizer variants, imageonline.io, clones. S-016 "resize image to 100kb": Zamzar, Cloudinary, ShortPixel guide, Wondershare, imresizer.
+- S-002 "reduce signature size to 10kb": signNow pages, 7xtools, imageonline.io, exammint. S-007 "resize signature to 20kb": signNow (about 12 of 20 results), imageonline.io, edesy.in, passportphotosnap.
+- S-004 SSC, S-014 GDS, S-015 IBPS, S-018 PAN: docset.in, onlineresult.in, examdetail.in, dockera, mergeimages, iformat, careerpower, pw.live. S-009 UPSC: vajiram, visionias, examdetail, iformat.
+- S-005 "compress jpg to 200kb": Smallpdf, signNow, Zamzar, 11zon, iformat. S-017 "increase image size": imresizer, imageonline.io, wps, pythonware. S-008 JPG to PDF: usesignhouse, duplichecker, 11zon, swifdoo, Wondershare. S-006 PDF: Adobe, Smallpdf, HiPDF, Wondershare, signNow.
+- S-010 passport sizes: imresizer and guides. S-011 how-to: imagify, huckabuy, Microsoft forum thread, helpdeskgeek, dev.to. S-012 no-upload: dev.to posts, Squoosh, scanapp. S-013 kb to mb: gigacalculator, omnicalculator, inchcalculator.
+[E: inference; medium; S-001; 2026-11-19]
+Older summary:
 SERP sources S-001 to S-018 are search-tool runs without stored result pages; ranked domains per query are summarised here and in each keyword record's serp_notes. Fixed-KB (S-001, S-003, S-016): Zamzar, Cloudinary, imresizer, imageonline.io, clone pages on pages.dev/vercel. Signature (S-002, S-007): signNow, imageonline.io, 7xtools, exammint, edesy. Exams (S-004, S-014, S-015, S-018): docset.in, onlineresult.in, examdetail.in, dockera, mergeimages, iformat, careerpower. Increase size (S-017): imresizer, imageonline.io, wps. JPG to PDF (S-008): 11zon, duplichecker, pdfsimpli, Wondershare. PDF (S-006): Adobe, Smallpdf, HiPDF. [E: inference; medium; S-001; 2026-11-19]

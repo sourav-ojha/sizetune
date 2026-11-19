@@ -236,8 +236,8 @@
   },
   {
     "type": "landing-page",
-    "title": "Add an \"increase image size in KB\" tool and page",
-    "rationale": "Forms with a minimum size reject small files; autocomplete shows ten phrasings and the SERP has mid-size tools, no big platform. Keyword is P2: the engine avoids metadata padding, so the method (higher quality, upscaling) needs an owner decision first.",
+    "title": "Add an \"increase image size in KB\" tool and page (only if GRO-019 decides a method)",
+    "rationale": "Forms with a minimum size reject small files; autocomplete shows ten phrasings and the SERP has mid-size tools, no big platform. Keyword is P2: the engine avoids metadata padding, so build only after the owner records a method in GRO-019.",
     "keywords": [
       "increase image size in kb",
       "increase image size in kb without changing pixels"
@@ -249,7 +249,7 @@
     ],
     "evidence": "inference",
     "confidence": "medium",
-    "impact": "H",
+    "impact": "M",
     "effort": "M",
     "window": "weeks 5-8",
     "owner": "implementer",
@@ -342,9 +342,11 @@
     "owner": "implementer",
     "risks": [
       "Ads can hurt page speed and layout shift; start conservative",
-      "Requires a Google-certified CMP choice by the owner"
+      "Requires a Google-certified CMP choice by the owner",
+      "Public promise \"tools meant to stay free of ads\" on the privacy page conflicts with tool-page ads until the owner changes it"
     ],
     "acceptance": [
+      "Given the privacy page says tools are meant to stay free of ads, When ads are planned on tool pages, Then the owner has approved changing that sentence and the page is updated before any tool-page slot ships (otherwise ads stay on guides only)",
       "Given the site, When visited, Then a contact page exists and is linked in the footer",
       "Given the privacy and terms pages, When updated, Then they describe ads, cookies and consent accurately",
       "Given a visitor in a consent region, When the consent tool is installed, Then ads and analytics wait for consent",
@@ -505,6 +507,31 @@
       "No traction data yet"
     ],
     "id": "GRO-018",
+    "status": "proposed"
+  },
+  {
+    "type": "landing-page",
+    "title": "Decide how an \"increase image size in KB\" tool should reach a minimum size",
+    "rationale": "The engine avoids metadata padding to hit minimums. Options: re-encode at higher quality, upscale dimensions, or do not build. Check that forms accept the result. Owner records the method before GRO-009 is built.",
+    "keywords": [],
+    "sources": [
+      "S-017",
+      "S-023",
+      "S-045"
+    ],
+    "evidence": "inference",
+    "confidence": "medium",
+    "impact": "M",
+    "effort": "S",
+    "window": "weeks 5-8",
+    "owner": "human",
+    "acceptance": [
+      "Done when the owner records the chosen method (or no-go), why it is honest, and any form acceptance check done"
+    ],
+    "risks": [
+      "Padding to fake size may violate product principles"
+    ],
+    "id": "GRO-019",
     "status": "proposed"
   }
 ]

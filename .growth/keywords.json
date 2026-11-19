@@ -31,7 +31,12 @@
       "S-019",
       "S-030"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "resize image to 50kb",
@@ -63,7 +68,12 @@
       "S-019",
       "S-029"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "resize image to 100kb",
@@ -95,7 +105,12 @@
       "S-016",
       "S-019"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "reduce image size to 20kb jpg",
@@ -125,7 +140,12 @@
       "S-019",
       "S-021"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "resize image to 20kb to 50kb",
@@ -155,7 +175,12 @@
       "S-010",
       "S-019"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "resize image to 30kb",
@@ -186,7 +211,12 @@
       "S-019",
       "S-029"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "resize image to 15kb",
@@ -217,7 +247,12 @@
       "S-019",
       "S-030"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "resize image to 40kb",
@@ -248,7 +283,12 @@
       "S-027",
       "S-029"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "compress image to 25kb",
@@ -278,7 +318,12 @@
     "sources": [
       "S-010"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "compress jpg to 200kb",
@@ -312,7 +357,12 @@
       "S-019",
       "S-031"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "resize image to 500kb",
@@ -341,7 +391,12 @@
     "sources": [
       "S-030"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "compress image to 1mb",
@@ -370,7 +425,12 @@
     "sources": [
       "S-029"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "how to compress image to 30 kb",
@@ -397,7 +457,12 @@
     "sources": [
       "S-021"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "compress image to required kb",
@@ -427,7 +492,12 @@
       "S-021",
       "S-030"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "resize signature to 10kb",
@@ -445,7 +515,7 @@
       "kind": "unknown",
       "source": null
     },
-    "serp_notes": "Autocomplete 'signature resize to 10 kb' #6. SERP (reduce signature size to 10kb): signNow doc-type spam first, then 7xtools, imageonline.io, exammint signature compressor. Small tools only, no big platform. Intent 3, product 3, winnability 2-3. Reviewer: signNow programmatic pages are prominent; US vantage only.",
+    "serp_notes": "Autocomplete 'signature resize to 10 kb' #6. US SERP: signNow programmatic pages first, then 7xtools, imageonline.io, exammint. One large brand plus small tools; US vantage only. Intent 3, product 3, winnability 2.",
     "competitors": [
       "imageonline.io",
       "7xtools.vercel.app",
@@ -459,7 +529,12 @@
       "S-002",
       "S-027"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "signature resize to 20 kb",
@@ -477,7 +552,7 @@
       "kind": "unknown",
       "source": null
     },
-    "serp_notes": "Autocomplete #1 for 'signature resize to'. SERP (resize signature to 20kb): signNow, imageonline.io/resize-signature, edesy.in, passportphotosnap, how-to guide. No big platform. Intent 3, product 3, winnability 2-3. Reviewer: signNow holds about 12 of 20 US results with programmatic 20kb pages; small tools fill the rest. India unobserved.",
+    "serp_notes": "Autocomplete #1 for 'signature resize to'. US SERP: signNow holds about 12 of 20 results with programmatic 20kb pages; imageonline.io, edesy.in, passportphotosnap fill the rest. India unobserved. Intent 3, product 3, winnability 2.",
     "competitors": [
       "imageonline.io",
       "passportphotosnap.com",
@@ -491,7 +566,12 @@
       "S-007",
       "S-027"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "signature resize tool",
@@ -522,7 +602,12 @@
       "S-007",
       "S-027"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "signature resize to 30 kb",
@@ -549,7 +634,12 @@
     "sources": [
       "S-027"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "signature resize to 50kb",
@@ -576,7 +666,12 @@
     "sources": [
       "S-027"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "signature resize to 15 kb",
@@ -603,7 +698,12 @@
     "sources": [
       "S-027"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "signature size for ssc",
@@ -636,7 +736,12 @@
       "S-004",
       "S-020"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "signature size for gds post office",
@@ -669,7 +774,12 @@
       "S-020",
       "S-028"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "signature size for ibps clerk",
@@ -704,7 +814,12 @@
       "S-020",
       "S-028"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "photo size for pan card",
@@ -739,7 +854,12 @@
       "S-024",
       "S-028"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "upsc photo and signature size",
@@ -771,7 +891,12 @@
     "sources": [
       "S-009"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "signature size for rrb",
@@ -798,7 +923,12 @@
     "sources": [
       "S-020"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "signature size for driving licence",
@@ -825,7 +955,12 @@
     "sources": [
       "S-020"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "photo size for voter id",
@@ -852,7 +987,12 @@
     "sources": [
       "S-028"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "photo and signature resizer for government exam form",
@@ -884,7 +1024,12 @@
       "S-004",
       "S-015"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "photo size for ssc cgl 20kb to 50kb",
@@ -914,7 +1059,12 @@
     "sources": [
       "S-004"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "increase image size in kb",
@@ -947,7 +1097,12 @@
       "S-023",
       "S-030"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "increase image size in kb without changing pixels",
@@ -977,7 +1132,12 @@
       "S-017",
       "S-023"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "increase image size in kb and dimensions in cm",
@@ -1004,7 +1164,12 @@
     "sources": [
       "S-023"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "increase pdf size in kb",
@@ -1031,7 +1196,12 @@
     "sources": [
       "S-023"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "jpg to pdf under 100kb",
@@ -1064,7 +1234,12 @@
       "S-008",
       "S-022"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "jpg to pdf under 200kb",
@@ -1094,7 +1269,12 @@
       "S-008",
       "S-022"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "jpg to pdf under 500kb",
@@ -1121,7 +1301,12 @@
     "sources": [
       "S-022"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "compress pdf to 100kb",
@@ -1153,7 +1338,12 @@
       "S-006",
       "S-026"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "compress pdf to 200kb",
@@ -1183,7 +1373,12 @@
     "sources": [
       "S-026"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "kb to mb converter",
@@ -1215,7 +1410,12 @@
       "S-013",
       "S-025"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "kb to mb converter image",
@@ -1242,7 +1442,12 @@
     "sources": [
       "S-025"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "reduce image size in kb",
@@ -1275,7 +1480,12 @@
       "S-021",
       "S-032"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "how to reduce image size in kb without losing quality",
@@ -1305,7 +1515,12 @@
     "sources": [
       "S-011"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "reduce image size without uploading",
@@ -1335,7 +1550,12 @@
     "sources": [
       "S-012"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "photo size for instagram post",
@@ -1363,7 +1583,12 @@
       "S-024",
       "S-028"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "whatsapp dp size resize photo",
@@ -1390,7 +1615,12 @@
     "sources": [
       "S-028"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "photo size for passport",
@@ -1420,7 +1650,12 @@
       "S-010",
       "S-024"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   },
   {
     "keyword": "png to jpg under 100kb",
@@ -1447,6 +1682,11 @@
     "sources": [
       "S-011"
     ],
-    "researched": "2026-11-19"
+    "researched": "2026-11-19",
+    "cpc": {
+      "value": null,
+      "kind": "unknown",
+      "source": null
+    }
   }
 ]

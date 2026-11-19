@@ -25,4 +25,6 @@ Owner rule: ads on tool pages are allowed but never adjacent to the tool UI. Kee
 Privacy copy promises a policy update and a consent tool before ads; both need doing first (GRO-001, GRO-012). Privacy copy promises the consent tool first. [E: fact; high; S-038; 2026-11-19] A Google-certified consent management platform for EEA, UK and Swiss users is the usual route; Google's requirement page was not fetched, so check it before choosing one. [E: assumption; medium; n/a; 2026-11-19] Add `ads.txt` only after an ad account exists. Never click own ads or ask others to.
 
 ## Ad placement trade-offs
+The live privacy page says the tools "are meant to stay free of ads". Tool-page ads need the owner to approve changing that sentence first, or ads stay on guides only (GRO-012). [E: fact; high; S-038; 2026-11-19]
+
 Conservative start: guides and below-the-fold slots on tool pages, away from the tool. More slots earn more per view but cost task completion and speed; measure success rate (GRO-001) before and after. No revenue figure is predicted. [E: hypothesis; low; n/a; 2026-11-19]

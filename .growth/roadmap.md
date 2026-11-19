@@ -1,6 +1,6 @@
 # 90-day growth roadmap: SizeTune
 
-Generated 2026-11-19 by the growth-strategy helper from approved items only. Review: independent (second growth plan reviewer subagent, R-002, PASS WITH CHANGES; current).
+Generated 2026-11-19 by the growth-strategy helper from approved items only. Review: independent (third growth plan reviewer subagent, R-003, PASS WITH CHANGES; current).
 Impact is a qualitative judgment, not a traffic forecast. Owner `human` items are tasks for a person (posting, submissions, outreach); nothing here is done automatically.
 
 ## Weeks 1-4
@@ -110,7 +110,7 @@ Risks:
 | ID | Type | Item | Owner | Effort | Impact | Evidence | Status | Sources |
 |---|---|---|---|---|---|---|---|---|
 | GRO-008 | landing-page | Ship four per-form pages (SSC, IBPS, GDS, PAN) using verified specs | implementer | M | H | inference, medium | proposed | [S-004](https://www.google.com/search?q=SSC+photo+signature+size+requirement+kb+resize+tool), [S-014](https://www.google.com/search?q=signature+size+for+gds+post+office+photo+signature+kb), [S-015](https://www.google.com/search?q=IBPS+clerk+photo+signature+size+kb+resize), [S-018](https://www.google.com/search?q=PAN+card+photo+signature+size+kb+resize+online+NSDL), [S-020](https://suggestqueries.google.com/complete/search?client=firefox&q=signature%20size%20for%20) |
-| GRO-009 | landing-page | Add an "increase image size in KB" tool and page | implementer | M | H | inference, medium | proposed | [S-017](https://www.google.com/search?q=increase+image+size+in+kb+online), [S-023](https://suggestqueries.google.com/complete/search?client=firefox&q=increase%20image%20size%20in%20kb), S-045 |
+| GRO-009 | landing-page | Add an "increase image size in KB" tool and page (only if GRO-019 decides a method) | implementer | M | M | inference, medium | proposed | [S-017](https://www.google.com/search?q=increase+image+size+in+kb+online), [S-023](https://suggestqueries.google.com/complete/search?client=firefox&q=increase%20image%20size%20in%20kb), S-045 |
 | GRO-010 | landing-page | Add KB preset pages 30 KB and 15 KB, then 200 KB if indexed | implementer | S | M | inference, medium | proposed | [S-019](https://suggestqueries.google.com/complete/search?client=firefox&q=resize%20image%20to%20), [S-029](https://imageonline.io/compress-image-to-50kb/), [S-030](https://imresizer.com/resize-image-to-50kb), [S-005](https://www.google.com/search?q=compress+jpg+to+200kb+online) |
 | GRO-011 | content | Write the guide: reduce image size in KB without losing quality; extend the forms guide | implementer | M | M | inference, medium | proposed | [S-011](https://www.google.com/search?q=how+to+reduce+image+size+in+kb+without+losing+quality), S-040 |
 | GRO-012 | monetization | Prepare AdSense readiness: contact page, consent tool, policy copy, ad slots away from the tool | implementer | M | H | fact, high | proposed | [S-039](https://sizetune.com/ads.txt), [S-038](https://sizetune.com/privacy/), S-045 |
@@ -120,3 +120,4 @@ Risks:
 | GRO-016 | content | Check demand and quality bar for Hindi and other-language pages before building | human | S | M | hypothesis, low | proposed | [S-020](https://suggestqueries.google.com/complete/search?client=firefox&q=signature%20size%20for%20), S-045 |
 | GRO-017 | landing-page | Build JPG-to-PDF under X KB tool (only if GRO-018 decides yes) | implementer | L | M | inference, medium | proposed | [S-008](https://www.google.com/search?q=convert+jpg+to+pdf+under+100kb), [S-022](https://suggestqueries.google.com/complete/search?client=firefox&q=jpg%20to%20pdf%20under%20) |
 | GRO-018 | landing-page | Decide whether to build JPG-to-PDF under X KB | human | S | M | inference, medium | proposed | [S-008](https://www.google.com/search?q=convert+jpg+to+pdf+under+100kb), [S-022](https://suggestqueries.google.com/complete/search?client=firefox&q=jpg%20to%20pdf%20under%20) |
+| GRO-019 | landing-page | Decide how an "increase image size in KB" tool should reach a minimum size | human | S | M | inference, medium | proposed | [S-017](https://www.google.com/search?q=increase+image+size+in+kb+online), [S-023](https://suggestqueries.google.com/complete/search?client=firefox&q=increase%20image%20size%20in%20kb), S-045 |
