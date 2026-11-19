@@ -27,7 +27,7 @@ export default function SocialTool({ platform }: Props) {
   const [hasFile, setHasFile] = useState(false);
   const [presetId, setPresetId] = useState(presets[0].id);
   const preset = presets.find((p) => p.id === presetId) ?? presets[0];
-  const [fit, setFit] = useState<Fit>('crop');
+  const [fit, setFit] = useState<Fit>(presets[0].fit ?? 'crop');
   const [focus, setFocus] = useState<Focus>('center');
   const [pad, setPad] = useState<'white' | 'black' | 'custom'>('white');
   const [hex, setHex] = useState('#ffffff');
@@ -47,6 +47,9 @@ export default function SocialTool({ platform }: Props) {
     setPresetId(id);
     const next = presets.find((p) => p.id === id);
     setMaxKb(next?.maxKb ? String(next.maxKb) : '');
+    // A size that is about keeping the whole picture starts in colour-bars mode; leaving it returns to crop. Otherwise the person's choice stays.
+    if (next?.fit) setFit(next.fit);
+    else if (preset.fit) setFit('crop');
   };
 
   const pick = async (file: File, extra = 0) => {
