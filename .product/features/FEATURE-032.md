@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-032
 opportunity: OPP-047
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-18
 ---
@@ -107,3 +108,7 @@ Processed locally in the browser; no file content leaves the device; no retentio
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** Each AC via unit tests, Playwright e2e and the network log; NFR via `pnpm run verify:html` and `verify:privacy`.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-19 | feat/feature-032-more-social-sizes | AC-1 for the YouTube banner (Channel banner, 2560 x 1440, 6,000 KB default cap, safe-area note, source: YouTube Help channel branding page) on the YouTube resizer; AC-2 Instagram no-crop (Feed photo, whole picture, 1,080 x 1,080, opens in colour-bars mode, leaving it returns to crop); AC-3 no request carries the image; AC-4 budgets unchanged; edge case upscaling flag works for the banner | none in the approved scope | a WhatsApp DP preset, withheld: no official WhatsApp page states a size (the help centre page could not be read and third-party sites disagree at 500, 640 and 192 px); owner decision 2026-11-19, user: 'Ship those two', so it is out of scope until WhatsApp publishes a size or the owner approves an unofficial one; owner review of page copy | rulings: presets stay limited to sizes a platform's own help page states (tests assert there is no WhatsApp preset); the banner source (support.google.com/youtube/answer/10456525) was read on 2026-11-19 and its numbers are checkedOn that date; the spec's FR-2 (list on the hub) is met by the existing resizer pages and the sources guide, no new page was made; a new optional `fit` on a preset sets colour bars only for the no-crop size and does not override the person's choice on other sizes. verified: check 0 errors, build 0, verify:html(:strict) OK, verify:privacy OK, 1122 unit pass, e2e social 25/25 on chrome and firefox and 24/25 on webkit locally: the one webkit failure is an existing 300 KB tight-limit test on the 3840 x 2160 thumbnail that fails the same way on a clean dev checkout on this machine (slow local WebKit), and CI's WebKit runs have passed it; axe on the social pages and sources guide passes on all three; no independent reviewer was used, self-review only |
