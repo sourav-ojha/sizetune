@@ -10,4 +10,5 @@ export const SOURCES: Record<SourceId, { title: string; url: string }> = {
   'li-profile': { title: 'LinkedIn Help: add or change the cover image on your profile', url: 'https://www.linkedin.com/help/linkedin/answer/a568217/add-or-change-the-background-photo-on-your-profile' },
   'li-pages': { title: 'LinkedIn Help: image specifications for your LinkedIn Pages and Career Pages', url: 'https://www.linkedin.com/help/linkedin/answer/a563309/image-specifications-for-your-linkedin-pages-and-career-pages' },
   'yt-thumbnails': { title: 'YouTube Help: add custom thumbnails on YouTube', url: 'https://support.google.com/youtube/answer/72431' },
+  'yt-branding': { title: 'YouTube Help: manage your channel branding (banner image guidelines)', url: 'https://support.google.com/youtube/answer/10456525' },
 };
