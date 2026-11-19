@@ -1,0 +1,8 @@
+{
+  "id": "S-001",
+  "type": "tool-export",
+  "title": "Keyword Planner export (US, provided by the owner)",
+  "accessed": "2026-11-18",
+  "note": "ranges, not exact volumes",
+  "ref": "file:.growth/imports/keyword-planner-2026-11.csv"
+}

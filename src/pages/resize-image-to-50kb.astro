@@ -1,0 +1,128 @@
+---
+import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import ImageTool from '../components/ImageTool.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Resize or Compress Image to 50 KB Online | SizeTune';
+const description =
+  'Compress a photo or scan to 50 KB or less in your browser, without uploading it. Learn when 50 KB is enough, how to avoid a blurry result and what to check.';
+const jsonLd = webApplicationLd('SizeTune: resize or compress image to 50 KB', '/resize-image-to-50kb/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/resize-image-to-50kb/" jsonLd={jsonLd}>
+  <Hero title="Resize or compress an image to 50 KB" lead="The tool below starts with a 50 KB maximum already selected. Add a photo or a scan, check the preview and download the result. Change the numbers if your form asks for something different." />
+
+  <ImageTool client:load defaultMaxKb={50} />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This tool compresses your picture inside your browser, so it needs JavaScript. Turn it on and reload to get a
+      file under 50 KB. The advice below on what fits in 50 KB is useful with any other editor as well.
+    </p>
+  </noscript>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>Where 50 KB sits between the common limits</h2>
+    <p>
+      Forms tend to pick one of a few round numbers. Ten and twenty kilobytes force a very small picture, and a hundred
+      leaves comfortable room. Fifty is the middle case, and it is where the choice between a photo and a document
+      matters most. A cropped head-and-shoulders portrait usually survives 50 KB with a clear face. A full page scan with
+      small print often does not, unless you accept fewer pixels and a plainer picture.
+    </p>
+    <p>
+      If you are not sure which limit your form really means, compare it with the pages for{' '}
+      <a href="/resize-image-to-20kb/">20 KB</a> and <a href="/resize-image-to-100kb/">100 KB</a>. They show what
+      you gain or give up on either side of this one.
+    </p>
+
+    <h2>Decide first: portrait, document or signature</h2>
+    <p>
+      The same 50 KB budget is spent differently depending on what is in the picture, so decide which of these you
+      have before you press anything.
+    </p>
+    <ul>
+      <li>
+        <strong>A portrait or ID-style photo.</strong> Smooth skin and a plain backdrop compress well. Crop tight and
+        let the tool shrink the pixel size; faces stay readable at modest dimensions.
+      </li>
+      <li>
+        <strong>A document, certificate or marksheet.</strong> Thin black text on white is harsh on JPEG, which leaves
+        grey fuzz around letters. Keep more pixels, accept a lower quality number and read the preview at full size
+        before you download.
+      </li>
+      <li>
+        <strong>A signature.</strong> Use the <a href="/resize-signature/">signature tool</a>. It crops to the ink and
+        puts it on white, which saves far more than quality changes do.
+      </li>
+    </ul>
+
+    <h2>Two ways to reach 50 KB, and when to use each</h2>
+    <p>
+      A file shrinks when it holds fewer pixels or when each pixel is stored with less detail. The tool can lean on
+      either. Quality-first keeps your pixel size and lowers the compression quality until the file fits, which suits a
+      form that fixes the width and height. Dimensions-first keeps quality reasonable and reduces the pixels, which
+      suits a form that names only a size in KB. For a photo that started life at several megabytes, dimensions-first
+      often looks cleaner at 50 KB, because pushing quality to the floor is what produces blocky patches.
+    </p>
+
+    <h2>What to look for in the preview</h2>
+    <ol>
+      <li>Zoom to full size on the eyes and the edge of the hair. Blocks and smearing show there first.</li>
+      <li>Check any printed text, such as a name on a badge or the small lines of a certificate.</li>
+      <li>Look at flat areas such as a wall or sky for banding, which appears when quality is pushed too low.</li>
+      <li>Read the reported size and pixel dimensions, and confirm they match what your form states.</li>
+    </ol>
+
+    <h2>Forms that give a range such as 20 KB to 50 KB</h2>
+    <p>
+      Some portals reject files that are too small as well as too large. Enter both numbers in the tool. If the picture
+      lands under your minimum, the tool raises the quality to store more detail. A very plain image can still end up
+      small, and the tool tells you so instead of padding the file with filler bytes that a portal might strip.
+    </p>
+
+    <h2>If the portal still says the file is too large</h2>
+    <ul>
+      <li>
+        <strong>Counting differs.</strong> Some sites count 1 KB as 1,000 bytes and others as 1,024. SizeTune aims
+        under the 1,000-byte count, so the file passes either way.
+      </li>
+      <li>
+        <strong>The file was changed after saving.</strong> Sending it through a chat app or an email client can
+        re-encode it. Upload the file from the folder where you saved it.
+      </li>
+      <li>
+        <strong>Other limits apply.</strong> The portal may also cap pixel width and height or accept only certain
+        formats. Use the <a href="/check-image-size/">image checker</a> to test a file against all of those rules before
+        you submit.
+      </li>
+    </ul>
+
+    <h2>Frequently asked questions about 50 KB images</h2>
+    <h3>Is 50 KB enough for a clear photo?</h3>
+    <p>
+      For a cropped portrait, usually yes. For a full-frame picture with lots of detail, you will see a loss. Crop
+      first and compare the preview with your original.
+    </p>
+    <h3>What is the difference between compressing and resizing?</h3>
+    <p>
+      Compressing lowers the file size by storing less detail. Resizing changes the pixel dimensions. This page does
+      both as needed to land under your limit, and you choose which one the tool favours.
+    </p>
+    <h3>Will it work for PNG or WebP files?</h3>
+    <p>
+      Yes. You can pick the output format in the tool, though WebP output depends on your browser supporting it. JPEG is usually the smallest for photographs, and many forms
+      require it. If your picture is a WebP or PNG, you can also use the{' '}
+      <a href="/webp-to-jpg/">WebP to JPG</a> or <a href="/png-to-jpg/">PNG to JPG</a> pages.
+    </p>
+    <h3>Can I do several pictures at once?</h3>
+    <p>
+      Yes. Add more than one file and download the results together as a single ZIP. Each picture is still checked
+      against your limit on its own.
+    </p>
+    <h3>Does my picture leave my device?</h3>
+    <p>
+      No. The work happens in your browser. Read the <a href="/privacy/">privacy page</a> for what is and is not
+      collected.
+    </p>
+  </div>
+  <RelatedTools path="/resize-image-to-50kb/" />
+</Base>

@@ -23,6 +23,8 @@ export interface SignatureToolProps {
   /** Optional preset output size. Nothing is prefilled unless the page asks for it. */
   defaultWidthPx?: number;
   defaultHeightPx?: number;
+  /** A picture to load as if the visitor had chosen it (used by the signature maker on the same page). */
+  initialFile?: File | null;
 }
 
 const ADVANCED_FIELDS = ['minKb'] as const;
@@ -32,7 +34,7 @@ const SIGNATURE_HINTS = {
   below_min: 'A small, simple signature holds very little data, and SizeTune will not pad a file with filler to reach a minimum. Crop less tightly, scan at a larger size, choose a larger output width and height, or lower the minimum.',
 } as const;
 
-export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defaultHeightPx }: SignatureToolProps) {
+export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defaultHeightPx, initialFile = null }: SignatureToolProps) {
   const { session, state } = useToolSession();
   const [form, setForm] = useForm({
     maxKb: String(defaultMaxKb),
@@ -51,6 +53,7 @@ export default function SignatureTool({ defaultMaxKb = 20, defaultWidthPx, defau
   const webp = useWebpSupport();
   const anchor = useScrollAnchor();
   const { inputRef, onPick } = useIntake(session);
+  useEffect(() => { if (initialFile) void session.selectFile(initialFile); }, [initialFile, session]);
   const cropImg = useRef<HTMLImageElement>(null);
   const runRef = useRef<HTMLButtonElement>(null);
   const cap = getLimits().maxFileBytes;

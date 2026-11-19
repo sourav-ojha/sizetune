@@ -1,0 +1,69 @@
+---
+import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import JoinTool from '../components/JoinTool.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Join Images Side by Side or in a Grid Online | SizeTune';
+const description =
+  'Join several pictures into one, side by side, one under another or in a grid, with spacing and a background colour, then shrink it to a KB limit.';
+const jsonLd = webApplicationLd('SizeTune: join images', '/join-images/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/join-images/" jsonLd={jsonLd}>
+  <Hero title="Join images into one" lead="Put several pictures together side by side, one under another, or in a grid. Set the spacing and background, choose a size limit, and download one image. Nothing is uploaded." />
+
+  <JoinTool client:load />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This tool works inside your browser, so it will not run while JavaScript is turned off. Enable JavaScript and
+      reload to join your pictures. The notes below explain the three layouts.
+    </p>
+  </noscript>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>Three ways to join pictures</h2>
+    <ul>
+      <li><strong>Side by side.</strong> All the pictures sit on one row at the same height, in the order you list them, and together they fill the output width. Wide pictures take more room than narrow ones, and none is stretched.</li>
+      <li><strong>One under another.</strong> The pictures are scaled to the same width and stacked from top to bottom. This makes a tall image, which suits a long strip of screenshots or scans.</li>
+      <li><strong>Grid.</strong> Each picture sits in an equal square cell, in rows of two, three or four. A picture is fitted inside its cell at its own shape, and any spare space shows the background colour.</li>
+    </ul>
+
+    <h2>Order, spacing and background</h2>
+    <p>
+      Pictures are joined in the order of the list. Use Earlier and Later to move one, or Remove to take one out. The
+      space between pictures is a share of the output width, so it looks the same at any size, and the background colour
+      fills the gaps and any empty cells. White suits documents, black suits photos, and light grey sits in between.
+    </p>
+
+    <h2>Output width and size limit</h2>
+    <p>
+      The output width sets how many pixels wide the joined picture is, and a wider picture means more detail and a
+      larger file. The size limit goes to the resizer on this page, which lowers the JPEG quality and then the pixel size
+      until the file fits. If the limit is too small, the resizer says what it reached.
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      Up to 12 pictures can be joined at once, and the files together must be under 60 MB, so a phone does not run out
+      of memory. If you add more, the page tells you which ones were left out. For a joined picture that would be larger
+      than your device can handle, the page asks for a smaller output width.
+    </p>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Why is there empty space in some cells?</h3>
+    <p>
+      A grid cell is square. A wide or tall picture is fitted inside it without cropping, so the leftover space shows the
+      background colour. Choose side by side or one under another if you want no empty space.
+    </p>
+    <h3>Does joining lower the quality?</h3>
+    <p>
+      The pictures are redrawn onto one canvas and saved as a JPEG, so some detail is lost, and more is lost the smaller
+      your size limit is. Keep the original files.
+    </p>
+    <h3>Are my pictures uploaded?</h3>
+    <p>
+      No. They are joined in your browser and gone when you close or reload the page. Read the <a href="/privacy/">privacy page</a> for details.
+    </p>
+  </div>
+  <RelatedTools path="/join-images/" />
+</Base>

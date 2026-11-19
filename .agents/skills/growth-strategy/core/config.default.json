@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "freshness": {
+    "source_max_age_days": 90,
+    "keyword_max_age_days": 90,
+    "phase_refresh_days": 30
+  },
+  "research": {
+    "max_parallel_agents": 3,
+    "min_sources_spot_checked": 5
+  },
+  "gates": {
+    "require_independent_review": true
+  },
+  "models": {
+    "claude-code": {
+      "reasoning": "opus",
+      "standard": "sonnet",
+      "fast": "haiku"
+    },
+    "codex": {
+      "reasoning": null,
+      "standard": null,
+      "fast": null
+    },
+    "codex_reasoning_effort": {
+      "reasoning": "high",
+      "standard": "medium",
+      "fast": "low"
+    },
+    "role_tier_overrides": {}
+  }
+}

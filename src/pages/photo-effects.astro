@@ -1,0 +1,69 @@
+---
+import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import EffectsTool from '../components/EffectsTool.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Photo Effects, Border and Logo Overlay Online | SizeTune';
+const description =
+  'Turn a photo grayscale, black and white or pixel art, add a coloured border, and place your logo, then save it or shrink it to a KB limit. In your browser.';
+const jsonLd = webApplicationLd('SizeTune: photo effects, border and logo', '/photo-effects/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/photo-effects/" jsonLd={jsonLd}>
+  <Hero title="Effects, border and logo" lead="Turn a photo grayscale, black and white or pixel art, frame it with a border, and place your own logo on it. Save the result or shrink it to a size limit. Nothing is uploaded." />
+
+  <EffectsTool client:load />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This tool works inside your browser, so it will not run while JavaScript is turned off. Enable JavaScript and
+      reload to edit your photo. The notes below explain each option.
+    </p>
+  </noscript>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>The three effects</h2>
+    <ul>
+      <li><strong>Grayscale.</strong> Every colour becomes a shade of grey of the same brightness, so the picture keeps all its tones. Useful for a document photo that must be in greyscale.</li>
+      <li><strong>Black and white.</strong> Every pixel becomes pure black or pure white. The cut-off slider decides how bright a pixel must be to turn white. It suits scans of line drawings and signatures, and loses the tones of a photograph.</li>
+      <li><strong>Pixel art.</strong> The picture is turned into chunky flat squares and its colours are reduced to a small set. A bigger pixel size gives a blockier look.</li>
+    </ul>
+
+    <h2>Borders</h2>
+    <p>
+      The border adds space on every side, in a colour you choose, so a border of 20 pixels makes the picture 40 pixels
+      wider and 40 pixels taller. The effect is applied to the photo only, so the border keeps its colour. If a form asks
+      for an exact pixel size, add the border first, then check the new size under the preview.
+    </p>
+
+    <h2>Placing a logo</h2>
+    <p>
+      Add a logo as a second picture, then choose a corner or the centre and how wide it should be as a share of the
+      picture. The logo keeps its own shape and sits a small distance from the edge. A PNG logo with a transparent
+      background lets the photo show around it. Save the result as a PNG to keep every detail, or as a JPG for a smaller
+      file.
+    </p>
+
+    <h2>Size limit</h2>
+    <p>
+      If the finished picture has to fit a size limit, enter it and choose "Resize to KB". The picture opens in the
+      resizer further down this page, which lowers the quality and then the pixel size until the file fits. If the limit
+      is too small it tells you what it reached.
+    </p>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Does the effect change the logo too?</h3>
+    <p>
+      No. Effects are applied to the photo only. The logo is added afterwards and keeps its own colours.
+    </p>
+    <h3>Why did my JPG come out larger than the original?</h3>
+    <p>
+      A border makes the picture bigger, and a pixel-art or black and white picture can compress differently from a
+      photograph. Use "Resize to KB" to bring it under a limit.
+    </p>
+    <h3>Are my pictures uploaded?</h3>
+    <p>
+      No. They are edited in your browser and gone when you close or reload the page. Read the <a href="/privacy/">privacy page</a> for details.
+    </p>
+  </div>
+  <RelatedTools path="/photo-effects/" />
+</Base>

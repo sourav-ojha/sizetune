@@ -10,7 +10,8 @@ import FormatPicker from './tool/FormatPicker';
 import ProgressBar from './tool/Progress';
 import ResultPanel from './tool/ResultPanel';
 import SizePicker from './tool/SizePicker';
-import { getLimits, processImage } from './tool/engine';
+import { getLimits } from './tool/engine';
+import { processWithDpi } from './tool/dpi';
 import { formatCap, formatDims, formatSize } from './tool/format';
 import { ensureVisible, useForm, useScrollAnchor, useWebpSupport } from './tool/hooks';
 import { buildOptions, type FormState } from './tool/options';
@@ -28,19 +29,22 @@ export interface ImageToolProps {
   defaultNoLimit?: boolean;
   /** Accessible name and hidden heading of the tool region (default: the resizer wording). */
   label?: string;
+  /** A picture to load as if the visitor had chosen it (used by tools that make an image on the same page). */
+  initialFile?: File | null;
 }
 
-const ADVANCED_FIELDS = ['minKb', 'width', 'height', 'maxWidth', 'maxHeight'] as const;
+const ADVANCED_FIELDS = ['minKb', 'width', 'height', 'maxWidth', 'maxHeight', 'dpi'] as const;
 
-export default function ImageTool({ defaultMaxKb = 50, defaultFormat, defaultNoLimit = false, label }: ImageToolProps) {
+export default function ImageTool({ defaultMaxKb = 50, defaultFormat, defaultNoLimit = false, label, initialFile = null }: ImageToolProps) {
   const { session, state } = useToolSession();
   const [form, setForm] = useForm({ maxKb: String(defaultMaxKb), noLimit: defaultNoLimit });
   const webp = useWebpSupport();
   const anchor = useScrollAnchor();
   const manyRef = useRef<((files: File[]) => void) | undefined>(undefined);
   const { inputRef, onPick } = useIntake(session, (files) => manyRef.current?.(files));
+  useEffect(() => { if (initialFile) void session.selectFile(initialFile); }, [initialFile, session]);
   // Several files at once go to a batch: one queue, one file at a time, one ZIP. A single file keeps using the single-file view above.
-  const [batch] = useState(() => new BatchRunner({ process: processImage, createObjectURL: (b) => URL.createObjectURL(b), revokeObjectURL: (u) => URL.revokeObjectURL(u) }));
+  const [batch] = useState(() => new BatchRunner({ process: processWithDpi, createObjectURL: (b) => URL.createObjectURL(b), revokeObjectURL: (u) => URL.revokeObjectURL(u) }));
   const batchState = useSyncExternalStore(batch.subscribe, batch.getSnapshot, batch.getSnapshot);
   const [batchNote, setBatchNote] = useState<string | null>(null);
   const [zipError, setZipError] = useState<string | null>(null);
@@ -252,7 +256,7 @@ export default function ImageTool({ defaultMaxKb = 50, defaultFormat, defaultNoL
 
           <AdvancedBlock forceOpen={advancedError || linkedMin}>
             <MinimumField form={effective} errors={errors} update={update} />
-            <DimensionFields form={effective} errors={errors} update={update} basis={state.natural} showMax />
+            <DimensionFields form={effective} errors={errors} update={update} basis={state.natural} showMax print />
             <StrategyField form={effective} update={update} />
           </AdvancedBlock>
 

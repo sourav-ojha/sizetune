@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-018
 opportunity: OPP-030
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-17
 ---
@@ -116,3 +117,8 @@ Content (including Wi-Fi passwords) stays on the device; no storage.
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** AC-1 and AC-2 via a decoder library in tests; AC-3 network log; AC-4 `pnpm run verify:html`.
 
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-18 | feat/feature-018-qr-code-generator (commits 6e92407..29bfd50) | AC-1 to AC-5: /qr-code-generator/ for web address, text and Wi-Fi with PNG and SVG download, error-correction and size options, test-before-printing warning | none | owner review of page copy and of the privacy allow-list entry; add a third-party licence notice for qrcode-generator (MIT) if the site publishes one; decide whether to measure usage | rulings: library qrcode-generator 2.0.4 (MIT, no dependencies; chosen over node-qrcode because it has no dependencies and no network or Node-only code); jsqr 1.4.0 (Apache-2.0) added as a dev dependency only, as the independent reader in tests; UTF-8 bytes so accents and emoji scan back; the library's own SVG helper is not used; scripts/verify-lib.mjs gets ONE new allow-list entry for the SVG XML-namespace string in the QrTool chunk (max 2, that chunk only) with tests that other URLs, a third occurrence and fetch there still fail; no copy button (verify:privacy flags navigator.clipboard). verified: check 0 errors, build 0, verify:html(:strict) OK, verify:privacy OK, 920 unit pass, e2e qr-tool 80/80 on each of chrome, webkit and firefox (10 repeats), axe on the page; no independent reviewer was available, self-review only |
+| 2026-11-18 | feat/feature-018-qr-code-generator (review fixes) | independent Opus review (read-only, fresh context): verdict MERGE AFTER FIXES, medium-high confidence; fixed: capacity message now names the error-correction level (limit depends on level and bytes, measured 2,953 / 2,331 / 1,663 / 1,273 plain characters at L / M / Q / H), overflow path tested at unit and e2e level, stale download link cleared before a new file is made, e2e waits for the canvas, network name kept as typed, no-password hint, live region trimmed, real PNG size shown | none | third-party licence notice for qrcode-generator (MIT), still open | not fixed on purpose: PNG encode runs on every keystroke (not debounced; small codes) |

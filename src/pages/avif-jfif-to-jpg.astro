@@ -1,0 +1,70 @@
+---
+import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import AvifTool from '../components/AvifTool.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'AVIF and JFIF to JPG Converter, No Upload | SizeTune';
+const description =
+  'Turn an AVIF or JFIF picture into a JPG or PNG in your browser, with no upload and no sign-up. See what changes and what to do if your browser cannot read AVIF.';
+const jsonLd = webApplicationLd('SizeTune: AVIF and JFIF to JPG converter', '/avif-jfif-to-jpg/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/avif-jfif-to-jpg/" jsonLd={jsonLd}>
+  <Hero badge="Free · Stays on this device · No sign-up" title="AVIF and JFIF to JPG" lead="Add an AVIF or JFIF picture and download it as a JPG, or as a PNG. The converter opens with JPEG chosen and no size limit. If a form also states a limit in KB, set it in the tool." />
+
+  <AvifTool client:load />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This converter works inside your browser, so it will not run while JavaScript is turned off. Enable JavaScript and
+      reload to convert your picture. The notes below explain the two formats.
+    </p>
+  </noscript>
+  <p class="mx-auto mt-6 max-w-3xl text-center text-base text-slate-700">
+    Need the JPG under a size limit for a form? <a data-testid="to-resizer" class="font-medium text-teal-800 underline underline-offset-4" href="/">Open the KB resizer</a>.
+  </p>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>What AVIF is, and why a form may refuse it</h2>
+    <p>
+      AVIF is a newer picture format that keeps files small. Some websites and phones now save pictures this way, so a
+      download can end in .avif even though it looked like an ordinary photo. Many upload forms, office programs and print
+      services were built around JPG and PNG and reject anything else, so converting is the quickest fix.
+    </p>
+
+    <h2>What JFIF is</h2>
+    <p>
+      A JFIF file is a JPEG. The name only refers to the small header that most JPEG files carry. Some programs save it
+      with a .jfif ending, and a few forms do not recognise that ending. Converting here writes a normal .jpg file.
+    </p>
+
+    <h2>What changes in the conversion</h2>
+    <p>
+      An AVIF picture is opened by your own browser and then passed to the converter without losing detail, so the only
+      loss is the one a JPG always brings. A JPG cannot hold see-through areas, so transparent parts of an AVIF turn
+      white. Choose PNG instead if you need to keep transparency.
+    </p>
+    <ul>
+      <li><strong>Animated AVIF.</strong> Only the first frame is converted, and the page tells you so.</li>
+      <li><strong>Large files.</strong> A file over 8 MB can take a few seconds to open. Pictures over 16 megapixels are refused, because not every device can handle them.</li>
+      <li><strong>HEIC.</strong> iPhone HEIC pictures are a different format and are not supported on this page.</li>
+    </ul>
+
+    <h2>If your browser cannot open AVIF</h2>
+    <p>
+      Current versions of Chrome, Edge, Firefox and Safari (16 or newer) open AVIF. An older browser may not. The page then
+      shows a message and does nothing else with your file. Open the page in a current browser and try again.
+    </p>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Is my picture uploaded?</h3>
+    <p>
+      No. It is opened and converted in your browser and gone when you close or reload the page. Read the <a href="/privacy/">privacy page</a> for details.
+    </p>
+    <h3>Why is my JPG bigger than the AVIF?</h3>
+    <p>
+      AVIF compresses better than JPG, so the same picture usually takes more space as a JPG. Set a size limit in the tool
+      to bring it down.
+    </p>
+  </div>
+  <RelatedTools path="/avif-jfif-to-jpg/" />
+</Base>

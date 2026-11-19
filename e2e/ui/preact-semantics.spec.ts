@@ -114,8 +114,9 @@ test.describe('Preact semantics', () => {
     await expect.poll(liveCount).toBe(1); // only the preview is left
     await resize(page);
     await pick(page, file('b.png', signaturePng())); // replacing the file revokes the old preview and result
-    await expect(page.getByTestId('result')).toHaveCount(0);
-    await expect.poll(liveCount).toBe(1);
+    // Picking a file starts a run by itself, and for a tiny PNG the new result can land before this check polls, so "no result" is
+    // not a stable state to wait for. What must always hold: the live URLs are the new preview plus the new result if it exists yet.
+    await expect.poll(async () => (await liveCount()) - (await page.getByTestId('result').count())).toBe(1);
     await page.getByTestId('start-over').click();
     await expect.poll(liveCount).toBe(0);
     await pick(page, NOISE);

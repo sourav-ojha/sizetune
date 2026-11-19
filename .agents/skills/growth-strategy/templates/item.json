@@ -1,0 +1,19 @@
+{
+  "type": "technical-seo",
+  "title": "Add an XML sitemap",
+  "rationale": "No sitemap is served, so new pages rely on link discovery.",
+  "keywords": [],
+  "sources": [
+    "S-001"
+  ],
+  "evidence": "fact",
+  "confidence": "high",
+  "impact": "M",
+  "effort": "S",
+  "window": "weeks 1-4",
+  "owner": "implementer",
+  "acceptance": [
+    "Given the site is deployed, When /sitemap.xml is requested, Then it lists every indexable page"
+  ],
+  "risks": []
+}

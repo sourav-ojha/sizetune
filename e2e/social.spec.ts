@@ -145,3 +145,57 @@ test('Start over clears the result', async ({ page }) => {
   await page.getByTestId('start-over').click();
   await expect(page.getByTestId('social-result')).toHaveCount(0);
 });
+
+// ---- FEATURE-032: YouTube banner and Instagram no-crop ----
+test('FEATURE-032 AC-2: Instagram no-crop opens in colour-bars mode and keeps the whole picture', async ({ page }) => {
+  await load(page, '/instagram-image-resizer/', wide());
+  await page.getByTestId('preset').selectOption('ig-feed-nocrop');
+  await expect(page.getByTestId('fit-pad')).toBeChecked();
+  const result = page.getByTestId('social-result');
+  await expect(result).toHaveAttribute('data-fit', 'pad');
+  await expect(result).toHaveAttribute('data-width', '1080');
+  await expect(result).toHaveAttribute('data-height', '1080');
+  const buf = await download(page);
+  expect(Math.min(...(await px(buf, 5, 5)))).toBeGreaterThan(240); // a white bar, so nothing was cut to fill the square
+  expect((await px(buf, 3, 540))[0]).toBeLessThan(40); // both edges of the picture survive
+  expect((await px(buf, 1076, 540))[0]).toBeGreaterThan(215);
+});
+
+test('FEATURE-032: choosing a size that forces colour bars does not take the person’s choice away on other sizes', async ({ page }) => {
+  await load(page, '/instagram-image-resizer/', wide());
+  await page.getByTestId('fit-blur').check();
+  await page.getByTestId('preset').selectOption('ig-feed-portrait'); // no forced fit: blur stays
+  await expect(page.getByTestId('fit-blur')).toBeChecked();
+  await page.getByTestId('preset').selectOption('ig-feed-nocrop'); // forced: colour bars
+  await expect(page.getByTestId('fit-pad')).toBeChecked();
+  await page.getByTestId('preset').selectOption('ig-feed-square'); // leaving it returns to crop
+  await expect(page.getByTestId('fit-crop')).toBeChecked();
+});
+
+test('FEATURE-032 AC-1: the YouTube banner outputs exactly 2560 x 1440 and applies the 6 MB cap', async ({ page }) => {
+  await load(page, '/youtube-thumbnail-resizer/', wide());
+  await page.getByTestId('preset').selectOption('yt-banner');
+  await expect(page.getByTestId('max-kb')).toHaveValue('6000');
+  const result = page.getByTestId('social-result');
+  await expect(result).toHaveAttribute('data-width', '2560');
+  await expect(result).toHaveAttribute('data-height', '1440');
+  const buf = await download(page);
+  const meta = await sharp(buf).metadata();
+  expect([meta.format, meta.width, meta.height]).toEqual(['jpeg', 2560, 1440]);
+  expect(buf.length).toBeLessThanOrEqual(6_000_000);
+  await expect(page.getByTestId('preset-source')).toHaveAttribute('href', '/guides/social-image-sizes/#yt-branding');
+});
+
+test('FEATURE-032: a picture smaller than the banner is flagged as enlarged', async ({ page }) => {
+  await load(page, '/youtube-thumbnail-resizer/', wide());
+  await page.getByTestId('preset').selectOption('yt-banner');
+  await expect(page.getByTestId('social-result')).toHaveAttribute('data-width', '2560');
+  await expect(page.getByText(/enlarg|upscal|larger than the picture/i).first()).toBeVisible();
+});
+
+test('FEATURE-032: the sources guide lists the banner page with its official link, and WhatsApp is nowhere', async ({ page }) => {
+  await page.goto('/guides/social-image-sizes/');
+  await expect(page.locator('#yt-branding a[href="https://support.google.com/youtube/answer/10456525"]')).toHaveAttribute('rel', /noreferrer/);
+  await expect(page.locator('#yt-branding')).toContainText('2560 × 1440');
+  expect((await page.content()).toLowerCase()).not.toContain('whatsapp');
+});

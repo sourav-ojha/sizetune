@@ -2,7 +2,8 @@
 type: feature-spec
 id: FEATURE-013
 opportunity: OPP-018
-status: ready
+status: implemented
+delivery: complete
 product_revision: 3
 created: 2026-11-17
 ---
@@ -118,3 +119,8 @@ Local processing; no retention; no new trust boundary.
 - **Questions go to:** the user, via the implementation agent. Do not guess requirements.
 - **Suggested verification:** AC-1 and AC-2 via unit tests and fixtures; AC-3 network log; AC-4 existing e2e; AC-5 `pnpm run verify:html`.
 
+
+## Delivery log
+| Date | Branch / PR | Delivered | Pending (code) | Pending (non-code) | Notes |
+|---|---|---|---|---|---|
+| 2026-11-18 | feat/print-units-dpi | AC-1 to AC-5: unit selector (px, cm, mm, inch) and DPI field in the image tool's Advanced section, pixel preview, DPI written into JPEG (JFIF) and PNG (pHYs) after encoding | none | owner review of copy; check DPI in a real portal; Search Console | DPI is not written to WebP (a note says so; answers the open question). The tag is skipped with a note if it would push the file over the KB limit. Switching to px takes back a DPI the tool filled in. Signature tool unchanged. Total JS 89,581 to 91,269 bytes gzip (first load of tool pages; the gate passes). Result note for a size miss still quotes pixels, not the typed unit |

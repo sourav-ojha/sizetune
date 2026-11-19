@@ -3,13 +3,13 @@ import Base from '../layouts/Base.astro';
 import RelatedTools from '../components/RelatedTools.astro';
 import ImageTool from '../components/ImageTool.tsx';
 import Hero from '../components/Hero.astro';
-import { webApplicationLd, proseClass } from './_seo';
+import { websiteLd, webApplicationLd, proseClass } from './_seo';
 const title = 'Resize Image to KB Online, Free | SizeTune';
 const description =
   'Reduce a photo to the file size your form allows, in KB, right in your browser. Preview, compare sizes and download. The code here does not upload your image.';
 const jsonLd = webApplicationLd('SizeTune image resizer', '/', description);
 ---
-<Base pageType="home" width="wide" title={title} description={description} path="/" jsonLd={jsonLd}>
+<Base pageType="home" width="wide" title={title} description={description} path="/" jsonLd={[jsonLd, websiteLd]}>
   <Hero title="Resize an image to a size in KB" lead="Pick the limit your form asks for, add your photo, download. You see a preview and the real before and after sizes, with no account and no watermark." />
 
   <ImageTool client:load defaultMaxKb={50} />

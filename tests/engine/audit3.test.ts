@@ -83,7 +83,7 @@ describe('N1: FF 00 is junk, exactly like libjpeg', () => {
     }
     expect(same).toBeGreaterThan(1000);
     void rejected; void tiffHasGps;
-  });
+  }, 60_000); // 1,200 parses and file reads: about 2 s alone, but more than the 5 s default when the whole suite runs in parallel
 });
 
 describe('cross-browser follow-up: a file that can no longer be read', () => {

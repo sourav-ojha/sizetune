@@ -3,13 +3,15 @@ interface Props {
   title: string;
   /** Sits under the h1; plain text only (it is also read by the page checks). */
   lead: string;
+  /** Pill above the title. Defaults to the photo wording used by the image tools. */
+  badge?: string;
 }
-const { title, lead } = Astro.props;
+const { title, lead, badge = 'Free · Your photo stays on this device · No sign-up' } = Astro.props;
 ---
 <section class="mb-8 text-center sm:mb-10">
   <p class="mb-4 inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3.5 py-1.5 text-sm font-semibold text-teal-900">
     <svg aria-hidden="true" viewBox="0 0 24 24" class="size-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
-    Free · Your photo stays on this device · No sign-up
+    {badge}
   </p>
   <h1 class="mx-auto max-w-2xl text-3xl font-bold leading-[1.1] tracking-tight text-slate-950 sm:text-5xl">{title}</h1>
   <p class="mx-auto mt-3 max-w-xl text-base leading-relaxed text-slate-600 sm:mt-4 sm:text-lg">{lead}</p>

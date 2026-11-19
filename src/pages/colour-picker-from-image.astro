@@ -1,0 +1,74 @@
+---
+import Base from '../layouts/Base.astro';
+import RelatedTools from '../components/RelatedTools.astro';
+import ColourPicker from '../components/ColourPicker.tsx';
+import Hero from '../components/Hero.astro';
+import { webApplicationLd, proseClass } from './_seo';
+const title = 'Colour Picker From an Image: HEX, RGB and HSL | SizeTune';
+const description =
+  'Click any spot on a picture to read its colour as HEX, RGB and HSL, then copy the value. Your image stays in your browser and is never uploaded.';
+const jsonLd = webApplicationLd('SizeTune: colour picker from an image', '/colour-picker-from-image/', description);
+---
+<Base pageType="tool" width="wide" title={title} description={description} path="/colour-picker-from-image/" jsonLd={jsonLd}>
+  <Hero badge="Free · Stays on this device · No sign-up" title="Colour picker from an image" lead="Open a picture, click the spot you want, and read its colour as HEX, RGB and HSL. Copy the value with one button. Nothing is uploaded." />
+
+  <ColourPicker client:load />
+  <noscript>
+    <p class="mt-4 rounded-xl border border-amber-400 bg-amber-50 p-4">
+      This tool runs inside your browser, so it will not work while JavaScript is turned off. Enable JavaScript and
+      reload to pick colours. The notes below explain how the values are worked out.
+    </p>
+  </noscript>
+
+  <div class={`mx-auto max-w-3xl mt-10 ${proseClass}`}>
+    <h2>How to pick a colour</h2>
+    <ol>
+      <li>Choose a JPEG, PNG or WebP picture, or drop it on the box.</li>
+      <li>Click the spot you want. You can also press and drag to move along the picture.</li>
+      <li>Read the HEX, RGB and HSL values beside it and press Copy next to the one you need.</li>
+    </ol>
+    <p>
+      To use the keyboard, move focus to the picture and press the arrow keys. Each press moves one pixel, and holding
+      Shift moves ten. Enter reads the colour where the marker is.
+    </p>
+
+    <h2>What the three values mean</h2>
+    <ul>
+      <li><strong>HEX</strong> is six characters after a hash sign, two each for red, green and blue, for example #0F766E. It is the form web pages and design tools usually ask for.</li>
+      <li><strong>RGB</strong> gives the same three channels as numbers from 0 to 255.</li>
+      <li><strong>HSL</strong> gives the hue as an angle from 0 to 359 degrees, then saturation and lightness in percent. It is easier to adjust by hand, for example to make a colour lighter.</li>
+    </ul>
+    <p>
+      The tool reads the exact pixel you click, not an average of the area around it. A photograph has noise, so two
+      neighbouring pixels can differ slightly. Click a few nearby spots and compare them in the recent colours list.
+    </p>
+
+    <h2>Transparent pixels</h2>
+    <p>
+      A PNG or WebP picture can have see-through areas. For those pixels the tool also shows how opaque the pixel is.
+      The HEX value gets two extra characters at the end, and the RGB and HSL values use their alpha forms.
+    </p>
+
+    <h2>If Copy does not work</h2>
+    <p>
+      Some browsers block copying from a page. When that happens the value is selected for you, and you can press Ctrl+C
+      (Cmd+C on a Mac) to copy it yourself.
+    </p>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Why is the colour different from what I see on screen?</h3>
+    <p>
+      The tool reads the colour stored in the picture file. A screen with a colour profile or a night-light setting can
+      show it a little differently.
+    </p>
+    <h3>Does a very large picture work?</h3>
+    <p>
+      Pictures up to 16 megapixels are read on every device. For a larger one, shrink it on the <a href="/">home page</a> first.
+    </p>
+    <h3>Is my picture uploaded?</h3>
+    <p>
+      No. It is read in your browser and gone when you close or reload the page. Read the <a href="/privacy/">privacy page</a> for details.
+    </p>
+  </div>
+  <RelatedTools path="/colour-picker-from-image/" />
+</Base>

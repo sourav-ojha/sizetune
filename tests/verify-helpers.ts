@@ -37,7 +37,7 @@ export const jsChunks = (d: string) => readdirSync(join(d, '_astro')).filter((f)
 /** UI-runtime chunks (not app code): Astro island client, Preact core+compat, preact/hooks, bundled @preact/signals. */
 const RUNTIME_NAMES = /_astro\/(client|preact|hooks|signals\.module)\./;
 /** An app-owned (non-Preact-runtime) chunk loaded by a tool page. */
-export const appChunk = (d: string) => jsChunks(d).find((f) => !RUNTIME_NAMES.test(f) && read(d, f).length > 1000 && !/compress\.worker/.test(f)) ?? jsChunks(d).find((f) => !RUNTIME_NAMES.test(f))!;
+export const appChunk = (d: string) => jsChunks(d).find((f) => !RUNTIME_NAMES.test(f) && read(d, f).length > 1000 && !/compress\.worker|QrTool/.test(f)) ?? jsChunks(d).find((f) => !RUNTIME_NAMES.test(f))!;
 export const cssChunk = (d: string) => '_astro/' + readdirSync(join(d, '_astro')).find((f) => f.endsWith('.css'))!;
 /** The Preact core+compat chunk (the one that legitimately holds the XML-namespace URLs). */
 export const preactChunk = (d: string) => jsChunks(d).find((f) => /foreignObject/.test(read(d, f)) && /Math\/MathML/.test(read(d, f)))!;

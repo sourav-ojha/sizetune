@@ -40,6 +40,9 @@ export const JS_PRIMITIVE_ALLOWLIST = [
   { id: 'external-url', file: /^_astro\/preact\.[\w-]+\.js$/, signature: /(?=[\s\S]*foreignObject)(?=[\s\S]*http:\/\/www\.w3\.org\/1998\/Math\/MathML)(?=[\s\S]*dangerouslySetInnerHTML)/, max: 6,
     only: /^http:\/\/www\.w3\.org\/(1998\/Math\/MathML|2000\/svg|1999\/xhtml)$/,
     reason: 'preact core (diff/createElementNS) uses the SVG, MathML and XHTML XML-namespace identifiers (svg x2, MathML x2, xhtml x2 in this build) as namespace strings for createElementNS/foreignObject handling. They are identifiers, never fetched (CSP connect-src \'self\' would block it anyway).' },
+  { id: 'external-url', file: /^_astro\/QrTool\.[\w-]+\.js$/, signature: /(?=[\s\S]*createSvgTag)(?=[\s\S]*shape-rendering)/, max: 2,
+    only: /^http:\/\/www\.w3\.org\/2000\/svg$/,
+    reason: 'QR tool chunk (FEATURE-018): the qrcode-generator library carries the SVG XML-namespace identifier in its own SVG helper (never called here) and src/lib/qr.ts writes the same identifier as the xmlns attribute of the downloadable SVG file. Two occurrences in this build, both namespace strings that are never fetched (CSP connect-src \'self\' would block it anyway). Pinned to this one chunk, this one URL and these two signature strings; any other URL or a third occurrence still fails.' },
   { id: 'dyn-import', file: /^_astro\/client\.[\w-]+\.js$/, signature: /data-preact-island-id/, max: 1, proof: /import\(`\.\/(signals\.module\.[\w-]+\.js)`\)/y,
     reason: '@astrojs/preact client hydrator lazily imports its own bundled @preact/signals chunk (same-site, literal relative specifier ./signals.module.<hash>.js) only when an island carries data-preact-signals, which SizeTune never emits (asserted by tests). `proof` requires the single import() to be exactly that literal form, so any other dynamic import (or a non-literal specifier) still fails.' },
 ];

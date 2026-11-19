@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { readdirSync } from 'node:fs';
-import { PLATFORMS, presetsFor } from '../src/data/socialPresets';
+import { PLATFORMS, PRESETS, presetsFor } from '../src/data/socialPresets';
 import { SOURCES } from '../src/data/socialSources';
 
 const all = PLATFORMS.flatMap((p) => presetsFor(p.id));
@@ -34,5 +34,27 @@ describe('tool pages carry no third-party URL (privacy gate)', () => {
   it('the presets module, which the tool bundle imports, contains no http URL', async () => {
     const { readFileSync } = await import('node:fs');
     expect(readFileSync('src/data/socialPresets.ts', 'utf8')).not.toMatch(/https?:\/\//);
+  });
+});
+
+describe('FEATURE-032: YouTube banner and Instagram no-crop', () => {
+  const byId = (id: string) => PRESETS.find((p) => p.id === id);
+  it('the YouTube banner uses the size and the 6 MB cap YouTube Help states', () => {
+    const b = byId('yt-banner');
+    expect(b).toMatchObject({ platform: 'youtube', width: 2560, height: 1440, maxKb: 6000, source: { id: 'yt-branding' } });
+    expect(b!.note).toMatch(/2048 by 1152/); // the minimum
+    expect(b!.note).toMatch(/1235 by 338/); // the safe area for text and logos
+    expect(SOURCES['yt-branding'].url).toBe('https://support.google.com/youtube/answer/10456525');
+    expect(b!.width / b!.height).toBeCloseTo(16 / 9, 5);
+  });
+  it('Instagram no-crop keeps the whole picture: it starts in colour-bars mode, on a size from the same source', () => {
+    const n = byId('ig-feed-nocrop');
+    expect(n).toMatchObject({ platform: 'instagram', width: 1080, height: 1080, fit: 'pad', source: { id: 'ig-photo' } });
+  });
+  it('no other preset forces a fit, so the person’s choice is kept when they change size', () => {
+    expect(PRESETS.filter((p) => p.fit).map((p) => p.id)).toEqual(['ig-feed-nocrop']);
+  });
+  it('there is no WhatsApp preset: no official page states a size', () => {
+    expect(JSON.stringify(PRESETS).toLowerCase()).not.toContain('whatsapp');
   });
 });

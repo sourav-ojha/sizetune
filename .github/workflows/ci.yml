@@ -50,7 +50,11 @@ jobs:
     # stays near the `verify` job's runtime and cross-browser stays off the critical path. Test files, projects, retries and env are unchanged.
     name: cross-browser (${{ matrix.browser }} ${{ matrix.shard }}/${{ matrix.total }})
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    # The test run is ~4 minutes. `playwright install --with-deps` is the variable part: it downloads ~125 MB of apt packages, normally in
+    # under a minute. On 2026-11-18 some runners were handed a slow mirror (us-east-2.ec2.archive.ubuntu.com, ~80 kB/s), which made that
+    # one step take 6 to 27 minutes; every fast job had used azure.archive.ubuntu.com. So the install step below pins the mirror to Azure
+    # and bounds each attempt, instead of only raising this limit.
+    timeout-minutes: 25
     strategy:
       fail-fast: false   # let every browser/shard finish so one failure doesn't hide others
       matrix:
@@ -67,7 +71,22 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with: { node-version-file: .nvmrc, cache: pnpm }
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
+      - name: Use the Azure apt mirror (runner mirror assignment is sometimes ~100x slower)
+        run: |
+          f=/etc/apt/sources.list.d/ubuntu.sources
+          if [ -f "$f" ] && grep -q 'mirror+file:/etc/apt/apt-mirrors.txt' "$f"; then
+            sudo sed -i 's|mirror+file:/etc/apt/apt-mirrors.txt|http://azure.archive.ubuntu.com/ubuntu/|' "$f"
+          else
+            echo "apt sources layout changed; leaving the default mirror"
+          fi
+          grep -h '^URIs:' "$f" /etc/apt/sources.list 2>/dev/null | sort -u || true
+      - name: Install browser and system deps (bounded, 3 attempts)
+        run: |
+          for i in 1 2 3; do
+            timeout 300 pnpm exec playwright install --with-deps ${{ matrix.browser }} && exit 0
+            echo "install attempt $i failed or exceeded 5 min"; sleep 5
+          done
+          exit 1
       - run: PW_ALL_BROWSERS=1 CI=1 pnpm exec playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}/${{ matrix.total }}
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: failure()
