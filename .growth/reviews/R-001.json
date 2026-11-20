@@ -1,0 +1,104 @@
+{
+  "id": "R-001",
+  "at": "2026-11-19T09:41:14.862Z",
+  "mode": "independent",
+  "reviewer": "growth plan reviewer subagent",
+  "plan_hash": "b8c64932c118f84b6438fb103509cdc179d1db396da01cc736d91c31703eb9f7",
+  "verdict": "PASS WITH CHANGES",
+  "checked_sources": [
+    "S-007",
+    "S-019",
+    "S-020",
+    "S-022",
+    "S-023",
+    "S-024",
+    "S-027",
+    "S-029",
+    "S-030",
+    "S-031",
+    "S-034",
+    "S-035",
+    "S-036",
+    "S-037",
+    "S-038",
+    "S-039",
+    "S-040",
+    "S-042",
+    "S-044",
+    "S-045",
+    "S-046",
+    "S-047"
+  ],
+  "findings": [
+    {
+      "severity": "Medium",
+      "item": "GRO-005",
+      "type": "evidence",
+      "summary": "P1 page winnability rests on a US-served SERP; reviewer saw signNow holding about 12 of 20 results with programmatic 20kb pages. Query not in the India check list.",
+      "fix": "Add 'resize signature to 20kb' and 'signature resize to 20 kb' to the India check in GRO-004 and competitors.md; restate winnability as signNow dominates, small tools fill the rest."
+    },
+    {
+      "severity": "Medium",
+      "item": "GRO-009",
+      "type": "evidence",
+      "summary": "'increase image size in kb' is P1 but the engine does no metadata padding, so the product does not yet solve the query.",
+      "fix": "Lower to P2 until the owner chooses an honest method."
+    },
+    {
+      "severity": "Medium",
+      "item": "GRO-008",
+      "type": "actionability",
+      "summary": "Gated on spec verification (GRO-007) but not on the India SERP check (GRO-004); India vantage unobserved.",
+      "fix": "Add precondition: India SERP results for the four exam queries recorded first; drop queries where national publishers dominate."
+    },
+    {
+      "severity": "Medium",
+      "item": null,
+      "type": "evidence",
+      "summary": "serp sources S-001 to S-018 do not record what ranked; it lives only in keyword serp_notes.",
+      "fix": "Copy ranked domains, page types and features into each serp source note."
+    },
+    {
+      "severity": "Medium",
+      "item": "GRO-011",
+      "type": "cannibalization",
+      "summary": "Form-spec how-to guide overlaps the existing photo-size-for-online-forms guide and the exam hub; 'reduce image size in kb' is a transactional intent mapped to home/tools.",
+      "fix": "Scope to the 'without losing quality' guide only; extend the existing forms guide; drop 'reduce image size in kb' from this item."
+    },
+    {
+      "severity": "Low",
+      "item": "GRO-010",
+      "type": "evidence",
+      "summary": "imageonline.io 40 KB is a dedicated page, not a button; weakens the winnability argument for 30/40 KB.",
+      "fix": "Correct the note."
+    },
+    {
+      "severity": "Low",
+      "item": "GRO-002",
+      "type": "thin-content",
+      "summary": "Requiring a non-guide page to link the 200 KB PDF guide risks an off-topic link as there is no PDF tool.",
+      "fix": "Name the linking page (for example /tools/ or the KB/MB converter)."
+    },
+    {
+      "severity": "Low",
+      "item": "GRO-017",
+      "type": "actionability",
+      "summary": "Titled 'Decide whether to build' but owned by implementer with build criteria.",
+      "fix": "Split into a human decision item and a conditional implementer item."
+    },
+    {
+      "severity": "Low",
+      "item": "GRO-012",
+      "type": "evidence",
+      "summary": "monetization.md asserts a Google-certified CMP is required, citing the SizeTune privacy page, which does not say so.",
+      "fix": "Cite Google's CMP requirement page or tag as assumption."
+    },
+    {
+      "severity": "Low",
+      "item": "GRO-004",
+      "type": "evidence",
+      "summary": "measurement-plan.md cites the privacy page for Search Console steps.",
+      "fix": "Cite S-035 or tag as assumption."
+    }
+  ]
+}
